@@ -12,18 +12,14 @@ import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper
 {
-    public final int NUM_TABLES = 6;
+    public final int NUM_TABLES = 5;
 
     public static final String DATABASE_NAME = "Medications.db";
 
-    public static final String USER_TABLE = "Users";
-    public static final String USER_ID = "UserID";
-    public static final String USERNAME = "Username";
-    public static final String PASSWORD = "Password";
-
     public static final String MEDICATION_TABLE = "Medication";
     public static final String MED_ID = "MedicationID";
-    public static final String MED_NAME = "Name";
+    public static final String MED_NAME = "MedName";
+    public static final String PATIENT_NAME = "PatientName";
     public static final String MED_FREQUENCY = "DoseFrequency";
     public static final String MED_DOSAGE = "Dosage";
     public static final String MED_UNITS = "Units";
@@ -58,23 +54,17 @@ public class DBHelper extends SQLiteOpenHelper
     {
         String[] queries = new String[NUM_TABLES];
 
-        queries[0] = "CREATE TABLE " + USER_TABLE + "("
-                + USER_ID + " INT,"
-                + USERNAME + " TEXT,"
-                + PASSWORD + " TEXT," +
-                "PRIMARY KEY (" + USER_ID + ")" +
-                ")";
-
-        queries[1] = "CREATE TABLE " + MEDICATION_TABLE + "("
+        queries[0] = "CREATE TABLE " + MEDICATION_TABLE + "("
                 + MED_ID + " INT, "
                 + MED_NAME + " TEXT,"
+                + PATIENT_NAME + " Text,"
                 + MED_FREQUENCY + " INT, "
                 + MED_DOSAGE + " DECIMAL(3,2), "
                 + MED_UNITS + " TEXT,"
                 + "PRIMARY KEY (" + MED_ID + ")"
                 + ")";
 
-        queries[2] = "CREATE TABLE " + MEDICATION_TRACKER_TABLE + "("
+        queries[1] = "CREATE TABLE " + MEDICATION_TRACKER_TABLE + "("
                 + MED_ID + " INT,"
                 + LAST_TAKEN + " DATETIME, "
                 + NEXT_DOSE + " DATETIME,"
@@ -82,7 +72,7 @@ public class DBHelper extends SQLiteOpenHelper
                 + "PRIMARY KEY (" + MED_ID + ")"
                 + ")";
 
-        queries[3] = "CREATE TABLE " + MEDICATION_HISTORY + "("
+        queries[2] = "CREATE TABLE " + MEDICATION_HISTORY + "("
                 + MED_ID + " INT,"
                 + TAKEN + " BOOL,"
                 + TIME_TAKEN + " DATETIME,"
@@ -90,7 +80,7 @@ public class DBHelper extends SQLiteOpenHelper
                 + "PRIMARY KEY (" + MED_ID + ")"
                 + ")";
 
-        queries[4] = "CREATE TABLE " + MEDICATION_STATS_TABLE + "("
+        queries[3] = "CREATE TABLE " + MEDICATION_STATS_TABLE + "("
                 + MED_ID + " INT,"
                 + START_DATE + " DATETIME, "
                 + END_DATE + " DATETIME, "
@@ -100,7 +90,7 @@ public class DBHelper extends SQLiteOpenHelper
                 + "PRIMARY KEY (" + MED_ID + ")" +
                 ")";
 
-        queries[5] = "CREATE TABLE " + NOTES_TABLE + "("
+        queries[4] = "CREATE TABLE " + NOTES_TABLE + "("
                 + NOTE_ID + " INT,"
                 + MED_ID + " INT, "
                 + NOTE + " TEXT, "

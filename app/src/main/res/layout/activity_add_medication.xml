@@ -22,6 +22,46 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/patientLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/patient" />
+
+            <RadioGroup
+                android:id="@+id/patientGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <RadioButton
+                    android:id="@+id/meButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:text="@string/patientIsMe" />
+
+                <RadioButton
+                    android:id="@+id/otherButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:text="@string/other"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </RadioGroup>
+
+            <AutoCompleteTextView
+                android:id="@+id/patientNameNotMe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:ems="10"
+                android:hint="@string/name"
+                android:inputType="textAutoComplete"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
                 android:id="@+id/medName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -36,7 +76,7 @@
                 android:layout_width="350dp"
                 android:layout_height="54dp"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="15dp"
                 android:importantForAutofill="no"
                 android:inputType="textAutoCorrect"
                 app:layout_constraintStart_toStartOf="parent"
@@ -57,41 +97,87 @@
                 android:layout_width="351dp"
                 android:layout_height="55dp"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="15dp"
                 android:importantForAutofill="no"
                 android:inputType="numberDecimal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/medDosage" />
 
             <TextView
-                android:id="@+id/medFrequency"
+                android:id="@+id/medUnits"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/units"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <EditText
+                android:id="@+id/editTextUnits"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:ems="10"
+                android:inputType="textPersonName"
+                app:layout_constraintStart_toStartOf="parent"
+                android:autofillHints="" />
+
+            <TextView
+                android:id="@+id/medFrequency1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="24dp"
-                android:text="@string/taken_every"
+                android:text="@string/taken"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/medDosageEnter" />
 
             <EditText
                 android:id="@+id/medFrequencyEnter"
-                android:layout_width="351dp"
+                android:layout_width="144dp"
                 android:layout_height="55dp"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="15dp"
                 android:importantForAutofill="no"
                 android:inputType="number"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/medFrequency" />
+                app:layout_constraintTop_toBottomOf="@+id/medFrequency1" />
+
+            <TextView
+                android:id="@+id/timesPer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/times_per"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/medFrequencyEnter" />
 
             <Spinner
                 android:id="@+id/timeSpinner"
-                android:layout_width="255dp"
+                android:layout_width="147dp"
                 android:layout_height="44dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="15dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/medFrequencyEnter" />
+
+            <LinearLayout
+                android:id="@+id/timeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"></LinearLayout>
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:onClick="onSubmitClick"
+                android:text="@string/submit" />
+
         </LinearLayout>
     </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

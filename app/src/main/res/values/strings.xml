@@ -3,9 +3,19 @@
     <string name="my_medications">My Medications</string>
     <string name="add_medication">Add Medication</string>
     <string name="medication_name">Medication Name:</string>
-    <string name="medication_dosage">Medication Dosage</string>
+    <string name="medication_dosage">Medication Dosage:</string>
     <string name="medication_frequency">Medication Frequency:</string>
     <string name="taken_every">Taken Every:</string>
     <string name="edit_medication">Edit Medication</string>
     <string name="settings">Settings</string>
+    <string name="units">Units:</string>
+    <string name="taken">Taken:</string>
+    <string name="times_per">Times per:</string>
+    <string name="patientIsMe">Me</string>
+    <string name="patient">Patient:</string>
+    <string name="other">Other</string>
+    <string name="name">Name</string>
+    <string name="submit">Submit</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

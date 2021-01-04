@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity
 
     public void onAddMedicationClick(MenuItem item)
     {
-        Intent intent = new Intent(this, addMedication.class);
+        Intent intent = new Intent(this, AddMedication.class);
         startActivity(intent);
     }
 
