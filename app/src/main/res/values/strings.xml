@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MedicationTracker</string>
+    <string name="my_medications">My Medications</string>
+    <string name="add_medication">Add Medication</string>
+    <string name="medication_name">Medication Name:</string>
+    <string name="medication_dosage">Medication Dosage</string>
+    <string name="medication_frequency">Medication Frequency:</string>
+    <string name="taken_every">Taken Every:</string>
+</resources>
