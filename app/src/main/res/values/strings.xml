@@ -6,4 +6,6 @@
     <string name="medication_dosage">Medication Dosage</string>
     <string name="medication_frequency">Medication Frequency:</string>
     <string name="taken_every">Taken Every:</string>
+    <string name="edit_medication">Edit Medication</string>
+    <string name="settings">Settings</string>
 </resources>
