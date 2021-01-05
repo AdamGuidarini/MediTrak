@@ -5,10 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import android.annotation.SuppressLint;
-import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.text.InputType;
-import android.text.format.Time;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,15 +18,15 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class AddMedication extends AppCompatActivity implements AdapterView.OnItemSelectedListener
 {
     RadioGroup patientGroup;
+    RadioGroup frequencyGroup;
+    LinearLayout linearLayout;
     Spinner timeSpinner;
     EditText takenEvery;
 
@@ -42,9 +41,46 @@ public class AddMedication extends AppCompatActivity implements AdapterView.OnIt
         timeSpinner = findViewById(R.id.timeSpinner);
         takenEvery = findViewById(R.id.medFrequencyEnter);
         patientGroup = findViewById(R.id.patientGroup);
+        frequencyGroup = findViewById(R.id.frequencyGroup);
+        linearLayout = findViewById(R.id.frequencyLayout);
 
+
+        // Add array list of all patient names
         AutoCompleteTextView nameInput = findViewById(R.id.patientNameNotMe);
 
+        takenEvery.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2){}
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2){}
+            @Override
+            public void afterTextChanged(Editable editable)
+            {
+//                linearLayout.removeAllViews();
+//
+//                if (!takenEvery.getText().toString().equals(""))
+//                {
+//                    for (int i = 0; i < Integer.parseInt(takenEvery.getText().toString()); i++)
+//                    {
+//                        TextView textView = new TextView(linearLayout.getContext());
+//                        textView.setId(i);
+//                        textView.setText("Taken at: ");
+//                        linearLayout.addView(textView);
+//                        textView.setOnClickListener(new View.OnClickListener()
+//                        {
+//                            @Override
+//                            public void onClick(View view)
+//                            {
+//                                textView.setText("Hello");
+////                                DialogFragment dialogFragment = new TimePickerFragment();
+////                                dialogFragment.show(getSupportFragmentManager(), "timePicker");
+//                            }
+//                        });
+//                    }
+//                }
+            }
+        });
 
         patientGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
@@ -60,6 +96,41 @@ public class AddMedication extends AppCompatActivity implements AdapterView.OnIt
                         break;
                     case R.id.otherButton:
                         nameInput.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
+        });
+
+        frequencyGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            @SuppressLint("NonConstantResourceId")
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i)
+            {
+                TextView takenDaily = findViewById(R.id.takenDaily);
+
+                switch (radioGroup.findViewById(i).getId())
+                {
+                    case R.id.multplePerDayButton:
+                        takenDaily.setVisibility(View.GONE);
+                        break;
+                    case R.id.dailyButton:
+                        takenDaily.setVisibility(View.VISIBLE);
+                        takenDaily.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                DialogFragment dialogFragment = new TimePickerFragment();
+                                dialogFragment.show(getSupportFragmentManager(), "timePicker");
+                            }
+                        });
+                        break;
+                    case R.id.weeklyButton:
+                        break;
+                    case R.id.monthlyButton:
+                        break;
+                    case R.id.customFreqButton:
                         break;
                 }
             }
@@ -87,21 +158,6 @@ public class AddMedication extends AppCompatActivity implements AdapterView.OnIt
             switch (i)
             {
                 case 0:
-                    for (int j = 0; j < editTextValue; j++)
-                    {
-                        TextView textView = new TextView(this);
-                        textView.setText("Time goes here");
-                        linearLayout.addView(textView);
-                        textView.setOnClickListener(new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View view)
-                            {
-                                DialogFragment dialogFragment = new TimePickerFragment();
-                                dialogFragment.show(getSupportFragmentManager(), "timePicker");
-                            }
-                        });
-                    }
                     break;
                 case 1:
                     Toast.makeText(this, "Weeks", Toast.LENGTH_SHORT).show();
@@ -137,5 +193,6 @@ public class AddMedication extends AppCompatActivity implements AdapterView.OnIt
 
     public void onSubmitClick(View view)
     {
+        // Submit to database, return to MainActivity
     }
 }

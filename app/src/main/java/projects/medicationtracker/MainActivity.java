@@ -17,6 +17,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getSupportActionBar().setTitle("Medication Schedule");
+
         db = new DBHelper(this);
         db.testDB();
     }

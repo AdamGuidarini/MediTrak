@@ -16,6 +16,12 @@
     <string name="other">Other</string>
     <string name="name">Name</string>
     <string name="submit">Submit</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="frequency">Frequency:</string>
+    <string name="multiple_times_per_day">Multiple Times Per Day</string>
+    <string name="daily">Daily</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="custom_frequency">Custom Frequency</string>
+    <string name="at_n_n_tap_to_set_time">At: \n\n Tap to set time</string>
 </resources>
