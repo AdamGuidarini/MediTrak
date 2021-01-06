@@ -39,7 +39,10 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         }
         else
         {
-            chosenTime += String.valueOf(hourOfDay);
+            if (hourOfDay > 0)
+                chosenTime += String.valueOf(hourOfDay);
+            else
+                chosenTime += "12";
             amOrPm = " AM";
         }
 

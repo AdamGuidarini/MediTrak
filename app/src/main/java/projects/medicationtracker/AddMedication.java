@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
@@ -108,6 +109,7 @@ public class AddMedication<volitile> extends AppCompatActivity
                         textView.setHint("Tap to set time");
                         textView.setId(ii);
                         textView.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_TIME);
+                        // set layout params
                         timesOfTheDay.addView(textView);
                         textView.setOnClickListener(new View.OnClickListener()
                         {
@@ -216,7 +218,8 @@ public class AddMedication<volitile> extends AppCompatActivity
     public void onSubmitClick(View view)
     {
         // Check that all fields are fill and contain valid values
-
+        if (!allFieldsFilled())
+            return;
         // Prepare data for submission to database
 
         // Submit to database, return to MainActivity
@@ -240,5 +243,61 @@ public class AddMedication<volitile> extends AppCompatActivity
         date.setTag(dateTime);
         date.setText(dateForUser[0]);
         time.setText(dateForUser[1]);
+    }
+
+    public boolean allFieldsFilled()
+    {
+        int trueCount = 0;
+        RadioButton[] patientButtons = new RadioButton[2];
+        RadioButton[] frequencyButtons = new RadioButton[3];
+        EditText nameEntry = findViewById(R.id.patientNameNotMe);
+        EditText dosage = findViewById(R.id.medDosageEnter);
+        EditText units = findViewById(R.id.editTextUnits);
+
+        patientButtons[0] = findViewById(R.id.meButton);
+        patientButtons[1] = findViewById(R.id.otherButton);
+
+        if (patientButtons[0].isSelected())
+            trueCount++;
+        else if (patientButtons[1].isSelected())
+        {
+            if (TextUtils.isEmpty(nameEntry.getText().toString()))
+                nameEntry.setError("Please enter a name");
+            else if (!nameEntry.getText().toString().equals("ME!"))
+                nameEntry.setError("Name cannot be \"ME!\"");
+            else
+                trueCount++;
+        }
+
+        if (TextUtils.isEmpty(dosage.getText().toString()) && Integer.parseInt(dosage.getText().toString()) > 0)
+            dosage.setError("Please enter a dosage");
+        else
+            trueCount++;
+
+        if (TextUtils.isEmpty(units.getText().toString()))
+            units.setError("Please enter a unit (e.g. mg, ml, tablets)");
+        else
+            trueCount++;
+
+        frequencyButtons[0] = findViewById(R.id.multplePerDayButton);
+        frequencyButtons[1] = findViewById(R.id.dailyButton);
+        frequencyButtons[2] = findViewById(R.id.customFreqButton);
+
+        if (frequencyButtons[0].isSelected())
+        {
+            EditText timesPerDay = findViewById(R.id.numTimesTaken);
+            if (TextUtils.isEmpty(timesPerDay.toString()))
+                timesPerDay.setError("Please enter the number of times per day this medication is taken");
+        }
+        else if (frequencyButtons[1].isSelected())
+        {
+
+        }
+        else if (frequencyButtons[2].isSelected())
+        {
+
+        }
+
+        return trueCount == 5;
     }
 }
