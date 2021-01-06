@@ -5,8 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import android.annotation.SuppressLint;
+import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,72 +18,57 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Objects;
 
-public class AddMedication extends AppCompatActivity implements AdapterView.OnItemSelectedListener
+public class AddMedication<volitile> extends AppCompatActivity
 {
     RadioGroup patientGroup;
     RadioGroup frequencyGroup;
     LinearLayout linearLayout;
-    Spinner timeSpinner;
-    EditText takenEvery;
+    LinearLayout timeLayout;
+    LinearLayout timesOfTheDay;
+    LinearLayout customFrequencyLayout;
+    EditText numTimesTaken;
+    TextView hiddenTextView;
+    Spinner frequencySpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_medication);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Add Medication");
 
-        timeSpinner = findViewById(R.id.timeSpinner);
-        takenEvery = findViewById(R.id.medFrequencyEnter);
         patientGroup = findViewById(R.id.patientGroup);
         frequencyGroup = findViewById(R.id.frequencyGroup);
         linearLayout = findViewById(R.id.frequencyLayout);
+        timeLayout = findViewById(R.id.timeLayout);
+        timesOfTheDay = findViewById(R.id.timesOfTheDay);
+        numTimesTaken = findViewById(R.id.numTimesTaken);
+        hiddenTextView = findViewById(R.id.hiddenTextView);
+        customFrequencyLayout = findViewById(R.id.customFrequencyLayout);
+        frequencySpinner = findViewById(R.id.frequencySpinner);
 
+        String[] spinnerFrequencies = {"Hour(s)", "Day(s)", "week(s)"};
+        ArrayAdapter<String> frequencyAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerFrequencies);
+        frequencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        frequencySpinner.setAdapter(frequencyAdapter);
 
         // Add array list of all patient names
+        // they will then be displayed in the input field
         AutoCompleteTextView nameInput = findViewById(R.id.patientNameNotMe);
 
-        takenEvery.addTextChangedListener(new TextWatcher()
-        {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2){}
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2){}
-            @Override
-            public void afterTextChanged(Editable editable)
-            {
-//                linearLayout.removeAllViews();
-//
-//                if (!takenEvery.getText().toString().equals(""))
-//                {
-//                    for (int i = 0; i < Integer.parseInt(takenEvery.getText().toString()); i++)
-//                    {
-//                        TextView textView = new TextView(linearLayout.getContext());
-//                        textView.setId(i);
-//                        textView.setText("Taken at: ");
-//                        linearLayout.addView(textView);
-//                        textView.setOnClickListener(new View.OnClickListener()
-//                        {
-//                            @Override
-//                            public void onClick(View view)
-//                            {
-//                                textView.setText("Hello");
-////                                DialogFragment dialogFragment = new TimePickerFragment();
-////                                dialogFragment.show(getSupportFragmentManager(), "timePicker");
-//                            }
-//                        });
-//                    }
-//                }
-            }
-        });
 
         patientGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
@@ -101,78 +89,112 @@ public class AddMedication extends AppCompatActivity implements AdapterView.OnIt
             }
         });
 
+        numTimesTaken.addTextChangedListener(new TextWatcher()
+        {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2){}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2){}
+
+            @Override
+            public void afterTextChanged(Editable editable)
+            {
+                timesOfTheDay.removeAllViews();
+
+                if (!numTimesTaken.getText().toString().equals(""))
+                {
+                    int dailyDoses = Integer.parseInt(numTimesTaken.getText().toString());
+                    for (int ii = 0; ii < dailyDoses; ii++)
+                    {
+                        TextView textView = new TextView(timesOfTheDay.getContext());
+                        textView.setHint("Tap to set time");
+                        textView.setId(ii);
+                        textView.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_TIME);
+                        timesOfTheDay.addView(textView);
+                        textView.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                DialogFragment dialogFragment = new TimePickerFragment();
+                                dialogFragment.show(getSupportFragmentManager(), null);
+                                textView.setTag(hiddenTextView.getTag());
+                                textView.setText(hiddenTextView.getText());
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
         frequencyGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             @SuppressLint("NonConstantResourceId")
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i)
             {
-                TextView takenDaily = findViewById(R.id.takenDaily);
-
+                TextView timeTaken1 = findViewById(R.id.timeTaken1);
                 switch (radioGroup.findViewById(i).getId())
                 {
                     case R.id.multplePerDayButton:
-                        takenDaily.setVisibility(View.GONE);
+                        timeTaken1.setVisibility(View.GONE);
+                        customFrequencyLayout.setVisibility(View.GONE);
+                        numTimesTaken.setVisibility(View.VISIBLE);
+                        numTimesTaken.setText("");
                         break;
                     case R.id.dailyButton:
-                        takenDaily.setVisibility(View.VISIBLE);
-                        takenDaily.setOnClickListener(new View.OnClickListener()
+                        numTimesTaken.setVisibility(View.GONE);
+                        customFrequencyLayout.setVisibility(View.GONE);
+                        timesOfTheDay.removeAllViews();
+                        timeTaken1.setVisibility(View.VISIBLE);
+                        timeTaken1.setText(R.string.atThisTime);
+                        timeTaken1.setOnClickListener(new View.OnClickListener()
                         {
                             @Override
                             public void onClick(View view)
                             {
                                 DialogFragment dialogFragment = new TimePickerFragment();
-                                dialogFragment.show(getSupportFragmentManager(), "timePicker");
+                                dialogFragment.show(getSupportFragmentManager(), null);
+                                timeTaken1.setTag(hiddenTextView.getTag());
+                                timeTaken1.setText(hiddenTextView.getText().toString());
                             }
                         });
                         break;
-                    case R.id.weeklyButton:
-                        break;
-                    case R.id.monthlyButton:
-                        break;
                     case R.id.customFreqButton:
+                        timeTaken1.setVisibility(View.GONE);
+                        numTimesTaken.setVisibility(View.GONE);
+                        timesOfTheDay.removeAllViews();
+                        customFrequencyLayout.setVisibility(View.VISIBLE);
+
+                        TextView[] textViews = new TextView[2];
+                        textViews[0] = findViewById(R.id.startDate);
+                        textViews[1] = findViewById(R.id.startTime);
+
+                        getCurrentTimeAndDate(textViews[0], textViews[1]);
+
+                        textViews[0].setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                DialogFragment dialogFragment = new SelectDateFragment();
+                                dialogFragment.show(getSupportFragmentManager(), null);
+                            }
+                        });
+
+                        textViews[1].setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View view)
+                            {
+                                DialogFragment dialogFragment = new TimePickerFragment();
+                                dialogFragment.show(getSupportFragmentManager(), null);
+                                textViews[1].setTag(hiddenTextView.getTag());
+                                textViews[1].setText(hiddenTextView.getText().toString());
+                            }
+                        });
                         break;
                 }
             }
         });
-
-        ArrayList<String> timeUnits = new ArrayList<>();
-        timeUnits.add("Day");
-        timeUnits.add("Week");
-        timeUnits.add("Month");
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, timeUnits);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        timeSpinner.setAdapter(arrayAdapter);
-        timeSpinner.setOnItemSelectedListener(this);
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
-    {
-        EditText editText = findViewById(R.id.medFrequencyEnter);
-        LinearLayout linearLayout = findViewById(R.id.timeLayout);
-
-        if (!editText.getText().toString().equals(""))
-        {
-            int editTextValue = Integer.parseInt(editText.getText().toString());
-            switch (i)
-            {
-                case 0:
-                    break;
-                case 1:
-                    Toast.makeText(this, "Weeks", Toast.LENGTH_SHORT).show();
-                    break;
-                case 2:
-                    Toast.makeText(this, "Months", Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-            }
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView)
-    {
     }
 
     @Override
@@ -193,6 +215,30 @@ public class AddMedication extends AppCompatActivity implements AdapterView.OnIt
 
     public void onSubmitClick(View view)
     {
+        // Check that all fields are fill and contain valid values
+
+        // Prepare data for submission to database
+
         // Submit to database, return to MainActivity
+    }
+
+
+    public void getCurrentTimeAndDate(TextView date, TextView time)
+    {
+        String[] dateForUser = new String[2];
+        String dateTime;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+        SimpleDateFormat dateFormat1 = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        SimpleDateFormat dateForDb = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+
+        Date myDate = new Date();
+        dateForUser[0] = dateFormat.format(myDate);
+        dateForUser[1] = dateFormat1.format(myDate);
+        dateTime = dateForDb.format(myDate);
+
+        date.setTag(dateTime);
+        date.setText(dateForUser[0]);
+        time.setText(dateForUser[1]);
     }
 }

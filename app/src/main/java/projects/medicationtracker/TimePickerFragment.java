@@ -22,14 +22,15 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         int minute = c.get(Calendar.MINUTE);
 
         // Create a new instance of TimePickerDialog and return it
-        return new TimePickerDialog(getActivity(), this, hour, minute,
-                DateFormat.is24HourFormat(getActivity()));
+        return new TimePickerDialog(getActivity(), this, hour, minute, DateFormat.is24HourFormat(getActivity()));
     }
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute)
     {
-        String chosenTime = "At: \n\n";
+        String chosenTime = "At: ";
+        String min;
         String amOrPm;
+        int[] hourAndMin = {hourOfDay, minute};
 
         if (hourOfDay >= 12)
         {
@@ -42,9 +43,16 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
             amOrPm = " AM";
         }
 
-        chosenTime += ":" + String.valueOf(minute) + amOrPm;
+        if (minute < 10)
+            min = "0" + String.valueOf(minute);
+        else
+            min = String.valueOf(minute);
 
-        TextView textView = getActivity().findViewById(R.id.takenDaily);
+        chosenTime += ":" + min + amOrPm;
+
+        TextView textView = getActivity().findViewById(R.id.hiddenTextView);
+
+        textView.setTag(hourAndMin);
         textView.setText(chosenTime);
     }
 }
