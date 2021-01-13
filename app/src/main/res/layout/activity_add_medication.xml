@@ -61,7 +61,7 @@
                 <AutoCompleteTextView
                     android:id="@+id/patientNameNotMe"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="20dp"
                     android:ems="10"
                     android:hint="@string/name"

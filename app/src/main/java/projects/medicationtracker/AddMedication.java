@@ -5,13 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import android.annotation.SuppressLint;
-import android.database.DatabaseUtils;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Adapter;
@@ -29,6 +29,7 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
@@ -44,6 +45,7 @@ public class AddMedication extends AppCompatActivity
     EditText numTimesTaken;
     TextView hiddenTextView;
     Spinner frequencySpinner;
+    DBHelper dbHelper;
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -63,6 +65,7 @@ public class AddMedication extends AppCompatActivity
         hiddenTextView = findViewById(R.id.hiddenTextView);
         customFrequencyLayout = findViewById(R.id.customFrequencyLayout);
         frequencySpinner = findViewById(R.id.frequencySpinner);
+        dbHelper = new DBHelper(this);
 
         String[] spinnerFrequencies = {"Hour(s)", "Day(s)", "week(s)"};
         ArrayAdapter<String> frequencyAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerFrequencies);
@@ -72,7 +75,31 @@ public class AddMedication extends AppCompatActivity
         // Add array list of all patient names
         // they will then be displayed in the input field
         AutoCompleteTextView nameInput = findViewById(R.id.patientNameNotMe);
+        ArrayList<String> patientNames = dbHelper.getPatients();
+        ArrayAdapter<String> patientAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, patientNames);
+        nameInput.setAdapter(patientAdapter);
+        nameInput.setThreshold(1);
 
+        nameInput.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2)
+            {
+                Log.d("beforeTextChanged", String.valueOf(charSequence));
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2)
+            {
+                Log.d("OnTextChanged", String.valueOf(charSequence));
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable)
+            {
+                Log.d("afterTextChanged", String.valueOf(editable));
+            }
+        });
 
         patientGroup.setOnCheckedChangeListener((radioGroup, i) ->
         {
@@ -207,16 +234,18 @@ public class AddMedication extends AppCompatActivity
         EditText medicationDosage = findViewById(R.id.medDosageEnter);
         EditText medicationUnits = findViewById(R.id.editTextUnits);
         EditText takenEvery = findViewById(R.id.enterFrequency);
-        TextView startDate = findViewById(R.id.startDate);
-        TextView startTime = findViewById(R.id.startTime);
-        int[] hourMin = (int[]) startTime.getTag();
         ArrayList<String> times = new ArrayList<>();
         String patient;
         String medName;
         String dosage;
         String medUnits;
-        float timesPerFrequency = Float.parseFloat(takenEvery.getText().toString());
+        int frequency = 24 * 60;
 
+        // Convert first dose to String
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        String firstDoseDate = simpleDateFormat.format(Calendar.getInstance().getTime());
+
+        // Set patient name
         if (meButton.isChecked())
             patient = meButton.getTag().toString();
         else
@@ -226,6 +255,8 @@ public class AddMedication extends AppCompatActivity
         dosage = medicationDosage.getText().toString();
         medUnits = medicationUnits.getText().toString();
 
+        // Determine frequency
+        // More than once per day
         if (multiplePerDay.isChecked())
         {
             LinearLayout timesOfDay = findViewById(R.id.timesOfTheDay);
@@ -235,72 +266,74 @@ public class AddMedication extends AppCompatActivity
             {
                 textView = findViewById(i);
                 int[] timeArr = (int[]) textView.getTag();
-                times.add(formatTime(timeArr[0], timeArr[1]));
+                times.add(formatTimeForDB(timeArr[0], timeArr[1]));
             }
         }
+        // Daily
         else if (dailyButton.isChecked())
         {
             TextView timeTaken = findViewById(R.id.timeTaken1);
             int[] timeArr = (int[]) timeTaken.getTag();
-            times.add(formatTime(timeArr[0], timeArr[1]));
+            times.add(formatTimeForDB(timeArr[0], timeArr[1]));
         }
+        // Custom frequency
         else
         {
+            TextView startDate = findViewById(R.id.startDate);
+            TextView startTime = findViewById(R.id.startTime);
+            int[] hourMin = (int[]) startTime.getTag();
+            int timesPerFrequency = Integer.parseInt(takenEvery.getText().toString());
             Spinner frequencySpinner = findViewById(R.id.frequencySpinner);
             Adapter adapter = frequencySpinner.getAdapter();
             ArrayList<String> spinnerOptions = new ArrayList<>();
-            String frequency = frequencySpinner.getSelectedItem().toString();
+            String frequencyUnit = frequencySpinner.getSelectedItem().toString();
             String startDatetime = startDate.getText().toString() + " " + formatTime(hourMin[0], hourMin[1]);
-            ArrayList<Date> dates = new ArrayList<>();
 
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date firstDose;
-
-            try
-            {
-                firstDose = simpleDateFormat.parse(startDatetime);
-            }
-            catch (ParseException e)
-            {
-                e.printStackTrace();
-                Toast.makeText(this, "An error occurred when formatting date", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            dates.add(firstDose);
-
+            // Get spinner values
             for (int i = 0; i < adapter.getCount(); i++)
                 spinnerOptions.add((String) adapter.getItem(i));
 
-            if (frequency.equals(spinnerOptions.get(0)))
+            // And doses every X hours
+            if (frequencyUnit.equals(spinnerOptions.get(0)))
             {
-
+                frequency = timesPerFrequency * 60;
             }
-            else if (frequency.equals(spinnerOptions.get(1)))
+            // Add doses every X Days
+            else if (frequencyUnit.equals(spinnerOptions.get(1)))
             {
-
+                frequency = 24 * timesPerFrequency * 60;
             }
+            // Add doses every X weeks
             else
             {
-
+                frequency = 7 * timesPerFrequency * 24 * 60;
             }
-
         }
 
         // Submit to database, return to MainActivity
         DBHelper helper = new DBHelper(this);
-        boolean val = helper.addMedication(medName, patient, dosage, medUnits, times);
 
-        if (!val)
+        long rowid = helper.addMedication(medName, patient, dosage, medUnits, firstDoseDate, frequency);
+        // Ensure dose was submitted successfully
+        if (rowid == -1)
         {
             Toast.makeText(this, "An error Occurred", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        for (int i = 0; i < times.size(); i++)
+        {
+            if (helper.addDose(rowid, times.get(i)) == -1)
+            {
+                Toast.makeText(this, "An error Occurred", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
         finish();
     }
 
-
+    // Set text views to current time and date
     public void getCurrentTimeAndDate(TextView date, TextView time)
     {
         String[] dateForUser = new String[2];
@@ -320,6 +353,7 @@ public class AddMedication extends AppCompatActivity
         time.setText(dateForUser[1]);
     }
 
+    // Set format time from TextView's tag to UTC
     public String formatTime (int hours, int minutes)
     {
         String dateTime;
@@ -344,6 +378,24 @@ public class AddMedication extends AppCompatActivity
         return dateTime;
     }
 
+    public String formatTimeForDB(int hour, int minute)
+    {
+        String time;
+
+        if (hour < 10)
+            time = "0" + hour;
+        else
+            time = String.valueOf(hour);
+
+        if (minute < 10)
+            time += ":0" + minute;
+        else
+            time += ":" + minute;
+
+        return time + ":00";
+    }
+
+    // Check to ensure all necessary views are set
     public boolean allFieldsFilled()
     {
         int trueCount = 0;

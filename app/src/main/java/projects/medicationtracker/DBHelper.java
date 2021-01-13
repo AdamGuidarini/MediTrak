@@ -10,11 +10,12 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper
 {
-    private final int NUM_TABLES = 4;
+    private final int NUM_TABLES = 5;
 
     private static final String DATABASE_NAME = "Medications.db";
 
@@ -30,6 +31,11 @@ public class DBHelper extends SQLiteOpenHelper
     private static final String TAKEN = "Taken";
     private static final String TIME_TAKEN = "TimeTaken";
     private static final String DOSE_ID = "DoseID";
+    private static final String DRUG_FREQUENCY = "DrugFrequency";
+
+    private static final String MEDICATION_TIMES = "MedicationTimes";
+    private static final String TIME_ID = "TimeID";
+    private static final String DRUG_TIME = "DrugTime";
 
     private static final String MEDICATION_STATS_TABLE = "MedicationStats";
     private static final String START_DATE = "StartDate";
@@ -58,7 +64,9 @@ public class DBHelper extends SQLiteOpenHelper
                 + MED_NAME + " TEXT,"
                 + PATIENT_NAME + " Text,"
                 + MED_DOSAGE + " DECIMAL(3,2),"
-                + MED_UNITS + " TEXT"
+                + MED_UNITS + " TEXT,"
+                + START_DATE + " DATETIME,"
+                + DRUG_FREQUENCY + " INT"
                 + ")";
 
         queries[1] = "CREATE TABLE " + MEDICATION_TRACKER_TABLE + "("
@@ -70,7 +78,14 @@ public class DBHelper extends SQLiteOpenHelper
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
                 + ")";
 
-        queries[2] = "CREATE TABLE " + MEDICATION_STATS_TABLE + "("
+        queries[2] = "CREATE TABLE " + MEDICATION_TIMES + "("
+                + TIME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + MED_ID + " INT,"
+                + DRUG_TIME + " TEXT,"
+                + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
+                + ")";
+
+        queries[3] = "CREATE TABLE " + MEDICATION_STATS_TABLE + "("
                 + MED_ID + " INT PRIMARY KEY ,"
                 + START_DATE + " DATETIME, "
                 + END_DATE + " DATETIME, "
@@ -79,7 +94,7 @@ public class DBHelper extends SQLiteOpenHelper
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
                 + ")";
 
-        queries[3] = "CREATE TABLE " + NOTES_TABLE + "("
+        queries[4] = "CREATE TABLE " + NOTES_TABLE + "("
                 + NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + MED_ID + " INT, "
                 + NOTE + " TEXT, "
@@ -117,35 +132,50 @@ public class DBHelper extends SQLiteOpenHelper
         onCreate(sqLiteDatabase);
     }
 
-    public boolean addMedication(String medName, String patientName, String dosage, String units, ArrayList<String> times)
+    public long addMedication(String medName, String patientName, String dosage, String units, String startDate, int frequency)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        SQLiteDatabase db1 = this.getReadableDatabase();
         ContentValues medTableValues = new ContentValues();
-        ContentValues medTrackerValues = new ContentValues();
 
         medTableValues.put(MED_NAME, medName);
         medTableValues.put(PATIENT_NAME, patientName);
         medTableValues.put(MED_DOSAGE, dosage);
         medTableValues.put(MED_UNITS, units);
+        medTableValues.put(START_DATE, startDate);
+        medTableValues.put(DRUG_FREQUENCY, frequency);
 
-        long rowid = db.insert(MEDICATION_TABLE, null, medTableValues);
-
-        if (rowid == -1)
-            return false;
-
-        medTrackerValues.put(MED_ID, rowid);
-        medTrackerValues.put(DOSE_TIME, 0);
-        medTrackerValues.put(TAKEN, 0);
-        medTrackerValues.put(TIME_TAKEN, 0);
-
-        if (db.insert(MEDICATION_TRACKER_TABLE, null, medTrackerValues) == -1)
-            return false;
-
-        return true;
+        return db.insert(MEDICATION_TABLE, null, medTableValues);
     }
 
+    public long addDose(long medId, String drugTime)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues doseValues = new ContentValues();
 
+        doseValues.put(MED_ID, medId);
+        doseValues.put(DRUG_TIME, drugTime);
+
+        return db.insert(MEDICATION_TIMES, null, doseValues);
+    }
+
+    public ArrayList<String> getPatients ()
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor result = db.rawQuery("SELECT " + PATIENT_NAME + " FROM " + MEDICATION_TABLE
+                + " WHERE " + PATIENT_NAME + "!= 'ME!'", null);
+
+        ArrayList<String> patients = new ArrayList<>();
+
+        result.moveToFirst();
+
+        while (!result.isAfterLast())
+        {
+            patients.add(result.getString(result.getColumnIndex(PATIENT_NAME)));
+            result.moveToNext();
+        }
+
+        return patients;
+    }
 
     public void testDB()
     {
