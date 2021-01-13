@@ -6,6 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -20,7 +24,13 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setTitle("Medication Schedule");
 
         db = new DBHelper(this);
-        db.testDB();
+
+        TextView noMeds = findViewById(R.id.noMeds);
+        if (db.numberOfRows() == 0)
+        {
+            noMeds.setVisibility(View.VISIBLE);
+
+        }
     }
 
     @Override
@@ -54,5 +64,12 @@ public class MainActivity extends AppCompatActivity
 
     public void onSettingsClick(MenuItem item)
     {
+    }
+
+    public ArrayList<Medication> medsThisWeek(String patient)
+    {
+        ArrayList<Medication> meds = new ArrayList<>();
+
+        return meds;
     }
 }

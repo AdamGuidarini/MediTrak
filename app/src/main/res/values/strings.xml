@@ -27,4 +27,5 @@
     <string name="times_per_day">Times per day</string>
     <string name="atThisTime">At: Tap to set time</string>
     <string name="starting">Starting:</string>
+    <string name="no_medications_found">No Medications found</string>
 </resources>

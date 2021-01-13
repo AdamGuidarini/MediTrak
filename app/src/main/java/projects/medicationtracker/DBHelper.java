@@ -3,6 +3,7 @@ package projects.medicationtracker;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.TextView;
@@ -177,8 +178,9 @@ public class DBHelper extends SQLiteOpenHelper
         return patients;
     }
 
-    public void testDB()
+    public long numberOfRows()
     {
         SQLiteDatabase db = this.getReadableDatabase();
+        return DatabaseUtils.queryNumEntries(db, MEDICATION_TABLE);
     }
 }
