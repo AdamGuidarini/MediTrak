@@ -2,6 +2,7 @@ package projects.medicationtracker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.DialogFragment;
 
 import android.annotation.SuppressLint;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -42,7 +44,9 @@ public class AddMedication extends AppCompatActivity
     LinearLayout timeLayout;
     LinearLayout timesOfTheDay;
     LinearLayout customFrequencyLayout;
+    SwitchCompat aliasSwitch;
     EditText numTimesTaken;
+    EditText aliasEnter;
     TextView hiddenTextView;
     Spinner frequencySpinner;
     DBHelper dbHelper;
@@ -64,7 +68,9 @@ public class AddMedication extends AppCompatActivity
         numTimesTaken = findViewById(R.id.numTimesTaken);
         hiddenTextView = findViewById(R.id.hiddenTextView);
         customFrequencyLayout = findViewById(R.id.customFrequencyLayout);
+        aliasEnter = findViewById(R.id.aliasEnter);
         frequencySpinner = findViewById(R.id.frequencySpinner);
+        aliasSwitch = findViewById(R.id.aliasSwitch);
         dbHelper = new DBHelper(this);
 
         String[] spinnerFrequencies = {"Hour(s)", "Day(s)", "week(s)"};
@@ -115,6 +121,21 @@ public class AddMedication extends AppCompatActivity
             }
         });
 
+        aliasSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+            {
+                if (aliasEnter.getVisibility() == View.GONE)
+                    aliasEnter.setVisibility(View.VISIBLE);
+                else
+                {
+                    aliasEnter.setVisibility(View.GONE);
+                    aliasEnter.setText("");
+                }
+            }
+        });
+
         numTimesTaken.addTextChangedListener(new TextWatcher()
         {
             @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2){}
@@ -140,8 +161,7 @@ public class AddMedication extends AppCompatActivity
                         {
                             DialogFragment dialogFragment = new TimePickerFragment();
                             dialogFragment.show(getSupportFragmentManager(), null);
-                            textView.setTag(hiddenTextView.getTag());
-                            textView.setText(hiddenTextView.getText());
+                            delayer(textView, hiddenTextView);
                         });
                     }
                 }
@@ -169,8 +189,7 @@ public class AddMedication extends AppCompatActivity
                     {
                         DialogFragment dialogFragment = new TimePickerFragment();
                         dialogFragment.show(getSupportFragmentManager(), null);
-                        timeTaken1.setTag(hiddenTextView.getTag());
-                        timeTaken1.setText(hiddenTextView.getText().toString());
+                        delayer(timeTaken1, hiddenTextView);
                     });
                     break;
                 case R.id.customFreqButton:
@@ -195,8 +214,7 @@ public class AddMedication extends AppCompatActivity
                     {
                         DialogFragment dialogFragment = new TimePickerFragment();
                         dialogFragment.show(getSupportFragmentManager(), null);
-                        textViews[1].setTag(hiddenTextView.getTag());
-                        textViews[1].setText(hiddenTextView.getText().toString());
+                        delayer(textViews[1], hiddenTextView);
                     });
                     break;
             }
@@ -234,11 +252,14 @@ public class AddMedication extends AppCompatActivity
         EditText medicationDosage = findViewById(R.id.medDosageEnter);
         EditText medicationUnits = findViewById(R.id.editTextUnits);
         EditText takenEvery = findViewById(R.id.enterFrequency);
+        aliasSwitch = findViewById(R.id.aliasSwitch);
+        aliasEnter = findViewById(R.id.aliasEnter);
         ArrayList<String> times = new ArrayList<>();
         String patient;
         String medName;
         String dosage;
         String medUnits;
+        String alias = new String();
         int frequency = 24 * 60;
 
         // Convert first dose to String
@@ -254,6 +275,9 @@ public class AddMedication extends AppCompatActivity
         medName = medicationNameEntry.getText().toString();
         dosage = medicationDosage.getText().toString();
         medUnits = medicationUnits.getText().toString();
+
+        if (aliasSwitch.isChecked() && !aliasEnter.getText().toString().equals(""))
+            alias = aliasEnter.getText().toString();
 
         // Determine frequency
         // More than once per day
@@ -313,7 +337,7 @@ public class AddMedication extends AppCompatActivity
         // Submit to database, return to MainActivity
         DBHelper helper = new DBHelper(this);
 
-        long rowid = helper.addMedication(medName, patient, dosage, medUnits, firstDoseDate, frequency);
+        long rowid = helper.addMedication(medName, patient, dosage, medUnits, firstDoseDate, frequency, alias);
         // Ensure dose was submitted successfully
         if (rowid == -1)
         {
@@ -474,5 +498,14 @@ public class AddMedication extends AppCompatActivity
             Toast.makeText(this, "Please choose a frequency option", Toast.LENGTH_SHORT).show();
 
         return trueCount == 5;
+    }
+
+    public void delayer (TextView clickedText, TextView hiddenTextView)
+    {
+        clickedText.postDelayed(() ->
+        {
+            clickedText.setText(hiddenTextView.getText().toString());
+            clickedText.setTag(hiddenTextView.getTag());
+        }, 5000);
     }
 }

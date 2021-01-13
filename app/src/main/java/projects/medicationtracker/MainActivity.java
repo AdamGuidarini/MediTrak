@@ -66,10 +66,10 @@ public class MainActivity extends AppCompatActivity
     {
     }
 
-    public ArrayList<Medication> medsThisWeek(String patient)
+    public ArrayList<Medication> medicationsForThisWeek(String patient)
     {
-        ArrayList<Medication> meds = new ArrayList<>();
+        ArrayList<Medication> medications = new ArrayList<>();
 
-        return meds;
+        return medications;
     }
 }

@@ -98,6 +98,47 @@
                     android:inputType="textAutoCorrect"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/medName" />
+
+                <LinearLayout
+                    android:id="@+id/aliasLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/aliasButtonLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/aliasSwitch"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="0dp"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/aliasLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:labelFor="@id/aliasSwitch"
+                            android:text="@string/alias_for_medication" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/aliasEnter"
+                        android:layout_width="350dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:hint="@string/medication_alias_displays_in_notification"
+                        android:importantForAutofill="no"
+                        android:inputType="text"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout
@@ -202,7 +243,7 @@
                     android:id="@+id/hiddenTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Place holder, tap again then hit cancel"
+                    android:text="@string/place_holder_tap_again_then_hit_cancel"
                     android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

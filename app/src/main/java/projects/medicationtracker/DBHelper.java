@@ -6,18 +6,13 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.TextView;
-
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper
 {
-    private final int NUM_TABLES = 5;
-
     private static final String DATABASE_NAME = "Medications.db";
 
     private static final String MEDICATION_TABLE = "Medication";
@@ -26,6 +21,7 @@ public class DBHelper extends SQLiteOpenHelper
     private static final String PATIENT_NAME = "PatientName";
     private static final String MED_DOSAGE = "Dosage";
     private static final String MED_UNITS = "Units";
+    private static final String ALIAS = "Alias";
 
     private static final String MEDICATION_TRACKER_TABLE = "MedicationTracker";
     private static final String DOSE_TIME = "DoseTime";
@@ -58,6 +54,7 @@ public class DBHelper extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase)
     {
+        int NUM_TABLES = 5;
         String[] queries = new String[NUM_TABLES];
 
         queries[0] = "CREATE TABLE " + MEDICATION_TABLE + "("
@@ -67,7 +64,8 @@ public class DBHelper extends SQLiteOpenHelper
                 + MED_DOSAGE + " DECIMAL(3,2),"
                 + MED_UNITS + " TEXT,"
                 + START_DATE + " DATETIME,"
-                + DRUG_FREQUENCY + " INT"
+                + DRUG_FREQUENCY + " INT,"
+                + ALIAS + " TEXT"
                 + ")";
 
         queries[1] = "CREATE TABLE " + MEDICATION_TRACKER_TABLE + "("
@@ -130,10 +128,11 @@ public class DBHelper extends SQLiteOpenHelper
             sqLiteDatabase.execSQL(dropQuery);
         }
 
+        cursor.close();
         onCreate(sqLiteDatabase);
     }
 
-    public long addMedication(String medName, String patientName, String dosage, String units, String startDate, int frequency)
+    public long addMedication(String medName, String patientName, String dosage, String units, String startDate, int frequency, String alias)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues medTableValues = new ContentValues();
@@ -144,6 +143,7 @@ public class DBHelper extends SQLiteOpenHelper
         medTableValues.put(MED_UNITS, units);
         medTableValues.put(START_DATE, startDate);
         medTableValues.put(DRUG_FREQUENCY, frequency);
+        medTableValues.put(ALIAS, alias);
 
         return db.insert(MEDICATION_TABLE, null, medTableValues);
     }
@@ -175,6 +175,7 @@ public class DBHelper extends SQLiteOpenHelper
             result.moveToNext();
         }
 
+        result.close();
         return patients;
     }
 
