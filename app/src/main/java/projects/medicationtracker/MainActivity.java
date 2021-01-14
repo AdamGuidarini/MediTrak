@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -26,10 +27,12 @@ public class MainActivity extends AppCompatActivity
         db = new DBHelper(this);
 
         TextView noMeds = findViewById(R.id.noMeds);
+        ScrollView scheduleScrollView = findViewById(R.id.scheduleScrollView);
+
         if (db.numberOfRows() == 0)
         {
             noMeds.setVisibility(View.VISIBLE);
-
+            scheduleScrollView.setVisibility(View.GONE);
         }
     }
 
@@ -69,6 +72,8 @@ public class MainActivity extends AppCompatActivity
     public ArrayList<Medication> medicationsForThisWeek(String patient)
     {
         ArrayList<Medication> medications = new ArrayList<>();
+
+
 
         return medications;
     }

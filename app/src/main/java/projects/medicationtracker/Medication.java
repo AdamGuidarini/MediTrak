@@ -1,16 +1,31 @@
 package projects.medicationtracker;
 
-import java.sql.Time;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalTime;
 
 public class Medication
 {
-    private int medId;
+
     private String medName;
+    private String medDosageUnits;
+    private String patientName;
+    private String startDate;
+    private LocalTime[] times;
+    private int medId;
     private int medFrequency;
     private int medDosage;
-    private String medDosageUnits;
+
+    public Medication(String thisMed, String patient, String units, LocalTime[] time, String firstDate,
+                      int id, int frequency, int dosage)
+    {
+        medName = thisMed;
+        patientName = patient;
+        medDosageUnits = units;
+        times = time;
+        medId = id;
+        medFrequency = frequency;
+        startDate = firstDate;
+        medDosage = dosage;
+    }
 
     // Getters
     public int getMedId()
@@ -32,6 +47,18 @@ public class Medication
     public String getMedDosageUnits()
     {
         return medDosageUnits;
+    }
+    public LocalTime[] getTimes()
+    {
+        return times;
+    }
+    public String getPatientName()
+    {
+        return patientName;
+    }
+    public String getStartDate()
+    {
+        return startDate;
     }
 
     // Setters
@@ -55,6 +82,16 @@ public class Medication
     {
         this.medDosageUnits = medDosageUnits;
     }
-
-
+    public void setTimes(LocalTime[] times)
+    {
+        this.times = times;
+    }
+    public void setPatientName(String patientName)
+    {
+        this.patientName = patientName;
+    }
+    public void setStartDate(String startDate)
+    {
+        this.startDate = startDate;
+    }
 }
