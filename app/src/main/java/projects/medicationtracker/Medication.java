@@ -1,5 +1,7 @@
 package projects.medicationtracker;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class Medication
@@ -9,12 +11,12 @@ public class Medication
     private String medDosageUnits;
     private String patientName;
     private String startDate;
-    private LocalTime[] times;
+    private LocalDateTime[] times;
     private int medId;
     private int medFrequency;
     private int medDosage;
 
-    public Medication(String thisMed, String patient, String units, LocalTime[] time, String firstDate,
+    public Medication(String thisMed, String patient, String units, LocalDateTime[] time, String firstDate,
                       int id, int frequency, int dosage)
     {
         medName = thisMed;
@@ -48,7 +50,7 @@ public class Medication
     {
         return medDosageUnits;
     }
-    public LocalTime[] getTimes()
+    public LocalDateTime[] getTimes()
     {
         return times;
     }
@@ -82,7 +84,7 @@ public class Medication
     {
         this.medDosageUnits = medDosageUnits;
     }
-    public void setTimes(LocalTime[] times)
+    public void setTimes(LocalDateTime[] times)
     {
         this.times = times;
     }

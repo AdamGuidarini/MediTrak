@@ -1,5 +1,6 @@
 package projects.medicationtracker;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,6 +9,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -106,7 +109,6 @@ public class DBHelper extends SQLiteOpenHelper
         for (int i = 0; i < NUM_TABLES; i++)
             sqLiteDatabase.execSQL(queries[i]);
 
-        sqLiteDatabase.close();
     }
 
     @Override
@@ -114,14 +116,13 @@ public class DBHelper extends SQLiteOpenHelper
     {
         super.onOpen(db);
         db.execSQL("PRAGMA foreign_keys = ON");
-        db.close();
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1)
     {
         // Remove tables
-        Cursor cursor = sqLiteDatabase.rawQuery(
+        @SuppressLint("Recycle") Cursor cursor = sqLiteDatabase.rawQuery(
                 "SELECT name FROM sqlite_master WHERE type = 'table'", null);
         List<String> tables = new ArrayList<>();
 
@@ -134,7 +135,6 @@ public class DBHelper extends SQLiteOpenHelper
             sqLiteDatabase.execSQL(dropQuery);
         }
 
-        cursor.close();
         onCreate(sqLiteDatabase);
     }
 
@@ -152,10 +152,7 @@ public class DBHelper extends SQLiteOpenHelper
         medTableValues.put(MED_FREQUENCY, frequency);
         medTableValues.put(ALIAS, alias);
 
-        long rowid = db.insert(MEDICATION_TABLE, null, medTableValues);
-
-        db.close();
-        return rowid;
+        return db.insert(MEDICATION_TABLE, null, medTableValues);
     }
 
     public long addDose(long medId, String drugTime)
@@ -166,11 +163,7 @@ public class DBHelper extends SQLiteOpenHelper
         doseValues.put(MED_ID, medId);
         doseValues.put(DRUG_TIME, drugTime);
 
-        long rowid = db.insert(MEDICATION_TIMES, null, doseValues);
-
-        db.close();
-
-        return rowid;
+        return db.insert(MEDICATION_TIMES, null, doseValues);
     }
 
     public ArrayList<String> getPatients()
@@ -190,7 +183,6 @@ public class DBHelper extends SQLiteOpenHelper
         }
 
         result.close();
-        db.close();
 
         return patients;
     }
@@ -199,14 +191,10 @@ public class DBHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        long rowid = DatabaseUtils.queryNumEntries(db, MEDICATION_TABLE);
-
-        db.close();
-
-        return rowid;
+        return DatabaseUtils.queryNumEntries(db, MEDICATION_TABLE);
     }
 
-    public ArrayList<Medication> getMedications(Date sundayAtMidnight)
+    public ArrayList<Medication> getMedications()
     {
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<Medication> medsTakenDaily = new ArrayList<>();
@@ -230,18 +218,18 @@ public class DBHelper extends SQLiteOpenHelper
                     + " WHERE " + MED_ID + "=" + medId, null);
 
             int count = cursor.getCount();
-            LocalTime[] times = new LocalTime[count];
+            LocalDateTime[] times = new LocalDateTime[count];
 
             for (int i = 0; i < count; i++)
-                times[i] = LocalTime.parse(cursor.getString(cursor.getColumnIndex(DRUG_TIME)));
+                times[i] = LocalDateTime.parse(cursor.getString(cursor.getColumnIndex(DRUG_TIME)));
 
             Medication medication = new Medication(medName, patient, units, times, startDate, medId, frequency, dosage);
 
             medsOnFrequency.add(medication);
+            cursor.close();
         }
 
         meds.close();
-        db.close();
 
         ArrayList<Medication> allMeds = new ArrayList<>();
 
