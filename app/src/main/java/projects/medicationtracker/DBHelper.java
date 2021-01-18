@@ -13,7 +13,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper
@@ -197,14 +196,14 @@ public class DBHelper extends SQLiteOpenHelper
     public ArrayList<Medication> getMedications()
     {
         SQLiteDatabase db = this.getReadableDatabase();
-        ArrayList<Medication> medsTakenDaily = new ArrayList<>();
-        ArrayList<Medication> medsOnFrequency = new ArrayList<>();
+        ArrayList<Medication> allMeds = new ArrayList<>();
 
         String query = "SELECT * FROM " + MEDICATION_TABLE;
 
         Cursor meds = db.rawQuery(query, null);
+        meds.moveToFirst();
 
-        while (!meds.moveToNext())
+        while (!meds.isAfterLast())
         {
             int medId = Integer.parseInt(meds.getString(meds.getColumnIndex(MED_ID)));
             int dosage = Integer.parseInt(meds.getString(meds.getColumnIndex(MED_DOSAGE)));
@@ -213,30 +212,52 @@ public class DBHelper extends SQLiteOpenHelper
             String patient = meds.getString(meds.getColumnIndex(PATIENT_NAME));
             String units = meds.getString(meds.getColumnIndex(MED_UNITS));
             String startDate = meds.getString(meds.getColumnIndex(START_DATE));
+            String alias = meds.getString(meds.getColumnIndex(ALIAS));
+
+            LocalDateTime[] times;
 
             Cursor cursor = db.rawQuery("SELECT " + DRUG_TIME + " FROM " + MEDICATION_TIMES
                     + " WHERE " + MED_ID + "=" + medId, null);
+            cursor.moveToFirst();
 
             int count = cursor.getCount();
-            LocalDateTime[] times = new LocalDateTime[count];
+            times = new LocalDateTime[count];
 
             for (int i = 0; i < count; i++)
-                times[i] = LocalDateTime.parse(cursor.getString(cursor.getColumnIndex(DRUG_TIME)));
+            {
+                try
+                {
+                    times[i] = LocalDateTime.parse(cursor.getString(cursor.getColumnIndex(DRUG_TIME)));
 
-            Medication medication = new Medication(medName, patient, units, times, startDate, medId, frequency, dosage);
+                    try
+                    {
+                        LocalDate date = LocalDate.parse("0000-00-00");
+                        LocalTime time = LocalTime.parse(cursor.getString(cursor.getColumnIndex(DRUG_TIME)));
+                        times[i] = LocalDateTime.of(date, time);
+                    }
+                    catch (Exception e)
+                    {
+                        e.getCause();
+                    }
+                }
+                catch (java.time.format.DateTimeParseException e)
+                {
+                    e.getMessage();
+                }
 
-            medsOnFrequency.add(medication);
+                cursor.moveToNext();
+            }
+
             cursor.close();
+
+            Medication medication = new Medication(medName, patient, units, times, startDate, medId, frequency, dosage, alias);
+
+            allMeds.add(medication);
+            meds.moveToNext();
         }
 
         meds.close();
 
-        ArrayList<Medication> allMeds = new ArrayList<>();
-
-        allMeds.addAll(medsTakenDaily);
-        allMeds.addAll(medsOnFrequency);
-
         return allMeds;
     }
-
 }

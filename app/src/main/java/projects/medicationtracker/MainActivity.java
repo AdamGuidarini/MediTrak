@@ -3,37 +3,29 @@ package projects.medicationtracker;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
+import java.util.HashSet;
+import java.util.Objects;
+
 
 import static java.time.temporal.TemporalAdjusters.previous;
-import static java.util.Calendar.DAY_OF_YEAR;
-import static java.util.Calendar.MILLISECOND;
-import static java.util.Calendar.MINUTE;
 import static java.util.Calendar.SUNDAY;
-import static java.util.Calendar.WEEK_OF_YEAR;
 
 public class MainActivity extends AppCompatActivity
 {
-    private DBHelper db;
+    final private DBHelper db = new DBHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -41,9 +33,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getSupportActionBar().setTitle("Medication Schedule");
-
-        db = new DBHelper(this);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Medication Schedule");
 
         TextView noMeds = findViewById(R.id.noMeds);
         ScrollView scheduleScrollView = findViewById(R.id.scheduleScrollView);
@@ -52,9 +42,11 @@ public class MainActivity extends AppCompatActivity
         {
             noMeds.setVisibility(View.VISIBLE);
             scheduleScrollView.setVisibility(View.GONE);
+            return;
         }
 
         ArrayList<Medication> medications = medicationsForThisWeek();
+        createMedicationViews(medications);
     }
 
     @Override
@@ -100,29 +92,62 @@ public class MainActivity extends AppCompatActivity
         LocalDateTime timeToCheck;
 
         ArrayList<LocalDateTime> times = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         // Look at each medication
         for (int i = 0; i < medications.size(); i++)
         {
-
-            // If there are no listed times, calculate them with Medication.StartDate
-            timeToCheck = LocalDateTime.parse(medications.get(i).getStartDate());
+            // If there are no listed times, calculate them with Medication.StartDate and frequency
+            timeToCheck = LocalDateTime.parse(medications.get(i).getStartDate(), formatter);
 
             if (Arrays.equals(medications.get(i).getTimes(), new LocalDateTime[0]))
             {
                 int frequency = medications.get(i).getMedFrequency();
 
-                while (timeToCheck.isBefore(thisSunday.plusDays(7)))
+                while (timeToCheck.isBefore(thisSunday.plusDays(7)) && timeToCheck.isAfter(thisSunday))
                 {
                     if (timeToCheck.isAfter(thisSunday))
                         times.add(timeToCheck);
 
-                    timeToCheck.plusMinutes(frequency);
+                    timeToCheck = timeToCheck.plusMinutes(frequency);
                 }
-                medications.get(i).setTimes((LocalDateTime[]) times.toArray());
+
+                LocalDateTime[] timeArr = new LocalDateTime[times.size()];
+                for (int ii = 0; ii < times.size(); ii++)
+                    timeArr[ii] = times.get(i);
+
+                medications.get(i).setTimes(timeArr);
             }
         }
 
         return medications;
+    }
+
+    public void createMedicationViews (ArrayList<Medication> medications)
+    {
+        LinearLayout scheduleLayout = findViewById(R.id.scheduleLayout);
+
+        for (int i = 0; i < medications.size(); i++)
+        {
+            LinearLayout eachPatientLayout = new LinearLayout(this);
+            eachPatientLayout.setOrientation(LinearLayout.HORIZONTAL);
+            eachPatientLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            scheduleLayout.addView(eachPatientLayout);
+
+            TextView textView = new TextView(this);
+            textView.setText(medications.get(i).getPatientName());
+
+            eachPatientLayout.addView(textView);
+        }
+    }
+
+    public int numPatients (ArrayList<Medication> medications)
+    {
+        HashSet<String> patients = new HashSet<>();
+
+        for (int i = 0; i < medications.size(); i++)
+            patients.add(medications.get(i).getPatientName());
+
+        return patients.size();
     }
 }

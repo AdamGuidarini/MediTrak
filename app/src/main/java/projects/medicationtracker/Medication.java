@@ -11,13 +11,14 @@ public class Medication
     private String medDosageUnits;
     private String patientName;
     private String startDate;
+    private String alias;
     private LocalDateTime[] times;
     private int medId;
     private int medFrequency;
     private int medDosage;
 
     public Medication(String thisMed, String patient, String units, LocalDateTime[] time, String firstDate,
-                      int id, int frequency, int dosage)
+                      int id, int frequency, int dosage, String alias)
     {
         medName = thisMed;
         patientName = patient;
@@ -62,6 +63,10 @@ public class Medication
     {
         return startDate;
     }
+    public String getAlias()
+    {
+        return alias;
+    }
 
     // Setters
     public void setMedId(int medId)
@@ -95,5 +100,9 @@ public class Medication
     public void setStartDate(String startDate)
     {
         this.startDate = startDate;
+    }
+    public void setAlias(String alias)
+    {
+        this.alias = alias;
     }
 }
