@@ -18,7 +18,7 @@ public class Medication
     private int medDosage;
 
     public Medication(String thisMed, String patient, String units, LocalDateTime[] time, String firstDate,
-                      int id, int frequency, int dosage, String alias)
+                      int id, int frequency, int dosage, String medAlias)
     {
         medName = thisMed;
         patientName = patient;
@@ -28,6 +28,7 @@ public class Medication
         medFrequency = frequency;
         startDate = firstDate;
         medDosage = dosage;
+        alias = medAlias;
     }
 
     // Getters

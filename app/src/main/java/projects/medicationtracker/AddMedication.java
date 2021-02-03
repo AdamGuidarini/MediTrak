@@ -86,6 +86,7 @@ public class AddMedication extends AppCompatActivity
         nameInput.setAdapter(patientAdapter);
         nameInput.setThreshold(1);
 
+        // Create listeners
         nameInput.addTextChangedListener(new TextWatcher()
         {
             @Override
@@ -111,6 +112,8 @@ public class AddMedication extends AppCompatActivity
         {
             switch (radioGroup.findViewById(i).getId())
             {
+                // Enables or disables to ability to add custom patient name
+                // based on chosen RadioButton
                 case R.id.meButton:
                     if (nameInput.getVisibility() == View.VISIBLE)
                         nameInput.setVisibility(View.GONE);
@@ -121,21 +124,20 @@ public class AddMedication extends AppCompatActivity
             }
         });
 
-        aliasSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        aliasSwitch.setOnCheckedChangeListener((compoundButton, b) ->
         {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+            // Enables or disables ability to add an alias based on switch status
+            if (aliasEnter.getVisibility() == View.GONE)
+                aliasEnter.setVisibility(View.VISIBLE);
+            else
             {
-                if (aliasEnter.getVisibility() == View.GONE)
-                    aliasEnter.setVisibility(View.VISIBLE);
-                else
-                {
-                    aliasEnter.setVisibility(View.GONE);
-                    aliasEnter.setText("");
-                }
+                aliasEnter.setVisibility(View.GONE);
+                aliasEnter.setText("");
             }
         });
 
+        // Creates a TimePickerFragment to allow the user to enter the time they wish to take
+        // the medication
         numTimesTaken.addTextChangedListener(new TextWatcher()
         {
             @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2){}
@@ -168,6 +170,7 @@ public class AddMedication extends AppCompatActivity
             }
         });
 
+        // Listens for selected RadioButton in FrequencyGroup
         frequencyGroup.setOnCheckedChangeListener((radioGroup, i) ->
         {
             TextView timeTaken1 = findViewById(R.id.timeTaken1);
@@ -237,6 +240,8 @@ public class AddMedication extends AppCompatActivity
         finish();
     }
 
+    // First checks that all inputs are filled, then adds the new medication to the database,
+    // then ends the activity
     public void onSubmitClick(View view)
     {
         // Check that all fields are fill and contain valid values
@@ -402,6 +407,7 @@ public class AddMedication extends AppCompatActivity
         return dateTime;
     }
 
+    // Returns a string with the hour and formatted for the database
     public String formatTimeForDB(int hour, int minute)
     {
         String time;
@@ -433,6 +439,7 @@ public class AddMedication extends AppCompatActivity
         patientButtons[0] = findViewById(R.id.meButton);
         patientButtons[1] = findViewById(R.id.otherButton);
 
+        // Check which option in patientButtons RadioGroup is selected
         if (patientButtons[0].isChecked())
             trueCount++;
         else if (patientButtons[1].isChecked())
@@ -447,11 +454,13 @@ public class AddMedication extends AppCompatActivity
         else
             Toast.makeText(this, "Please choose a patient option", Toast.LENGTH_SHORT).show();
 
+        // Ensures medication has a given name
         if (TextUtils.isEmpty(medName.getText().toString()))
             medName.setError("Please enter the medication's name");
         else
             trueCount++;
 
+        // Ensures a dosage is given
         if (TextUtils.isEmpty(dosage.getText().toString()))
             dosage.setError("Please enter a dosage");
         else if (Integer.parseInt(dosage.getText().toString()) <= 0)
@@ -461,6 +470,7 @@ public class AddMedication extends AppCompatActivity
         else
             trueCount++;
 
+        // Ensures a unit for the dosage
         if (TextUtils.isEmpty(units.getText().toString()))
             units.setError("Please enter a unit (e.g. mg, ml, tablets)");
         else
@@ -472,6 +482,7 @@ public class AddMedication extends AppCompatActivity
         EditText takenEvery = findViewById(R.id.enterFrequency);
         TextView timeTaken1 = findViewById(R.id.timeTaken1);
 
+        // Checks which frequency option is set and validates the given data
         if (frequencyButtons[0].isChecked())
         {
             EditText timesPerDay = findViewById(R.id.numTimesTaken);
@@ -497,9 +508,12 @@ public class AddMedication extends AppCompatActivity
         else
             Toast.makeText(this, "Please choose a frequency option", Toast.LENGTH_SHORT).show();
 
+        // If all fields have been approved, returns true
         return trueCount == 5;
     }
 
+    // Waits 5 seconds to change text in selected TextView
+    // Will eventually be replaced by a second thread that waits for text in hiddenTextView to change
     public void delayer (TextView clickedText, TextView hiddenTextView)
     {
         clickedText.postDelayed(() ->

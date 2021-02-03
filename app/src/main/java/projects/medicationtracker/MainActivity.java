@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity
     {
     }
 
+    // Creates a list of Medications to be taken in the current week
     public ArrayList<Medication> medicationsForThisWeek()
     {
         ArrayList<Medication> medications = db.getMedications();
@@ -123,28 +126,84 @@ public class MainActivity extends AppCompatActivity
         return medications;
     }
 
+    // Creates a ScrollView for each patient, a Linear layout for each day, and CheckBoxes for each
+    // Medication
     public void createMedicationViews (ArrayList<Medication> medications)
     {
         LinearLayout scheduleLayout = findViewById(R.id.scheduleLayout);
 
-        for (int i = 0; i < medications.size(); i++)
+        ArrayList<String> patients = new ArrayList<>();
+        for (int i = 0; i < numPatients(medications); i++)
         {
+            if (!patients.contains(medications.get(i).getPatientName()))
+                patients.add(medications.get(i).getPatientName());
+        }
+
+        // Create Views for Each Patient
+        for (int i = 0; i < patients.size(); i++)
+        {
+            HorizontalScrollView patientView = new HorizontalScrollView(this);
+
             LinearLayout eachPatientLayout = new LinearLayout(this);
-            eachPatientLayout.setOrientation(LinearLayout.HORIZONTAL);
-            eachPatientLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            scheduleLayout.addView(eachPatientLayout);
+            eachPatientLayout.setOrientation(LinearLayout.VERTICAL);
+
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(0, 0, 0, 30);
+            eachPatientLayout.setLayoutParams(layoutParams);
+
+            LinearLayout.LayoutParams patientNameParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            patientNameParams.setMarginStart(20);
 
             TextView textView = new TextView(this);
-            textView.setText(medications.get(i).getPatientName());
+            textView.setLayoutParams(patientNameParams);
 
+            if (patients.get(i).equals("ME!"))
+                textView.setText("Your Medications:");
+            else
+                textView.setText(patients.get(i) + "'s Medications:");
+
+            scheduleLayout.addView(patientView);
+            patientView.addView(eachPatientLayout);
             eachPatientLayout.addView(textView);
+
+            // Put each patient's Medications in their linear layout
+            for (int j = 0; j < medications.size(); j++)
+            {
+                LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                params1.setMarginStart(50);
+
+                if (patients.get(i).equals(medications.get(j).getPatientName()))
+                {
+                    CheckBox medName = new CheckBox(this);
+                    medName.setLayoutParams(params1);
+
+                    String medString;
+
+                    if (medications.get(j).getAlias().isEmpty())
+                        medString = medications.get(j).getMedName();
+                    else
+                        medString = medications.get(j).getAlias();
+
+                    medString += " - " + medications.get(j).getMedDosage() + " " + medications.get(j).getMedDosageUnits();
+
+                    medName.setText(medString);
+                    eachPatientLayout.addView(medName);
+                }
+            }
         }
     }
 
+    public void medicationsForGivenDay (int dayOfWeek, ArrayList<Medication> medications)
+    {
+
+    }
+
+    // Returns number of patients in database
     public int numPatients (ArrayList<Medication> medications)
     {
         HashSet<String> patients = new HashSet<>();
 
+        // Iterate through each Medication instance and patientName to the HashSet
         for (int i = 0; i < medications.size(); i++)
             patients.add(medications.get(i).getPatientName());
 

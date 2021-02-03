@@ -55,12 +55,14 @@ public class DBHelper extends SQLiteOpenHelper
         super(context, DATABASE_NAME, null, 1);
     }
 
+    // Creates all tables for the database when the app runs for the first time
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase)
     {
         int NUM_TABLES = 5;
         String[] queries = new String[NUM_TABLES];
 
+        // Holds all constant information on a given medication
         queries[0] = "CREATE TABLE " + MEDICATION_TABLE + "("
                 + MED_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + MED_NAME + " TEXT,"
@@ -72,6 +74,7 @@ public class DBHelper extends SQLiteOpenHelper
                 + ALIAS + " TEXT"
                 + ")";
 
+        // Holds data on past doses, as well as doses for current week
         queries[1] = "CREATE TABLE " + MEDICATION_TRACKER_TABLE + "("
                 + DOSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + MED_ID + " INT,"
@@ -81,6 +84,7 @@ public class DBHelper extends SQLiteOpenHelper
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
                 + ")";
 
+        // Holds information on doses with a custom frequency so times for upcoming doses can be calculated
         queries[2] = "CREATE TABLE " + MEDICATION_TIMES + "("
                 + TIME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + MED_ID + " INT,"
@@ -88,6 +92,7 @@ public class DBHelper extends SQLiteOpenHelper
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
                 + ")";
 
+        // Holds statistics for a given medication
         queries[3] = "CREATE TABLE " + MEDICATION_STATS_TABLE + "("
                 + MED_ID + " INT PRIMARY KEY ,"
                 + START_DATE + " DATETIME, "
@@ -97,6 +102,8 @@ public class DBHelper extends SQLiteOpenHelper
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
                 + ")";
 
+        // Stores a users notes for a medication, designed to help track how a medication is
+        // affecting the patient. Facilitates tracking possible issues to bring up with prescriber
         queries[4] = "CREATE TABLE " + NOTES_TABLE + "("
                 + NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + MED_ID + " INT, "
@@ -110,6 +117,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     }
 
+    // Allows the use of foreign keys
     @Override
     public void onOpen(SQLiteDatabase db)
     {
@@ -137,6 +145,8 @@ public class DBHelper extends SQLiteOpenHelper
         onCreate(sqLiteDatabase);
     }
 
+    // Adds new medications to the database
+    // Returns rowid on success, or -1 on failure
     public long addMedication(String medName, String patientName, String dosage, String units,
                               String startDate, int frequency, String alias)
     {
@@ -154,6 +164,8 @@ public class DBHelper extends SQLiteOpenHelper
         return db.insert(MEDICATION_TABLE, null, medTableValues);
     }
 
+    // Adds new dose to MedicationTimes
+    // returns rowid on success, -1 on failure
     public long addDose(long medId, String drugTime)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -165,6 +177,8 @@ public class DBHelper extends SQLiteOpenHelper
         return db.insert(MEDICATION_TIMES, null, doseValues);
     }
 
+    // Creates a list of all patients
+    // Returns a list of all patients except app user e.i. ME!
     public ArrayList<String> getPatients()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -186,6 +200,7 @@ public class DBHelper extends SQLiteOpenHelper
         return patients;
     }
 
+    // Returns number of medications in database
     public long numberOfRows()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -193,16 +208,18 @@ public class DBHelper extends SQLiteOpenHelper
         return DatabaseUtils.queryNumEntries(db, MEDICATION_TABLE);
     }
 
+    // Returns a list of all entries in MedicationTable
     public ArrayList<Medication> getMedications()
     {
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<Medication> allMeds = new ArrayList<>();
 
-        String query = "SELECT * FROM " + MEDICATION_TABLE;
+        String query = "SELECT * FROM " + MEDICATION_TABLE + " ORDER BY " + PATIENT_NAME;
 
         Cursor meds = db.rawQuery(query, null);
         meds.moveToFirst();
 
+        // Iterates through cursors to create instances of Medication object
         while (!meds.isAfterLast())
         {
             int medId = Integer.parseInt(meds.getString(meds.getColumnIndex(MED_ID)));
@@ -214,6 +231,9 @@ public class DBHelper extends SQLiteOpenHelper
             String startDate = meds.getString(meds.getColumnIndex(START_DATE));
             String alias = meds.getString(meds.getColumnIndex(ALIAS));
 
+            if (alias == null)
+                alias = "";
+
             LocalDateTime[] times;
 
             Cursor cursor = db.rawQuery("SELECT " + DRUG_TIME + " FROM " + MEDICATION_TIMES
@@ -223,19 +243,23 @@ public class DBHelper extends SQLiteOpenHelper
             int count = cursor.getCount();
             times = new LocalDateTime[count];
 
+            // Build list of times for a Medication
             for (int i = 0; i < count; i++)
             {
+                // Add LocalDateTime from database if possible
                 try
                 {
                     times[i] = LocalDateTime.parse(cursor.getString(cursor.getColumnIndex(DRUG_TIME)));
 
+                    // If it's not possible, add "0000-00-00" to the beginning of a LocalDateTime
+                    //
                     try
                     {
                         LocalDate date = LocalDate.parse("0000-00-00");
                         LocalTime time = LocalTime.parse(cursor.getString(cursor.getColumnIndex(DRUG_TIME)));
                         times[i] = LocalDateTime.of(date, time);
                     }
-                    catch (Exception e)
+                    catch (java.time.format.DateTimeParseException e)
                     {
                         e.getCause();
                     }
