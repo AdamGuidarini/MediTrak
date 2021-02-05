@@ -1,13 +1,17 @@
 package projects.medicationtracker;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -22,6 +26,7 @@ import java.util.HashSet;
 import java.util.Objects;
 
 
+import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.previous;
 import static java.util.Calendar.SUNDAY;
 
@@ -90,16 +95,16 @@ public class MainActivity extends AppCompatActivity
         ArrayList<Medication> medications = db.getMedications();
 
         // Add times to custom frequency
-        LocalDateTime thisSunday = LocalDateTime.now();
-        thisSunday = thisSunday.with(previous(DayOfWeek.of(SUNDAY)));
+        LocalDateTime thisSunday = LocalDateTime.now().with(previous(DayOfWeek.of(SUNDAY)));
         LocalDateTime timeToCheck;
 
-        ArrayList<LocalDateTime> times = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         // Look at each medication
         for (int i = 0; i < medications.size(); i++)
         {
+            ArrayList<LocalDateTime> times = new ArrayList<>();
+
             // If there are no listed times, calculate them with Medication.StartDate and frequency
             timeToCheck = LocalDateTime.parse(medications.get(i).getStartDate(), formatter);
 
@@ -116,8 +121,9 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 LocalDateTime[] timeArr = new LocalDateTime[times.size()];
-                for (int ii = 0; ii < times.size(); ii++)
-                    timeArr[ii] = times.get(i);
+                for (int ii = 0; ii < timeArr.length; ii++)
+                    timeArr[ii] = times.get(ii);
+
 
                 medications.get(i).setTimes(timeArr);
             }
@@ -143,59 +149,143 @@ public class MainActivity extends AppCompatActivity
         for (int i = 0; i < patients.size(); i++)
         {
             HorizontalScrollView patientView = new HorizontalScrollView(this);
+            TextView patientName = new TextView(this);
+            HorizontalScrollView sv = new HorizontalScrollView(this);
+            ScrollView.LayoutParams lp = new ScrollView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            LinearLayout horizontalLayout = new LinearLayout(this);
 
-            LinearLayout eachPatientLayout = new LinearLayout(this);
-            eachPatientLayout.setOrientation(LinearLayout.VERTICAL);
+            horizontalLayout.setOrientation(LinearLayout.HORIZONTAL);
 
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(0, 0, 0, 30);
-            eachPatientLayout.setLayoutParams(layoutParams);
-
-            LinearLayout.LayoutParams patientNameParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            patientNameParams.setMarginStart(20);
-
-            TextView textView = new TextView(this);
-            textView.setLayoutParams(patientNameParams);
+            sv.setLayoutParams(lp);
 
             if (patients.get(i).equals("ME!"))
-                textView.setText("Your Medications:");
+                patientName.setText("Your Medications:");
             else
-                textView.setText(patients.get(i) + "'s Medications:");
+                patientName.setText(patients.get(i) + "'s Medications:");
 
+            scheduleLayout.addView(patientName);
             scheduleLayout.addView(patientView);
-            patientView.addView(eachPatientLayout);
-            eachPatientLayout.addView(textView);
+            scheduleLayout.addView(sv);
+            sv.addView(horizontalLayout);
 
-            // Put each patient's Medications in their linear layout
+            // Create list of medications for only this patient
+            ArrayList<Medication> thisPatientsMedications = new ArrayList<>();
             for (int j = 0; j < medications.size(); j++)
             {
-                LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                params1.setMarginStart(50);
-
-                if (patients.get(i).equals(medications.get(j).getPatientName()))
-                {
-                    CheckBox medName = new CheckBox(this);
-                    medName.setLayoutParams(params1);
-
-                    String medString;
-
-                    if (medications.get(j).getAlias().isEmpty())
-                        medString = medications.get(j).getMedName();
-                    else
-                        medString = medications.get(j).getAlias();
-
-                    medString += " - " + medications.get(j).getMedDosage() + " " + medications.get(j).getMedDosageUnits();
-
-                    medName.setText(medString);
-                    eachPatientLayout.addView(medName);
-                }
+                if (medications.get(j).getPatientName().equals(patients.get(i)))
+                    thisPatientsMedications.add(medications.get(j));
             }
+
+            // Split thisPatientMedications into an array of ArrayLists based on day of week
+            ArrayList<Medication>[] weekOfMedsForThisPatient = splitMedsByDay(thisPatientsMedications);
+
+            String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+
+            // Create CardViews
+            for (int j = 0; j < weekOfMedsForThisPatient.length; j++)
+                createDayOfWeekCards(days[j], thisPatientsMedications, horizontalLayout);
         }
     }
 
-    public void medicationsForGivenDay (int dayOfWeek, ArrayList<Medication> medications)
+    // Create a CardView for the given day of the week
+    public void createDayOfWeekCards (String dayOfWeek, ArrayList<Medication> medications, LinearLayout layout)
     {
+        CardView thisDayCard = new CardView(layout.getContext());
+        TextView dayLabel = new TextView(thisDayCard.getContext());
+        LinearLayout ll = new LinearLayout(thisDayCard.getContext());
 
+        LinearLayout.LayoutParams  llParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        ll.setLayoutParams(llParams);
+        ll.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        thisDayCard.setLayoutParams(layoutParams);
+
+        ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) thisDayCard.getLayoutParams();
+        marginLayoutParams.setMargins( 15, 40, 15, 40);
+        thisDayCard.requestLayout();
+
+
+
+        // Add day to top of card
+        dayLabel.setText(dayOfWeek);
+        ll.addView(dayLabel);
+
+        // Add medications
+        thisDayCard.addView(ll);
+        for (int i = 0; i < medications.size(); i++)
+        {
+            CheckBox thisMedication = new CheckBox(ll.getContext());
+            String medName = medications.get(i).getMedName();
+            String dosage = medications.get(i).getMedDosage() + " " + medications.get(i).getMedDosageUnits();
+            String thisMedicationLabel = medName + "\n" + dosage;
+
+            thisMedication.setText(thisMedicationLabel);
+            thisMedication.setOnCheckedChangeListener((compoundButton, b) ->
+            {
+                // TODO find a way to efficiently add data to MedicationTacker table
+                // TODO create method to change status of medication in MedicationTracker table
+            });
+
+            ll.addView(thisMedication);
+        }
+
+        layout.addView(thisDayCard);
+    }
+
+    // Creates an array of ArrayLists that splits each medication
+    public ArrayList<Medication>[] splitMedsByDay (ArrayList<Medication> medicationsForThisPatient)
+    {
+        ArrayList<Medication>[] medsByDay = new ArrayList[7];
+
+        // Get Sunday of current week
+        final LocalDateTime sunday = LocalDateTime.now().with(previous(DayOfWeek.of(SUNDAY)));
+
+        int i = 0;
+        for (LocalDateTime time = sunday; time.isBefore(sunday.plusDays(7)); time = time.plusHours(24))
+        {
+            for (int j = 0; j < medicationsForThisPatient.size(); j++)
+            {
+                Medication medication = medicationsForThisPatient.get(j);
+
+                for (int x = 0; x < medicationsForThisPatient.get(j).getTimes().length; x++)
+                {
+                    LocalDateTime drugTime = medicationsForThisPatient.get(j).getTimes()[x];
+                    ArrayList<LocalDateTime> timeArrayList = new ArrayList<>();
+
+                    if (drugTime != null)
+                    {
+                        if (drugTime.toLocalDate().equals("0000-00-00"))
+                        {
+                            timeArrayList.add(LocalDateTime.of(time.toLocalDate(), drugTime.toLocalTime()));
+                        } else if (drugTime.isAfter(time) && !drugTime.isBefore(time.plusHours(24)))
+                        {
+                            timeArrayList.add(drugTime);
+
+                            LocalDateTime[] timeArray = new LocalDateTime[timeArrayList.size()];
+                            for (int y = 0; y < timeArrayList.size(); y++)
+                                timeArray[y] = timeArrayList.get(y);
+
+                            Medication thisMedForThisDay = new Medication(medication.getMedName(),
+                                    medication.getPatientName(), medication.getMedDosageUnits(),
+                                    timeArray, medication.getStartDate(),
+                                    medication.getMedId(), medication.getMedFrequency(),
+                                    medication.getMedDosage(), medication.getAlias());
+                            try
+                            {
+                                medsByDay[i].add(thisMedForThisDay);
+                            }
+                            catch (java.lang.NullPointerException e)
+                            {
+                                e.getCause();
+                            }
+                        }
+                    }
+                }
+            }
+            i++;
+        }
+        return medsByDay;
     }
 
     // Returns number of patients in database

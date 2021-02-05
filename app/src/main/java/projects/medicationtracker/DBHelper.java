@@ -252,7 +252,6 @@ public class DBHelper extends SQLiteOpenHelper
                     times[i] = LocalDateTime.parse(cursor.getString(cursor.getColumnIndex(DRUG_TIME)));
 
                     // If it's not possible, add "0000-00-00" to the beginning of a LocalDateTime
-                    //
                     try
                     {
                         LocalDate date = LocalDate.parse("0000-00-00");
