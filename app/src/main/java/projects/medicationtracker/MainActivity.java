@@ -10,23 +10,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.chrono.ChronoLocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Objects;
 
-
-import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.previous;
 import static java.util.Calendar.SUNDAY;
 
@@ -54,6 +55,19 @@ public class MainActivity extends AppCompatActivity
 
         ArrayList<Medication> medications = medicationsForThisWeek();
         createMedicationViews(medications);
+
+        // Displays date and name of each medication to be printed
+        // For debugging purposes only, will be deleted upon completion
+        LinearLayout linearLayout = findViewById(R.id.scheduleLayout);
+        for (int i = 0; i < medications.size(); i++)
+        {
+            for (int j = 0; j < medications.get(i).getTimes().length; j++)
+            {
+                TextView textView = new TextView(this);
+                textView.setText(medications.get(i).getMedName() + " " + medications.get(i).getTimes()[j]);
+                linearLayout.addView(textView);
+            }
+        }
     }
 
     @Override
@@ -81,55 +95,8 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    public void onEditMedicationClick(MenuItem item)
-    {
-    }
-
     public void onSettingsClick(MenuItem item)
     {
-    }
-
-    // Creates a list of Medications to be taken in the current week
-    public ArrayList<Medication> medicationsForThisWeek()
-    {
-        ArrayList<Medication> medications = db.getMedications();
-
-        // Add times to custom frequency
-        LocalDateTime thisSunday = LocalDateTime.now().with(previous(DayOfWeek.of(SUNDAY)));
-        LocalDateTime timeToCheck;
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-        // Look at each medication
-        for (int i = 0; i < medications.size(); i++)
-        {
-            ArrayList<LocalDateTime> times = new ArrayList<>();
-
-            // If there are no listed times, calculate them with Medication.StartDate and frequency
-            timeToCheck = LocalDateTime.parse(medications.get(i).getStartDate(), formatter);
-
-            if (Arrays.equals(medications.get(i).getTimes(), new LocalDateTime[0]))
-            {
-                int frequency = medications.get(i).getMedFrequency();
-
-                while (timeToCheck.isBefore(thisSunday.plusDays(7)) && timeToCheck.isAfter(thisSunday))
-                {
-                    if (timeToCheck.isAfter(thisSunday))
-                        times.add(timeToCheck);
-
-                    timeToCheck = timeToCheck.plusMinutes(frequency);
-                }
-
-                LocalDateTime[] timeArr = new LocalDateTime[times.size()];
-                for (int ii = 0; ii < timeArr.length; ii++)
-                    timeArr[ii] = times.get(ii);
-
-
-                medications.get(i).setTimes(timeArr);
-            }
-        }
-
-        return medications;
     }
 
     // Creates a ScrollView for each patient, a Linear layout for each day, and CheckBoxes for each
@@ -179,11 +146,11 @@ public class MainActivity extends AppCompatActivity
             // Split thisPatientMedications into an array of ArrayLists based on day of week
             ArrayList<Medication>[] weekOfMedsForThisPatient = splitMedsByDay(thisPatientsMedications);
 
-            String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+            String[] days = {" Sunday", " Monday", " Tuesday", " Wednesday", " Thursday", " Friday", " Saturday"};
 
             // Create CardViews
             for (int j = 0; j < weekOfMedsForThisPatient.length; j++)
-                createDayOfWeekCards(days[j], thisPatientsMedications, horizontalLayout);
+                createDayOfWeekCards(days[j], weekOfMedsForThisPatient[j], horizontalLayout);
         }
     }
 
@@ -205,14 +172,22 @@ public class MainActivity extends AppCompatActivity
         marginLayoutParams.setMargins( 15, 40, 15, 40);
         thisDayCard.requestLayout();
 
-
-
         // Add day to top of card
         dayLabel.setText(dayOfWeek);
         ll.addView(dayLabel);
 
         // Add medications
         thisDayCard.addView(ll);
+
+        if (medications == null)
+        {
+            TextView textView = new TextView(thisDayCard.getContext());
+            textView.setText("No medications for " + dayOfWeek);
+            ll.addView(textView);
+            layout.addView(thisDayCard);
+            return;
+        }
+
         for (int i = 0; i < medications.size(); i++)
         {
             CheckBox thisMedication = new CheckBox(ll.getContext());
@@ -233,57 +208,129 @@ public class MainActivity extends AppCompatActivity
         layout.addView(thisDayCard);
     }
 
+    // Creates a list of Medications to be taken in the current week
+    public ArrayList<Medication> medicationsForThisWeek()
+    {
+        ArrayList<Medication> medications = db.getMedications();
+
+        // Add times to custom frequency
+        LocalDateTime thisSunday = LocalDateTime.now().with(previous(DayOfWeek.SUNDAY));
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // Look at each medication
+        for (int i = 0; i < medications.size(); i++)
+        {
+            LocalDateTime[] timeArr;
+
+            // If a medication is taken once per day
+            if (medications.get(i).getTimes().length == 1 && medications.get(i).getMedFrequency() == 1440)
+            {
+                // if the Medication is taken once per day just add the start of each date to
+                timeArr = new LocalDateTime[7];
+                LocalTime localtime = medications.get(i).getTimes()[0].toLocalTime();
+
+                for (int j = 0; j < 7; j++)
+                    timeArr[j] = LocalDateTime.of(LocalDate.from(thisSunday.plusDays(j)), localtime);
+
+                medications.get(i).setTimes(timeArr);
+            }
+            // If a medication is taken multiple times per day
+            else if (medications.get(i).getTimes().length > 1 && medications.get(i).getMedFrequency() == 1440)
+            {
+                int numberOfTimes = medications.get(i).getTimes().length;
+                int index = 0;
+
+                timeArr = new LocalDateTime[numberOfTimes * 7];
+                LocalTime[] drugTimes = new LocalTime[numberOfTimes];
+
+                for (int j = 0; j < numberOfTimes; j++)
+                    drugTimes[j] = medications.get(i).getTimes()[j].toLocalTime();
+
+                for (int j = 0; j < 7; j++)
+                {
+                    for (int y = 0; y < numberOfTimes; y++)
+                    {
+                        timeArr[index] = LocalDateTime.of(LocalDate.from(thisSunday.plusDays(j)), drugTimes[y]);
+                        index++;
+                    }
+                }
+
+                medications.get(i).setTimes(timeArr);
+            }
+            // If a medication has a custom frequency, take its start date and calculate times for
+            // for this week
+            else
+            {
+                LocalDateTime timeToCheck = LocalDateTime.parse(medications.get(i).getStartDate(), formatter);
+                ArrayList<LocalDateTime> times = new ArrayList<>();
+                int frequency = medications.get(i).getMedFrequency();
+
+                while (timeToCheck.isBefore(thisSunday))
+                    timeToCheck = timeToCheck.plusMinutes(frequency);
+
+                while (timeToCheck.isBefore(thisSunday.plusDays(7)))
+                {
+                    times.add(timeToCheck);
+                    timeToCheck = timeToCheck.plusMinutes(frequency);
+                }
+
+                timeArr = new LocalDateTime[times.size()];
+
+                for (int j = 0; j < times.size(); j++)
+                    timeArr[j] = times.get(j);
+
+                medications.get(i).setTimes(timeArr);
+            }
+        }
+
+        return medications;
+    }
+
     // Creates an array of ArrayLists that splits each medication
     public ArrayList<Medication>[] splitMedsByDay (ArrayList<Medication> medicationsForThisPatient)
     {
         ArrayList<Medication>[] medsByDay = new ArrayList[7];
 
+        for (int i = 0; i < 7; i++)
+            medsByDay[i] = new ArrayList<>();
+
         // Get Sunday of current week
-        final LocalDateTime sunday = LocalDateTime.now().with(previous(DayOfWeek.of(SUNDAY)));
+        final LocalDateTime thisSunday = LocalDateTime.now().with(previous(DayOfWeek.of(SUNDAY)));
 
-        int i = 0;
-        for (LocalDateTime time = sunday; time.isBefore(sunday.plusDays(7)); time = time.plusHours(24))
+        for (int i = 0; i < 7; i++)
         {
-            for (int j = 0; j < medicationsForThisPatient.size(); j++)
+            for (int index = 0; index < medicationsForThisPatient.size(); index++)
             {
-                Medication medication = medicationsForThisPatient.get(j);
+                ArrayList<Medication> medList = new ArrayList<>();
+                Iterator<Medication> iterator = medicationsForThisPatient.iterator();
 
-                for (int x = 0; x < medicationsForThisPatient.get(j).getTimes().length; x++)
+                try
                 {
-                    LocalDateTime drugTime = medicationsForThisPatient.get(j).getTimes()[x];
-                    ArrayList<LocalDateTime> timeArrayList = new ArrayList<>();
+                    while (iterator.hasNext())
+                        medList.add((Medication) iterator.next().clone());
+                }
+                catch (CloneNotSupportedException e)
+                {
+                    e.getCause();
+                }
 
-                    if (drugTime != null)
+                LocalDateTime[] timesToCheck = medList.get(index).getTimes();
+                Medication medication = medList.get(index);
+
+
+                for (int j = 0; j < medList.get(index).getTimes().length; j++)
+                {
+                    if (timesToCheck[j].isAfter(thisSunday.plusDays(i - 1)) && timesToCheck[j].isBefore(thisSunday.plusDays(i)))
                     {
-                        if (drugTime.toLocalDate().equals("0000-00-00"))
-                        {
-                            timeArrayList.add(LocalDateTime.of(time.toLocalDate(), drugTime.toLocalTime()));
-                        } else if (drugTime.isAfter(time) && !drugTime.isBefore(time.plusHours(24)))
-                        {
-                            timeArrayList.add(drugTime);
+                        LocalDateTime[] singleElementArray = new LocalDateTime[1];
+                        singleElementArray[0] = timesToCheck[j];
 
-                            LocalDateTime[] timeArray = new LocalDateTime[timeArrayList.size()];
-                            for (int y = 0; y < timeArrayList.size(); y++)
-                                timeArray[y] = timeArrayList.get(y);
-
-                            Medication thisMedForThisDay = new Medication(medication.getMedName(),
-                                    medication.getPatientName(), medication.getMedDosageUnits(),
-                                    timeArray, medication.getStartDate(),
-                                    medication.getMedId(), medication.getMedFrequency(),
-                                    medication.getMedDosage(), medication.getAlias());
-                            try
-                            {
-                                medsByDay[i].add(thisMedForThisDay);
-                            }
-                            catch (java.lang.NullPointerException e)
-                            {
-                                e.getCause();
-                            }
-                        }
+                        medication.setTimes(singleElementArray);
+                        medsByDay[i].add(medication);
                     }
                 }
             }
-            i++;
         }
         return medsByDay;
     }

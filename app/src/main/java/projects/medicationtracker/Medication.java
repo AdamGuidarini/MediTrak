@@ -1,10 +1,8 @@
 package projects.medicationtracker;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
-public class Medication
+public class Medication implements Cloneable
 {
 
     private String medName;
@@ -105,5 +103,19 @@ public class Medication
     public void setAlias(String alias)
     {
         this.alias = alias;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        Medication clone = null;
+        try
+        {
+            clone = (Medication) super.clone();
+        }
+        catch (CloneNotSupportedException e)
+        {
+            throw new RuntimeException(e);
+        }
+        return clone;
     }
 }

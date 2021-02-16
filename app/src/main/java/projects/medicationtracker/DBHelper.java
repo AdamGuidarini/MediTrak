@@ -9,10 +9,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
+import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper
@@ -241,34 +244,25 @@ public class DBHelper extends SQLiteOpenHelper
             cursor.moveToFirst();
 
             int count = cursor.getCount();
-            times = new LocalDateTime[count];
 
-            // Build list of times for a Medication
-            for (int i = 0; i < count; i++)
+            if (count != 0)
             {
-                // Add LocalDateTime from database if possible
-                try
+                // Build list of times for a Medication
+                times = new LocalDateTime[count];
+                for (int i = 0; i < count; i++)
                 {
-                    times[i] = LocalDateTime.parse(cursor.getString(cursor.getColumnIndex(DRUG_TIME)));
+                    LocalTime lt = LocalTime.parse(cursor.getString(cursor.getColumnIndex(DRUG_TIME)));
 
-                    // If it's not possible, add "0000-00-00" to the beginning of a LocalDateTime
-                    try
-                    {
-                        LocalDate date = LocalDate.parse("0000-00-00");
-                        LocalTime time = LocalTime.parse(cursor.getString(cursor.getColumnIndex(DRUG_TIME)));
-                        times[i] = LocalDateTime.of(date, time);
-                    }
-                    catch (java.time.format.DateTimeParseException e)
-                    {
-                        e.getCause();
-                    }
-                }
-                catch (java.time.format.DateTimeParseException e)
-                {
-                    e.getMessage();
-                }
+                    times[i] = LocalDateTime.of(LocalDate.MIN, lt);
 
-                cursor.moveToNext();
+                    cursor.moveToNext();
+                }
+            }
+            else
+            {
+                times = new LocalDateTime[1];
+
+                times[0] = LocalDateTime.MIN;
             }
 
             cursor.close();

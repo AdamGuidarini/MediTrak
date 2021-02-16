@@ -12,10 +12,6 @@
         />
 
     <item
-        android:title="@string/edit_medication"
-        android:onClick="onEditMedicationClick"/>
-
-    <item
         android:title="@string/settings"
         android:onClick="onSettingsClick"/>
 
