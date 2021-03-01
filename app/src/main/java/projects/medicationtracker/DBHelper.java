@@ -9,13 +9,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
-import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper
@@ -53,10 +50,7 @@ public class DBHelper extends SQLiteOpenHelper
     private static final String ENTRY_TIME = "EntryTime";
 
 
-    public DBHelper(@Nullable Context context)
-    {
-        super(context, DATABASE_NAME, null, 1);
-    }
+    public DBHelper(@Nullable Context context) { super(context, DATABASE_NAME, null, 1);}
 
     // Creates all tables for the database when the app runs for the first time
     @Override

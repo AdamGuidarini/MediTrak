@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.Objects;
 
 import static java.time.temporal.TemporalAdjusters.previous;
+import static java.util.Calendar.PM;
 import static java.util.Calendar.SUNDAY;
 
 public class MainActivity extends AppCompatActivity
@@ -57,15 +58,19 @@ public class MainActivity extends AppCompatActivity
         createMedicationViews(medications);
 
         // Displays date and name of each medication to be printed
-        // For debugging purposes only, will be deleted upon completion
-        LinearLayout linearLayout = findViewById(R.id.scheduleLayout);
-        for (int i = 0; i < medications.size(); i++)
+        // For debugging purposes only, will be disabled upon completion
+        boolean bool = false;
+        if (bool)
         {
-            for (int j = 0; j < medications.get(i).getTimes().length; j++)
+            LinearLayout linearLayout = findViewById(R.id.scheduleLayout);
+            for (int i = 0; i < medications.size(); i++)
             {
-                TextView textView = new TextView(this);
-                textView.setText(medications.get(i).getMedName() + " " + medications.get(i).getTimes()[j]);
-                linearLayout.addView(textView);
+                for (int j = 0; j < medications.get(i).getTimes().length; j++)
+                {
+                    TextView textView = new TextView(this);
+                    textView.setText(medications.get(i).getMedName() + " " + medications.get(i).getTimes()[j]);
+                    linearLayout.addView(textView);
+                }
             }
         }
     }
@@ -143,25 +148,25 @@ public class MainActivity extends AppCompatActivity
                     thisPatientsMedications.add(medications.get(j));
             }
 
-            // Split thisPatientMedications into an array of ArrayLists based on day of week
-            ArrayList<Medication>[] weekOfMedsForThisPatient = splitMedsByDay(thisPatientsMedications);
-
             String[] days = {" Sunday", " Monday", " Tuesday", " Wednesday", " Thursday", " Friday", " Saturday"};
 
             // Create CardViews
-            for (int j = 0; j < weekOfMedsForThisPatient.length; j++)
-                createDayOfWeekCards(days[j], weekOfMedsForThisPatient[j], horizontalLayout);
+            for (int j = 0; j < 7; j++)
+            {
+                //ArrayList<Medication> medsForDay = medicationsForToday(thisPatientsMedications, j);
+                createDayOfWeekCards(days[j], j, thisPatientsMedications, horizontalLayout);
+            }
         }
     }
 
     // Create a CardView for the given day of the week
-    public void createDayOfWeekCards (String dayOfWeek, ArrayList<Medication> medications, LinearLayout layout)
+    public void createDayOfWeekCards (String dayOfWeek, int day, ArrayList<Medication> medications, LinearLayout layout)
     {
         CardView thisDayCard = new CardView(layout.getContext());
         TextView dayLabel = new TextView(thisDayCard.getContext());
         LinearLayout ll = new LinearLayout(thisDayCard.getContext());
 
-        LinearLayout.LayoutParams  llParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         ll.setLayoutParams(llParams);
         ll.setOrientation(LinearLayout.VERTICAL);
 
@@ -169,7 +174,7 @@ public class MainActivity extends AppCompatActivity
         thisDayCard.setLayoutParams(layoutParams);
 
         ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) thisDayCard.getLayoutParams();
-        marginLayoutParams.setMargins( 15, 40, 15, 40);
+        marginLayoutParams.setMargins(15, 40, 15, 40);
         thisDayCard.requestLayout();
 
         // Add day to top of card
@@ -179,30 +184,49 @@ public class MainActivity extends AppCompatActivity
         // Add medications
         thisDayCard.addView(ll);
 
-        if (medications == null)
+        LocalDate thisSunday = LocalDate.now().with(previous(DayOfWeek.of(SUNDAY)));
+
+        if (medications != null)
         {
-            TextView textView = new TextView(thisDayCard.getContext());
-            textView.setText("No medications for " + dayOfWeek);
-            ll.addView(textView);
-            layout.addView(thisDayCard);
-            return;
+            for (int i = 0; i < medications.size(); i++)
+            {
+                for (LocalDateTime time : medications.get(i).getTimes())
+                {
+                    if (time.toLocalDate().isEqual(thisSunday.plusDays(day + 6)))
+                    {
+                        CheckBox thisMedication = new CheckBox(ll.getContext());
+                        String medName = medications.get(i).getMedName();
+                        String dosage = medications.get(i).getMedDosage() + " " + medications.get(i).getMedDosageUnits();
+                        String dosageTime = time.getHour() + ":";
+
+                        int dosageHour = time.getHour();
+                        if (dosageHour < 10)
+                            dosageTime += "0";
+
+                        dosageTime += dosageHour;
+
+                        String thisMedicationLabel = medName + " - " + dosage + "\n" + "At: " + dosageTime;
+
+                        thisMedication.setText(thisMedicationLabel);
+                        thisMedication.setOnCheckedChangeListener((compoundButton, b) ->
+                        {
+                            // TODO find a way to efficiently add data to MedicationTacker table
+                            // TODO create method to change status of medication in MedicationTracker table
+                        });
+
+                        ll.addView(thisMedication);
+                    }
+                }
+            }
         }
 
-        for (int i = 0; i < medications.size(); i++)
+        if (ll.getChildCount() == 1)
         {
-            CheckBox thisMedication = new CheckBox(ll.getContext());
-            String medName = medications.get(i).getMedName();
-            String dosage = medications.get(i).getMedDosage() + " " + medications.get(i).getMedDosageUnits();
-            String thisMedicationLabel = medName + "\n" + dosage;
+            TextView textView = new TextView(thisDayCard.getContext());
+            String noMed = "No medications for " + dayOfWeek;
 
-            thisMedication.setText(thisMedicationLabel);
-            thisMedication.setOnCheckedChangeListener((compoundButton, b) ->
-            {
-                // TODO find a way to efficiently add data to MedicationTacker table
-                // TODO create method to change status of medication in MedicationTracker table
-            });
-
-            ll.addView(thisMedication);
+            textView.setText(noMed);
+            ll.addView(textView);
         }
 
         layout.addView(thisDayCard);
@@ -214,7 +238,7 @@ public class MainActivity extends AppCompatActivity
         ArrayList<Medication> medications = db.getMedications();
 
         // Add times to custom frequency
-        LocalDateTime thisSunday = LocalDateTime.now().with(previous(DayOfWeek.SUNDAY));
+        LocalDate thisSunday = LocalDate.now().with(previous(DayOfWeek.SUNDAY));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -266,10 +290,10 @@ public class MainActivity extends AppCompatActivity
                 ArrayList<LocalDateTime> times = new ArrayList<>();
                 int frequency = medications.get(i).getMedFrequency();
 
-                while (timeToCheck.isBefore(thisSunday))
+                while (timeToCheck.toLocalDate().isBefore(thisSunday))
                     timeToCheck = timeToCheck.plusMinutes(frequency);
 
-                while (timeToCheck.isBefore(thisSunday.plusDays(7)))
+                while (timeToCheck.toLocalDate().isBefore(thisSunday.plusDays(7)))
                 {
                     times.add(timeToCheck);
                     timeToCheck = timeToCheck.plusMinutes(frequency);
@@ -287,53 +311,6 @@ public class MainActivity extends AppCompatActivity
         return medications;
     }
 
-    // Creates an array of ArrayLists that splits each medication
-    public ArrayList<Medication>[] splitMedsByDay (ArrayList<Medication> medicationsForThisPatient)
-    {
-        ArrayList<Medication>[] medsByDay = new ArrayList[7];
-
-        for (int i = 0; i < 7; i++)
-            medsByDay[i] = new ArrayList<>();
-
-        // Get Sunday of current week
-        final LocalDateTime thisSunday = LocalDateTime.now().with(previous(DayOfWeek.of(SUNDAY)));
-
-        for (int i = 0; i < 7; i++)
-        {
-            for (int index = 0; index < medicationsForThisPatient.size(); index++)
-            {
-                ArrayList<Medication> medList = new ArrayList<>();
-                Iterator<Medication> iterator = medicationsForThisPatient.iterator();
-
-                try
-                {
-                    while (iterator.hasNext())
-                        medList.add((Medication) iterator.next().clone());
-                }
-                catch (CloneNotSupportedException e)
-                {
-                    e.getCause();
-                }
-
-                LocalDateTime[] timesToCheck = medList.get(index).getTimes();
-                Medication medication = medList.get(index);
-
-
-                for (int j = 0; j < medList.get(index).getTimes().length; j++)
-                {
-                    if (timesToCheck[j].isAfter(thisSunday.plusDays(i - 1)) && timesToCheck[j].isBefore(thisSunday.plusDays(i)))
-                    {
-                        LocalDateTime[] singleElementArray = new LocalDateTime[1];
-                        singleElementArray[0] = timesToCheck[j];
-
-                        medication.setTimes(singleElementArray);
-                        medsByDay[i].add(medication);
-                    }
-                }
-            }
-        }
-        return medsByDay;
-    }
 
     // Returns number of patients in database
     public int numPatients (ArrayList<Medication> medications)
