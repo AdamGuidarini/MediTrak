@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
@@ -12,6 +13,7 @@ import androidx.annotation.Nullable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -144,6 +146,8 @@ public class DBHelper extends SQLiteOpenHelper
 
     // Adds new medications to the database
     // Returns rowid on success, or -1 on failure
+
+    //TODO encrypt this data
     public long addMedication(String medName, String patientName, String dosage, String units,
                               String startDate, int frequency, String alias)
     {
@@ -163,6 +167,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     // Adds new dose to MedicationTimes
     // returns rowid on success, -1 on failure
+    // TODO encrypt this data
     public long addDose(long medId, String drugTime)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -176,6 +181,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     // Creates a list of all patients
     // Returns a list of all patients except app user e.i. ME!
+    // TODO decrypt this data
     public ArrayList<String> getPatients()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -206,6 +212,7 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     // Returns a list of all entries in MedicationTable
+    // TODO decrypt this data
     public ArrayList<Medication> getMedications()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -270,5 +277,94 @@ public class DBHelper extends SQLiteOpenHelper
         meds.close();
 
         return allMeds;
+    }
+
+    public boolean isInMedicationTracker (Medication medication, LocalDateTime time)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        String dateTime = time.format(formatter);
+
+        String query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE + " WHERE " + MED_ID + " = " +
+                medication.getMedId() + " AND " + DOSE_TIME + " = \"" + dateTime + "\"";
+
+        int count = 0;
+
+        try
+        {
+            Cursor cursor = db.rawQuery(query, null);
+            count = cursor.getCount();
+            cursor.close();
+        }
+        catch (SQLException e)
+        {
+            e.getCause();
+        }
+
+        return count > 0;
+    }
+
+    // TODO encrypt this
+    public int addToMedicationTracker (Medication medication, LocalDateTime time)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues medTrackerValues = new ContentValues();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String dateTime = time.format(formatter);
+
+        medTrackerValues.put(MED_ID, medication.getMedId());
+        medTrackerValues.put(DOSE_TIME, dateTime);
+        medTrackerValues.put(TAKEN, false);
+
+        long rowid = db.insert(MEDICATION_TRACKER_TABLE, null, medTrackerValues);
+
+        return (int) rowid;
+    }
+
+    public int getDoseId (int medId, String doseTime)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        int rowId;
+        String query = "SELECT " + DOSE_ID + " FROM " + MEDICATION_TRACKER_TABLE + " WHERE "
+                + MED_ID + "=" + medId + " AND " + DOSE_TIME + "=\"" + doseTime + "\"";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        cursor.moveToFirst();
+
+        rowId = Integer.parseInt(cursor.getString(cursor.getColumnIndex(DOSE_ID)));
+        cursor.close();
+
+        return rowId;
+    }
+
+    public boolean getTaken (int doseId)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " + TAKEN + " FROM " + MEDICATION_TRACKER_TABLE
+                + " WHERE " + DOSE_ID + "=" + doseId;
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        cursor.moveToFirst();
+        int taken = Integer.parseInt(cursor.getString(cursor.getColumnIndex(TAKEN)));
+
+        cursor.close();
+
+        return taken == 1;
+    }
+
+    public boolean updateMedicationStatus (int id, String timeTaken, boolean status)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues newValues = new ContentValues();
+        int bool = status ? 1 : 0;
+
+        newValues.put(TAKEN, bool);
+        newValues.put(TIME_TAKEN, timeTaken);
+
+        return db.update(MEDICATION_TRACKER_TABLE, newValues, DOSE_ID + "=?", new String[]{String.valueOf(id)}) == -1;
     }
 }

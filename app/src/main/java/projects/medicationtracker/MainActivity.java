@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
+import android.media.MediaMetadataEditor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,22 +15,18 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.chrono.ChronoLocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Objects;
 
 import static java.time.temporal.TemporalAdjusters.previous;
-import static java.util.Calendar.PM;
 import static java.util.Calendar.SUNDAY;
 
 public class MainActivity extends AppCompatActivity
@@ -192,26 +189,60 @@ public class MainActivity extends AppCompatActivity
             {
                 for (LocalDateTime time : medications.get(i).getTimes())
                 {
-                    if (time.toLocalDate().isEqual(thisSunday.plusDays(day + 6)))
+                    if (time.toLocalDate().isEqual(thisSunday.plusDays(day - 1)))
                     {
                         CheckBox thisMedication = new CheckBox(ll.getContext());
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                        int medId = medications.get(i).getMedId();
+
+                        // Set Checkbox label
                         String medName = medications.get(i).getMedName();
                         String dosage = medications.get(i).getMedDosage() + " " + medications.get(i).getMedDosageUnits();
                         String dosageTime = time.getHour() + ":";
 
-                        int dosageHour = time.getHour();
-                        if (dosageHour < 10)
+                        int dosageMin = time.getMinute();
+                        if ( dosageMin < 10)
                             dosageTime += "0";
 
-                        dosageTime += dosageHour;
+                        dosageTime += dosageMin;
 
                         String thisMedicationLabel = medName + " - " + dosage + "\n" + "At: " + dosageTime;
-
                         thisMedication.setText(thisMedicationLabel);
+
+                        // Check database for this dosage, if not add it
+                        // if it is, get the DoseId
+                        int rowid;
+
+                        if (!db.isInMedicationTracker(medications.get(i), time))
+                        {
+                            rowid = db.addToMedicationTracker(medications.get(i), time);
+                            if ( rowid == -1)
+                                Toast.makeText(this,"An error occurred when attempting to write data to database", Toast.LENGTH_LONG).show();
+                        }
+                        else
+                        {
+                            rowid = db.getDoseId(medId, time.format(formatter));
+                        }
+
+                        thisMedication.setTag(rowid);
+
+                        if (db.getTaken(rowid))
+                            thisMedication.setChecked(true);
+
                         thisMedication.setOnCheckedChangeListener((compoundButton, b) ->
                         {
-                            // TODO find a way to efficiently add data to MedicationTacker table
-                            // TODO create method to change status of medication in MedicationTracker table
+                            final int doseId = Integer.parseInt(thisMedication.getTag().toString());
+
+                            if (LocalDateTime.now().isBefore(time.minusHours(2)))
+                            {
+                                thisMedication.setChecked(false);
+                                Toast.makeText(this, "Cannot take medications more than 2 hours in advance", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+
+                            String now = LocalDateTime.now().format(formatter);
+                            db.updateMedicationStatus(doseId, now, thisMedication.isChecked());
                         });
 
                         ll.addView(thisMedication);
