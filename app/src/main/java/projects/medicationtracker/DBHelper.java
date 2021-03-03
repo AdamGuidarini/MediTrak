@@ -147,7 +147,6 @@ public class DBHelper extends SQLiteOpenHelper
     // Adds new medications to the database
     // Returns rowid on success, or -1 on failure
 
-    //TODO encrypt this data
     public long addMedication(String medName, String patientName, String dosage, String units,
                               String startDate, int frequency, String alias)
     {
@@ -167,7 +166,6 @@ public class DBHelper extends SQLiteOpenHelper
 
     // Adds new dose to MedicationTimes
     // returns rowid on success, -1 on failure
-    // TODO encrypt this data
     public long addDose(long medId, String drugTime)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -181,7 +179,6 @@ public class DBHelper extends SQLiteOpenHelper
 
     // Creates a list of all patients
     // Returns a list of all patients except app user e.i. ME!
-    // TODO decrypt this data
     public ArrayList<String> getPatients()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -212,7 +209,6 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     // Returns a list of all entries in MedicationTable
-    // TODO decrypt this data
     public ArrayList<Medication> getMedications()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -305,7 +301,6 @@ public class DBHelper extends SQLiteOpenHelper
         return count > 0;
     }
 
-    // TODO encrypt this
     public int addToMedicationTracker (Medication medication, LocalDateTime time)
     {
         SQLiteDatabase db = this.getWritableDatabase();

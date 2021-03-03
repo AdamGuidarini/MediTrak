@@ -22,332 +22,359 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/patientLayout"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/patientLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="24dp"
-                    android:text="@string/patient" />
-
-                <RadioGroup
-                    android:id="@+id/patientGroup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <RadioButton
-                        android:id="@+id/meButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:tag="ME!"
-                        android:text="@string/patientIsMe" />
-
-                    <RadioButton
-                        android:id="@+id/otherButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:text="@string/other"
-                        app:layout_constraintStart_toStartOf="parent" />
-                </RadioGroup>
-
-                <AutoCompleteTextView
-                    android:id="@+id/patientNameNotMe"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="20dp"
-                    android:ems="10"
-                    android:hint="@string/name"
-                    android:inputType="textAutoComplete"
-                    android:visibility="gone"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:visibility="gone" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/medNameLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/medName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="36dp"
-                    android:labelFor="@+id/medNameEnter"
-                    android:text="@string/medication_name"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <EditText
-                    android:id="@+id/medNameEnter"
-                    android:layout_width="350dp"
-                    android:layout_height="54dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="15dp"
-                    android:importantForAutofill="no"
-                    android:inputType="textAutoCorrect"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/medName" />
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                app:cardCornerRadius="5dp">
 
                 <LinearLayout
-                    android:id="@+id/aliasLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:id="@+id/aliasButtonLayout"
+                        android:id="@+id/patientLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/patientLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="24dp"
+                            android:text="@string/patient" />
+
+                        <RadioGroup
+                            android:id="@+id/patientGroup"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <RadioButton
+                                android:id="@+id/meButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:tag="ME!"
+                                android:text="@string/patientIsMe" />
+
+                            <RadioButton
+                                android:id="@+id/otherButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:text="@string/other"
+                                app:layout_constraintStart_toStartOf="parent" />
+                        </RadioGroup>
+
+                        <AutoCompleteTextView
+                            android:id="@+id/patientNameNotMe"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="20dp"
+                            android:ems="10"
+                            android:hint="@string/name"
+                            android:inputType="textAutoComplete"
+                            android:visibility="gone"
+                            app:layout_constraintStart_toStartOf="parent"
+                            tools:visibility="gone" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/medNameLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/medName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="36dp"
+                            android:labelFor="@+id/medNameEnter"
+                            android:text="@string/medication_name"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <EditText
+                            android:id="@+id/medNameEnter"
+                            android:layout_width="350dp"
+                            android:layout_height="54dp"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="15dp"
+                            android:importantForAutofill="no"
+                            android:inputType="textAutoCorrect"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/medName" />
+
+                        <LinearLayout
+                            android:id="@+id/aliasLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/aliasButtonLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal">
+
+                                <androidx.appcompat.widget.SwitchCompat
+                                    android:id="@+id/aliasSwitch"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="20dp"
+                                    android:layout_marginRight="20dp"
+                                    android:layout_weight="1"
+                                    android:text="@string/alias_for_medication" />
+
+                            </LinearLayout>
+
+                            <EditText
+                                android:id="@+id/aliasEnter"
+                                android:layout_width="350dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:hint="@string/medication_alias_displays_in_notification"
+                                android:importantForAutofill="no"
+                                android:inputType="text"
+                                android:visibility="gone" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/dosageLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal">
 
-                        <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/aliasSwitch"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="0dp"
-                            android:layout_weight="1" />
-
-                        <TextView
-                            android:id="@+id/aliasLabel"
+                        <LinearLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:labelFor="@id/aliasSwitch"
-                            android:text="@string/alias_for_medication" />
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/medDosage"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginTop="27dp"
+                                android:labelFor="@+id/medDosageEnter"
+                                android:text="@string/medication_dosage"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/medNameEnter" />
+
+                            <EditText
+                                android:id="@+id/medDosageEnter"
+                                android:layout_width="140dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginTop="15dp"
+                                android:importantForAutofill="no"
+                                android:inputType="numberDecimal"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/medDosage" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/medUnits"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginTop="27dp"
+                                android:labelFor="@+id/editTextUnits"
+                                android:text="@string/units"
+                                app:layout_constraintStart_toStartOf="parent" />
+
+                            <EditText
+                                android:id="@+id/editTextUnits"
+                                android:layout_width="140dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginTop="15dp"
+                                android:autofillHints=""
+                                android:ems="10"
+                                android:inputType="textPersonName"
+                                app:layout_constraintStart_toStartOf="parent" />
+                        </LinearLayout>
+
                     </LinearLayout>
-
-                    <EditText
-                        android:id="@+id/aliasEnter"
-                        android:layout_width="350dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:hint="@string/medication_alias_displays_in_notification"
-                        android:importantForAutofill="no"
-                        android:inputType="text"
-                        android:visibility="gone" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/dosageLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/medDosage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="27dp"
-                    android:labelFor="@+id/medDosageEnter"
-                    android:text="@string/medication_dosage"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/medNameEnter" />
-
-                <EditText
-                    android:id="@+id/medDosageEnter"
-                    android:layout_width="140dp"
-                    android:layout_height="55dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="15dp"
-                    android:importantForAutofill="no"
-                    android:inputType="numberDecimal"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/medDosage" />
-
-                <TextView
-                    android:id="@+id/medUnits"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
-                    android:labelFor="@+id/editTextUnits"
-                    android:text="@string/units"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <EditText
-                    android:id="@+id/editTextUnits"
-                    android:layout_width="140dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:autofillHints=""
-                    android:ems="10"
-                    android:inputType="textPersonName"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/frequencyLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/chooseIntervalLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:text="@string/frequency" />
-
-                <RadioGroup
-                    android:id="@+id/frequencyGroup"
-                    android:layout_width="187dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp">
-
-
-                    <RadioButton
-                        android:id="@+id/multplePerDayButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/multiple_times_per_day" />
-
-                    <RadioButton
-                        android:id="@+id/dailyButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/daily" />
-
-                    <RadioButton
-                        android:id="@+id/customFreqButton"
-                        android:layout_width="160dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/custom_frequency" />
-
-                </RadioGroup>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/timeLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/hiddenTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/place_holder_tap_again_then_hit_cancel"
-                    android:visibility="gone"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <EditText
-                    android:id="@+id/numTimesTaken"
-                    android:layout_width="350dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:autofillHints=""
-                    android:ems="10"
-                    android:hint="@string/times_per_day"
-                    android:inputType="number"
-                    android:visibility="gone"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <LinearLayout
-                    android:id="@+id/timesOfTheDay"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/timeTaken1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="20dp"
-                    android:text="@string/at_n_n_tap_to_set_time"
-                    android:visibility="gone"
-                    tools:visibility="gone" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/customFrequencyLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/takenEvery"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:labelFor="@id/enterFrequency"
-                    android:text="@string/taken_every"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <EditText
-                    android:id="@+id/enterFrequency"
-                    android:layout_width="132dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:ems="10"
-                    android:importantForAutofill="no"
-                    android:inputType="number" />
-
-                <Spinner
-                    android:id="@+id/frequencySpinner"
-                    android:layout_width="165dp"
-                    android:layout_height="37dp"
-                    android:layout_marginStart="20dp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/startingLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:text="@string/starting"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
 
                     <LinearLayout
-                        android:id="@+id/startDateAndTimeLayout"
+                        android:id="@+id/frequencyLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                        android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/startDate"
+                            android:id="@+id/chooseIntervalLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp" />
+                            android:layout_marginStart="20dp"
+                            android:text="@string/frequency" />
 
-                        <TextView
-                            android:id="@+id/startTime"
-                            android:layout_width="wrap_content"
+                        <RadioGroup
+                            android:id="@+id/frequencyGroup"
+                            android:layout_width="187dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp" />
+                            android:layout_marginStart="20dp">
+
+
+                            <RadioButton
+                                android:id="@+id/multplePerDayButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/multiple_times_per_day" />
+
+                            <RadioButton
+                                android:id="@+id/dailyButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/daily" />
+
+                            <RadioButton
+                                android:id="@+id/customFreqButton"
+                                android:layout_width="160dp"
+                                android:layout_height="wrap_content"
+                                android:text="@string/custom_frequency" />
+
+                        </RadioGroup>
+
                     </LinearLayout>
-                </LinearLayout>
 
-            </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/timeLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/hiddenTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/place_holder_tap_again_then_hit_cancel"
+                            android:visibility="gone"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <EditText
+                            android:id="@+id/numTimesTaken"
+                            android:layout_width="350dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:autofillHints=""
+                            android:ems="10"
+                            android:hint="@string/times_per_day"
+                            android:inputType="number"
+                            android:visibility="gone"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                        <LinearLayout
+                            android:id="@+id/timesOfTheDay"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/timeTaken1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="20dp"
+                            android:text="@string/at_n_n_tap_to_set_time"
+                            android:visibility="gone"
+                            tools:visibility="gone" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/customFrequencyLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/takenEvery"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:labelFor="@id/enterFrequency"
+                            android:text="@string/taken_every"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <EditText
+                            android:id="@+id/enterFrequency"
+                            android:layout_width="132dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:ems="10"
+                            android:importantForAutofill="no"
+                            android:inputType="number" />
+
+                        <Spinner
+                            android:id="@+id/frequencySpinner"
+                            android:layout_width="165dp"
+                            android:layout_height="37dp"
+                            android:layout_marginStart="20dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/startingLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:text="@string/starting"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <LinearLayout
+                                android:id="@+id/startDateAndTimeLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                                <TextView
+                                    android:id="@+id/startDate"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp" />
+
+                                <TextView
+                                    android:id="@+id/startTime"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+
 
             <Button
                 android:id="@+id/button"

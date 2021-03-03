@@ -264,7 +264,7 @@ public class AddMedication extends AppCompatActivity
         String medName;
         String dosage;
         String medUnits;
-        String alias = new String();
+        String alias = "";
         int frequency = 24 * 60;
 
         // Convert first dose to String
@@ -308,15 +308,11 @@ public class AddMedication extends AppCompatActivity
         // Custom frequency
         else
         {
-            TextView startDate = findViewById(R.id.startDate);
-            TextView startTime = findViewById(R.id.startTime);
-            int[] hourMin = (int[]) startTime.getTag();
             int timesPerFrequency = Integer.parseInt(takenEvery.getText().toString());
             Spinner frequencySpinner = findViewById(R.id.frequencySpinner);
             Adapter adapter = frequencySpinner.getAdapter();
             ArrayList<String> spinnerOptions = new ArrayList<>();
             String frequencyUnit = frequencySpinner.getSelectedItem().toString();
-            String startDatetime = startDate.getText().toString() + " " + formatTime(hourMin[0], hourMin[1]);
 
             // Get spinner values
             for (int i = 0; i < adapter.getCount(); i++)
@@ -380,31 +376,6 @@ public class AddMedication extends AppCompatActivity
         date.setTag(dateTime);
         date.setText(dateForUser[0]);
         time.setText(dateForUser[1]);
-    }
-
-    // Set format time from TextView's tag to UTC
-    public String formatTime (int hours, int minutes)
-    {
-        String dateTime;
-        Date today = new Date();
-        LocalDate localDate = today.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        int year = localDate.getYear();
-        int month = localDate.getMonthValue();
-        int day = localDate.getDayOfMonth();
-
-        dateTime = year + "/" + month + "/" + day + " ";
-
-        if (hours < 10)
-            dateTime += "0" + hours + ":";
-        else
-            dateTime += hours + ":";
-
-        if (minutes < 10)
-            dateTime += "0" + minutes + ":00";
-        else
-            dateTime += minutes + ":00";
-
-        return dateTime;
     }
 
     // Returns a string with the hour and formatted for the database
