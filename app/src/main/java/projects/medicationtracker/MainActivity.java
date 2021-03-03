@@ -54,22 +54,7 @@ public class MainActivity extends AppCompatActivity
         ArrayList<Medication> medications = medicationsForThisWeek();
         createMedicationViews(medications);
 
-        // Displays date and name of each medication to be printed
-        // For debugging purposes only, will be disabled upon completion
-        boolean bool = false;
-        if (bool)
-        {
-            LinearLayout linearLayout = findViewById(R.id.scheduleLayout);
-            for (int i = 0; i < medications.size(); i++)
-            {
-                for (int j = 0; j < medications.get(i).getTimes().length; j++)
-                {
-                    TextView textView = new TextView(this);
-                    textView.setText(medications.get(i).getMedName() + " " + medications.get(i).getTimes()[j]);
-                    linearLayout.addView(textView);
-                }
-            }
-        }
+
     }
 
     @Override
