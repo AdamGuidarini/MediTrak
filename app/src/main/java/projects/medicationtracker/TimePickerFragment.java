@@ -8,6 +8,7 @@ import android.text.format.DateFormat;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener
@@ -19,6 +20,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         textViewId = id;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {

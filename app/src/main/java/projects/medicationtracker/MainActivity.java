@@ -2,15 +2,12 @@ package projects.medicationtracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.NotificationCompat;
 
 import android.app.AlarmManager;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaMetadataEditor;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -24,7 +21,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.net.ConnectException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,14 +28,11 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 
 import static java.time.temporal.TemporalAdjusters.previous;
-import static java.util.Calendar.MILLISECOND;
 import static java.util.Calendar.SUNDAY;
 
 public class MainActivity extends AppCompatActivity

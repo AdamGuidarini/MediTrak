@@ -351,7 +351,7 @@ public class DBHelper extends SQLiteOpenHelper
         return taken == 1;
     }
 
-    public boolean updateMedicationStatus (int id, String timeTaken, boolean status)
+    public void updateMedicationStatus (int id, String timeTaken, boolean status)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues newValues = new ContentValues();
@@ -360,6 +360,6 @@ public class DBHelper extends SQLiteOpenHelper
         newValues.put(TAKEN, bool);
         newValues.put(TIME_TAKEN, timeTaken);
 
-        return db.update(MEDICATION_TRACKER_TABLE, newValues, DOSE_ID + "=?", new String[]{String.valueOf(id)}) == -1;
+        db.update(MEDICATION_TRACKER_TABLE, newValues, DOSE_ID + "=?", new String[]{String.valueOf(id)});
     }
 }
