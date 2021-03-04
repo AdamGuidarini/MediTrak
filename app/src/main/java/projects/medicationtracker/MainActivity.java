@@ -11,6 +11,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaMetadataEditor;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +29,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
@@ -42,6 +45,7 @@ import static java.util.Calendar.SUNDAY;
 public class MainActivity extends AppCompatActivity
 {
     final private DBHelper db = new DBHelper(this);
+    public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -383,15 +387,29 @@ public class MainActivity extends AppCompatActivity
         notificationIntent.putExtra(NotificationReceiver.NOTIFICATION, notification);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        long offsetInMillis =  LocalDateTime.now().until(time, ChronoUnit.MILLIS);
+        ZonedDateTime zdt = time.atZone(ZoneId.systemDefault());
+        long delay = zdt.toInstant().toEpochMilli();
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, offsetInMillis, pendingIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, delay, pendingIntent);
     }
 
     public Notification createNotification (String body)
     {
-        NotificationUtils notificationUtil = new NotificationUtils(this);
-        Notification.Builder builder = notificationUtil.getChannelNotification("Medication Tacker", body);
+        final String CHANNEL_ID = "projects.medicationtracker";
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        Notification.Builder builder =  new Notification.Builder(getApplicationContext(), CHANNEL_ID)
+                .setContentTitle("Medication Tracker")
+                .setContentText(body)
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+        if (Build.VERSION.SDK_INT >= 29)
+            builder.setAllowSystemGeneratedContextualActions(false);
 
         return builder.build();
     }
