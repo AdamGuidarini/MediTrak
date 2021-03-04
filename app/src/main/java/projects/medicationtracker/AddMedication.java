@@ -47,7 +47,6 @@ public class AddMedication extends AppCompatActivity
     SwitchCompat aliasSwitch;
     EditText numTimesTaken;
     EditText aliasEnter;
-    TextView hiddenTextView;
     Spinner frequencySpinner;
     DBHelper dbHelper;
 
@@ -66,7 +65,6 @@ public class AddMedication extends AppCompatActivity
         timeLayout = findViewById(R.id.timeLayout);
         timesOfTheDay = findViewById(R.id.timesOfTheDay);
         numTimesTaken = findViewById(R.id.numTimesTaken);
-        hiddenTextView = findViewById(R.id.hiddenTextView);
         customFrequencyLayout = findViewById(R.id.customFrequencyLayout);
         aliasEnter = findViewById(R.id.aliasEnter);
         frequencySpinner = findViewById(R.id.frequencySpinner);

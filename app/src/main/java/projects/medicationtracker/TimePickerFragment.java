@@ -12,7 +12,7 @@ import androidx.fragment.app.DialogFragment;
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener
 {
-    private int textViewId;
+    private final int textViewId;
 
     TimePickerFragment (int id)
     {
