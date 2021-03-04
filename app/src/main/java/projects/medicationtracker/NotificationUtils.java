@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 
 public class NotificationUtils extends ContextWrapper
 {
@@ -38,16 +39,23 @@ public class NotificationUtils extends ContextWrapper
         return manager;
     }
 
+    // TODO Add action button
+    // TODO create app icon for "setSmallIcon"
     public Notification.Builder getChannelNotification (String title, String body)
     {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-        return new Notification.Builder(getApplicationContext(), CHANNEL_ID)
+        Notification.Builder builder =  new Notification.Builder(getApplicationContext(), CHANNEL_ID)
                 .setContentTitle(title)
                 .setContentText(body)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true);
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentIntent(pendingIntent);
+
+        if (Build.VERSION.SDK_INT >= 29)
+            builder.setAllowSystemGeneratedContextualActions(false);
+
+        return builder;
     }
 }

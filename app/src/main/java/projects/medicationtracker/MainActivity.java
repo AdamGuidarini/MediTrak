@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.NotificationCompat;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -22,16 +23,20 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.ConnectException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 
 import static java.time.temporal.TemporalAdjusters.previous;
+import static java.util.Calendar.MILLISECOND;
 import static java.util.Calendar.SUNDAY;
 
 public class MainActivity extends AppCompatActivity
@@ -229,6 +234,10 @@ public class MainActivity extends AppCompatActivity
                             db.updateMedicationStatus(doseId, now, thisMedication.isChecked());
                         });
 
+                        // Create Notification
+                        String notificationBody = createNotificationMessage(medName, medications.get(i).getPatientName());
+                        scheduleNotification(createNotification(notificationBody), time, rowid);
+
                         ll.addView(thisMedication);
                     }
                 }
@@ -367,11 +376,40 @@ public class MainActivity extends AppCompatActivity
         return chosenTime + ":" + min + amOrPm;
     }
 
-    public void createNotification (String title, String body, int doseId, LocalDateTime doseTime)
+    private void scheduleNotification (Notification notification, LocalDateTime time, int id)
+    {
+        Intent notificationIntent = new Intent(this, NotificationReceiver.class);
+        notificationIntent.putExtra(NotificationReceiver.NOTIFICATION_ID, id);
+        notificationIntent.putExtra(NotificationReceiver.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long offsetInMillis =  LocalDateTime.now().until(time, ChronoUnit.MILLIS);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, offsetInMillis, pendingIntent);
+    }
+
+    public Notification createNotification (String body)
     {
         NotificationUtils notificationUtil = new NotificationUtils(this);
-        Notification.Builder builder = notificationUtil.getChannelNotification(title, body);
+        Notification.Builder builder = notificationUtil.getChannelNotification("Medication Tacker", body);
 
-        notificationUtil.getManager().notify(doseId, builder.build());
+        return builder.build();
+    }
+
+    public String createNotificationMessage (String medicationName, String patientName)
+    {
+        String message;
+
+        if (patientName.equals("ME!"))
+        {
+            if (medicationName.toLowerCase().equals("vitamin d"))
+                message = "Did you take your Vitamin D?"; // Inside joke
+            else
+                message = "It's time to take your " + medicationName;
+        }
+        else
+            message = "It's time for " + patientName + "'s " + medicationName;
+
+        return message;
     }
 }
