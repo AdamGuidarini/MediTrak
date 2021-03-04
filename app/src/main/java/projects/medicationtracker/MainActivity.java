@@ -339,7 +339,7 @@ public class MainActivity extends AppCompatActivity
         return patients.size();
     }
 
-    public String formatTime (int hour, int minute)
+    public static String formatTime(int hour, int minute)
     {
         String chosenTime = "At: ";
         String min;
