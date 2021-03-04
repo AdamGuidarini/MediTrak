@@ -153,17 +153,18 @@ public class AddMedication extends AppCompatActivity
                     int dailyDoses = Integer.parseInt(numTimesTaken.getText().toString());
                     for (int ii = 0; ii < dailyDoses; ii++)
                     {
+                        final int id = ii;
+
                         TextView textView = new TextView(timesOfTheDay.getContext());
                         textView.setHint("Tap to set time");
-                        textView.setId(ii);
+                        textView.setId(id);
                         textView.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_TIME);
                         // set layout params
                         timesOfTheDay.addView(textView);
                         textView.setOnClickListener(view ->
                         {
-                            DialogFragment dialogFragment = new TimePickerFragment();
+                            DialogFragment dialogFragment = new TimePickerFragment(id);
                             dialogFragment.show(getSupportFragmentManager(), null);
-                            delayer(textView, hiddenTextView);
                         });
                     }
                 }
@@ -188,11 +189,14 @@ public class AddMedication extends AppCompatActivity
                     timesOfTheDay.removeAllViews();
                     timeTaken1.setVisibility(View.VISIBLE);
                     timeTaken1.setText(R.string.atThisTime);
+
+                    final int id = 1;
+                    timeTaken1.setId(id);
+
                     timeTaken1.setOnClickListener(view ->
                     {
-                        DialogFragment dialogFragment = new TimePickerFragment();
+                        DialogFragment dialogFragment = new TimePickerFragment(id);
                         dialogFragment.show(getSupportFragmentManager(), null);
-                        delayer(timeTaken1, hiddenTextView);
                     });
                     break;
                 case R.id.customFreqButton:
@@ -215,9 +219,11 @@ public class AddMedication extends AppCompatActivity
 
                     textViews[1].setOnClickListener(view ->
                     {
-                        DialogFragment dialogFragment = new TimePickerFragment();
+                        final int id1 = 2;
+                        textViews[1].setId(id1);
+
+                        DialogFragment dialogFragment = new TimePickerFragment(id1);
                         dialogFragment.show(getSupportFragmentManager(), null);
-                        delayer(textViews[1], hiddenTextView);
                     });
                     break;
             }
@@ -483,14 +489,4 @@ public class AddMedication extends AppCompatActivity
         return trueCount == 5;
     }
 
-    // Waits 5 seconds to change text in selected TextView
-    // Will eventually be replaced by a second thread that waits for text in hiddenTextView to change
-    public void delayer (TextView clickedText, TextView hiddenTextView)
-    {
-        clickedText.postDelayed(() ->
-        {
-            clickedText.setText(hiddenTextView.getText().toString());
-            clickedText.setTag(hiddenTextView.getTag());
-        }, 5000);
-    }
 }

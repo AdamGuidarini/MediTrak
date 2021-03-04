@@ -12,6 +12,12 @@ import androidx.fragment.app.DialogFragment;
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener
 {
+    private int textViewId;
+
+    TimePickerFragment (int id)
+    {
+        textViewId = id;
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -32,7 +38,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
         chosenTime += MainActivity.formatTime(hourOfDay, minute);
 
-        TextView textView = getActivity().findViewById(R.id.hiddenTextView);
+        TextView textView = getActivity().findViewById(textViewId);
 
         textView.setTag(hourAndMin);
         textView.setText(chosenTime);
