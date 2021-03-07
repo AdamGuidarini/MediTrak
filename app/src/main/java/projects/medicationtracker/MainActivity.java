@@ -231,10 +231,6 @@ public class MainActivity extends AppCompatActivity
                             db.updateMedicationStatus(doseId, now, thisMedication.isChecked());
                         });
 
-                        // Create Notification
-                        String notificationBody = createNotificationMessage(medName, medications.get(i).getPatientName());
-                        scheduleNotification(createNotification(notificationBody), time, rowid);
-
                         ll.addView(thisMedication);
                     }
                 }
@@ -371,56 +367,5 @@ public class MainActivity extends AppCompatActivity
             min = String.valueOf(minute);
 
         return chosenTime + ":" + min + amOrPm;
-    }
-
-    private void scheduleNotification (Notification notification, LocalDateTime time, int id)
-    {
-        Intent notificationIntent = new Intent(this, NotificationReceiver.class);
-        notificationIntent.putExtra(NotificationReceiver.NOTIFICATION_ID, id);
-        notificationIntent.putExtra(NotificationReceiver.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        ZonedDateTime zdt = time.atZone(ZoneId.systemDefault());
-        long delay = zdt.toInstant().toEpochMilli();
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, delay, pendingIntent);
-    }
-
-    public Notification createNotification (String body)
-    {
-        final String CHANNEL_ID = "projects.medicationtracker";
-
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-        Notification.Builder builder =  new Notification.Builder(getApplicationContext(), CHANNEL_ID)
-                .setContentTitle("Medication Tracker")
-                .setContentText(body)
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true);
-
-        if (Build.VERSION.SDK_INT >= 29)
-            builder.setAllowSystemGeneratedContextualActions(false);
-
-        return builder.build();
-    }
-
-    public String createNotificationMessage (String medicationName, String patientName)
-    {
-        String message;
-
-        if (patientName.equals("ME!"))
-        {
-            if (medicationName.toLowerCase().equals("vitamin d"))
-                message = "Did you take your Vitamin D?"; // Inside joke
-            else
-                message = "It's time to take your " + medicationName;
-        }
-        else
-            message = "It's time for " + patientName + "'s " + medicationName;
-
-        return message;
     }
 }

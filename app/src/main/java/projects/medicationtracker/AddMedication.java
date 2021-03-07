@@ -6,7 +6,13 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.DialogFragment;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -26,6 +32,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -483,4 +492,56 @@ public class AddMedication extends AppCompatActivity
         return trueCount == 5;
     }
 
+    private void scheduleNotification (Notification notification, LocalDateTime time, int id)
+    {
+        Intent notificationIntent = new Intent(this, NotificationReceiver.class);
+        notificationIntent.putExtra(NotificationReceiver.NOTIFICATION_ID, id);
+        notificationIntent.putExtra(NotificationReceiver.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        ZonedDateTime zdt = time.atZone(ZoneId.systemDefault());
+        long delay = zdt.toInstant().toEpochMilli();
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, delay, pendingIntent);
+    }
+
+    public Notification createNotification (String body)
+    {
+        final String CHANNEL_ID = "projects.medicationtracker";
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        Notification.Builder builder =  new Notification.Builder(getApplicationContext(), CHANNEL_ID)
+                .setContentTitle("Medication Tracker")
+                .setContentText(body)
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+        if (Build.VERSION.SDK_INT >= 29)
+            builder.setAllowSystemGeneratedContextualActions(false);
+
+        return builder.build();
+    }
+
+    public String createNotificationMessage (String medicationName, String patientName)
+    {
+        String message;
+
+        if (patientName.equals("ME!"))
+        {
+            if (medicationName.toLowerCase().equals("vitamin d"))
+                // Inside joke with a potential tested who repeatedly asked me
+                // "did you take your vitamin D?" after I started taking it.
+                message = "Did you take your Vitamin D?";
+            else
+                message = "It's time to take your " + medicationName;
+        }
+        else
+            message = "It's time for " + patientName + "'s " + medicationName;
+
+        return message;
+    }
 }
