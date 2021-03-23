@@ -60,8 +60,6 @@ public class MainActivity extends AppCompatActivity
 
         ArrayList<Medication> medications = medicationsForThisWeek();
         createMedicationViews(medications);
-
-
     }
 
     @Override
@@ -190,7 +188,7 @@ public class MainActivity extends AppCompatActivity
                         // Set Checkbox label
                         String medName = medications.get(i).getMedName();
                         String dosage = medications.get(i).getMedDosage() + " " + medications.get(i).getMedDosageUnits();
-                        String dosageTime = formatTime(time.getHour(), time.getMinute());
+                        String dosageTime = TimeFormatting.formatTime(time.getHour(), time.getMinute());
 
                         String thisMedicationLabel = medName + " - " + dosage + "\n" + dosageTime;
                         thisMedication.setText(thisMedicationLabel);
@@ -339,33 +337,5 @@ public class MainActivity extends AppCompatActivity
             patients.add(medications.get(i).getPatientName());
 
         return patients.size();
-    }
-
-    public static String formatTime(int hour, int minute)
-    {
-        String chosenTime = "At: ";
-        String min;
-        String amOrPm;
-
-        if (hour >= 12)
-        {
-            chosenTime += String.valueOf(hour - 12);
-            amOrPm = " PM";
-        }
-        else
-        {
-            if (hour > 0)
-                chosenTime += String.valueOf(hour);
-            else if (hour == 0)
-                chosenTime += "12";
-            amOrPm = " AM";
-        }
-
-        if (minute < 10)
-            min = "0" + minute;
-        else
-            min = String.valueOf(minute);
-
-        return chosenTime + ":" + min + amOrPm;
     }
 }
