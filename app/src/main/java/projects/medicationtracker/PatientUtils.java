@@ -103,7 +103,7 @@ public class PatientUtils
             // for this week
             else
             {
-                LocalDateTime timeToCheck = LocalDateTime.parse(medications.get(i).getStartDate(), formatter);
+                LocalDateTime timeToCheck = medications.get(i).getStartDate();
                 ArrayList<LocalDateTime> times = new ArrayList<>();
                 int frequency = medications.get(i).getMedFrequency();
 
