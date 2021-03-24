@@ -10,10 +10,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +25,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Objects;
 
 import static java.time.temporal.TemporalAdjusters.previous;
@@ -31,8 +32,8 @@ import static java.util.Calendar.SUNDAY;
 
 public class MainActivity extends AppCompatActivity
 {
-    final private DBHelper db = new DBHelper(this);
-    public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
+    private Spinner patientNames;
+    private final DBHelper db = new DBHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity
 
         TextView noMeds = findViewById(R.id.noMeds);
         ScrollView scheduleScrollView = findViewById(R.id.scheduleScrollView);
+        patientNames = findViewById(R.id.patientSpinner);
 
         if (db.numberOfRows() == 0)
         {
@@ -53,6 +55,16 @@ public class MainActivity extends AppCompatActivity
         }
 
         ArrayList<Medication> medications = medicationsForThisWeek();
+
+//        if (PatientUtils.numPatients(medications) <= 1)
+            patientNames.setVisibility(View.GONE);
+//        else
+//        {
+//            ArrayList<String> names = PatientUtils.getPatientNames(medications);
+//            ArrayAdapter<String> patientAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, names);
+//            patientNames.setAdapter(patientAdapter);
+//        }
+
         createMedicationViews(medications);
     }
 
@@ -114,7 +126,10 @@ public class MainActivity extends AppCompatActivity
             if (patients.get(i).equals("ME!"))
                 patientName.setText(R.string.yourMedications);
             else
-                patientName.setText(patients.get(i) + "'s Medications:");
+            {
+                String message = patients.get(i) + "'s Medications:";
+                patientName.setText(message);
+            }
 
             scheduleLayout.addView(patientName);
             scheduleLayout.addView(patientView);

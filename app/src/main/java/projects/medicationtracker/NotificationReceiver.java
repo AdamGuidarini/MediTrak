@@ -6,12 +6,12 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import static projects.medicationtracker.MainActivity. NOTIFICATION_CHANNEL_ID ;
 
 public class NotificationReceiver extends BroadcastReceiver
 {
     public static String NOTIFICATION_ID = "notification-id";
     public static String NOTIFICATION = "notification";
+    public final String NOTIFICATION_CHANNEL_ID = "100001";
 
     @Override
     public void onReceive(Context context, Intent intent)
