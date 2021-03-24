@@ -28,7 +28,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -36,17 +35,15 @@ import static projects.medicationtracker.TimeFormatting.formatTimeForDB;
 
 public class AddMedication extends AppCompatActivity
 {
-    RadioGroup patientGroup;
-    RadioGroup frequencyGroup;
-    LinearLayout linearLayout;
-    LinearLayout timeLayout;
-    LinearLayout timesOfTheDay;
-    LinearLayout customFrequencyLayout;
-    SwitchCompat aliasSwitch;
-    EditText numTimesTaken;
-    EditText aliasEnter;
-    Spinner frequencySpinner;
-    DBHelper dbHelper;
+    private final RadioGroup patientGroup = findViewById(R.id.patientGroup);
+    private final RadioGroup frequencyGroup = findViewById(R.id.frequencyGroup);
+    private final LinearLayout timesOfTheDay = findViewById(R.id.timesOfTheDay);
+    private final LinearLayout customFrequencyLayout = findViewById(R.id.customFrequencyLayout);
+    private final SwitchCompat aliasSwitch = findViewById(R.id.aliasSwitch);
+    private final EditText numTimesTaken = findViewById(R.id.numTimesTaken);
+    private final EditText aliasEnter = findViewById(R.id.aliasEnter);
+    private final Spinner frequencySpinner =  findViewById(R.id.frequencySpinner);
+    private final DBHelper dbHelper = new DBHelper(this);
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -56,18 +53,6 @@ public class AddMedication extends AppCompatActivity
         setContentView(R.layout.activity_add_medication);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Add Medication");
-
-        patientGroup = findViewById(R.id.patientGroup);
-        frequencyGroup = findViewById(R.id.frequencyGroup);
-        linearLayout = findViewById(R.id.frequencyLayout);
-        timeLayout = findViewById(R.id.timeLayout);
-        timesOfTheDay = findViewById(R.id.timesOfTheDay);
-        numTimesTaken = findViewById(R.id.numTimesTaken);
-        customFrequencyLayout = findViewById(R.id.customFrequencyLayout);
-        aliasEnter = findViewById(R.id.aliasEnter);
-        frequencySpinner = findViewById(R.id.frequencySpinner);
-        aliasSwitch = findViewById(R.id.aliasSwitch);
-        dbHelper = new DBHelper(this);
 
         String[] spinnerFrequencies = {"Hour(s)", "Day(s)", "week(s)"};
         ArrayAdapter<String> frequencyAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerFrequencies);
@@ -186,8 +171,7 @@ public class AddMedication extends AppCompatActivity
                     timeTaken1.setVisibility(View.VISIBLE);
                     timeTaken1.setText(R.string.atThisTime);
 
-                    final int id = 1;
-                    timeTaken1.setId(id);
+                    final int id = timeTaken1.getId();
 
                     timeTaken1.setOnClickListener(view ->
                     {
@@ -205,7 +189,7 @@ public class AddMedication extends AppCompatActivity
                     textViews[0] = findViewById(R.id.startDate);
                     textViews[1] = findViewById(R.id.startTime);
 
-                    getCurrentTimeAndDate(textViews[0], textViews[1]);
+                    TimeFormatting.getCurrentTimeAndDate(textViews[0], textViews[1]);
 
                     textViews[0].setOnClickListener(view ->
                     {
@@ -259,8 +243,6 @@ public class AddMedication extends AppCompatActivity
         EditText medicationDosage = findViewById(R.id.medDosageEnter);
         EditText medicationUnits = findViewById(R.id.editTextUnits);
         EditText takenEvery = findViewById(R.id.enterFrequency);
-        aliasSwitch = findViewById(R.id.aliasSwitch);
-        aliasEnter = findViewById(R.id.aliasEnter);
         ArrayList<String> times = new ArrayList<>();
         String patient;
         String medName;
@@ -360,44 +342,24 @@ public class AddMedication extends AppCompatActivity
         finish();
     }
 
-    // Set text views to current time and date
-    public void getCurrentTimeAndDate(TextView date, TextView time)
-    {
-        String[] dateForUser = new String[2];
-        String dateTime;
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
-        SimpleDateFormat dateFormat1 = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        SimpleDateFormat dateForDb = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-
-        Date myDate = new Date();
-        dateForUser[0] = dateFormat.format(myDate);
-        dateForUser[1] = dateFormat1.format(myDate);
-        dateTime = dateForDb.format(myDate);
-
-        date.setTag(dateTime);
-        date.setText(dateForUser[0]);
-        time.setText(dateForUser[1]);
-    }
-
     // Check to ensure all necessary views are set
     public boolean allFieldsFilled()
     {
         int trueCount = 0;
-        RadioButton[] patientButtons = new RadioButton[2];
-        RadioButton[] frequencyButtons = new RadioButton[3];
+        RadioGroup patientGroup = findViewById(R.id.patientGroup);
+        RadioGroup frequencyGroup = findViewById(R.id.frequencyGroup);
         EditText nameEntry = findViewById(R.id.patientNameNotMe);
         EditText medName = findViewById(R.id.medNameEnter);
         EditText dosage = findViewById(R.id.medDosageEnter);
         EditText units = findViewById(R.id.editTextUnits);
 
-        patientButtons[0] = findViewById(R.id.meButton);
-        patientButtons[1] = findViewById(R.id.otherButton);
+
+        RadioButton patientButton = InputValidation.checkRadioGroup(patientGroup);
 
         // Check which option in patientButtons RadioGroup is selected
-        if (patientButtons[0].isChecked())
+        if (patientButton == findViewById(R.id.meButton))
             trueCount++;
-        else if (patientButtons[1].isChecked())
+        else if (patientButton == findViewById(R.id.otherButton))
         {
             if (TextUtils.isEmpty(nameEntry.getText().toString()))
                 nameEntry.setError("Please enter a name");
@@ -431,14 +393,12 @@ public class AddMedication extends AppCompatActivity
         else
             trueCount++;
 
-        frequencyButtons[0] = findViewById(R.id.multplePerDayButton);
-        frequencyButtons[1] = findViewById(R.id.dailyButton);
-        frequencyButtons[2] = findViewById(R.id.customFreqButton);
+        RadioButton frequencyButton = InputValidation.checkRadioGroup(frequencyGroup);
         EditText takenEvery = findViewById(R.id.enterFrequency);
         TextView timeTaken1 = findViewById(R.id.timeTaken1);
 
         // Checks which frequency option is set and validates the given data
-        if (frequencyButtons[0].isChecked())
+        if (frequencyButton == findViewById(R.id.multplePerDayButton))
         {
             EditText timesPerDay = findViewById(R.id.numTimesTaken);
             if (TextUtils.isEmpty(timesPerDay.getText().toString()))
@@ -446,14 +406,14 @@ public class AddMedication extends AppCompatActivity
             else
                 trueCount++;
         }
-        else if (frequencyButtons[1].isChecked())
+        else if (frequencyButton == findViewById(R.id.dailyButton))
         {
             if (timeTaken1.getText().toString().equals(getString(R.string.atThisTime)))
                 Toast.makeText(this, "Please enter a time", Toast.LENGTH_SHORT).show();
             else
                 trueCount++;
         }
-        else if (frequencyButtons[2].isChecked())
+        else if (frequencyButton == findViewById(R.id.customFreqButton))
         {
             if (TextUtils.isEmpty(takenEvery.getText().toString()))
                 takenEvery.setError("Please enter a number");

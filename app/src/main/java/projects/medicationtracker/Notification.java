@@ -11,7 +11,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import static android.content.Context.ALARM_SERVICE;
-import static androidx.core.content.ContextCompat.getSystemService;
 
 public class Notification
 {

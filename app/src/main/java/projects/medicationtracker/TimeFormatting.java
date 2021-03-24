@@ -1,5 +1,11 @@
 package projects.medicationtracker;
 
+import android.icu.text.SimpleDateFormat;
+import android.widget.TextView;
+
+import java.util.Date;
+import java.util.Locale;
+
 public class TimeFormatting
 {
     public static String formatTime(int hour, int minute)
@@ -46,5 +52,25 @@ public class TimeFormatting
             time += ":" + minute;
 
         return time + ":00";
+    }
+
+    // Set text views to current time and date
+    public static void getCurrentTimeAndDate(TextView date, TextView time)
+    {
+        String[] dateForUser = new String[2];
+        String dateTime;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+        SimpleDateFormat dateFormat1 = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        SimpleDateFormat dateForDb = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+
+        Date myDate = new Date();
+        dateForUser[0] = dateFormat.format(myDate);
+        dateForUser[1] = dateFormat1.format(myDate);
+        dateTime = dateForDb.format(myDate);
+
+        date.setTag(dateTime);
+        date.setText(dateForUser[0]);
+        time.setText(dateForUser[1]);
     }
 }

@@ -3,12 +3,8 @@ package projects.medicationtracker;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.content.Context;
+
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,8 +21,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -98,7 +92,7 @@ public class MainActivity extends AppCompatActivity
         LinearLayout scheduleLayout = findViewById(R.id.scheduleLayout);
 
         ArrayList<String> patients = new ArrayList<>();
-        for (int i = 0; i < numPatients(medications); i++)
+        for (int i = 0; i < PatientUtils.numPatients(medications); i++)
         {
             if (!patients.contains(medications.get(i).getPatientName()))
                 patients.add(medications.get(i).getPatientName());
@@ -118,7 +112,7 @@ public class MainActivity extends AppCompatActivity
             sv.setLayoutParams(lp);
 
             if (patients.get(i).equals("ME!"))
-                patientName.setText("Your Medications:");
+                patientName.setText(R.string.yourMedications);
             else
                 patientName.setText(patients.get(i) + "'s Medications:");
 
@@ -324,18 +318,5 @@ public class MainActivity extends AppCompatActivity
         }
 
         return medications;
-    }
-
-
-    // Returns number of patients in database
-    public int numPatients (ArrayList<Medication> medications)
-    {
-        HashSet<String> patients = new HashSet<>();
-
-        // Iterate through each Medication instance and patientName to the HashSet
-        for (int i = 0; i < medications.size(); i++)
-            patients.add(medications.get(i).getPatientName());
-
-        return patients.size();
     }
 }
