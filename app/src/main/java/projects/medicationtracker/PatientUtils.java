@@ -1,7 +1,5 @@
 package projects.medicationtracker;
 
-import android.widget.LinearLayout;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,7 +32,6 @@ public class PatientUtils
         {
             String thisPatient = medications.get(i).getPatientName();
             boolean inList = patients.contains(thisPatient);
-            boolean imThere = false;
 
             if (!inList)
                 patients.add(thisPatient);

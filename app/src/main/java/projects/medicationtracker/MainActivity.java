@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity
                         patientNames.setSelection(i);
                 }
             }
-            
+
             patientNames.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
             {
                 @Override
