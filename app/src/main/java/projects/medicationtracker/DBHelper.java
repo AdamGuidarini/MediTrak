@@ -228,8 +228,10 @@ public class DBHelper extends SQLiteOpenHelper
             String medName = meds.getString(meds.getColumnIndex(MED_NAME));
             String patient = meds.getString(meds.getColumnIndex(PATIENT_NAME));
             String units = meds.getString(meds.getColumnIndex(MED_UNITS));
-            String startDate = meds.getString(meds.getColumnIndex(START_DATE));
+            String date1 = meds.getString(meds.getColumnIndex(START_DATE));
             String alias = meds.getString(meds.getColumnIndex(ALIAS));
+
+            LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(date1);
 
             if (alias == null)
                 alias = "";
@@ -264,7 +266,8 @@ public class DBHelper extends SQLiteOpenHelper
 
             cursor.close();
 
-            Medication medication = new Medication(medName, patient, units, times, startDate, medId, frequency, dosage, alias);
+            Medication medication = new Medication(medName, patient, units, times,
+                    startDate, medId, frequency, dosage, alias);
 
             allMeds.add(medication);
             meds.moveToNext();
