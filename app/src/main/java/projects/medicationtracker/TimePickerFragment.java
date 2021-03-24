@@ -37,10 +37,10 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute)
     {
-        String chosenTime = "At: ";
+        String chosenTime;
         int[] hourAndMin = {hourOfDay, minute};
 
-        chosenTime += formatTime(hourOfDay, minute);
+        chosenTime = formatTime(hourOfDay, minute);
 
         TextView textView = getActivity().findViewById(textViewId);
 
