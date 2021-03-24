@@ -1,5 +1,7 @@
 package projects.medicationtracker;
 
+import android.widget.LinearLayout;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -25,9 +27,19 @@ public class PatientUtils
         {
             String thisPatient = medications.get(i).getPatientName();
             boolean inList = patients.contains(thisPatient);
+            boolean imThere = false;
 
-            if (!inList && !thisPatient.equals("ME!"))
+            if (!inList)
                 patients.add(thisPatient);
+        }
+
+        if (patients.contains("ME!"))
+        {
+            for (int j = 0; j < patients.size(); j++)
+            {
+                if (patients.get(j).equals("ME!"))
+                    patients.set(j, "You");
+            }
         }
 
         return patients;

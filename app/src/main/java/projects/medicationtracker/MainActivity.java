@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.HorizontalScrollView;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity
 
         Objects.requireNonNull(getSupportActionBar()).setTitle("Medication Schedule");
 
+        LinearLayout scheduleLayout = findViewById(R.id.scheduleLayout);
         TextView noMeds = findViewById(R.id.noMeds);
         ScrollView scheduleScrollView = findViewById(R.id.scheduleScrollView);
         patientNames = findViewById(R.id.patientSpinner);
@@ -56,16 +58,36 @@ public class MainActivity extends AppCompatActivity
 
         ArrayList<Medication> medications = medicationsForThisWeek();
 
-//        if (PatientUtils.numPatients(medications) <= 1)
+        // Load contents into spinner
+        if (PatientUtils.numPatients(medications) <= 1)
             patientNames.setVisibility(View.GONE);
-//        else
-//        {
-//            ArrayList<String> names = PatientUtils.getPatientNames(medications);
-//            ArrayAdapter<String> patientAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, names);
-//            patientNames.setAdapter(patientAdapter);
-//        }
+        else
+        {
+            patientNames.setVisibility(View.VISIBLE);
 
-        createMedicationViews(medications);
+            ArrayList<String> names = PatientUtils.getPatientNames(medications);
+            ArrayAdapter<String> patientAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, names);
+            patientNames.setAdapter(patientAdapter);
+
+            patientNames.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+            {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
+                {
+                    scheduleLayout.removeAllViews();
+
+                    String name = adapterView.getSelectedItem().toString();
+
+                    if (name.equals("You"))
+                        name = "ME!";
+
+                    createMedicationSchedule(medications, name);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {}
+            });
+        }
     }
 
     @Override
@@ -97,62 +119,22 @@ public class MainActivity extends AppCompatActivity
     {
     }
 
-    // Creates a ScrollView for each patient, a Linear layout for each day, and CheckBoxes for each
-    // Medication
-    public void createMedicationViews (ArrayList<Medication> medications)
+    public void createMedicationSchedule (ArrayList<Medication> medications, String name)
     {
         LinearLayout scheduleLayout = findViewById(R.id.scheduleLayout);
 
-        ArrayList<String> patients = new ArrayList<>();
-        for (int i = 0; i < PatientUtils.numPatients(medications); i++)
+        ArrayList<Medication> medicationsForThisPatient = new ArrayList<>();
+
+        for (int i = 0; i < medications.size(); i++)
         {
-            if (!patients.contains(medications.get(i).getPatientName()))
-                patients.add(medications.get(i).getPatientName());
+            if (medications.get(i).getPatientName().equals(name))
+                medicationsForThisPatient.add(medications.get(i));
         }
 
-        // Create Views for Each Patient
-        for (int i = 0; i < patients.size(); i++)
-        {
-            HorizontalScrollView patientView = new HorizontalScrollView(this);
-            TextView patientName = new TextView(this);
-            HorizontalScrollView sv = new HorizontalScrollView(this);
-            ScrollView.LayoutParams lp = new ScrollView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            LinearLayout horizontalLayout = new LinearLayout(this);
+        String[] days = {" Sunday", " Monday", " Tuesday", " Wednesday", " Thursday", " Friday", " Saturday"};
 
-            horizontalLayout.setOrientation(LinearLayout.HORIZONTAL);
-
-            sv.setLayoutParams(lp);
-
-            if (patients.get(i).equals("ME!"))
-                patientName.setText(R.string.yourMedications);
-            else
-            {
-                String message = patients.get(i) + "'s Medications:";
-                patientName.setText(message);
-            }
-
-            scheduleLayout.addView(patientName);
-            scheduleLayout.addView(patientView);
-            scheduleLayout.addView(sv);
-            sv.addView(horizontalLayout);
-
-            // Create list of medications for only this patient
-            ArrayList<Medication> thisPatientsMedications = new ArrayList<>();
-            for (int j = 0; j < medications.size(); j++)
-            {
-                if (medications.get(j).getPatientName().equals(patients.get(i)))
-                    thisPatientsMedications.add(medications.get(j));
-            }
-
-            String[] days = {" Sunday", " Monday", " Tuesday", " Wednesday", " Thursday", " Friday", " Saturday"};
-
-            // Create CardViews
-            for (int j = 0; j < 7; j++)
-            {
-                //ArrayList<Medication> medsForDay = medicationsForToday(thisPatientsMedications, j);
-                createDayOfWeekCards(days[j], j, thisPatientsMedications, horizontalLayout);
-            }
-        }
+        for (int ii = 0; ii < 7; ii++)
+            createDayOfWeekCards(days[ii], ii, medicationsForThisPatient, scheduleLayout);
     }
 
     // Create a CardView for the given day of the week
