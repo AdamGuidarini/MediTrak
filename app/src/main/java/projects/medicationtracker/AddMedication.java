@@ -35,14 +35,16 @@ import static projects.medicationtracker.TimeFormatting.formatTimeForDB;
 
 public class AddMedication extends AppCompatActivity
 {
-    private final RadioGroup patientGroup = findViewById(R.id.patientGroup);
-    private final RadioGroup frequencyGroup = findViewById(R.id.frequencyGroup);
-    private final LinearLayout timesOfTheDay = findViewById(R.id.timesOfTheDay);
-    private final LinearLayout customFrequencyLayout = findViewById(R.id.customFrequencyLayout);
-    private final SwitchCompat aliasSwitch = findViewById(R.id.aliasSwitch);
-    private final EditText numTimesTaken = findViewById(R.id.numTimesTaken);
-    private final EditText aliasEnter = findViewById(R.id.aliasEnter);
-    private final Spinner frequencySpinner =  findViewById(R.id.frequencySpinner);
+    RadioGroup patientGroup;
+    RadioGroup frequencyGroup;
+    LinearLayout linearLayout;
+    LinearLayout timeLayout;
+    LinearLayout timesOfTheDay;
+    LinearLayout customFrequencyLayout;
+    SwitchCompat aliasSwitch;
+    EditText numTimesTaken;
+    EditText aliasEnter;
+    Spinner frequencySpinner;
     private final DBHelper dbHelper = new DBHelper(this);
 
     @SuppressLint("NonConstantResourceId")
@@ -53,6 +55,18 @@ public class AddMedication extends AppCompatActivity
         setContentView(R.layout.activity_add_medication);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Add Medication");
+
+        patientGroup = findViewById(R.id.patientGroup);
+        frequencyGroup = findViewById(R.id.frequencyGroup);
+        linearLayout = findViewById(R.id.frequencyLayout);
+        timeLayout = findViewById(R.id.timeLayout);
+        timesOfTheDay = findViewById(R.id.timesOfTheDay);
+        numTimesTaken = findViewById(R.id.numTimesTaken);
+        aliasEnter = findViewById(R.id.aliasEnter);
+        customFrequencyLayout = findViewById(R.id.customFrequencyLayout);
+        aliasSwitch = findViewById(R.id.aliasSwitch);
+        aliasSwitch = findViewById(R.id.aliasSwitch);
+        frequencySpinner =  findViewById(R.id.frequencySpinner);
 
         String[] spinnerFrequencies = {"Hour(s)", "Day(s)", "week(s)"};
         ArrayAdapter<String> frequencyAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerFrequencies);
@@ -243,6 +257,8 @@ public class AddMedication extends AppCompatActivity
         EditText medicationDosage = findViewById(R.id.medDosageEnter);
         EditText medicationUnits = findViewById(R.id.editTextUnits);
         EditText takenEvery = findViewById(R.id.enterFrequency);
+        aliasSwitch = findViewById(R.id.aliasSwitch);
+        aliasEnter = findViewById(R.id.aliasEnter);
         ArrayList<String> times = new ArrayList<>();
         String patient;
         String medName;
