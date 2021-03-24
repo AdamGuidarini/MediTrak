@@ -14,17 +14,22 @@ public class TimeFormatting
         String min;
         String amOrPm;
 
-        if (hour >= 12)
+        if (hour >= 12 && hour < 24)
         {
-            chosenTime += String.valueOf(hour - 12);
+            if (hour > 12)
+                chosenTime += String.valueOf(hour - 12);
+            else
+                chosenTime += String.valueOf(hour);
+
             amOrPm = " PM";
         }
         else
         {
-            if (hour > 0)
+            if (hour < 12 && hour != 0)
                 chosenTime += String.valueOf(hour);
-            else if (hour == 0)
+            else
                 chosenTime += "12";
+
             amOrPm = " AM";
         }
 
