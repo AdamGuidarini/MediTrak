@@ -66,6 +66,16 @@ public class MainActivity extends AppCompatActivity
             ArrayAdapter<String> patientAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, names);
             patientNames.setAdapter(patientAdapter);
 
+            // Select "You" by default
+            if (names.contains("You"))
+            {
+                for (int i = 0; i < names.size(); i++)
+                {
+                    if (names.get(i).equals("You"))
+                        patientNames.setSelection(i);
+                }
+            }
+            
             patientNames.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
             {
                 @Override
