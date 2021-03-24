@@ -8,15 +8,15 @@ public class Medication implements Cloneable
     private String medName;
     private String medDosageUnits;
     private String patientName;
-    private String startDate;
+    private LocalDateTime startDate;
     private String alias;
     private LocalDateTime[] times;
     private int medId;
     private int medFrequency;
     private int medDosage;
 
-    public Medication(String thisMed, String patient, String units, LocalDateTime[] time, String firstDate,
-                      int id, int frequency, int dosage, String medAlias)
+    public Medication(String thisMed, String patient, String units, LocalDateTime[] time,
+                      LocalDateTime firstDate, int id, int frequency, int dosage, String medAlias)
     {
         medName = thisMed;
         patientName = patient;
@@ -58,7 +58,7 @@ public class Medication implements Cloneable
     {
         return patientName;
     }
-    public String getStartDate()
+    public LocalDateTime getStartDate()
     {
         return startDate;
     }
@@ -96,7 +96,7 @@ public class Medication implements Cloneable
     {
         this.patientName = patientName;
     }
-    public void setStartDate(String startDate)
+    public void setStartDate(LocalDateTime startDate)
     {
         this.startDate = startDate;
     }
