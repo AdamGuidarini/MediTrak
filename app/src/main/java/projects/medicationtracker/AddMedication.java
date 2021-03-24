@@ -207,16 +207,19 @@ public class AddMedication extends AppCompatActivity
 
                     textViews[0].setOnClickListener(view ->
                     {
-                        DialogFragment dialogFragment = new SelectDateFragment();
+                        final int id3 = 3;
+                        textViews[0].setId(id3);
+
+                        DialogFragment dialogFragment = new SelectDateFragment(id3);
                         dialogFragment.show(getSupportFragmentManager(), null);
                     });
 
                     textViews[1].setOnClickListener(view ->
                     {
-                        final int id1 = 2;
-                        textViews[1].setId(id1);
+                        final int id2 = 2;
+                        textViews[1].setId(id2);
 
-                        DialogFragment dialogFragment = new TimePickerFragment(id1);
+                        DialogFragment dialogFragment = new TimePickerFragment(id2);
                         dialogFragment.show(getSupportFragmentManager(), null);
                     });
                     break;
