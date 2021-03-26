@@ -57,8 +57,6 @@ public class PatientUtils
         // Add times to custom frequency
         LocalDate thisSunday = LocalDate.now().with(previous(DayOfWeek.SUNDAY));
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
         // Look at each medication
         for (int i = 0; i < medications.size(); i++)
         {
