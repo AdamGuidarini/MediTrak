@@ -26,12 +26,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
 
 import static projects.medicationtracker.TimeFormatting.formatTimeForDB;
+import static projects.medicationtracker.TimeFormatting.stringToLocalDateTime;
 
 public class AddMedication extends AppCompatActivity
 {
@@ -357,6 +359,14 @@ public class AddMedication extends AppCompatActivity
                 return;
             }
         }
+
+//        // Set repeating notification
+//        Medication medication = new Medication(medName, patient, medUnits, new LocalDateTime[0],
+//                stringToLocalDateTime(firstDoseDate), (int) rowid, frequency, Integer.parseInt(dosage), alias);
+//
+//        NotificationHelper notification = new NotificationHelper(this, medication);
+//        android.app.Notification note = notification.createNotification();
+//        notification.scheduleNotification(note);
 
         finish();
     }

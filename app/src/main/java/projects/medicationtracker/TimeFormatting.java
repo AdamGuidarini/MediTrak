@@ -3,6 +3,9 @@ package projects.medicationtracker;
 import android.icu.text.SimpleDateFormat;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
@@ -77,5 +80,23 @@ public class TimeFormatting
         date.setTag(dateTime);
         date.setText(dateForUser[0]);
         time.setText(dateForUser[1]);
+    }
+
+    public static LocalDateTime stringToLocalDateTime (String date)
+    {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss",
+                Locale.getDefault());
+
+        LocalDateTime dateTime;
+
+        dateTime = LocalDateTime.parse(date, formatter);
+
+        return dateTime;
+    }
+
+    public static String LocalDateTimeToString (LocalDateTime localDateTime)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return dateFormat.format(localDateTime);
     }
 }
