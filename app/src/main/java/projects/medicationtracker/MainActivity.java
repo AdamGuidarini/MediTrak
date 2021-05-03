@@ -33,6 +33,11 @@ public class MainActivity extends AppCompatActivity
 {
     private final DBHelper db = new DBHelper(this);
 
+    /**
+     * Runs at start of activity, builds MainActivity
+     *
+     * @param savedInstanceState Stored instance of activity
+     **************************************************************************/
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -97,6 +102,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Creates option menu
+     *
+     * @param menu Menu containing selections for user
+     **************************************************************************/
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -104,6 +114,9 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * Instructions for restarting activity once returned to from other activity
+     **************************************************************************/
     @Override
     protected void onRestart()
     {
@@ -112,20 +125,43 @@ public class MainActivity extends AppCompatActivity
         startActivity(getIntent());
     }
 
+    /*
+    *  Launches MyMedications.java when "My Medications" option is selected
+    *
+    *  @param item the "My Medications" menu option
+    **************************************************************************/
     public void onMyMedicationsClick(MenuItem item)
     {
     }
 
+    /**
+     *  Launches AddMedication.java when "Add Medication" option is selected
+     *
+     *  @param item The "Add Medication" option
+     **************************************************************************/
     public void onAddMedicationClick(MenuItem item)
     {
         Intent intent = new Intent(this, AddMedication.class);
         startActivity(intent);
     }
 
+    /**
+     *  Launches Settings.java when "Settings" option is selected
+     *
+     *  @param item The "Settings" menu option
+     **************************************************************************/
     public void onSettingsClick(MenuItem item)
     {
     }
 
+    /**
+     * Creates a schedule for the given patient's medications
+     *
+     * @param medications An ArrayList of Medications. Will be searched for
+     *        Medications where patientName equals name passed to method.
+     *
+     * @param name The name of the patient whose Medications should be displayed
+    **************************************************************************/
     public void createMedicationSchedule (ArrayList<Medication> medications, String name)
     {
         LinearLayout scheduleLayout = findViewById(R.id.scheduleLayout);
@@ -144,7 +180,22 @@ public class MainActivity extends AppCompatActivity
             createDayOfWeekCards(days[ii], ii, medicationsForThisPatient, scheduleLayout);
     }
 
-    // Create a CardView for the given day of the week
+    /**
+     * Creates a CardView for each day of the week containing information
+     * on the medications to be taken that day
+     *
+     * @param dayOfWeek The day of the week represented by the CardView.
+     * @param day The number representing the day of the week
+     *            - Sunday = 0
+     *            - Monday = 1
+     *            - Tuesday = 2
+     *            - Wednesday = 3
+     *            - Thursday = 4
+     *            - Friday = 5
+     *            - Saturday = 6
+     * @param medications The list of medications to be taken on the given day
+     * @param layout The LinearLayout in which to place the CardView
+     **************************************************************************/
     public void createDayOfWeekCards (String dayOfWeek, int day, ArrayList<Medication> medications, LinearLayout layout)
     {
         CardView thisDayCard = new CardView(layout.getContext());
