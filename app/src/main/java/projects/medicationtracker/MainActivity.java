@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity
         startActivity(getIntent());
     }
 
-    /*
+    /**
     *  Launches MyMedications.java when "My Medications" option is selected
     *
     *  @param item the "My Medications" menu option

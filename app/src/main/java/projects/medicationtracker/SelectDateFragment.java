@@ -14,8 +14,17 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
 {
     private final int id;
 
+    /**
+     * Creates a new SelectDateFragment
+     * @param viewId The id of the View, ideally a Text View, to write the selected date to
+     *************************************************************************/
     SelectDateFragment (int viewId) { id = viewId; }
 
+    /**
+     * Instructions for how to create fragment
+     * @param savedInstanceState
+     * @return A date picker dialog
+     *************************************************************************/
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -27,11 +36,24 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
         return new DatePickerDialog(getActivity(), this, yy, mm, dd);
     }
 
+    /**
+     * Instructions for what to do when user picks a date
+     * @param view The DatePicker
+     * @param yy Year
+     * @param mm Month
+     * @param dd Day
+     *************************************************************************/
     public void onDateSet(DatePicker view, int yy, int mm, int dd)
     {
         populateSetDate(yy, mm+1, dd);
     }
 
+    /**
+     * Set writes date chosen by user to View whose id was passed to constructor
+     * @param year Year chosen by user
+     * @param month Month chosen by user
+     * @param day Day chosen by user
+     *************************************************************************/
     public void populateSetDate(int year, int month, int day)
     {
         TextView textView = getActivity().findViewById(id);
