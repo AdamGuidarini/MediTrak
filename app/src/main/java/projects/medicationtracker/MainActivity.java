@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity
         ScrollView scheduleScrollView = findViewById(R.id.scheduleScrollView);
         Spinner patientNames = findViewById(R.id.patientSpinner);
 
+        // Exit if there are no patients in DB
         if (db.numberOfRows() == 0)
         {
             noMeds.setVisibility(View.VISIBLE);
@@ -59,15 +60,22 @@ public class MainActivity extends AppCompatActivity
         }
 
         ArrayList<Medication> medications = PatientUtils.medicationsForThisWeek(db);
+        ArrayList<String> names = PatientUtils.getPatientNames(medications);
 
-        // Load contents into spinner
-        if (PatientUtils.numPatients(medications) < 1)
+        // Load contents into spinner, or print results for only patient
+        if (PatientUtils.numPatients(medications) <= 1)
+        {
             patientNames.setVisibility(View.GONE);
+
+            if (names.get(0).equals("You"))
+                names.set(0, "ME!");
+
+            CardCreator.createMedicationSchedule(medications, names.get(0), db, scheduleLayout);
+        }
         else
         {
             patientNames.setVisibility(View.VISIBLE);
 
-            ArrayList<String> names = PatientUtils.getPatientNames(medications);
             ArrayAdapter<String> patientAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, names);
             patientNames.setAdapter(patientAdapter);
 
