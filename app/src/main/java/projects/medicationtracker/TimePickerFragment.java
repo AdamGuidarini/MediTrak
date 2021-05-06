@@ -17,11 +17,20 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 {
     private final int textViewId;
 
+    /**
+     * Constructor
+     * @param id Id of text view that will store selected time
+     **************************************************************************/
     TimePickerFragment (int id)
     {
         textViewId = id;
     }
 
+    /**
+     * Creates a TimePickerFragment allowing user to set time
+     * @param savedInstanceState Saved instance from previous state
+     * @return A TimePickerDialog
+     **************************************************************************/
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -35,6 +44,12 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         return new TimePickerDialog(getActivity(), this, hour, minute, DateFormat.is24HourFormat(getActivity()));
     }
 
+    /**
+     * Set text of TextView whose ID was passed to the constructor to chosen time
+     * @param view The TimePicker created in onCreateDialog
+     * @param hourOfDay Hour chosen by user
+     * @param minute Minute chosen by user
+     **************************************************************************/
     public void onTimeSet(TimePicker view, int hourOfDay, int minute)
     {
         String chosenTime;

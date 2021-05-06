@@ -106,7 +106,9 @@ public class CardCreator
                         String thisMedicationLabel = medName + " - " + dosage + "\n" + dosageTime;
                         thisMedication.setText(thisMedicationLabel);
 
+                        //TODO Change this so it is done with AlarmManager
                         // Check database for this dosage, if not add it
+
                         // if it is, get the DoseId
                         int rowid;
 

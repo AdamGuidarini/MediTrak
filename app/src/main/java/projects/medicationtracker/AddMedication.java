@@ -26,14 +26,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
 
 import static projects.medicationtracker.TimeFormatting.formatTimeForDB;
-import static projects.medicationtracker.TimeFormatting.stringToLocalDateTime;
 
 public class AddMedication extends AppCompatActivity
 {
@@ -49,6 +47,10 @@ public class AddMedication extends AppCompatActivity
     Spinner frequencySpinner;
     private final DBHelper dbHelper = new DBHelper(this);
 
+    /**
+     * Builds AddMedication Activity
+     * @param savedInstanceState Previous state
+     **************************************************************************/
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -229,6 +231,11 @@ public class AddMedication extends AppCompatActivity
         });
     }
 
+    /**
+     * Determines which button was selected
+     * @param item
+     * @return Selected option
+     **************************************************************************/
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
@@ -238,6 +245,9 @@ public class AddMedication extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Determines what to do when back button is pressed
+     **************************************************************************/
     @Override
     public void onBackPressed()
     {
@@ -245,6 +255,10 @@ public class AddMedication extends AppCompatActivity
         finish();
     }
 
+    /**
+     * Validates input and adds values to database
+     * @param view The "Submit" button
+     **************************************************************************/
     // First checks that all inputs are filled, then adds the new medication to the database,
     // then ends the activity
     public void onSubmitClick(View view)
@@ -360,7 +374,9 @@ public class AddMedication extends AppCompatActivity
             }
         }
 
-//        // Set repeating notification
+         //TODO Use AlarmManager to add medications to database
+         //TODO Use AlarmManager to set notifications
+
 //        Medication medication = new Medication(medName, patient, medUnits, new LocalDateTime[0],
 //                stringToLocalDateTime(firstDoseDate), (int) rowid, frequency, Integer.parseInt(dosage), alias);
 //
@@ -371,10 +387,13 @@ public class AddMedication extends AppCompatActivity
         finish();
     }
 
-    // Check to ensure all necessary views are set
+    /**
+     * Ensure all fields are set
+     * @return True if all fields are set, else False
+     */
     public boolean allFieldsFilled()
     {
-        int trueCount = 0;
+        boolean allFieldsSet = true;
         RadioGroup patientGroup = findViewById(R.id.patientGroup);
         RadioGroup frequencyGroup = findViewById(R.id.frequencyGroup);
         EditText nameEntry = findViewById(R.id.patientNameNotMe);
@@ -386,41 +405,48 @@ public class AddMedication extends AppCompatActivity
         RadioButton patientButton = InputValidation.checkRadioGroup(patientGroup);
 
         // Check which option in patientButtons RadioGroup is selected
-        if (patientButton == findViewById(R.id.meButton))
-            trueCount++;
-        else if (patientButton == findViewById(R.id.otherButton))
+        if (patientButton == patientGroup.getChildAt(1))
         {
             if (TextUtils.isEmpty(nameEntry.getText().toString()))
+            {
                 nameEntry.setError("Please enter a name");
+                allFieldsSet = false;
+            }
             else if (nameEntry.getText().toString().equals("ME!"))
+            {
                 nameEntry.setError("Name cannot be \"ME!\"");
-            else
-                trueCount++;
+                allFieldsSet = false;
+            }
         }
-        else
+        else if (patientButton != patientGroup.getChildAt(0) && patientButton != patientGroup.getChildAt(1))
             Toast.makeText(this, "Please choose a patient option", Toast.LENGTH_SHORT).show();
 
         // Ensures medication has a given name
         if (TextUtils.isEmpty(medName.getText().toString()))
+        {
             medName.setError("Please enter the medication's name");
-        else
-            trueCount++;
+            allFieldsSet = false;
+        }
 
         // Ensures a dosage is given
         if (TextUtils.isEmpty(dosage.getText().toString()))
+        {
             dosage.setError("Please enter a dosage");
+            allFieldsSet = false;
+        }
         else if (Integer.parseInt(dosage.getText().toString()) <= 0)
         {
             dosage.setError("Enter a number greater than 0");
+            allFieldsSet = false;
         }
-        else
-            trueCount++;
 
         // Ensures a unit for the dosage
         if (TextUtils.isEmpty(units.getText().toString()))
+        {
             units.setError("Please enter a unit (e.g. mg, ml, tablets)");
-        else
-            trueCount++;
+            allFieldsSet = false;
+        }
+
 
         RadioButton frequencyButton = InputValidation.checkRadioGroup(frequencyGroup);
         EditText takenEvery = findViewById(R.id.enterFrequency);
@@ -431,28 +457,34 @@ public class AddMedication extends AppCompatActivity
         {
             EditText timesPerDay = findViewById(R.id.numTimesTaken);
             if (TextUtils.isEmpty(timesPerDay.getText().toString()))
+            {
                 timesPerDay.setError("Please enter the number of times per day this medication is taken");
-            else
-                trueCount++;
+                allFieldsSet = false;
+            }
         }
         else if (frequencyButton == findViewById(R.id.dailyButton))
         {
             if (timeTaken1.getText().toString().equals(getString(R.string.atThisTime)))
+            {
                 Toast.makeText(this, "Please enter a time", Toast.LENGTH_SHORT).show();
-            else
-                trueCount++;
+                allFieldsSet = false;
+            }
         }
         else if (frequencyButton == findViewById(R.id.customFreqButton))
         {
             if (TextUtils.isEmpty(takenEvery.getText().toString()))
+            {
                 takenEvery.setError("Please enter a number");
-            else
-                trueCount++;
+                allFieldsSet = false;
+            }
         }
         else
+        {
             Toast.makeText(this, "Please choose a frequency option", Toast.LENGTH_SHORT).show();
+            allFieldsSet = false;
+        }
 
         // If all fields have been approved, returns true
-        return trueCount == 5;
+        return allFieldsSet;
     }
 }
