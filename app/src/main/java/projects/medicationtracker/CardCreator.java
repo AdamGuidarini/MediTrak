@@ -2,7 +2,6 @@ package projects.medicationtracker;
 
 import android.content.Context;
 import android.view.ViewGroup;
-import android.view.contentcapture.ContentCaptureCondition;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -101,7 +100,7 @@ public class CardCreator
                         // Set Checkbox label
                         String medName = medications.get(i).getMedName();
                         String dosage = medications.get(i).getMedDosage() + " " + medications.get(i).getMedDosageUnits();
-                        String dosageTime = TimeFormatting.formatTime(time.getHour(), time.getMinute());
+                        String dosageTime = TimeFormatting.formatTimeForUser(time.getHour(), time.getMinute());
 
                         String thisMedicationLabel = medName + " - " + dosage + "\n" + dosageTime;
                         thisMedication.setText(thisMedicationLabel);

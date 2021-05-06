@@ -11,7 +11,7 @@ import android.widget.TimePicker;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
-import static projects.medicationtracker.TimeFormatting.formatTime;
+import static projects.medicationtracker.TimeFormatting.formatTimeForUser;
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener
 {
@@ -55,7 +55,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         String chosenTime;
         int[] hourAndMin = {hourOfDay, minute};
 
-        chosenTime = formatTime(hourOfDay, minute);
+        chosenTime = formatTimeForUser(hourOfDay, minute);
 
         TextView textView = getActivity().findViewById(textViewId);
 

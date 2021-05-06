@@ -390,7 +390,7 @@ public class AddMedication extends AppCompatActivity
     /**
      * Ensure all fields are set
      * @return True if all fields are set, else False
-     */
+     **************************************************************************/
     public boolean allFieldsFilled()
     {
         boolean allFieldsSet = true;
