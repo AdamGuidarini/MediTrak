@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity
         {
             noMeds.setVisibility(View.VISIBLE);
             scheduleScrollView.setVisibility(View.GONE);
+            patientNames.setVisibility(View.GONE);
             return;
         }
 
