@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Set;
 
 import static java.time.temporal.TemporalAdjusters.previous;
 import static java.util.Calendar.SUNDAY;
@@ -165,5 +166,7 @@ public class MainActivity extends AppCompatActivity
      **************************************************************************/
     public void onSettingsClick(MenuItem item)
     {
+        Intent intent = new Intent(this, Settings.class);
+        startActivity(intent);
     }
 }

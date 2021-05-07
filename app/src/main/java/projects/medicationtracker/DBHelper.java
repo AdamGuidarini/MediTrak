@@ -424,4 +424,14 @@ public class DBHelper extends SQLiteOpenHelper
 
         db.update(MEDICATION_TRACKER_TABLE, newValues, DOSE_ID + "=?", new String[]{String.valueOf(id)});
     }
+
+    /**
+     * Deletes all entries from database
+     **************************************************************************/
+    public boolean purge()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        return db.delete(MEDICATION_TABLE, "1", null) != 0;
+    }
 }

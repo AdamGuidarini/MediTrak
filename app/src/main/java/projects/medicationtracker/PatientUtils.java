@@ -11,7 +11,11 @@ import static java.time.temporal.TemporalAdjusters.previous;
 
 public class PatientUtils
 {
-    // Creates a list of Medications to be taken in the current week
+    /**
+     * Creates an ArrayList of Medications to be taken this week
+     * @param db The DBHelper to draw data from
+     * @return List of all Medications for this week
+     **************************************************************************/
     public static ArrayList<Medication> medicationsForThisWeek(DBHelper db)
     {
         ArrayList<Medication> medications = db.getMedications();
