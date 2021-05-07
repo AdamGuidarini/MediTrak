@@ -81,6 +81,9 @@ public class AddMedication extends AppCompatActivity
         // they will then be displayed in the input field
         AutoCompleteTextView nameInput = findViewById(R.id.patientNameNotMe);
         ArrayList<String> patientNames = dbHelper.getPatients();
+
+        patientNames.remove("ME!");
+
         ArrayAdapter<String> patientAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, patientNames);
         nameInput.setAdapter(patientAdapter);
         nameInput.setThreshold(1);

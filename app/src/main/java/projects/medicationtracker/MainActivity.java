@@ -64,10 +64,11 @@ public class MainActivity extends AppCompatActivity
         ArrayList<String> names = db.getPatients();
 
         // Change ME! to You for Adapter
-        names.set(names.indexOf("ME!"), "You");
+        if (names.contains("ME!"))
+            names.set(names.indexOf("ME!"), "You");
 
         // Load contents into spinner, or print results for only patient
-        if (db.getPatients().size() <= 1)
+        if (db.getPatients().size() == 1)
         {
             patientNames.setVisibility(View.GONE);
 
