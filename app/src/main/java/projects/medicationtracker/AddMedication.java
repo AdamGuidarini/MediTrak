@@ -233,7 +233,7 @@ public class AddMedication extends AppCompatActivity
 
     /**
      * Determines which button was selected
-     * @param item
+     * @param item Selected menu option
      * @return Selected option
      **************************************************************************/
     @Override
@@ -246,7 +246,7 @@ public class AddMedication extends AppCompatActivity
     }
 
     /**
-     * Determines what to do when back button is pressed
+     * Return to MainActivity if back arrow is pressed
      **************************************************************************/
     @Override
     public void onBackPressed()
