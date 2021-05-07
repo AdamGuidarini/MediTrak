@@ -54,15 +54,18 @@ public class DBHelper extends SQLiteOpenHelper
 
     public DBHelper(@Nullable Context context) { super(context, DATABASE_NAME, null, 1);}
 
-    // Creates all tables for the database when the app runs for the first time
+    /**
+     * Creates DBHelper object, adds tables to DB if the don't exist
+     * @param sqLiteDatabase Database instance
+     **************************************************************************/
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase)
     {
-        int NUM_TABLES = 5;
+        final int NUM_TABLES = 5;
         String[] queries = new String[NUM_TABLES];
 
         // Holds all constant information on a given medication
-        queries[0] = "CREATE TABLE " + MEDICATION_TABLE + "("
+        queries[0] = "CREATE TABLE IF NOT EXISTS" + MEDICATION_TABLE + "("
                 + MED_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + MED_NAME + " TEXT,"
                 + PATIENT_NAME + " Text,"
@@ -74,7 +77,7 @@ public class DBHelper extends SQLiteOpenHelper
                 + ")";
 
         // Holds data on past doses, as well as doses for current week
-        queries[1] = "CREATE TABLE " + MEDICATION_TRACKER_TABLE + "("
+        queries[1] = "CREATE TABLE IF NOT EXISTS" + MEDICATION_TRACKER_TABLE + "("
                 + DOSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + MED_ID + " INT,"
                 + DOSE_TIME + " DATETIME,"
@@ -84,7 +87,7 @@ public class DBHelper extends SQLiteOpenHelper
                 + ")";
 
         // Holds information on doses with a custom frequency so times for upcoming doses can be calculated
-        queries[2] = "CREATE TABLE " + MEDICATION_TIMES + "("
+        queries[2] = "CREATE TABLE IF NOT EXISTS" + MEDICATION_TIMES + "("
                 + TIME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + MED_ID + " INT,"
                 + DRUG_TIME + " TEXT,"
@@ -92,7 +95,7 @@ public class DBHelper extends SQLiteOpenHelper
                 + ")";
 
         // Holds statistics for a given medication
-        queries[3] = "CREATE TABLE " + MEDICATION_STATS_TABLE + "("
+        queries[3] = "CREATE TABLE IF NOT EXISTS" + MEDICATION_STATS_TABLE + "("
                 + MED_ID + " INT PRIMARY KEY ,"
                 + START_DATE + " DATETIME, "
                 + END_DATE + " DATETIME, "
@@ -103,7 +106,7 @@ public class DBHelper extends SQLiteOpenHelper
 
         // Stores a users notes for a medication, designed to help track how a medication is
         // affecting the patient. Facilitates tracking possible issues to bring up with prescriber
-        queries[4] = "CREATE TABLE " + NOTES_TABLE + "("
+        queries[4] = "CREATE TABLE IF NOT EXISTS" + NOTES_TABLE + "("
                 + NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + MED_ID + " INT, "
                 + NOTE + " TEXT, "
@@ -116,7 +119,11 @@ public class DBHelper extends SQLiteOpenHelper
 
     }
 
-    // Allows the use of foreign keys
+    /**
+     * Instructions for creation of new DBHelper object
+     * Currently enables foreign keys
+     * @param db A database instance
+     **************************************************************************/
     @Override
     public void onOpen(SQLiteDatabase db)
     {
@@ -124,6 +131,12 @@ public class DBHelper extends SQLiteOpenHelper
         db.execSQL("PRAGMA foreign_keys = ON");
     }
 
+    /**
+     * Instructions to perform on database upgrade
+     * @param sqLiteDatabase Database instance
+     * @param i Unused by required param
+     * @param i1 Unused but required param
+     **************************************************************************/
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1)
     {
@@ -144,9 +157,17 @@ public class DBHelper extends SQLiteOpenHelper
         onCreate(sqLiteDatabase);
     }
 
-    // Adds new medications to the database
-    // Returns rowid on success, or -1 on failure
-
+    /**
+     * Adds new Medication to database
+     * @param medName Name of Medication
+     * @param patientName Name of patient
+     * @param dosage Number of units to take
+     * @param units Dosage unit
+     * @param startDate Date of first dose
+     * @param frequency How often to take Medication
+     * @param alias Alias for Medication, appears in notifications
+     * @return rowid on success, -1 on failure
+     **************************************************************************/
     public long addMedication(String medName, String patientName, String dosage, String units,
                               String startDate, int frequency, String alias)
     {
@@ -164,8 +185,12 @@ public class DBHelper extends SQLiteOpenHelper
         return db.insert(MEDICATION_TABLE, null, medTableValues);
     }
 
-    // Adds new dose to MedicationTimes
-    // returns rowid on success, -1 on failure
+    /**
+     * Adds dose to MedicationTracker table
+     * @param medId ID of Medication
+     * @param drugTime Time to take Medication
+     * @return rowid on success, -1 on failure
+     **************************************************************************/
     public long addDose(long medId, String drugTime)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -177,13 +202,15 @@ public class DBHelper extends SQLiteOpenHelper
         return db.insert(MEDICATION_TIMES, null, doseValues);
     }
 
-    // Creates a list of all patients
-    // Returns a list of all patients except app user e.i. ME!
+    /**
+     * Creates an ArrayList of all patients
+     * @return ArrayList of all patients, except
+     **************************************************************************/
     public ArrayList<String> getPatients()
     {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor result = db.rawQuery("SELECT " + PATIENT_NAME + " FROM " + MEDICATION_TABLE
-                + " WHERE " + PATIENT_NAME + "!= 'ME!'", null);
+        Cursor result = db.rawQuery("SELECT DISTINCT " + PATIENT_NAME + " FROM " + MEDICATION_TABLE
+                + " WHERE " + PATIENT_NAME + " != 'ME!'", null);
 
         ArrayList<String> patients = new ArrayList<>();
 
@@ -200,7 +227,10 @@ public class DBHelper extends SQLiteOpenHelper
         return patients;
     }
 
-    // Returns number of medications in database
+    /**
+     * Get number of rows in MedicationTable
+     * @return Number of rows in MedicationTable
+     **************************************************************************/
     public long numberOfRows()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -208,7 +238,10 @@ public class DBHelper extends SQLiteOpenHelper
         return DatabaseUtils.queryNumEntries(db, MEDICATION_TABLE);
     }
 
-    // Returns a list of all entries in MedicationTable
+    /**
+     * Create ArrayList of all Medications in MedicationTable
+     * @return All Medications in MedicationTable
+     **************************************************************************/
     public ArrayList<Medication> getMedications()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -278,6 +311,12 @@ public class DBHelper extends SQLiteOpenHelper
         return allMeds;
     }
 
+    /**
+     * Determine of dose is in MedicationTracker
+     * @param medication Medication to check
+     * @param time Time of dose
+     * @return True if present, false if not present
+     **************************************************************************/
     public boolean isInMedicationTracker (Medication medication, LocalDateTime time)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -304,7 +343,13 @@ public class DBHelper extends SQLiteOpenHelper
         return count > 0;
     }
 
-    public int addToMedicationTracker (Medication medication, LocalDateTime time)
+    /**
+     * Add dose to MedicationTracker table
+     * @param medication Medication whose dose will be added
+     * @param time Time of dose
+     * @return rowid of added dose on success, -1 on failure
+     **************************************************************************/
+    public long addToMedicationTracker (Medication medication, LocalDateTime time)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues medTrackerValues = new ContentValues();
@@ -316,15 +361,19 @@ public class DBHelper extends SQLiteOpenHelper
         medTrackerValues.put(DOSE_TIME, dateTime);
         medTrackerValues.put(TAKEN, false);
 
-        long rowid = db.insert(MEDICATION_TRACKER_TABLE, null, medTrackerValues);
-
-        return (int) rowid;
+        return db.insert(MEDICATION_TRACKER_TABLE, null, medTrackerValues);
     }
 
-    public int getDoseId (int medId, String doseTime)
+    /**
+     * Get ID of dose
+     * @param medId ID of Medication
+     * @param doseTime Time of dose
+     * @return rowid of match found in MedicationTracker table
+     **************************************************************************/
+    public long getDoseId (int medId, String doseTime)
     {
         SQLiteDatabase db = this.getReadableDatabase();
-        int rowId;
+        long rowId;
         String query = "SELECT " + DOSE_ID + " FROM " + MEDICATION_TRACKER_TABLE + " WHERE "
                 + MED_ID + "=" + medId + " AND " + DOSE_TIME + "=\"" + doseTime + "\"";
 
@@ -338,11 +387,16 @@ public class DBHelper extends SQLiteOpenHelper
         return rowId;
     }
 
-    public boolean getTaken (int doseId)
+    /**
+     * Status of entry in MedicationTracker
+     * @param doseId ID of dose in table
+     * @return Status of dose
+     **************************************************************************/
+    public boolean getTaken (long doseId)
     {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " + TAKEN + " FROM " + MEDICATION_TRACKER_TABLE
-                + " WHERE " + DOSE_ID + "=" + doseId;
+                + " WHERE " + DOSE_ID + " = " + doseId;
 
         Cursor cursor = db.rawQuery(query, null);
 
@@ -354,7 +408,13 @@ public class DBHelper extends SQLiteOpenHelper
         return taken == 1;
     }
 
-    public void updateMedicationStatus (int id, String timeTaken, boolean status)
+    /**
+     * Updates status of dose
+     * @param id ID of Medication
+     * @param timeTaken Time of dose
+     * @param status Status of whether dose has been taken or not
+     **************************************************************************/
+    public void updateDoseStatus(long id, String timeTaken, boolean status)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues newValues = new ContentValues();

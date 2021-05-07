@@ -393,7 +393,6 @@ public class AddMedication extends AppCompatActivity
      **************************************************************************/
     public boolean allFieldsFilled()
     {
-        boolean allFieldsSet = true;
         RadioGroup patientGroup = findViewById(R.id.patientGroup);
         RadioGroup frequencyGroup = findViewById(R.id.frequencyGroup);
         EditText nameEntry = findViewById(R.id.patientNameNotMe);
@@ -410,12 +409,12 @@ public class AddMedication extends AppCompatActivity
             if (TextUtils.isEmpty(nameEntry.getText().toString()))
             {
                 nameEntry.setError("Please enter a name");
-                allFieldsSet = false;
+                return false;
             }
             else if (nameEntry.getText().toString().equals("ME!"))
             {
                 nameEntry.setError("Name cannot be \"ME!\"");
-                allFieldsSet = false;
+                return false;
             }
         }
         else if (patientButton != patientGroup.getChildAt(0) && patientButton != patientGroup.getChildAt(1))
@@ -425,26 +424,26 @@ public class AddMedication extends AppCompatActivity
         if (TextUtils.isEmpty(medName.getText().toString()))
         {
             medName.setError("Please enter the medication's name");
-            allFieldsSet = false;
+            return false;
         }
 
         // Ensures a dosage is given
         if (TextUtils.isEmpty(dosage.getText().toString()))
         {
             dosage.setError("Please enter a dosage");
-            allFieldsSet = false;
+            return false;
         }
         else if (Integer.parseInt(dosage.getText().toString()) <= 0)
         {
             dosage.setError("Enter a number greater than 0");
-            allFieldsSet = false;
+            return false;
         }
 
         // Ensures a unit for the dosage
         if (TextUtils.isEmpty(units.getText().toString()))
         {
             units.setError("Please enter a unit (e.g. mg, ml, tablets)");
-            allFieldsSet = false;
+            return false;
         }
 
 
@@ -459,7 +458,7 @@ public class AddMedication extends AppCompatActivity
             if (TextUtils.isEmpty(timesPerDay.getText().toString()))
             {
                 timesPerDay.setError("Please enter the number of times per day this medication is taken");
-                allFieldsSet = false;
+                return false;
             }
         }
         else if (frequencyButton == findViewById(R.id.dailyButton))
@@ -467,7 +466,7 @@ public class AddMedication extends AppCompatActivity
             if (timeTaken1.getText().toString().equals(getString(R.string.atThisTime)))
             {
                 Toast.makeText(this, "Please enter a time", Toast.LENGTH_SHORT).show();
-                allFieldsSet = false;
+                return false;
             }
         }
         else if (frequencyButton == findViewById(R.id.customFreqButton))
@@ -475,16 +474,16 @@ public class AddMedication extends AppCompatActivity
             if (TextUtils.isEmpty(takenEvery.getText().toString()))
             {
                 takenEvery.setError("Please enter a number");
-                allFieldsSet = false;
+                return false;
             }
         }
         else
         {
             Toast.makeText(this, "Please choose a frequency option", Toast.LENGTH_SHORT).show();
-            allFieldsSet = false;
+            return false;
         }
 
         // If all fields have been approved, returns true
-        return allFieldsSet;
+        return true;
     }
 }
