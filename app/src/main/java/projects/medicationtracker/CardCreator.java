@@ -109,7 +109,7 @@ public class CardCreator
                         // Check database for this dosage, if not add it
 
                         // if it is, get the DoseId
-                        int rowid;
+                        long rowid;
 
                         if (!db.isInMedicationTracker(medications.get(i), time))
                         {
@@ -140,7 +140,7 @@ public class CardCreator
 
 
                             String now = LocalDateTime.now().format(formatter);
-                            db.updateMedicationStatus(doseId, now, thisMedication.isChecked());
+                            db.updateDoseStatus(doseId, now, thisMedication.isChecked());
                         });
 
                         ll.addView(thisMedication);
