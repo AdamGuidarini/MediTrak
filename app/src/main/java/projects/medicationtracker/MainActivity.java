@@ -133,6 +133,8 @@ public class MainActivity extends AppCompatActivity
     **************************************************************************/
     public void onMyMedicationsClick(MenuItem item)
     {
+        Intent intent = new Intent(this, MyMedications.class);
+        startActivity(intent);
     }
 
     /**
