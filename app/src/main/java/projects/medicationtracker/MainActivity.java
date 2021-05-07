@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity
         ArrayList<String> names = PatientUtils.getPatientNames(medications);
 
         // Load contents into spinner, or print results for only patient
-        if (PatientUtils.numPatients(medications) <= 1)
+        if (db.getPatients().size() <= 1)
         {
             patientNames.setVisibility(View.GONE);
 
