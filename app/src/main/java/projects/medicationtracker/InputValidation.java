@@ -5,7 +5,12 @@ import android.widget.RadioGroup;
 
 public class InputValidation
 {
-    public static RadioButton checkRadioGroup (RadioGroup group)
+    /**
+     * Determines which button in RadioGroup is selected
+     * @param group RadioGroup to check for selected button in
+     * @return Selected RadioButton or null if none selected
+     **************************************************************************/
+    public static RadioButton checkRadioGroup(RadioGroup group)
     {
         int numChildren = group.getChildCount();
         RadioButton[] buttons = new RadioButton[numChildren];
