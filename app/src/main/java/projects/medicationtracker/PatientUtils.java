@@ -11,31 +11,6 @@ import static java.time.temporal.TemporalAdjusters.previous;
 
 public class PatientUtils
 {
-    public static ArrayList<String> getPatientNames (ArrayList<Medication> medications)
-    {
-        ArrayList<String> patients = new ArrayList<>();
-
-        for (int i = 0; i < medications.size(); i++)
-        {
-            String thisPatient = medications.get(i).getPatientName();
-            boolean inList = patients.contains(thisPatient);
-
-            if (!inList)
-                patients.add(thisPatient);
-        }
-
-        if (patients.contains("ME!"))
-        {
-            for (int j = 0; j < patients.size(); j++)
-            {
-                if (patients.get(j).equals("ME!"))
-                    patients.set(j, "You");
-            }
-        }
-
-        return patients;
-    }
-
     // Creates a list of Medications to be taken in the current week
     public static ArrayList<Medication> medicationsForThisWeek(DBHelper db)
     {

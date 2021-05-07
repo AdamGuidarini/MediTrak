@@ -61,7 +61,10 @@ public class MainActivity extends AppCompatActivity
         }
 
         ArrayList<Medication> medications = PatientUtils.medicationsForThisWeek(db);
-        ArrayList<String> names = PatientUtils.getPatientNames(medications);
+        ArrayList<String> names = db.getPatients();
+
+        // Change ME! to You for Adapter
+        names.set(names.indexOf("ME!"), "You");
 
         // Load contents into spinner, or print results for only patient
         if (db.getPatients().size() <= 1)
