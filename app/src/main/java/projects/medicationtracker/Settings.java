@@ -28,6 +28,9 @@ public class Settings extends AppCompatActivity
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         Objects.requireNonNull(getSupportActionBar()).setTitle("Settings");
+
+        Button purgeButton = findViewById(R.id.purgeButton);
+        purgeButton.setBackgroundColor(Color.RED);
     }
 
     /**

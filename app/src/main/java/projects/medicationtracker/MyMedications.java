@@ -5,12 +5,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Spinner;
 
 import java.util.Objects;
 
 public class MyMedications extends AppCompatActivity
 {
+    DBHelper db = new DBHelper(this);
 
+    /**
+     * Creates MyMedications
+     * @param savedInstanceState Saved instances
+     **************************************************************************/
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -19,6 +25,8 @@ public class MyMedications extends AppCompatActivity
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         Objects.requireNonNull(getSupportActionBar()).setTitle("My Medications");
+
+        Spinner nameSpinner = findViewById(R.id.nameSpinner);
     }
 
 
