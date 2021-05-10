@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
-            android:background="@android:color/holo_red_dark"
+            android:backgroundTint="@color/red"
             android:onClick="onPurgeButtonClick"
             android:text="@string/delete_all" />
 
