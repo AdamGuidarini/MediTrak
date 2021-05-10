@@ -18,7 +18,8 @@
         <Spinner
             android:id="@+id/nameSpinner"
             android:layout_width="match_parent"
-            android:layout_height="50dp" />
+            android:layout_height="50dp"
+            android:visibility="gone" />
 
         <ScrollView
             android:id="@+id/scrollMyMeds"

@@ -227,6 +227,38 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
+     * Returns an ArrayList of all Medications for given patient
+     * @param patient The name of the patient whose Medications are sought
+     * @return An ArrayList of all Medications for given patient
+     */
+    public ArrayList<Medication> getMedicationsForPatient(String patient)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<Medication> medications = new ArrayList<>();
+
+        String query = "SELECT * FROM " + MEDICATION_TABLE + " WHERE " + PATIENT_NAME + " = " + patient;
+
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+
+        while (!cursor.isAfterLast())
+        {
+            int medId = Integer.parseInt(cursor.getString(cursor.getColumnIndex(MED_ID)));
+            int dosage = Integer.parseInt(cursor.getString(cursor.getColumnIndex(MED_DOSAGE)));
+            int freq = Integer.parseInt(cursor.getString(cursor.getColumnIndex(MED_FREQUENCY)));
+            String medName = cursor.getString(cursor.getColumnIndex(MED_NAME));
+            String patName = cursor.getString(cursor.getColumnIndex(PATIENT_NAME));
+            String units = cursor.getString(cursor.getColumnIndex(MED_UNITS));
+            String date1 = cursor.getString(cursor.getColumnIndex(START_DATE));
+            String alias = cursor.getString(cursor.getColumnIndex(ALIAS));
+        }
+
+        cursor.close();
+
+        return medications;
+    }
+
+    /**
      * Get number of rows in MedicationTable
      * @return Number of rows in MedicationTable
      **************************************************************************/
