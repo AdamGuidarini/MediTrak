@@ -2,7 +2,6 @@ package projects.medicationtracker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -11,8 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -34,16 +31,20 @@ public class MyMedications extends AppCompatActivity
 
         Objects.requireNonNull(getSupportActionBar()).setTitle("My Medications");
 
-        Spinner nameSpinner = findViewById(R.id.nameSpinner);
+        final Spinner nameSpinner = findViewById(R.id.nameSpinner);
+        final LinearLayout myMedsLayout = findViewById(R.id.medLayout);
+
         ArrayList<String> patientNames = db.getPatients();
 
         if (patientNames.size() >= 1)
         {
-            ArrayList<Medication> patientMeds;
-
             if (patientNames.size() == 1)
             {
-                patientMeds = db.getMedications();
+                ArrayList<Medication> patientMeds = db.getMedications();
+
+                for (Medication medication : patientMeds)
+                    CardCreator.createMyMedCards(medication, db, myMedsLayout);
+
             }
             else
             {
@@ -63,6 +64,17 @@ public class MyMedications extends AppCompatActivity
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
                     {
+                        myMedsLayout.removeAllViews();
+
+                        String patient = adapterView.getSelectedItem().toString();
+
+                        if (patient.equals("You"))
+                            patient = "ME!";
+
+                        ArrayList<Medication> patientMeds = db.getMedicationsForPatient(patient);
+
+                        for (Medication medication : patientMeds)
+                            CardCreator.createMyMedCards(medication, db, myMedsLayout);
                     }
 
                     @Override

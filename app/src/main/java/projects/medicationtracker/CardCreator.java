@@ -24,7 +24,9 @@ public class CardCreator
      *
      * @param medications An ArrayList of Medications. Will be searched for
      *                    Medications where patientName equals name passed to method.
-     * @param name        The name of the patient whose Medications should be displayed
+     * @param name The name of the patient whose Medications should be displayed
+     * @param db The database from which to pull data
+     * @param scheduleLayout The LinearLayout into which the cards will be placed
      **************************************************************************/
     public static void createMedicationSchedule(ArrayList<Medication> medications, String name, DBHelper db, LinearLayout scheduleLayout)
     {
@@ -155,5 +157,27 @@ public class CardCreator
         }
 
         layout.addView(thisDayCard);
+    }
+
+    /**
+     * Creates a CardView containing all information on a Medication
+     * @param medication The Medication whose details will be displayed.
+     * @param db The database storing data on the medication.
+     * @param baseLayout The LinearLayout in which to place the card
+     **************************************************************************/
+    public static void createMyMedCards(Medication medication, DBHelper db, LinearLayout baseLayout)
+    {
+        Context context = baseLayout.getContext();
+        CardView thisMedCard = new CardView(context);
+        LinearLayout thisMedLayout = new LinearLayout(context);
+
+        baseLayout.addView(thisMedCard);
+        thisMedCard.addView(thisMedLayout);
+
+        // Add name to thisMedLayout
+        TextView name = new TextView(context);
+        name.setText(medication.getMedName());
+        thisMedLayout.addView(name);
+
     }
 }

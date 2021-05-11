@@ -236,7 +236,7 @@ public class DBHelper extends SQLiteOpenHelper
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<Medication> medications = new ArrayList<>();
 
-        String query = "SELECT * FROM " + MEDICATION_TABLE + " WHERE " + PATIENT_NAME + " = " + patient;
+        String query = "SELECT * FROM " + MEDICATION_TABLE + " WHERE " + PATIENT_NAME + " = \"" + patient + "\"";
 
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
@@ -258,23 +258,24 @@ public class DBHelper extends SQLiteOpenHelper
 
             LocalDateTime times[];
 
-            String query2 = "Select " + DRUG_TIME + " FROM " + MEDICATION_TABLE + " WHERE "
+            String query2 = "Select " + DRUG_TIME + " FROM " + MEDICATION_TIMES + " WHERE "
                     + MED_ID + " = " + medId;
 
             Cursor cursor1 = db.rawQuery(query2, null);
+            cursor1.moveToFirst();
 
             int count = cursor1.getCount();
-            if (count > 0)
+            if (count != 0)
             {
                 // Build list of times for a Medication
                 times = new LocalDateTime[count];
                 for (int i = 0; i < count; i++)
                 {
-                    LocalTime lt = LocalTime.parse(cursor.getString(cursor.getColumnIndex(DRUG_TIME)));
+                    LocalTime lt = LocalTime.parse(cursor1.getString(cursor1.getColumnIndex(DRUG_TIME)));
 
                     times[i] = LocalDateTime.of(LocalDate.MIN, lt);
 
-                    cursor.moveToNext();
+                    cursor1.moveToNext();
                 }
             }
             else
