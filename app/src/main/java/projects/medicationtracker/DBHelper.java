@@ -247,10 +247,48 @@ public class DBHelper extends SQLiteOpenHelper
             int dosage = Integer.parseInt(cursor.getString(cursor.getColumnIndex(MED_DOSAGE)));
             int freq = Integer.parseInt(cursor.getString(cursor.getColumnIndex(MED_FREQUENCY)));
             String medName = cursor.getString(cursor.getColumnIndex(MED_NAME));
-            String patName = cursor.getString(cursor.getColumnIndex(PATIENT_NAME));
             String units = cursor.getString(cursor.getColumnIndex(MED_UNITS));
-            String date1 = cursor.getString(cursor.getColumnIndex(START_DATE));
+            String startDateStr = cursor.getString(cursor.getColumnIndex(START_DATE));
             String alias = cursor.getString(cursor.getColumnIndex(ALIAS));
+
+            LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(startDateStr);
+
+            if (alias == null)
+                alias = "";
+
+            LocalDateTime times[];
+
+            String query2 = "Select " + DRUG_TIME + " FROM " + MEDICATION_TABLE + " WHERE "
+                    + MED_ID + " = " + medId;
+
+            Cursor cursor1 = db.rawQuery(query2, null);
+
+            int count = cursor1.getCount();
+            if (count > 0)
+            {
+                // Build list of times for a Medication
+                times = new LocalDateTime[count];
+                for (int i = 0; i < count; i++)
+                {
+                    LocalTime lt = LocalTime.parse(cursor.getString(cursor.getColumnIndex(DRUG_TIME)));
+
+                    times[i] = LocalDateTime.of(LocalDate.MIN, lt);
+
+                    cursor.moveToNext();
+                }
+            }
+            else
+            {
+                times = new LocalDateTime[1];
+
+                times[0] = LocalDateTime.MIN;
+            }
+
+            medications.add(new Medication(medName, patient, units, times,
+                    startDate, medId, freq, dosage, alias));
+
+            cursor1.close();
+            cursor.moveToNext();
         }
 
         cursor.close();
