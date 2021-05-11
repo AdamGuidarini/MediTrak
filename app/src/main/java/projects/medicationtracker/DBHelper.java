@@ -351,9 +351,7 @@ public class DBHelper extends SQLiteOpenHelper
     public boolean isInMedicationTracker (Medication medication, LocalDateTime time)
     {
         SQLiteDatabase db = this.getReadableDatabase();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-        String dateTime = time.format(formatter);
+        String dateTime = TimeFormatting.LocalDateTimeToString(time);
 
         String query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE + " WHERE " + MED_ID + " = " +
                 medication.getMedId() + " AND " + DOSE_TIME + " = \"" + dateTime + "\"";

@@ -123,7 +123,7 @@ public class TimeFormatting
      **************************************************************************/
     public static String LocalDateTimeToString (LocalDateTime localDateTime)
     {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         return dateFormat.format(localDateTime);
     }
 }

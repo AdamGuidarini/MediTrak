@@ -51,23 +51,19 @@ public class MainActivity extends AppCompatActivity
         ArrayList<Medication> medications = PatientUtils.medicationsForThisWeek(db);
         ArrayList<String> names = db.getPatients();
 
-        // Change ME! to You for Adapter
-        if (names.contains("ME!"))
-            names.set(names.indexOf("ME!"), "You");
-
         // Load contents into spinner, or print results for only patient
         if (db.getPatients().size() == 1)
         {
             patientNames.setVisibility(View.GONE);
-
-            if (names.get(0).equals("You"))
-                names.set(0, "ME!");
 
             CardCreator.createMedicationSchedule(medications, names.get(0), db, scheduleLayout);
         }
         else
         {
             patientNames.setVisibility(View.VISIBLE);
+
+            if (names.contains("ME!"))
+                names.set(names.indexOf("ME!"), "You");
 
             ArrayAdapter<String> patientAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, names);
             patientNames.setAdapter(patientAdapter);
