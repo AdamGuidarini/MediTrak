@@ -102,42 +102,48 @@ public class CardCreator
                     // Check database for this dosage, if not add it
 
                     // if it is, get the DoseId
-                    long rowid;
+                    long rowid = 0;
 
                     if (!db.isInMedicationTracker(medications.get(i), time))
                     {
-
-                        rowid = db.addToMedicationTracker(medications.get(i), time);
-                        if ( rowid == -1)
-                            Toast.makeText(context,"An error occurred when attempting to write data to database", Toast.LENGTH_LONG).show();
+                        LocalDateTime startDate = medications.get(i).getStartDate();
+                        if (time.isEqual(startDate) || time.isAfter(startDate))
+                        {
+                            rowid = db.addToMedicationTracker(medications.get(i), time);
+                            if (rowid == -1)
+                                Toast.makeText(context, "An error occurred when attempting to write data to database", Toast.LENGTH_LONG).show();
+                        }
                     }
                     else
                     {
                         rowid = db.getDoseId(medId, TimeFormatting.LocalDateTimeToString(time));
                     }
 
-                    thisMedication.setTag(rowid);
-
-                    if (db.getTaken(rowid))
-                        thisMedication.setChecked(true);
-
-                    thisMedication.setOnCheckedChangeListener((compoundButton, b) ->
+                    if (rowid > 0)
                     {
-                        final int doseId = Integer.parseInt(thisMedication.getTag().toString());
+                        thisMedication.setTag(rowid);
 
-                        if (LocalDateTime.now().isBefore(time.minusHours(2)))
+                        if (db.getTaken(rowid))
+                            thisMedication.setChecked(true);
+
+                        thisMedication.setOnCheckedChangeListener((compoundButton, b) ->
                         {
-                            thisMedication.setChecked(false);
-                            Toast.makeText(context, "Cannot take medications more than 2 hours in advance", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
+                            final int doseId = Integer.parseInt(thisMedication.getTag().toString());
+
+                            if (LocalDateTime.now().isBefore(time.minusHours(2)))
+                            {
+                                thisMedication.setChecked(false);
+                                Toast.makeText(context, "Cannot take medications more than 2 hours in advance", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
 
 
-                        String now = TimeFormatting.LocalDateTimeToString(LocalDateTime.now());
-                        db.updateDoseStatus(doseId, now, thisMedication.isChecked());
-                    });
+                            String now = TimeFormatting.LocalDateTimeToString(LocalDateTime.now());
+                            db.updateDoseStatus(doseId, now, thisMedication.isChecked());
+                        });
 
-                    ll.addView(thisMedication);
+                        ll.addView(thisMedication);
+                    }
                 }
             }
         }
@@ -187,7 +193,7 @@ public class CardCreator
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         cardView.setLayoutParams(layoutParams);
         ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) cardView.getLayoutParams();
-        marginLayoutParams.setMargins(15, 40, 15, 40);
+        marginLayoutParams.setMargins(25, 40, 25, 40);
         cardView.requestLayout();
     }
 }
