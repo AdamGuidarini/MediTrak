@@ -65,7 +65,7 @@ public class DBHelper extends SQLiteOpenHelper
         String[] queries = new String[NUM_TABLES];
 
         // Holds all constant information on a given medication
-        queries[0] = "CREATE TABLE IF NOT EXISTS" + MEDICATION_TABLE + "("
+        queries[0] = "CREATE TABLE IF NOT EXISTS " + MEDICATION_TABLE + "("
                 + MED_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + MED_NAME + " TEXT,"
                 + PATIENT_NAME + " Text,"
@@ -77,7 +77,7 @@ public class DBHelper extends SQLiteOpenHelper
                 + ")";
 
         // Holds data on past doses, as well as doses for current week
-        queries[1] = "CREATE TABLE IF NOT EXISTS" + MEDICATION_TRACKER_TABLE + "("
+        queries[1] = "CREATE TABLE IF NOT EXISTS " + MEDICATION_TRACKER_TABLE + "("
                 + DOSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + MED_ID + " INT,"
                 + DOSE_TIME + " DATETIME,"
@@ -87,7 +87,7 @@ public class DBHelper extends SQLiteOpenHelper
                 + ")";
 
         // Holds information on doses with a custom frequency so times for upcoming doses can be calculated
-        queries[2] = "CREATE TABLE IF NOT EXISTS" + MEDICATION_TIMES + "("
+        queries[2] = "CREATE TABLE IF NOT EXISTS " + MEDICATION_TIMES + "("
                 + TIME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + MED_ID + " INT,"
                 + DRUG_TIME + " TEXT,"
@@ -95,7 +95,7 @@ public class DBHelper extends SQLiteOpenHelper
                 + ")";
 
         // Holds statistics for a given medication
-        queries[3] = "CREATE TABLE IF NOT EXISTS" + MEDICATION_STATS_TABLE + "("
+        queries[3] = "CREATE TABLE IF NOT EXISTS " + MEDICATION_STATS_TABLE + "("
                 + MED_ID + " INT PRIMARY KEY ,"
                 + START_DATE + " DATETIME, "
                 + END_DATE + " DATETIME, "
@@ -106,7 +106,7 @@ public class DBHelper extends SQLiteOpenHelper
 
         // Stores a users notes for a medication, designed to help track how a medication is
         // affecting the patient. Facilitates tracking possible issues to bring up with prescriber
-        queries[4] = "CREATE TABLE IF NOT EXISTS" + NOTES_TABLE + "("
+        queries[4] = "CREATE TABLE IF NOT EXISTS " + NOTES_TABLE + "("
                 + NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + MED_ID + " INT, "
                 + NOTE + " TEXT, "

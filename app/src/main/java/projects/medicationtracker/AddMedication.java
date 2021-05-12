@@ -3,6 +3,7 @@ package projects.medicationtracker;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
 
 import android.annotation.SuppressLint;
@@ -72,6 +73,9 @@ public class AddMedication extends AppCompatActivity
         aliasSwitch = findViewById(R.id.aliasSwitch);
         aliasSwitch = findViewById(R.id.aliasSwitch);
         frequencySpinner =  findViewById(R.id.frequencySpinner);
+
+        CardView addMedCard = findViewById(R.id.addMedsCard);
+        CardCreator.setCardParams(addMedCard);
 
         String[] spinnerFrequencies = {"Hour(s)", "Day(s)", "week(s)"};
         ArrayAdapter<String> frequencyAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerFrequencies);
