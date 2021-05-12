@@ -70,12 +70,7 @@ public class CardCreator
         ll.setLayoutParams(llParams);
         ll.setOrientation(LinearLayout.VERTICAL);
 
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        thisDayCard.setLayoutParams(layoutParams);
-
-        ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) thisDayCard.getLayoutParams();
-        marginLayoutParams.setMargins(15, 40, 15, 40);
-        thisDayCard.requestLayout();
+        setCardParams(thisDayCard);
 
         // Add day to top of card
         dayLabel.setText(dayOfWeek);
@@ -170,8 +165,10 @@ public class CardCreator
         Context context = baseLayout.getContext();
         CardView thisMedCard = new CardView(context);
         LinearLayout thisMedLayout = new LinearLayout(context);
-
         baseLayout.addView(thisMedCard);
+
+        setCardParams(thisMedCard);
+
         thisMedCard.addView(thisMedLayout);
 
         // Add name to thisMedLayout
@@ -179,5 +176,18 @@ public class CardCreator
         name.setText(medication.getMedName());
         thisMedLayout.addView(name);
 
+    }
+
+    /**
+     * Sets a CardView's parameters to a set standard
+     * @param cardView The CardView whose parameters will be set
+     **************************************************************************/
+    public static void setCardParams(CardView cardView)
+    {
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        cardView.setLayoutParams(layoutParams);
+        ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) cardView.getLayoutParams();
+        marginLayoutParams.setMargins(15, 40, 15, 40);
+        cardView.requestLayout();
     }
 }

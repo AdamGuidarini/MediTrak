@@ -80,7 +80,6 @@ public class MyMedications extends AppCompatActivity
                     @Override
                     public void onNothingSelected(AdapterView<?> adapterView) {}
                 });
-
             }
         }
     }
