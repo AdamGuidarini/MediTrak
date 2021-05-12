@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MedicationTracker</string>
+    <string name="app_name">MediTrack</string>
     <string name="my_medications">My Medications</string>
     <string name="add_medication">Add Medication</string>
     <string name="medication_name">Medication Name:</string>
