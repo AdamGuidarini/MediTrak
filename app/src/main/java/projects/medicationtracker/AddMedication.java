@@ -8,6 +8,7 @@ import androidx.fragment.app.DialogFragment;
 import android.annotation.SuppressLint;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
+import android.os.TestLooperManager;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -158,11 +159,11 @@ public class AddMedication extends AppCompatActivity
                         final int id = ii;
 
                         TextView textView = new TextView(timesOfTheDay.getContext());
-                        textView.setHint("Tap to set time");
                         textView.setId(id);
                         textView.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_TIME);
                         // set layout params
-                        timesOfTheDay.addView(textView);
+                        TextViewUtils.setTextViewParams(textView, "Tap to set time", timesOfTheDay);
+
                         textView.setOnClickListener(view ->
                         {
                             DialogFragment dialogFragment = new TimePickerFragment(id);
@@ -191,6 +192,8 @@ public class AddMedication extends AppCompatActivity
                     timesOfTheDay.removeAllViews();
                     timeTaken1.setVisibility(View.VISIBLE);
                     timeTaken1.setText(R.string.atThisTime);
+
+                    TextViewUtils.setTextViewFontAndPadding(timeTaken1);
 
                     final int id = timeTaken1.getId();
 

@@ -153,8 +153,7 @@ public class CardCreator
             TextView textView = new TextView(thisDayCard.getContext());
             String noMed = "No medications for " + dayOfWeek;
 
-            textView.setText(noMed);
-            ll.addView(textView);
+            TextViewUtils.setTextViewParams(textView, noMed, ll);
         }
 
         layout.addView(thisDayCard);
@@ -179,8 +178,7 @@ public class CardCreator
 
         // Add name to thisMedLayout
         TextView name = new TextView(context);
-        name.setText(medication.getMedName());
-        thisMedLayout.addView(name);
+        TextViewUtils.setTextViewParams(name, medication.getMedName(), thisMedLayout);
 
     }
 
