@@ -230,11 +230,10 @@ public class CardCreator
 
         // Add LinearLayout for buttons
         Intent intent = new Intent(context, MedicationNotes.class);
-        ButtonManager.createActivityButton("Notes", thisMedLayout, context, intent);
+        intent.putExtra("medId", medication.getMedId());ButtonManager.createActivityButton("Notes", thisMedLayout, context, intent);
 
-        // TODO change from MainActivity to upcoming EditMedication activity
-        intent = new Intent(context, MainActivity.class);
-        ButtonManager.createActivityButton("Edit", thisMedLayout, context, intent);
+        intent = new Intent(context, EditMedication.class);
+        intent.putExtra("medId", medication.getMedId());ButtonManager.createActivityButton("Edit", thisMedLayout, context, intent);
     }
 
     /**
