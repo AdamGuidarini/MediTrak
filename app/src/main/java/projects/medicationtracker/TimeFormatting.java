@@ -3,7 +3,6 @@ package projects.medicationtracker;
 import android.icu.text.SimpleDateFormat;
 import android.widget.TextView;
 
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;

@@ -194,7 +194,7 @@ public class CardCreator
 
         if (medication.getMedFrequency() == 1440 && (medication.getTimes().length == 1))
         {
-            String time = TimeFormatting.localTimeToString(medication.getStartDate().toLocalTime());
+            String time = TimeFormatting.localTimeToString(medication.getTimes()[0].toLocalTime());
             freqLabel = "Taken daily at: " + time;
         }
         else if (medication.getMedFrequency() == 1440 && (medication.getTimes().length > 1))
