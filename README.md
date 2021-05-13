@@ -5,7 +5,7 @@ Development plan as of May 12, 2021:
 
 Requirements:
 
-  + Android 9.0 Oreo or newer
+  + Android 8.0 Oreo or newer
   + 4 MB storage
 
 Status:
