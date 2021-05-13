@@ -43,7 +43,7 @@ public class MyMedications extends AppCompatActivity
                 ArrayList<Medication> patientMeds = db.getMedications();
 
                 for (Medication medication : patientMeds)
-                    CardCreator.createMyMedCards(medication, db, myMedsLayout);
+                    CardCreator.createMyMedCards(medication, myMedsLayout);
 
             }
             else
@@ -74,7 +74,7 @@ public class MyMedications extends AppCompatActivity
                         ArrayList<Medication> patientMeds = db.getMedicationsForPatient(patient);
 
                         for (Medication medication : patientMeds)
-                            CardCreator.createMyMedCards(medication, db, myMedsLayout);
+                            CardCreator.createMyMedCards(medication, myMedsLayout);
                     }
 
                     @Override

@@ -27,9 +27,9 @@
         android:orientation="vertical">
 
         <Spinner
+            android:id="@+id/patientSpinner"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:id="@+id/patientSpinner"/>
+            android:layout_height="60dp" />
 
         <ScrollView
             android:id="@+id/scheduleScrollView"

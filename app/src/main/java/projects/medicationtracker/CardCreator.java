@@ -163,10 +163,9 @@ public class CardCreator
     /**
      * Creates a CardView containing all information on a Medication
      * @param medication The Medication whose details will be displayed.
-     * @param db The database storing data on the medication.
      * @param baseLayout The LinearLayout in which to place the card
      **************************************************************************/
-    public static void createMyMedCards(Medication medication, DBHelper db, LinearLayout baseLayout)
+    public static void createMyMedCards(Medication medication, LinearLayout baseLayout)
     {
         Context context = baseLayout.getContext();
         CardView thisMedCard = new CardView(context);
@@ -227,6 +226,10 @@ public class CardCreator
         TextView startDate = new TextView(context);
         String startDateLabel = "Taken Since: " + TimeFormatting.localDateToString(medication.getStartDate().toLocalDate());
         TextViewUtils.setTextViewParams(startDate, startDateLabel, thisMedLayout);
+
+        // Add LinearLayout for buttons
+        ButtonManager.createActivityButton("Notes", thisMedLayout, context);
+        ButtonManager.createActivityButton("Edit", thisMedLayout, context);
     }
 
     /**
@@ -240,5 +243,6 @@ public class CardCreator
         ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) cardView.getLayoutParams();
         marginLayoutParams.setMargins(25, 40, 25, 40);
         cardView.requestLayout();
+        cardView.setRadius(30);
     }
 }
