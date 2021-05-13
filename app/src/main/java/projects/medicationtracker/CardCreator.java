@@ -75,6 +75,7 @@ public class CardCreator
         setCardParams(thisDayCard);
 
         // Add day to top of card
+        TextViewUtils.setTextViewFontAndPadding(dayLabel);
         dayLabel.setText(dayOfWeek);
         ll.addView(dayLabel);
 
