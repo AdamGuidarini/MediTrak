@@ -9,7 +9,6 @@ import androidx.fragment.app.DialogFragment;
 import android.annotation.SuppressLint;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
-import android.os.TestLooperManager;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
