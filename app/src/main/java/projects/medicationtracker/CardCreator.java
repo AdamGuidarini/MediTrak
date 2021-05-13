@@ -40,7 +40,7 @@ public class CardCreator
                 medicationsForThisPatient.add(medications.get(i));
         }
 
-        String[] days = {" Sunday", " Monday", " Tuesday", " Wednesday", " Thursday", " Friday", " Saturday"};
+        String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
         for (int ii = 0; ii < 7; ii++)
             createDayOfWeekCards(days[ii], ii, medicationsForThisPatient, scheduleLayout, db, scheduleLayout.getContext());
