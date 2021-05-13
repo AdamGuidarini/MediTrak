@@ -3,6 +3,11 @@ An Android app that helps users keep track of their medications.
 
 Development plan as of May 12, 2021:
 
+Requirements:
+
+  + Android 9.0 Oreo or newer
+  + 4 MB storage
+
 Status:
   
   + In active development.
