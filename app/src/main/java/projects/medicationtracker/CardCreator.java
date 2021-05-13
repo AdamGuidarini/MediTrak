@@ -1,6 +1,7 @@
 package projects.medicationtracker;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -228,8 +229,12 @@ public class CardCreator
         TextViewUtils.setTextViewParams(startDate, startDateLabel, thisMedLayout);
 
         // Add LinearLayout for buttons
-        ButtonManager.createActivityButton("Notes", thisMedLayout, context);
-        ButtonManager.createActivityButton("Edit", thisMedLayout, context);
+        Intent intent = new Intent(context, MedicationNotes.class);
+        ButtonManager.createActivityButton("Notes", thisMedLayout, context, intent);
+
+        // TODO change from MainActivity to upcoming EditMedication activity
+        intent = new Intent(context, MainActivity.class);
+        ButtonManager.createActivityButton("Edit", thisMedLayout, context, intent);
     }
 
     /**
