@@ -10,11 +10,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper
@@ -269,14 +272,22 @@ public class DBHelper extends SQLiteOpenHelper
             {
                 // Build list of times for a Medication
                 times = new LocalDateTime[count];
+                ArrayList<LocalDateTime> timesArr = new ArrayList<>();
+
                 for (int i = 0; i < count; i++)
                 {
                     LocalTime lt = LocalTime.parse(cursor1.getString(cursor1.getColumnIndex(DRUG_TIME)));
 
-                    times[i] = LocalDateTime.of(LocalDate.MIN, lt);
+                    timesArr.add(LocalDateTime.of(LocalDate.MIN, lt));
 
                     cursor1.moveToNext();
                 }
+
+                Collections.sort(timesArr);
+
+                for (int i = 0; i < count; i++)
+                    times[i] = timesArr.get(i);
+
             }
             else
             {
@@ -351,14 +362,22 @@ public class DBHelper extends SQLiteOpenHelper
             {
                 // Build list of times for a Medication
                 times = new LocalDateTime[count];
+                ArrayList<LocalDateTime> timesArr = new ArrayList<>();
+
                 for (int i = 0; i < count; i++)
                 {
                     LocalTime lt = LocalTime.parse(cursor.getString(cursor.getColumnIndex(DRUG_TIME)));
 
-                    times[i] = LocalDateTime.of(LocalDate.MIN, lt);
+                    timesArr.add(LocalDateTime.of(LocalDate.MIN, lt));
 
                     cursor.moveToNext();
                 }
+
+                Collections.sort(timesArr);
+
+                for (int i = 0; i < count; i++)
+                    times[i] = timesArr.get(i);
+
             }
             else
             {

@@ -73,8 +73,8 @@ public class MyMedications extends AppCompatActivity
 
                         ArrayList<Medication> patientMeds = db.getMedicationsForPatient(patient);
 
-                        for (int ii = 0; ii < patientMeds.size(); ii++)
-                            CardCreator.createMyMedCards(patientMeds.get(ii), db, myMedsLayout);
+                        for (Medication medication : patientMeds)
+                            CardCreator.createMyMedCards(medication, db, myMedsLayout);
                     }
 
                     @Override

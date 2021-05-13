@@ -20,25 +20,25 @@ public class TimeFormatting
      **************************************************************************/
     public static String formatTimeForUser(int hour, int minute)
     {
-        String chosenTime = "At: ";
+        String chosenTime;
         String min;
         String amOrPm;
 
         if (hour >= 12 && hour < 24)
         {
             if (hour > 12)
-                chosenTime += String.valueOf(hour - 12);
+                chosenTime = String.valueOf(hour - 12);
             else
-                chosenTime += String.valueOf(hour);
+                chosenTime = String.valueOf(hour);
 
             amOrPm = " PM";
         }
         else
         {
             if (hour < 12 && hour != 0)
-                chosenTime += String.valueOf(hour);
+                chosenTime = String.valueOf(hour);
             else
-                chosenTime += "12";
+                chosenTime = "12";
 
             amOrPm = " AM";
         }
@@ -128,10 +128,80 @@ public class TimeFormatting
         return dateFormat.format(localDateTime);
     }
 
+    /**
+     * Converts a LocalTime to a String in 12-hour format
+     * @param time Time to convert
+     * @return A String of the time passed to it in 12-hour format
+     **************************************************************************/
     public static String localTimeToString(LocalTime time)
     {
         int hour = time.getHour();
         int minute = time.getMinute();
         return formatTimeForUser(hour, minute);
+    }
+
+    public static String freqConversion(int minutes)
+    {
+        boolean containsWeeks = false;
+        boolean containsDays = false;
+        boolean containsHours = false;
+
+        String conversion = "";
+
+        if (minutes >= 10080)
+        {
+            int weeks = 0;
+
+            for (; minutes >= 10080; minutes -= 10080)
+                weeks++;
+
+            conversion = weeks + " week";
+            if (weeks > 1) conversion += "s";
+
+            containsWeeks = true;
+        }
+
+        if (minutes >= 1440)
+        {
+            if (containsWeeks)
+                conversion += ", ";
+
+            int days = 0;
+
+            for (; minutes >= 1440; minutes -= 1440)
+                days++;
+
+            conversion += days + " day";
+            if (days > 1)    conversion += "s";
+
+            containsDays = true;
+        }
+
+        if (minutes >= 60)
+        {
+            if (containsDays)
+                conversion += ", ";
+
+            int hours = 0;
+
+            for (; minutes >= 60; minutes -= 60)
+                hours++;
+
+            conversion += hours + " hour";
+            if (hours > 1)  conversion += "s";
+
+            containsHours = true;
+        }
+
+        if (minutes > 0)
+        {
+            if (containsHours)
+                conversion += ", ";
+
+            conversion += minutes + " minute";
+            if (minutes > 1) conversion += "s";
+        }
+
+        return conversion;
     }
 }

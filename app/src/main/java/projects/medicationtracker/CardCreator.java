@@ -12,6 +12,7 @@ import androidx.cardview.widget.CardView;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 import static java.time.temporal.TemporalAdjusters.previous;
@@ -191,13 +192,26 @@ public class CardCreator
         TextView freq = new TextView(context);
         String freqLabel;
 
-        if (medication.getMedFrequency() == 1440)
+        if (medication.getMedFrequency() == 1440 && (medication.getTimes().length == 1))
         {
             String time = TimeFormatting.localTimeToString(medication.getStartDate().toLocalTime());
             freqLabel = "Taken daily at: " + time;
         }
+        else if (medication.getMedFrequency() == 1440 && (medication.getTimes().length > 1))
+        {
+            freqLabel = "Taken daily at: ";
+
+            for (int i = 0; i < medication.getTimes().length; i++)
+            {
+                LocalTime time = medication.getTimes()[i].toLocalTime();
+                freqLabel += TimeFormatting.localTimeToString(time);
+
+                if (i != (medication.getTimes().length - 1))
+                    freqLabel += ", ";
+            }
+        }
         else
-            freqLabel = "Taken every: ";
+            freqLabel = "Taken every: " + TimeFormatting.freqConversion(medication.getMedFrequency());
 
         TextViewUtils.setTextViewParams(freq, freqLabel, thisMedLayout);
     }
