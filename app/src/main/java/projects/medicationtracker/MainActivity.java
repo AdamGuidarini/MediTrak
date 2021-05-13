@@ -57,10 +57,7 @@ public class MainActivity extends AppCompatActivity
     protected void onRestart()
     {
         super.onRestart();
-        startActivity(getIntent());
-        LinearLayout scheduleLayout = findViewById(R.id.scheduleLayout);
-        scheduleLayout.removeAllViews();
-        createMainActivityViews();
+        super.recreate();
     }
 
     /**
