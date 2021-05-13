@@ -90,7 +90,7 @@ public class CardCreator
                 if (time.toLocalDate().isEqual(thisSunday.plusDays(day - 1)))
                 {
                     CheckBox thisMedication = new CheckBox(ll.getContext());
-                    int medId = medications.get(i).getMedId();
+                    long medId = medications.get(i).getMedId();
 
                     // Set Checkbox label
                     String medName = medications.get(i).getMedName();

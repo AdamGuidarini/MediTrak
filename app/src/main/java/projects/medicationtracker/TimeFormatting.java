@@ -151,7 +151,7 @@ public class TimeFormatting
      * @param minutes Time in minutes
      * @return String showing time taken
      **************************************************************************/
-    public static String freqConversion(int minutes)
+    public static String freqConversion(long minutes)
     {
         boolean containsWeeks = false;
         boolean containsDays = false;

@@ -13,8 +13,8 @@ public class Medication implements Cloneable
     private LocalDateTime startDate;
     private String alias;
     private LocalDateTime[] times;
-    private int medId;
-    private int medFrequency;
+    private long medId;
+    private long medFrequency;
     private int medDosage;
 
     /**
@@ -48,7 +48,7 @@ public class Medication implements Cloneable
      * Returns Medication ID
      * @return Medication ID
      *************************************************************************/
-    public int getMedId() { return medId; }
+    public long getMedId() { return medId; }
 
     /**
      * Returns name of Medication
@@ -60,7 +60,7 @@ public class Medication implements Cloneable
      * Returns Medication frequency
      * @return Medication frequency
      *************************************************************************/
-    public int getMedFrequency() { return medFrequency; }
+    public long getMedFrequency() { return medFrequency; }
 
     /**
      * Returns Medication dosage
@@ -103,7 +103,7 @@ public class Medication implements Cloneable
      * Set Medication ID
      * @param medId The Medication's ID
      *************************************************************************/
-    public void setMedId(int medId) { this.medId = medId; }
+    public void setMedId(long medId) { this.medId = medId; }
 
     /**
      * Set the name of the Medication
@@ -115,7 +115,7 @@ public class Medication implements Cloneable
      * Set the Medication frequency
      * @param medFrequency Frequency of the medication
      *************************************************************************/
-    public void setMedFrequency(int medFrequency) { this.medFrequency = medFrequency; }
+    public void setMedFrequency(long medFrequency) { this.medFrequency = medFrequency; }
 
     /**
      * Set dosage of the medication

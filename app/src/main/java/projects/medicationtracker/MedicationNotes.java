@@ -18,6 +18,8 @@ public class MedicationNotes extends AppCompatActivity
         setContentView(R.layout.activity_medication_notes);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Notes");
+
+        long medId = getIntent().getLongExtra("medId", 0);
     }
 
     /**

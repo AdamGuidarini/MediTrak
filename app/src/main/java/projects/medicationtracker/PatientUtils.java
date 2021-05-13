@@ -68,7 +68,7 @@ public class PatientUtils
             {
                 LocalDateTime timeToCheck = medications.get(i).getStartDate();
                 ArrayList<LocalDateTime> times = new ArrayList<>();
-                int frequency = medications.get(i).getMedFrequency();
+                long frequency = medications.get(i).getMedFrequency();
 
                 while (timeToCheck.toLocalDate().isBefore(thisSunday))
                     timeToCheck = timeToCheck.plusMinutes(frequency);
