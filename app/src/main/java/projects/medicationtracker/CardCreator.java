@@ -170,6 +170,7 @@ public class CardCreator
         Context context = baseLayout.getContext();
         CardView thisMedCard = new CardView(context);
         LinearLayout thisMedLayout = new LinearLayout(context);
+        thisMedLayout.setOrientation(LinearLayout.VERTICAL);
         baseLayout.addView(thisMedCard);
 
         setCardParams(thisMedCard);
@@ -178,8 +179,27 @@ public class CardCreator
 
         // Add name to thisMedLayout
         TextView name = new TextView(context);
-        TextViewUtils.setTextViewParams(name, medication.getMedName(), thisMedLayout);
+        String nameLabel = "Medication name: " + medication.getMedName();
+        TextViewUtils.setTextViewParams(name, nameLabel, thisMedLayout);
 
+        // Add Dosage
+        TextView doseInfo = new TextView(context);
+        String doseInfoLabel = "Dosage: " + medication.getMedDosage() + " " + medication.getMedDosageUnits();
+        TextViewUtils.setTextViewParams(doseInfo, doseInfoLabel, thisMedLayout);
+
+        // Add Frequency
+        TextView freq = new TextView(context);
+        String freqLabel;
+
+        if (medication.getMedFrequency() == 1440)
+        {
+            String time = TimeFormatting.localTimeToString(medication.getStartDate().toLocalTime());
+            freqLabel = "Taken daily at: " + time;
+        }
+        else
+            freqLabel = "Taken every: ";
+
+        TextViewUtils.setTextViewParams(freq, freqLabel, thisMedLayout);
     }
 
     /**

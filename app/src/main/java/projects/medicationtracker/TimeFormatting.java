@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 import java.text.ParseException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
@@ -125,5 +126,12 @@ public class TimeFormatting
     {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         return dateFormat.format(localDateTime);
+    }
+
+    public static String localTimeToString(LocalTime time)
+    {
+        int hour = time.getHour();
+        int minute = time.getMinute();
+        return formatTimeForUser(hour, minute);
     }
 }
