@@ -9,7 +9,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -30,6 +32,16 @@ public class MyMedications extends AppCompatActivity
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         Objects.requireNonNull(getSupportActionBar()).setTitle("My Medications");
+
+        if (db.numberOfRows() == 0)
+            return;
+        else
+        {
+            TextView noMeds = findViewById(R.id.noMyMeds);
+            noMeds.setVisibility(View.GONE);
+            ScrollView scrollMyMeds = findViewById(R.id.scrollMyMeds);
+            scrollMyMeds.setVisibility(View.VISIBLE);
+        }
 
         final Spinner nameSpinner = findViewById(R.id.nameSpinner);
         final LinearLayout myMedsLayout = findViewById(R.id.medLayout);

@@ -15,6 +15,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:id="@+id/noMyMeds"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/no_medications_found" />
+
         <Spinner
             android:id="@+id/nameSpinner"
             android:layout_width="match_parent"
@@ -24,13 +31,17 @@
         <ScrollView
             android:id="@+id/scrollMyMeds"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            tools:visibility="gone">
 
             <LinearLayout
                 android:id="@+id/medLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"></LinearLayout>
+                android:orientation="vertical">
+
+            </LinearLayout>
         </ScrollView>
 
     </LinearLayout>
