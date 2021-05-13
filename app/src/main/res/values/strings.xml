@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MediTrack</string>
+    <string name="app_name">MediTrak</string>
     <string name="my_medications">My Medications</string>
     <string name="add_medication">Add Medication</string>
     <string name="medication_name">Medication Name:</string>
@@ -27,7 +27,7 @@
     <string name="times_per_day">Times per day</string>
     <string name="atThisTime">At: Tap to set time</string>
     <string name="starting">Starting:</string>
-    <string name="no_medications_found">No Medications found</string>
+    <string name="no_medications_found">No medications found</string>
     <string name="alias_for_medication">Alias for medication</string>
     <string name="alias_for_medication_displays_notification">Alias for medication displays notification</string>
     <string name="medication_alias_displays_in_notification">Medication alias displays in notification</string>

@@ -2,6 +2,7 @@ package projects.medicationtracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -34,6 +35,70 @@ public class MainActivity extends AppCompatActivity
 
         Objects.requireNonNull(getSupportActionBar()).setTitle("Medication Schedule");
 
+        createMainActivityViews();
+    }
+
+    /**
+     * Creates option menu
+     *
+     * @param menu Menu containing selections for user
+     **************************************************************************/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    /**
+     * Instructions for restarting activity once returned to from other activity
+     * Clears all elements and reprints new ones.
+     **************************************************************************/
+    @Override
+    protected void onRestart()
+    {
+        super.onRestart();
+        startActivity(getIntent());
+        LinearLayout scheduleLayout = findViewById(R.id.scheduleLayout);
+        scheduleLayout.removeAllViews();
+        createMainActivityViews();
+    }
+
+    /**
+    *  Launches MyMedications.java when "My Medications" option is selected
+    *
+    *  @param item the "My Medications" menu option
+    **************************************************************************/
+    public void onMyMedicationsClick(MenuItem item)
+    {
+        Intent intent = new Intent(this, MyMedications.class);
+        startActivity(intent);
+    }
+
+    /**
+     *  Launches AddMedication.java when "Add Medication" option is selected
+     *
+     *  @param item The "Add Medication" option
+     **************************************************************************/
+    public void onAddMedicationClick(MenuItem item)
+    {
+        Intent intent = new Intent(this, AddMedication.class);
+        startActivity(intent);
+    }
+
+    /**
+     *  Launches Settings.java when "Settings" option is selected
+     *
+     *  @param item The "Settings" menu option
+     **************************************************************************/
+    public void onSettingsClick(MenuItem item)
+    {
+        Intent intent = new Intent(this, Settings.class);
+        startActivity(intent);
+    }
+
+    public void createMainActivityViews()
+    {
         LinearLayout scheduleLayout = findViewById(R.id.scheduleLayout);
         TextView noMeds = findViewById(R.id.noMeds);
         ScrollView scheduleScrollView = findViewById(R.id.scheduleScrollView);
@@ -97,61 +162,5 @@ public class MainActivity extends AppCompatActivity
                 public void onNothingSelected(AdapterView<?> adapterView) {}
             });
         }
-    }
-
-    /**
-     * Creates option menu
-     *
-     * @param menu Menu containing selections for user
-     **************************************************************************/
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    /**
-     * Instructions for restarting activity once returned to from other activity
-     **************************************************************************/
-    @Override
-    protected void onRestart()
-    {
-        super.onRestart();
-        finish();
-        startActivity(getIntent());
-    }
-
-    /**
-    *  Launches MyMedications.java when "My Medications" option is selected
-    *
-    *  @param item the "My Medications" menu option
-    **************************************************************************/
-    public void onMyMedicationsClick(MenuItem item)
-    {
-        Intent intent = new Intent(this, MyMedications.class);
-        startActivity(intent);
-    }
-
-    /**
-     *  Launches AddMedication.java when "Add Medication" option is selected
-     *
-     *  @param item The "Add Medication" option
-     **************************************************************************/
-    public void onAddMedicationClick(MenuItem item)
-    {
-        Intent intent = new Intent(this, AddMedication.class);
-        startActivity(intent);
-    }
-
-    /**
-     *  Launches Settings.java when "Settings" option is selected
-     *
-     *  @param item The "Settings" menu option
-     **************************************************************************/
-    public void onSettingsClick(MenuItem item)
-    {
-        Intent intent = new Intent(this, Settings.class);
-        startActivity(intent);
     }
 }
