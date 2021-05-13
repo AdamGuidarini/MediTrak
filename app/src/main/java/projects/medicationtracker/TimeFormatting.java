@@ -3,6 +3,7 @@ package projects.medicationtracker;
 import android.icu.text.SimpleDateFormat;
 import android.widget.TextView;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -73,6 +74,12 @@ public class TimeFormatting
         return time + ":00";
     }
 
+    public static String localDateToString(LocalDate localDate)
+    {
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.getDefault());
+        return dateFormat.format(localDate);
+    }
+
     /**
      * Sets chosen current date and time to 2 TextViews and stores datetime for
      * database in the tag of TextView that will display the date.
@@ -139,6 +146,11 @@ public class TimeFormatting
         return formatTimeForUser(hour, minute);
     }
 
+    /**
+     * Converts time in minutes to weeks, days, and minutes
+     * @param minutes Time in minutes
+     * @return String showing time taken
+     **************************************************************************/
     public static String freqConversion(int minutes)
     {
         boolean containsWeeks = false;

@@ -214,6 +214,19 @@ public class CardCreator
             freqLabel = "Taken every: " + TimeFormatting.freqConversion(medication.getMedFrequency());
 
         TextViewUtils.setTextViewParams(freq, freqLabel, thisMedLayout);
+
+        // Add alias (if exists)
+        if (!medication.getAlias().equals(""))
+        {
+            TextView alias = new TextView(context);
+            String aliasLabel = "Alias: " + medication.getAlias();
+            TextViewUtils.setTextViewParams(alias, aliasLabel, thisMedLayout);
+        }
+
+        // Add start date
+        TextView startDate = new TextView(context);
+        String startDateLabel = "Taken Since: " + TimeFormatting.localDateToString(medication.getStartDate().toLocalDate());
+        TextViewUtils.setTextViewParams(startDate, startDateLabel, thisMedLayout);
     }
 
     /**
