@@ -455,7 +455,7 @@ public class DBHelper extends SQLiteOpenHelper
      * @param doseTime Time of dose
      * @return rowid of match found in MedicationTracker table
      **************************************************************************/
-    public long getDoseId (int medId, String doseTime)
+    public long getDoseId (long medId, String doseTime)
     {
         SQLiteDatabase db = this.getReadableDatabase();
         long rowId;
@@ -519,5 +519,69 @@ public class DBHelper extends SQLiteOpenHelper
         SQLiteDatabase db = this.getWritableDatabase();
 
         return db.delete(MEDICATION_TABLE, "1", null) != 0;
+    }
+
+    /**
+     * Adds a new Note to the Notes table
+     * @param note The note to add
+     * @param medId ID of medication note is about
+     **************************************************************************/
+    public void addNote(String note, long medId)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        String now = TimeFormatting.LocalDateTimeToString(LocalDateTime.now());
+
+        cv.put(MED_ID, medId);
+        cv.put(NOTE, note);
+        cv.put(ENTRY_TIME, now);
+
+        db.insert(NOTES_TABLE, null, cv);
+    }
+
+    /**
+     * Allows for a note to be updated
+     * @param note The new note
+     * @param noteId ID of note
+     **************************************************************************/
+    public void updateNote(Note note, long noteId)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(NOTE, note.getNote());
+
+        db.update(NOTES_TABLE, cv, NOTE_ID + "=?", new String[]{String.valueOf(noteId)});
+    }
+
+    /**
+     * Retrieve all notes pertaining to given Medication
+     * @param medId ID of Medication pertaining to Note
+     * @return An ArrayList of all notes about given Medication
+     **************************************************************************/
+    public ArrayList<Note> getNotes(long medId)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<Note> notes = new ArrayList<>();
+        String query = "SELECT * FROM " + NOTES_TABLE + " WHERE " + MED_ID + " = " + medId;
+
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+
+        if (cursor.getCount() == 0)
+            return null;
+
+        while (!cursor.isAfterLast())
+        {
+            long noteId = Long.parseLong(cursor.getString(cursor.getColumnIndex(NOTE_ID)));
+            String note = cursor.getString(cursor.getColumnIndex(NOTE));
+            LocalDateTime entryTime = TimeFormatting.stringToLocalDateTime(cursor.getString(cursor.getColumnIndex(ENTRY_TIME)));
+
+            notes.add(new Note(noteId, medId, note, entryTime));
+
+            cursor.moveToNext();
+        }
+
+        return notes;
     }
 }
