@@ -237,6 +237,27 @@ public class CardCreator
         intent.putExtra("medId", medication.getMedId());ButtonManager.createActivityButton("Edit", thisMedLayout, context, intent);
     }
 
+    public static void createNoteCard(Note note, LinearLayout baseLayout)
+    {
+        Context context = baseLayout.getContext();
+        CardView noteCard = new CardView(context);
+        LinearLayout cardLayout = new LinearLayout(context);
+
+        cardLayout.setOrientation(LinearLayout.VERTICAL);
+        setCardParams(noteCard);
+
+        baseLayout.addView(noteCard);
+        noteCard.addView(cardLayout);
+
+        TextView noteText = new TextView(context);
+        TextViewUtils.setTextViewParams(noteText, "\"" + note.getNote() + "\"", cardLayout);
+
+        TextView noteDate = new TextView(context);
+        String noteDateLabel = "Date: " + TimeFormatting.localDateToString(note.getNoteTime().toLocalDate())
+                + " at: " + TimeFormatting.localTimeToString(note.getNoteTime().toLocalTime());
+        TextViewUtils.setTextViewParams(noteDate, noteDateLabel, cardLayout);
+    }
+
     /**
      * Sets a CardView's parameters to a set standard
      * @param cardView The CardView whose parameters will be set

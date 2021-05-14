@@ -4,12 +4,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class MedicationNotes extends AppCompatActivity
 {
+    final DBHelper db = new DBHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -20,6 +28,33 @@ public class MedicationNotes extends AppCompatActivity
         getSupportActionBar().setTitle("Notes");
 
         long medId = getIntent().getLongExtra("medId", 0);
+
+        ArrayList<Note> notes = db.getNotes(medId);
+
+        if (notes == null)
+            return;
+        else
+        {
+            TextView tv = findViewById(R.id.noNotes);
+            tv.setVisibility(View.GONE);
+            ScrollView scrollNotes = findViewById(R.id.scrollNotes);
+            scrollNotes.setVisibility(View.VISIBLE);
+        }
+
+        for (int i = 0; i < notes.size(); i++)
+            CardCreator.createNoteCard(notes.get(i), findViewById(R.id.notesLayout));
+    }
+
+    /**
+     * Creates options menu
+     * @param menu The menu bar
+     * @return Options menu
+     **************************************************************************/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.notes_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     /**
@@ -44,5 +79,14 @@ public class MedicationNotes extends AppCompatActivity
     {
         super.onBackPressed();
         finish();
+    }
+
+    /**
+     * Allows the user to create a note
+     * @param item
+     */
+    public void onAddNoteClick(MenuItem item)
+    {
+        Toast.makeText(this, "This will let you add notes...soon", Toast.LENGTH_SHORT).show();
     }
 }

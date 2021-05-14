@@ -50,4 +50,6 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="delete_all">Delete All</string>
+    <string name="no_notes_for_this_medication">No notes for this medication</string>
+    <string name="add_note">Add Note</string>
 </resources>
