@@ -409,6 +409,7 @@ public class AddMedication extends AppCompatActivity
         EditText dosage = findViewById(R.id.medDosageEnter);
         EditText units = findViewById(R.id.editTextUnits);
 
+        boolean allClear = true;
 
         RadioButton patientButton = InputValidation.checkRadioGroup(patientGroup);
 
@@ -418,12 +419,12 @@ public class AddMedication extends AppCompatActivity
             if (TextUtils.isEmpty(nameEntry.getText().toString()))
             {
                 nameEntry.setError("Please enter a name");
-                return false;
+                allClear = false;
             }
             else if (nameEntry.getText().toString().equals("ME!"))
             {
                 nameEntry.setError("Name cannot be \"ME!\"");
-                return false;
+                allClear = false;
             }
         }
         else if (patientButton != patientGroup.getChildAt(0) && patientButton != patientGroup.getChildAt(1))
@@ -433,26 +434,37 @@ public class AddMedication extends AppCompatActivity
         if (TextUtils.isEmpty(medName.getText().toString()))
         {
             medName.setError("Please enter the medication's name");
-            return false;
+            allClear = false;
         }
 
         // Ensures a dosage is given
+        // Ensure dosage is not empty
         if (TextUtils.isEmpty(dosage.getText().toString()))
         {
             dosage.setError("Please enter a dosage");
-            return false;
+            allClear = false;
         }
-        else if (Integer.parseInt(dosage.getText().toString()) <= 0)
+
+        // Ensure valid entry in dosage
+        if (InputValidation.checkEditText(dosage, new char[]{',', '.',' ', '-'}, "Please enter a positive integer"))
         {
-            dosage.setError("Enter a number greater than 0");
-            return false;
+            if (Integer.parseInt(dosage.getText().toString()) <= 0)
+            {
+                dosage.setError("Enter a number greater than 0");
+                allClear = false;
+            }
         }
+        else
+        {
+            allClear = false;
+        }
+
 
         // Ensures a unit for the dosage
         if (TextUtils.isEmpty(units.getText().toString()))
         {
             units.setError("Please enter a unit (e.g. mg, ml, tablets)");
-            return false;
+            allClear = false;
         }
 
 
@@ -467,7 +479,7 @@ public class AddMedication extends AppCompatActivity
             if (TextUtils.isEmpty(timesPerDay.getText().toString()))
             {
                 timesPerDay.setError("Please enter the number of times per day this medication is taken");
-                return false;
+                allClear = false;
             }
         }
         else if (frequencyButton == findViewById(R.id.dailyButton))
@@ -475,7 +487,7 @@ public class AddMedication extends AppCompatActivity
             if (timeTaken1.getText().toString().equals(getString(R.string.atThisTime)))
             {
                 Toast.makeText(this, "Please enter a time", Toast.LENGTH_SHORT).show();
-                return false;
+                allClear = false;
             }
         }
         else if (frequencyButton == findViewById(R.id.customFreqButton))
@@ -483,16 +495,16 @@ public class AddMedication extends AppCompatActivity
             if (TextUtils.isEmpty(takenEvery.getText().toString()))
             {
                 takenEvery.setError("Please enter a number");
-                return false;
+                allClear = false;
             }
         }
         else
         {
             Toast.makeText(this, "Please choose a frequency option", Toast.LENGTH_SHORT).show();
-            return false;
+            allClear = false;
         }
 
         // If all fields have been approved, returns true
-        return true;
+        return allClear;
     }
 }

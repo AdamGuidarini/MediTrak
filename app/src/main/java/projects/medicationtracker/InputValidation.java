@@ -1,5 +1,6 @@
 package projects.medicationtracker;
 
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -25,5 +26,31 @@ public class InputValidation
         }
 
         return null;
+    }
+
+    /**
+     * Checks a String for invalid chars and sets a warning if found
+     * @param editText EditText to check
+     * @param unWantedChars characters to check for
+     * @param warning Warning to display if wrong character is found
+     * @return False if bad character is found, true if not found
+     **************************************************************************/
+    public static boolean checkEditText(EditText editText, char[] unWantedChars, String warning)
+    {
+        String text = editText.getText().toString();
+
+        for (int i = 0; i < text.length(); i++)
+        {
+            for (char unWantedChar : unWantedChars)
+            {
+                if (text.charAt(i) == unWantedChar)
+                {
+                    editText.setError(warning);
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }
