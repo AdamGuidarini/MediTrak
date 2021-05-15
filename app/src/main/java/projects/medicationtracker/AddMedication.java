@@ -444,19 +444,20 @@ public class AddMedication extends AppCompatActivity
             dosage.setError("Please enter a dosage");
             allClear = false;
         }
-
-        // Ensure valid entry in dosage
-        if (InputValidation.checkEditText(dosage, new char[]{',', '.',' ', '-'}, "Please enter a positive integer"))
-        {
-            if (Integer.parseInt(dosage.getText().toString()) <= 0)
-            {
-                dosage.setError("Enter a number greater than 0");
-                allClear = false;
-            }
-        }
         else
         {
-            allClear = false;
+            // Ensure valid entry in dosage
+            if (InputValidation.checkEditText(dosage, new char[]{',', '.', ' ', '-'}, "Please enter a positive integer"))
+            {
+                if (Integer.parseInt(dosage.getText().toString()) <= 0)
+                {
+                    dosage.setError("Enter a number greater than 0");
+                    allClear = false;
+                }
+            } else
+            {
+                allClear = false;
+            }
         }
 
 
@@ -472,36 +473,36 @@ public class AddMedication extends AppCompatActivity
         EditText takenEvery = findViewById(R.id.enterFrequency);
         TextView timeTaken1 = findViewById(R.id.timeTaken1);
 
-        // Checks which frequency option is set and validates the given data
-        if (frequencyButton == findViewById(R.id.multplePerDayButton))
+        if (frequencyButton != null)
         {
-            EditText timesPerDay = findViewById(R.id.numTimesTaken);
-            if (TextUtils.isEmpty(timesPerDay.getText().toString()))
+            // Checks which frequency option is set and validates the given data
+            if (frequencyButton == findViewById(R.id.multplePerDayButton))
             {
-                timesPerDay.setError("Please enter the number of times per day this medication is taken");
+                EditText timesPerDay = findViewById(R.id.numTimesTaken);
+                if (TextUtils.isEmpty(timesPerDay.getText().toString()))
+                {
+                    timesPerDay.setError("Please enter the number of times per day this medication is taken");
+                    allClear = false;
+                }
+            } else if (frequencyButton == findViewById(R.id.dailyButton))
+            {
+                if (timeTaken1.getText().toString().equals(getString(R.string.atThisTime)))
+                {
+                    Toast.makeText(this, "Please enter a time", Toast.LENGTH_SHORT).show();
+                    allClear = false;
+                }
+            } else if (frequencyButton == findViewById(R.id.customFreqButton))
+            {
+                if (TextUtils.isEmpty(takenEvery.getText().toString()))
+                {
+                    takenEvery.setError("Please enter a number");
+                    allClear = false;
+                }
+            } else
+            {
+                Toast.makeText(this, "Please choose a frequency option", Toast.LENGTH_SHORT).show();
                 allClear = false;
             }
-        }
-        else if (frequencyButton == findViewById(R.id.dailyButton))
-        {
-            if (timeTaken1.getText().toString().equals(getString(R.string.atThisTime)))
-            {
-                Toast.makeText(this, "Please enter a time", Toast.LENGTH_SHORT).show();
-                allClear = false;
-            }
-        }
-        else if (frequencyButton == findViewById(R.id.customFreqButton))
-        {
-            if (TextUtils.isEmpty(takenEvery.getText().toString()))
-            {
-                takenEvery.setError("Please enter a number");
-                allClear = false;
-            }
-        }
-        else
-        {
-            Toast.makeText(this, "Please choose a frequency option", Toast.LENGTH_SHORT).show();
-            allClear = false;
         }
 
         // If all fields have been approved, returns true
