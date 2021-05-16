@@ -58,7 +58,6 @@ public class AddNoteFragment extends DialogFragment
                                 tv.setVisibility(View.GONE);
                                 ScrollView scrollNotes = getActivity().findViewById(R.id.scrollNotes);
                                 scrollNotes.setVisibility(View.VISIBLE);
-
                             }
 
                             CardCreator.createNoteCard(newNote, getActivity().findViewById(R.id.notesLayout));

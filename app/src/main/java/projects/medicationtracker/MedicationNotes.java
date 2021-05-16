@@ -71,7 +71,7 @@ public class MedicationNotes extends AppCompatActivity
 
     /**
      * Sets CardViews for activity
-     */
+     **************************************************************************/
     public void setCards()
     {
         long medId = getIntent().getLongExtra("medId", 0);
