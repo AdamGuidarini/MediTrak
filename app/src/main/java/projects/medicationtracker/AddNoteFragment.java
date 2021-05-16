@@ -1,18 +1,20 @@
 package projects.medicationtracker;
 
-import android.accessibilityservice.GestureDescription;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
 import androidx.annotation.NonNull;
+
+import java.util.ArrayList;
 
 
 public class AddNoteFragment extends DialogFragment
@@ -46,7 +48,19 @@ public class AddNoteFragment extends DialogFragment
                         if (!note.isEmpty())
                         {
                             db.addNote(note, medId);
-                            Note newNote = db.getNotes(medId).get(db.getNotes(medId).size() - 1);
+                            ArrayList<Note> notes = db.getNotes(medId);
+                            int size = notes.size();
+                            Note newNote = notes.get(size - 1);
+
+                            if (size == 1)
+                            {
+                                TextView tv = getActivity().findViewById(R.id.noNotes);
+                                tv.setVisibility(View.GONE);
+                                ScrollView scrollNotes = getActivity().findViewById(R.id.scrollNotes);
+                                scrollNotes.setVisibility(View.VISIBLE);
+
+                            }
+
                             CardCreator.createNoteCard(newNote, getActivity().findViewById(R.id.notesLayout));
                         }
                     }
