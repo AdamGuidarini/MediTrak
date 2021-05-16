@@ -27,22 +27,7 @@ public class MedicationNotes extends AppCompatActivity
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Notes");
 
-        long medId = getIntent().getLongExtra("medId", 0);
-
-        ArrayList<Note> notes = db.getNotes(medId);
-
-        if (notes == null)
-            return;
-        else
-        {
-            TextView tv = findViewById(R.id.noNotes);
-            tv.setVisibility(View.GONE);
-            ScrollView scrollNotes = findViewById(R.id.scrollNotes);
-            scrollNotes.setVisibility(View.VISIBLE);
-        }
-
-        for (int i = 0; i < notes.size(); i++)
-            CardCreator.createNoteCard(notes.get(i), findViewById(R.id.notesLayout));
+        setCards();
     }
 
     /**
@@ -82,11 +67,37 @@ public class MedicationNotes extends AppCompatActivity
     }
 
     /**
-     * Allows the user to create a note
-     * @param item
+     * Sets CardViews for activity
      */
+    public void setCards()
+    {
+        long medId = getIntent().getLongExtra("medId", 0);
+
+        ArrayList<Note> notes = db.getNotes(medId);
+
+        if (notes == null)
+            return;
+        else
+        {
+            TextView tv = findViewById(R.id.noNotes);
+            tv.setVisibility(View.GONE);
+            ScrollView scrollNotes = findViewById(R.id.scrollNotes);
+            scrollNotes.setVisibility(View.VISIBLE);
+        }
+
+        for (int i = 0; i < notes.size(); i++)
+            CardCreator.createNoteCard(notes.get(i), findViewById(R.id.notesLayout));
+    }
+
+    /**
+     * Allows the user to create a note
+     * @param item The menu button
+     **************************************************************************/
     public void onAddNoteClick(MenuItem item)
     {
-        Toast.makeText(this, "This will let you add notes...soon", Toast.LENGTH_SHORT).show();
+        long medId = getIntent().getLongExtra("medId", 0);
+
+        AddNoteFragment noteFragment = new AddNoteFragment(this, medId);
+        noteFragment.show(getSupportFragmentManager(), "Add Note");
     }
 }
