@@ -53,4 +53,18 @@ public class InputValidation
 
         return true;
     }
+
+    public static boolean isValidInt(String intToParse)
+    {
+        try
+        {
+            Integer.parseInt(intToParse);
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+
+        return true;
+    }
 }

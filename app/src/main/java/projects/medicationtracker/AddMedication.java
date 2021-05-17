@@ -449,9 +449,18 @@ public class AddMedication extends AppCompatActivity
             // Ensure valid entry in dosage
             if (InputValidation.checkEditText(dosage, new char[]{',', '.', ' ', '-'}, "Please enter a positive integer"))
             {
-                if (Integer.parseInt(dosage.getText().toString()) <= 0)
+                if (InputValidation.isValidInt(dosage.getText().toString()))
                 {
-                    dosage.setError("Enter a number greater than 0");
+                    if (Integer.parseInt(dosage.getText().toString()) <= 0)
+                    {
+                        dosage.setError("Enter a number greater than 0");
+                        allClear = false;
+                    }
+                }
+                else
+                {
+                    dosage.setError("Entered number was too large");
+                    dosage.setText("");
                     allClear = false;
                 }
             } else
@@ -459,7 +468,6 @@ public class AddMedication extends AppCompatActivity
                 allClear = false;
             }
         }
-
 
         // Ensures a unit for the dosage
         if (TextUtils.isEmpty(units.getText().toString()))
