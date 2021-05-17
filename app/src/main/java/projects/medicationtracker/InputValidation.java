@@ -54,6 +54,11 @@ public class InputValidation
         return true;
     }
 
+    /**
+     * Checks if a String can be parsed to int
+     * @param intToParse The String to convert to an int
+     * @return True if can be parsed, else false
+     **************************************************************************/
     public static boolean isValidInt(String intToParse)
     {
         try

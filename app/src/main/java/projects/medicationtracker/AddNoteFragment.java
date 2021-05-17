@@ -22,12 +22,22 @@ public class AddNoteFragment extends DialogFragment
     final Context context;
     final long medId;
 
+    /**
+     * Constructor for fragment
+     * @param context Context for DBHelper
+     * @param medicationId ID of Medication not is about
+     **************************************************************************/
     public AddNoteFragment(Context context, long medicationId)
     {
         this.context = context;
         medId = medicationId;
     }
 
+    /**
+     * Creates DialogFragment that allows a user to enter notes
+     * @param savedInstanceState Saved instance state
+     * @return The Dialog allowing user to take notes
+     **************************************************************************/
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
@@ -72,6 +82,10 @@ public class AddNoteFragment extends DialogFragment
         return builder.create();
     }
 
+    /**
+     * Cancels Dialog
+     * @param dialog The Dialog to cancel
+     **************************************************************************/
     @Override
     public void onCancel(@NonNull DialogInterface dialog)
     {
