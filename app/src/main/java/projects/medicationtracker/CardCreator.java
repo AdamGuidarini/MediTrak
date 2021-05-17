@@ -74,21 +74,29 @@ public class CardCreator
 
         setCardParams(thisDayCard);
 
+        LocalDate thisSunday;
+
+        if (LocalDate.now().getDayOfWeek() == DayOfWeek.SUNDAY)
+            thisSunday = LocalDate.now();
+        else
+            thisSunday = LocalDate.now().with(previous(DayOfWeek.of(SUNDAY)));
+
         // Add day to top of card
         TextViewUtils.setTextViewFontAndPadding(dayLabel);
-        dayLabel.setText(dayOfWeek);
+
+        String dayLabelString = dayOfWeek + " " + TimeFormatting.localDateToString(thisSunday.plusDays(day));
+
+        dayLabel.setText(dayLabelString);
         ll.addView(dayLabel);
 
         // Add medications
         thisDayCard.addView(ll);
 
-        LocalDate thisSunday = LocalDate.now().with(previous(DayOfWeek.of(SUNDAY)));
-
         for (int i = 0; i < medications.size(); i++)
         {
             for (LocalDateTime time : medications.get(i).getTimes())
             {
-                if (time.toLocalDate().isEqual(thisSunday.plusDays(day - 1)))
+                if (time.toLocalDate().isEqual(thisSunday.plusDays(day)))
                 {
                     CheckBox thisMedication = new CheckBox(ll.getContext());
                     long medId = medications.get(i).getMedId();
@@ -102,8 +110,8 @@ public class CardCreator
                     thisMedication.setText(thisMedicationLabel);
 
                     //TODO Change this so it is done with AlarmManager
-                    // Check database for this dosage, if not add it
 
+                    // Check database for this dosage, if not add it
                     // if it is, get the DoseId
                     long rowid = 0;
 
@@ -112,7 +120,7 @@ public class CardCreator
                         LocalDateTime startDate = medications.get(i).getStartDate();
                         if (time.isEqual(startDate) || time.isAfter(startDate))
                         {
-                            rowid = db.addToMedicationTracker(medications.get(i), time);
+                            rowid = db.addToMedicationTracker(medications.get(i), time.plusDays(1));
                             if (rowid == -1)
                                 Toast.makeText(context, "An error occurred when attempting to write data to database", Toast.LENGTH_LONG).show();
                         }
@@ -267,7 +275,7 @@ public class CardCreator
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         cardView.setLayoutParams(layoutParams);
         ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) cardView.getLayoutParams();
-        marginLayoutParams.setMargins(25, 40, 25, 40);
+        marginLayoutParams.setMargins(25, 40, 25, 20);
         cardView.requestLayout();
         cardView.setRadius(30);
     }

@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 import static java.time.temporal.TemporalAdjusters.previous;
+import static java.util.Calendar.SUNDAY;
 
 public class PatientUtils
 {
@@ -20,7 +21,12 @@ public class PatientUtils
         ArrayList<Medication> medications = db.getMedications();
 
         // Add times to custom frequency
-        LocalDate thisSunday = LocalDate.now().with(previous(DayOfWeek.SUNDAY));
+        LocalDate thisSunday;
+
+        if (LocalDate.now().getDayOfWeek() == DayOfWeek.SUNDAY)
+            thisSunday = LocalDate.now();
+        else
+            thisSunday = LocalDate.now().with(previous(DayOfWeek.of(SUNDAY)));
 
         // Look at each medication
         for (int i = 0; i < medications.size(); i++)
