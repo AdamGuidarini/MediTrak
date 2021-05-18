@@ -3,6 +3,7 @@ package projects.medicationtracker;
 import android.icu.text.SimpleDateFormat;
 import android.widget.TextView;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -214,5 +215,28 @@ public class TimeFormatting
         }
 
         return conversion;
+    }
+
+    public static LocalDate whenIsSunday()
+    {
+        LocalDate thisSunday;
+        LocalDate now = LocalDate.now();
+
+        if (now.getDayOfWeek() == DayOfWeek.SUNDAY)
+            thisSunday = LocalDate.now();
+        else if (now.getDayOfWeek() == DayOfWeek.MONDAY)
+            thisSunday = now.minusDays(1);
+        else if (now.getDayOfWeek() == DayOfWeek.TUESDAY)
+            thisSunday = now.minusDays(2);
+        else if (now.getDayOfWeek() == DayOfWeek.WEDNESDAY)
+            thisSunday = now.minusDays(3);
+        else if (now.getDayOfWeek() == DayOfWeek.THURSDAY)
+            thisSunday = now.minusDays(4);
+        else if (now.getDayOfWeek() == DayOfWeek.FRIDAY)
+            thisSunday = now.minusDays(5);
+        else
+            thisSunday = now.minusDays(6);
+
+        return thisSunday;
     }
 }

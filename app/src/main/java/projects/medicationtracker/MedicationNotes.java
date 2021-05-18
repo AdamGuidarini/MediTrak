@@ -2,13 +2,18 @@ package projects.medicationtracker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.DialogFragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -26,6 +31,7 @@ public class MedicationNotes extends AppCompatActivity
         getSupportActionBar().setTitle("Notes");
 
         setCards();
+        setCardListeners();
     }
 
     /**
@@ -99,5 +105,34 @@ public class MedicationNotes extends AppCompatActivity
 
         AddNoteFragment noteFragment = new AddNoteFragment(this, medId);
         noteFragment.show(getSupportFragmentManager(), "Add Note");
+    }
+
+    /**
+     * Sets listeners for the cards
+     */
+    public void setCardListeners()
+    {
+        ArrayList<CardView> cardViews = new ArrayList<>();
+        LinearLayout noteLayout = findViewById(R.id.notesLayout);
+
+        for (int i = 0; i < noteLayout.getChildCount(); i++)
+        {
+            View child = noteLayout.getChildAt(i);
+
+            child.getClass().getName();
+            CardView.class.getName();
+            {
+                cardViews.add((CardView)child);
+            }
+        }
+
+        for (CardView card : cardViews)
+        {
+            card.setOnClickListener(view ->
+            {
+                DialogFragment editNote = new EditNoteFragment();
+                editNote.show(getSupportFragmentManager(), null);
+            });
+        }
     }
 }

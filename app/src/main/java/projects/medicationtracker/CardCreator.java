@@ -2,6 +2,7 @@ package projects.medicationtracker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -74,14 +75,9 @@ public class CardCreator
 
         setCardParams(thisDayCard);
 
-        LocalDate thisSunday;
+        LocalDate thisSunday = TimeFormatting.whenIsSunday();
 
-        if (LocalDate.now().getDayOfWeek() == DayOfWeek.SUNDAY)
-            thisSunday = LocalDate.now();
-        else
-            thisSunday = LocalDate.now().with(previous(DayOfWeek.of(SUNDAY)));
-
-        // Add day to top of card
+            // Add day to top of card
         TextViewUtils.setTextViewFontAndPadding(dayLabel);
 
         String dayLabelString = dayOfWeek + " " + TimeFormatting.localDateToString(thisSunday.plusDays(day));
@@ -245,6 +241,11 @@ public class CardCreator
         intent.putExtra("medId", medication.getMedId());ButtonManager.createActivityButton("Edit", thisMedLayout, context, intent);
     }
 
+    /**
+     * Creates a CardView with a note in it
+     * @param note The Note in the CardView
+     * @param baseLayout The LinearLayout the holds the CardView
+     **************************************************************************/
     public static void createNoteCard(Note note, LinearLayout baseLayout)
     {
         Context context = baseLayout.getContext();

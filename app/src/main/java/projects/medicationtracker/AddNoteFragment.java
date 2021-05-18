@@ -38,6 +38,7 @@ public class AddNoteFragment extends DialogFragment
      * @param savedInstanceState Saved instance state
      * @return The Dialog allowing user to take notes
      **************************************************************************/
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
