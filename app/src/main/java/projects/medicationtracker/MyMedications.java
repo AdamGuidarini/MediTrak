@@ -3,6 +3,7 @@ package projects.medicationtracker;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -106,8 +107,10 @@ public class MyMedications extends AppCompatActivity
     public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
         if (item.getItemId() == android.R.id.home)
-            finish();
-
+        {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -118,6 +121,6 @@ public class MyMedications extends AppCompatActivity
     public void onBackPressed()
     {
         super.onBackPressed();
-        finish();
-    }
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);    }
 }
