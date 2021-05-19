@@ -129,7 +129,7 @@ public class TimeFormatting
      * @param localDateTime The time to be converted to String
      * @return String containing value of the LocalDateTime
      **************************************************************************/
-    public static String LocalDateTimeToString (LocalDateTime localDateTime)
+    public static String localDateTimeToString(LocalDateTime localDateTime)
     {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         return dateFormat.format(localDateTime);

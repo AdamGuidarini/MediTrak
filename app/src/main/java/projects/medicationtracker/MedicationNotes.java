@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -55,22 +57,25 @@ public class MedicationNotes extends AppCompatActivity
     public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
         if (item.getItemId() == android.R.id.home)
+        {
+            Intent intent = new Intent(this, MyMedications.class);
+            startActivity(intent);
             finish();
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
     /**
-     * Return to MainActivity if back arrow is pressed
+     * Return to MyMedications if back arrow is pressed
      **************************************************************************/
     @Override
     public void onBackPressed()
     {
-        super.onBackPressed();
+        Intent intent = new Intent(this, MyMedications.class);
+        startActivity(intent);
         finish();
     }
-
-
 
     /**
      * Sets CardViews for activity
@@ -109,7 +114,7 @@ public class MedicationNotes extends AppCompatActivity
 
     /**
      * Sets listeners for the cards
-     */
+     **************************************************************************/
     public void setCardListeners()
     {
         ArrayList<CardView> cardViews = new ArrayList<>();
@@ -128,9 +133,13 @@ public class MedicationNotes extends AppCompatActivity
 
         for (CardView card : cardViews)
         {
+            LinearLayout layout = (LinearLayout) card.getChildAt(0);
+            TextView noteText = (TextView) layout.getChildAt(0);
+            Note note = (Note) noteText.getTag();
+
             card.setOnClickListener(view ->
             {
-                DialogFragment editNote = new EditNoteFragment();
+                DialogFragment editNote = new EditNoteFragment(note, db);
                 editNote.show(getSupportFragmentManager(), null);
             });
         }

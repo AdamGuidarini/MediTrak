@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,8 +72,10 @@ public class AddNoteFragment extends DialogFragment
                                 scrollNotes.setVisibility(View.VISIBLE);
                             }
 
-                            CardCreator.createNoteCard(newNote, getActivity().findViewById(R.id.notesLayout));
-                        }
+                            Intent intent = new Intent(getContext(), MedicationNotes.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.putExtra("medId", newNote.getMedId());
+                            startActivity(intent);                        }
                     }
 
                     dismiss();

@@ -407,7 +407,7 @@ public class DBHelper extends SQLiteOpenHelper
     public boolean isInMedicationTracker (Medication medication, LocalDateTime time)
     {
         SQLiteDatabase db = this.getReadableDatabase();
-        String dateTime = TimeFormatting.LocalDateTimeToString(time);
+        String dateTime = TimeFormatting.localDateTimeToString(time);
 
         String query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE + " WHERE " + MED_ID + " = " +
                 medication.getMedId() + " AND " + DOSE_TIME + " = \"" + dateTime + "\"";
@@ -530,7 +530,7 @@ public class DBHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        String now = TimeFormatting.LocalDateTimeToString(LocalDateTime.now());
+        String now = TimeFormatting.localDateTimeToString(LocalDateTime.now());
 
         cv.put(MED_ID, medId);
         cv.put(NOTE, note);
@@ -539,19 +539,28 @@ public class DBHelper extends SQLiteOpenHelper
         db.insert(NOTES_TABLE, null, cv);
     }
 
+    public void deleteNote(Note note)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String query = NOTE + " = \"" + note.getNote() + "\" AND " + ENTRY_TIME
+                + " = \"" + TimeFormatting.localDateTimeToString(note.getNoteTime()) + "\"";
+
+        db.delete(NOTES_TABLE, query, null);
+    }
+
     /**
      * Allows for a note to be updated
      * @param note The new note
-     * @param noteId ID of note
      **************************************************************************/
-    public void updateNote(Note note, long noteId)
+    public void updateNote(Note note, String newNote)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put(NOTE, note.getNote());
+        cv.put(NOTE, newNote);
 
-        db.update(NOTES_TABLE, cv, NOTE_ID + "=?", new String[]{String.valueOf(noteId)});
+        db.update(NOTES_TABLE, cv, NOTE_ID + "=?", new String[]{String.valueOf(note.getNoteId())});
     }
 
     /**

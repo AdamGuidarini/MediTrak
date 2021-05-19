@@ -2,7 +2,6 @@ package projects.medicationtracker;
 
 import android.content.Context;
 import android.content.Intent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -11,14 +10,10 @@ import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-
-import static java.time.temporal.TemporalAdjusters.previous;
-import static java.util.Calendar.SUNDAY;
 
 public class CardCreator
 {
@@ -116,14 +111,14 @@ public class CardCreator
                         LocalDateTime startDate = medications.get(i).getStartDate();
                         if (time.isEqual(startDate) || time.isAfter(startDate))
                         {
-                            rowid = db.addToMedicationTracker(medications.get(i), time.plusDays(1));
+                            rowid = db.addToMedicationTracker(medications.get(i), time);
                             if (rowid == -1)
                                 Toast.makeText(context, "An error occurred when attempting to write data to database", Toast.LENGTH_LONG).show();
                         }
                     }
                     else
                     {
-                        rowid = db.getDoseId(medId, TimeFormatting.LocalDateTimeToString(time));
+                        rowid = db.getDoseId(medId, TimeFormatting.localDateTimeToString(time));
                     }
 
                     if (rowid > 0)
@@ -145,7 +140,7 @@ public class CardCreator
                             }
 
 
-                            String now = TimeFormatting.LocalDateTimeToString(LocalDateTime.now());
+                            String now = TimeFormatting.localDateTimeToString(LocalDateTime.now());
                             db.updateDoseStatus(doseId, now, thisMedication.isChecked());
                         });
 
@@ -265,6 +260,8 @@ public class CardCreator
         String noteDateLabel = "Date: " + TimeFormatting.localDateToString(note.getNoteTime().toLocalDate())
                 + " at: " + TimeFormatting.localTimeToString(note.getNoteTime().toLocalTime());
         TextViewUtils.setTextViewParams(noteDate, noteDateLabel, cardLayout);
+
+        noteText.setTag(note);
     }
 
     /**
