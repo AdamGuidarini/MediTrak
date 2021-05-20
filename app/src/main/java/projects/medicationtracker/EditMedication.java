@@ -10,6 +10,8 @@ import java.util.Objects;
 
 public class EditMedication extends AppCompatActivity
 {
+    final DBHelper db = new DBHelper(this);
+    Medication medication;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -18,6 +20,8 @@ public class EditMedication extends AppCompatActivity
         setContentView(R.layout.activity_edit_medication);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Edit Medication");
+
+        medication = db.getMedicationById(getIntent().getLongExtra("medId", 0));
     }
 
     /**

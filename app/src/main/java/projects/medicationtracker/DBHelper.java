@@ -3,6 +3,7 @@ package projects.medicationtracker;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.SQLException;
@@ -396,6 +397,32 @@ public class DBHelper extends SQLiteOpenHelper
         meds.close();
 
         return allMeds;
+    }
+
+    public Medication getMedicationById(long id)
+    {
+        SQLiteDatabase db =this.getReadableDatabase();
+        String query = "SELECT * " + MEDICATION_TABLE + " WHERE "
+                + MED_ID + " = " + id;
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        cursor.moveToFirst();
+
+        String medName = cursor.getString(cursor.getColumnIndex(MED_NAME));
+        String patient = cursor.getString(cursor.getColumnIndex(PATIENT_NAME));
+        String units = cursor.getString(cursor.getColumnIndex(MED_UNITS));
+        LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(cursor.getString(cursor.getColumnIndex(START_DATE)));
+        long medId = Long.parseLong(cursor.getString(cursor.getColumnIndex(MED_ID)));
+        long frequency = Long.parseLong(cursor.getString(cursor.getColumnIndex(MED_FREQUENCY)));
+        int dosage = Integer.parseInt(cursor.getString(cursor.getColumnIndex(MED_DOSAGE)));
+        String alias = cursor.getString(cursor.getColumnIndex(ALIAS));
+        LocalDateTime[] times = new LocalDateTime[0];
+
+        cursor.close();
+
+        return new Medication(medName, patient, units, times, startDate
+                , medId, frequency, dosage, alias);
     }
 
     /**
