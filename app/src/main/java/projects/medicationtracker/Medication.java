@@ -31,7 +31,7 @@ public class Medication implements Cloneable
      * @param medAlias An alias for the Medication to appear in notifications
      *************************************************************************/
     public Medication(String thisMed, String patient, String units, LocalDateTime[] time,
-                      LocalDateTime firstDate, int id, int frequency, int dosage, String medAlias)
+                      LocalDateTime firstDate, long id, long frequency, int dosage, String medAlias)
     {
         medName = thisMed;
         patientName = patient;

@@ -109,6 +109,7 @@ public class MyMedications extends AppCompatActivity
         if (item.getItemId() == android.R.id.home)
         {
             Intent intent = new Intent(this, MainActivity.class);
+            finish();
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
@@ -122,5 +123,7 @@ public class MyMedications extends AppCompatActivity
     {
         super.onBackPressed();
         Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);    }
+        finish();
+        startActivity(intent);
+    }
 }
