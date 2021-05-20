@@ -142,4 +142,5 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="unitExample">Ex. mg, g, drops</string>
+    <string name="delete_medication">Delete Medication</string>
 </resources>

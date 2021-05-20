@@ -97,7 +97,6 @@ public class MyMedications extends AppCompatActivity
         }
     }
 
-
     /**
      * Determines which button was selected
      * @param item Selected menu option

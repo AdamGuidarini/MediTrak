@@ -399,7 +399,12 @@ public class DBHelper extends SQLiteOpenHelper
         return allMeds;
     }
 
-    public Medication getMedicationById(long id)
+    /**
+     * Retrieves a Medication object based on ID passed to it
+     * @param id The ID of the Medication
+     * @return Medication retrieved from database
+     **************************************************************************/
+    public Medication getMedication(long id)
     {
         SQLiteDatabase db =this.getReadableDatabase();
         String query = "SELECT * " + MEDICATION_TABLE + " WHERE "
@@ -423,6 +428,18 @@ public class DBHelper extends SQLiteOpenHelper
 
         return new Medication(medName, patient, units, times, startDate
                 , medId, frequency, dosage, alias);
+    }
+
+    /**
+     * Deletes Medication passed to it from database
+     * @param medication Medication to delete
+     **************************************************************************/
+    public void deleteMedication(Medication medication)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = MED_ID + " = " + medication.getMedId();
+
+        db.delete(MEDICATION_TABLE, query, null);
     }
 
     /**

@@ -3,16 +3,24 @@ package projects.medicationtracker;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 
 import java.util.Objects;
 
 public class EditMedication extends AppCompatActivity
 {
     final DBHelper db = new DBHelper(this);
+    LinearLayout editMedsLayout;
     Medication medication;
 
+    /**
+     * Instructions on how to build the EditMedications activity
+     * @param savedInstanceState Saved instance state.
+     **************************************************************************/
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -21,7 +29,22 @@ public class EditMedication extends AppCompatActivity
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Edit Medication");
 
-        medication = db.getMedicationById(getIntent().getLongExtra("medId", 0));
+        editMedsLayout = findViewById(R.id.editMedLayout);
+        medication = db.getMedication(getIntent().getLongExtra("medId", 0));
+
+
+    }
+
+    /**
+     * Creates options menu for activity
+     * @param menu Displayed menu
+     * @return True if can be created, else false
+     **************************************************************************/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.edit_meds_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     /**
@@ -45,6 +68,12 @@ public class EditMedication extends AppCompatActivity
     public void onBackPressed()
     {
         super.onBackPressed();
+        finish();
+    }
+
+    public void onDeleteMedClick(MenuItem item)
+    {
+        db.deleteMedication(medication);
         finish();
     }
 }
