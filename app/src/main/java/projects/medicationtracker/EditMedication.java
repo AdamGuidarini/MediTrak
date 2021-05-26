@@ -2,8 +2,8 @@ package projects.medicationtracker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,7 +14,7 @@ import java.util.Objects;
 public class EditMedication extends AppCompatActivity
 {
     final DBHelper db = new DBHelper(this);
-    LinearLayout editMedsLayout;
+    LinearLayout editMedLayout;
     Medication medication;
 
     /**
@@ -29,10 +29,13 @@ public class EditMedication extends AppCompatActivity
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Edit Medication");
 
-        editMedsLayout = findViewById(R.id.editMedLayout);
+        CardView editMedCard = findViewById(R.id.editMedCard);
+        CardCreator.setCardParams(editMedCard);
+
         medication = db.getMedication(getIntent().getLongExtra("medId", 0));
+        editMedLayout = findViewById(R.id.editMedLayout);
 
-
+        CardCreator.createEditMedCard(editMedLayout, medication);
     }
 
     /**

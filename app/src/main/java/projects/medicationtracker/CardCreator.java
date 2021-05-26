@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -272,11 +273,28 @@ public class CardCreator
      **************************************************************************/
     public static void setCardParams(CardView cardView)
     {
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         cardView.setLayoutParams(layoutParams);
         ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) cardView.getLayoutParams();
         marginLayoutParams.setMargins(25, 40, 25, 20);
         cardView.requestLayout();
         cardView.setRadius(30);
+    }
+
+    /**
+     * Creates a card in which users may edit the given medication
+     * @param editMedLayout The LinearLayout inside the CardView
+     * @param medication The medication to edit
+     **************************************************************************/
+    public static void createEditMedCard(LinearLayout editMedLayout, Medication medication)
+    {
+        final Context context = editMedLayout.getContext();
+
+        String medNameLabel = "Name: " + medication.getMedName();
+
+        Switch medNameSwitch = new Switch(context);
+        medNameSwitch.setText(medNameLabel);
+        editMedLayout.addView(medNameSwitch);
     }
 }

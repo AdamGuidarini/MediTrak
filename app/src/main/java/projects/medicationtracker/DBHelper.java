@@ -406,7 +406,7 @@ public class DBHelper extends SQLiteOpenHelper
     public Medication getMedication(long id)
     {
         SQLiteDatabase db =this.getReadableDatabase();
-        String query = "SELECT * " + MEDICATION_TABLE + " WHERE "
+        String query = "SELECT * FROM " + MEDICATION_TABLE + " WHERE "
                 + MED_ID + " = " + id;
 
         Cursor cursor = db.rawQuery(query, null);
