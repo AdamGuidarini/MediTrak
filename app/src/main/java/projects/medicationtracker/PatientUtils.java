@@ -21,12 +21,7 @@ public class PatientUtils
         ArrayList<Medication> medications = db.getMedications();
 
         // Add times to custom frequency
-        LocalDate thisSunday;
-
-        if (LocalDate.now().getDayOfWeek() == DayOfWeek.SUNDAY)
-            thisSunday = LocalDate.now();
-        else
-            thisSunday = LocalDate.now().with(previous(DayOfWeek.of(SUNDAY)));
+        LocalDate thisSunday = TimeFormatting.whenIsSunday();
 
         // Look at each medication
         for (int i = 0; i < medications.size(); i++)

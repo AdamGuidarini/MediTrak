@@ -84,18 +84,18 @@ public class CardCreator
         // Add medications
         thisDayCard.addView(ll);
 
-        for (int i = 0; i < medications.size(); i++)
+        for (Medication medication : medications)
         {
-            for (LocalDateTime time : medications.get(i).getTimes())
+            for (LocalDateTime time : medication.getTimes())
             {
                 if (time.toLocalDate().isEqual(thisSunday.plusDays(day)))
                 {
                     CheckBox thisMedication = new CheckBox(ll.getContext());
-                    long medId = medications.get(i).getMedId();
+                    long medId = medication.getMedId();
 
                     // Set Checkbox label
-                    String medName = medications.get(i).getMedName();
-                    String dosage = medications.get(i).getMedDosage() + " " + medications.get(i).getMedDosageUnits();
+                    String medName = medication.getMedName();
+                    String dosage = medication.getMedDosage() + " " + medication.getMedDosageUnits();
                     String dosageTime = TimeFormatting.formatTimeForUser(time.getHour(), time.getMinute());
 
                     String thisMedicationLabel = medName + " - " + dosage + " - " + dosageTime;
@@ -107,12 +107,12 @@ public class CardCreator
                     // if it is, get the DoseId
                     long rowid = 0;
 
-                    if (!db.isInMedicationTracker(medications.get(i), time))
+                    if (!db.isInMedicationTracker(medication, time))
                     {
-                        LocalDateTime startDate = medications.get(i).getStartDate();
-                        if (time.isEqual(startDate) || time.isAfter(startDate))
+                        LocalDateTime startDate = medication.getStartDate();
+                        if (!time.isBefore(startDate))
                         {
-                            rowid = db.addToMedicationTracker(medications.get(i), time);
+                            rowid = db.addToMedicationTracker(medication, time);
                             if (rowid == -1)
                                 Toast.makeText(context, "An error occurred when attempting to write data to database", Toast.LENGTH_LONG).show();
                         }
