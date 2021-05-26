@@ -3,7 +3,6 @@ package projects.medicationtracker;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.SQLException;
@@ -417,7 +416,8 @@ public class DBHelper extends SQLiteOpenHelper
         String medName = cursor.getString(cursor.getColumnIndex(MED_NAME));
         String patient = cursor.getString(cursor.getColumnIndex(PATIENT_NAME));
         String units = cursor.getString(cursor.getColumnIndex(MED_UNITS));
-        LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(cursor.getString(cursor.getColumnIndex(START_DATE)));
+        LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(cursor.getString(
+                cursor.getColumnIndex(START_DATE)));
         long medId = Long.parseLong(cursor.getString(cursor.getColumnIndex(MED_ID)));
         long frequency = Long.parseLong(cursor.getString(cursor.getColumnIndex(MED_FREQUENCY)));
         int dosage = Integer.parseInt(cursor.getString(cursor.getColumnIndex(MED_DOSAGE)));
@@ -426,8 +426,28 @@ public class DBHelper extends SQLiteOpenHelper
 
         cursor.close();
 
-        return new Medication(medName, patient, units, times, startDate
-                , medId, frequency, dosage, alias);
+        return new Medication(medName, patient, units, times, startDate,
+                medId, frequency, dosage, alias);
+    }
+
+    /**
+     * Updates the given medication in the database.
+     * @param medication The medication to update.
+     */
+    public void updateMedication(Medication medication)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(MED_NAME, medication.getMedName());
+        cv.put(MED_DOSAGE, medication.getMedDosage());
+        cv.put(MED_FREQUENCY, medication.getMedFrequency());
+        cv.put(MED_UNITS, medication.getMedDosageUnits());
+        cv.put(START_DATE, TimeFormatting.localDateTimeToString(medication.getStartDate()));
+        cv.put(PATIENT_NAME, medication.getPatientName());
+        cv.put(ALIAS, medication.getAlias());
+
+        db.update(MEDICATION_TABLE, cv, MED_ID + " = " + medication.getMedId(), null);
     }
 
     /**
@@ -604,7 +624,8 @@ public class DBHelper extends SQLiteOpenHelper
 
         cv.put(NOTE, newNote);
 
-        db.update(NOTES_TABLE, cv, NOTE_ID + "=?", new String[]{String.valueOf(note.getNoteId())});
+        db.update(NOTES_TABLE, cv, NOTE_ID + "=?", new String[]{String.valueOf(
+                note.getNoteId())});
     }
 
     /**
@@ -628,7 +649,8 @@ public class DBHelper extends SQLiteOpenHelper
         {
             long noteId = Long.parseLong(cursor.getString(cursor.getColumnIndex(NOTE_ID)));
             String note = cursor.getString(cursor.getColumnIndex(NOTE));
-            LocalDateTime entryTime = TimeFormatting.stringToLocalDateTime(cursor.getString(cursor.getColumnIndex(ENTRY_TIME)));
+            LocalDateTime entryTime = TimeFormatting.stringToLocalDateTime(cursor.getString(
+                    cursor.getColumnIndex(ENTRY_TIME)));
 
             notes.add(new Note(noteId, medId, note, entryTime));
 
