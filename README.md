@@ -1,26 +1,27 @@
 # MedicationTracker
 An Android app that helps users keep track of their medications.
 
-Development plan as of May 12, 2021:
+Development plan as of May 25, 2021:
 
 Requirements:
 
   + Android 8.0 Oreo or newer
-  + 4 MB storage
+  + 10 MB storage
 
 Status:
   
   + In active development.
-  + App can be used as a checklist for medications.
+  + App can be used as a checklist for medications but notifications are not yet functional.
 
 Completed:
 
   + AddMedication activty - Gives users the ability to add a new medication.
   + MainActivity - Provides a GUI to view all medications to be taken during the current week. User can mark medications taken or not.
+  + Medication notes - Allows users to take notes to keep track of how their medications affect them.
 
 In progress:
 
-  + Refactoring, documenation, and code clean-up.
+  + Refactoring and code clean-up.
   + MyMedications activity - Displays all medications stored in the database. Allows users to edit, cancel, or delete them, make notes about them, and view statistics about them.
   + Notifications - Push notifications to alter user that it is time to take a medication.
 
