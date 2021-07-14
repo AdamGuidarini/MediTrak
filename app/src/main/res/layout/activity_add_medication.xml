@@ -69,8 +69,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="20dp"
-                                android:text="@string/other"
-                                app:layout_constraintStart_toStartOf="parent" />
+                                android:text="@string/other"/>
                         </RadioGroup>
 
                         <AutoCompleteTextView
@@ -82,7 +81,6 @@
                             android:hint="@string/name"
                             android:inputType="textAutoComplete"
                             android:visibility="gone"
-                            app:layout_constraintStart_toStartOf="parent"
                             tools:visibility="gone" />
 
                     </LinearLayout>
@@ -100,9 +98,7 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="36dp"
                             android:labelFor="@+id/medNameEnter"
-                            android:text="@string/medication_name"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            android:text="@string/medication_name"/>
 
                         <EditText
                             android:id="@+id/medNameEnter"
@@ -111,9 +107,7 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="15dp"
                             android:importantForAutofill="no"
-                            android:inputType="textAutoCorrect"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/medName" />
+                            android:inputType="textAutoCorrect"/>
 
                         <LinearLayout
                             android:id="@+id/aliasLayout"
@@ -170,9 +164,7 @@
                                 android:layout_marginStart="20dp"
                                 android:layout_marginTop="27dp"
                                 android:labelFor="@+id/medDosageEnter"
-                                android:text="@string/medication_dosage"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/medNameEnter" />
+                                android:text="@string/medication_dosage"/>
 
                             <EditText
                                 android:id="@+id/medDosageEnter"
@@ -181,9 +173,7 @@
                                 android:layout_marginStart="20dp"
                                 android:layout_marginTop="15dp"
                                 android:importantForAutofill="no"
-                                android:inputType="numberDecimal"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/medDosage" />
+                                android:inputType="numberDecimal"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -198,8 +188,7 @@
                                 android:layout_marginStart="20dp"
                                 android:layout_marginTop="27dp"
                                 android:labelFor="@+id/editTextUnits"
-                                android:text="@string/units"
-                                app:layout_constraintStart_toStartOf="parent" />
+                                android:text="@string/units"/>
 
                             <EditText
                                 android:id="@+id/editTextUnits"
@@ -209,8 +198,7 @@
                                 android:layout_marginTop="15dp"
                                 android:hint="@string/unitExample"
                                 android:ems="10"
-                                android:inputType="textPersonName"
-                                app:layout_constraintStart_toStartOf="parent" />
+                                android:inputType="textPersonName"/>
                         </LinearLayout>
 
                     </LinearLayout>
@@ -272,16 +260,13 @@
                             android:ems="10"
                             android:hint="@string/times_per_day"
                             android:inputType="number"
-                            android:visibility="gone"
-                            app:layout_constraintStart_toStartOf="parent" />
+                            android:visibility="gone"/>
 
                         <LinearLayout
                             android:id="@+id/timesOfTheDay"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            android:orientation="vertical"/>
 
                         <TextView
                             android:id="@+id/timeTaken1"
@@ -307,9 +292,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="20dp"
                             android:labelFor="@id/enterFrequency"
-                            android:text="@string/taken_every"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            android:text="@string/taken_every"/>
 
                         <EditText
                             android:id="@+id/enterFrequency"
@@ -336,17 +319,13 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="20dp"
-                                android:text="@string/starting"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                android:text="@string/starting"/>
 
                             <LinearLayout
                                 android:id="@+id/startDateAndTimeLayout"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:orientation="horizontal"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent">
+                                android:orientation="horizontal">
 
                                 <TextView
                                     android:id="@+id/startDate"

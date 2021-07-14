@@ -28,7 +28,7 @@
     <string name="atThisTime">At: Tap to set time</string>
     <string name="starting">Starting:</string>
     <string name="no_medications_found">No medications found</string>
-    <string name="alias_for_medication">Alias for medication</string>
+    <string name="alias_for_medication">Alias for medication:</string>
     <string name="alias_for_medication_displays_notification">Alias for medication displays notification</string>
     <string name="medication_alias_displays_in_notification">Medication alias displays in notification</string>
     <string name="place_holder_tap_again_then_hit_cancel">Place holder, tap again then hit cancel</string>
@@ -143,4 +143,6 @@
     </string>
     <string name="unitExample">Ex. mg, g, drops</string>
     <string name="delete_medication">Delete Medication</string>
+    <string name="patient_name">Patient Name:</string>
+    <string name="save_changes">Save Changes</string>
 </resources>

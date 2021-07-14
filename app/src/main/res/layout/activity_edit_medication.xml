@@ -17,18 +17,239 @@
             android:id="@+id/editMedCardHolder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/editMedCard"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent">
 
-                <LinearLayout
-                    android:id="@+id/editMedLayout"
+                <TableLayout
+                    android:id="@+id/medDetailsTable"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"></LinearLayout>
+                    android:layout_height="match_parent">
+
+                    <TableRow
+                        android:id="@+id/patientName"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:id="@+id/editPatientLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/patientNameTextView"
+                                android:text="@string/patient_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginTop="24dp"/>
+
+                            <RadioGroup
+                                android:id="@+id/editPatientGroup"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+
+                                <RadioButton
+                                    android:id="@+id/meButtonEdit"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="20dp"
+                                    android:tag="ME!"
+                                    android:text="@string/patientIsMe"
+                                    android:checked="true"/>
+
+                                <RadioButton
+                                    android:id="@+id/otherButtonEdit"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="20dp"
+                                    android:text="@string/other"/>
+                            </RadioGroup>
+
+                            <EditText
+                                android:id="@+id/editPatientNameEditText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="20dp"
+                                android:ems="10"
+                                android:hint="@string/name"
+                                android:importantForAutofill="no"
+                                android:inputType="textAutoComplete"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                    </TableRow>
+
+                    <TableRow android:layout_height="1px" android:background="#606060">
+                        <TextView android:layout_span="2" android:layout_height="1px"
+                            android:layout_width="fill_parent" android:text="">
+                        </TextView>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/medicationName"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <LinearLayout
+                            android:id="@+id/editMedicationNameLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/editMedNameLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginTop="24dp"
+                                android:labelFor="@+id/editMedicationName"
+                                android:text="@string/medication_name"/>
+
+                            <EditText
+                                android:id="@+id/editMedicationName"
+                                android:layout_width="350dp"
+                                android:layout_height="54dp"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginTop="15dp" />
+                        </LinearLayout>
+                    </TableRow>
+
+                    <TableRow android:layout_height="1px" android:background="#606060">
+                        <TextView android:layout_span="2" android:layout_height="1px"
+                            android:layout_width="fill_parent" android:text="">
+                        </TextView>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/medicationAlias"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/editAliasLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginTop="24dp"
+                                android:text="@string/alias_for_medication"/>
+
+                            <EditText
+                                android:id="@+id/editAlias"
+                                android:layout_width="350dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:hint="@string/medication_alias_displays_in_notification"
+                                android:importantForAutofill="no"
+                                android:inputType="text" />
+                        </LinearLayout>
+                    </TableRow>
+
+                    <TableRow android:layout_height="1px" android:background="#606060">
+                        <TextView android:layout_span="2" android:layout_height="1px"
+                            android:layout_width="fill_parent" android:text="">
+                        </TextView>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/editDosageAndUnits"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:id="@+id/editDosageLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/editMedDosageLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="20dp"
+                                    android:layout_marginTop="27dp"
+                                    android:labelFor="@+id/medDosageEnter"
+                                    android:text="@string/medication_dosage"/>
+
+                                <EditText
+                                    android:id="@+id/editMedDosageEnter"
+                                    android:layout_width="140dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="20dp"
+                                    android:layout_marginTop="15dp"
+                                    android:importantForAutofill="no"
+                                    android:inputType="numberDecimal"/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/editMedUnits"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="20dp"
+                                    android:layout_marginTop="27dp"
+                                    android:labelFor="@+id/editTextUnits"
+                                    android:text="@string/units"/>
+
+                                <EditText
+                                    android:id="@+id/editEnterMedUnits"
+                                    android:layout_width="140dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="20dp"
+                                    android:layout_marginTop="15dp"
+                                    android:hint="@string/unitExample"
+                                    android:ems="10"
+                                    android:inputType="textPersonName"/>
+                            </LinearLayout>
+
+                        </LinearLayout>
+                    </TableRow>
+
+                    <TableRow android:layout_height="1px" android:background="#606060">
+                        <TextView android:layout_span="2" android:layout_height="1px"
+                            android:layout_width="fill_parent" android:text="">
+                        </TextView>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/medicationFrequency"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <LinearLayout
+                            android:id="@+id/editFrequencyLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/EditChooseIntervalLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:text="@string/frequency" />
+                        </LinearLayout>
+                    </TableRow>
+                </TableLayout>
+
             </androidx.cardview.widget.CardView>
         </LinearLayout>
     </ScrollView>

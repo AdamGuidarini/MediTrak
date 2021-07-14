@@ -8,14 +8,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import java.util.Objects;
 
 public class EditMedication extends AppCompatActivity
 {
     final DBHelper db = new DBHelper(this);
-    LinearLayout editMedLayout;
     Medication medication;
 
     /**
@@ -34,9 +38,28 @@ public class EditMedication extends AppCompatActivity
         CardCreator.setCardParams(editMedCard);
 
         medication = db.getMedication(getIntent().getLongExtra("medId", 0));
-        editMedLayout = findViewById(R.id.editMedLayout);
 
-        CardCreator.createEditMedCard(editMedLayout, medication);
+        // Set radio button
+        if (medication.getPatientName().equals("ME!"))
+        {
+            RadioButton meButton = findViewById(R.id.meButtonEdit);
+            meButton.setChecked(true);
+        }
+        else
+        {
+            RadioButton otherButton = findViewById(R.id.otherButtonEdit);
+            otherButton.setChecked(true);
+
+            EditText enterPatientName = findViewById(R.id.editPatientNameEditText);
+            enterPatientName.setText(medication.getPatientName());
+            enterPatientName.setVisibility(View.VISIBLE);
+        }
+
+        EditText enterMedicationName = findViewById(R.id.editMedicationName);
+        enterMedicationName.setText(medication.getMedName());
+
+        EditText enterAlias = findViewById(R.id.editAlias);
+        enterAlias.setText(medication.getAlias());
     }
 
     /**
@@ -88,5 +111,9 @@ public class EditMedication extends AppCompatActivity
     {
         ConfirmMedicationDeleteFragment confirmMedicationDeleteFragment = new ConfirmMedicationDeleteFragment(db, medication);
         confirmMedicationDeleteFragment.show(getSupportFragmentManager(), null);
+    }
+
+    public void onSaveEditClick(MenuItem item)
+    {
     }
 }

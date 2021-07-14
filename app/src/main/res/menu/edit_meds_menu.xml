@@ -8,4 +8,11 @@
         android:visible="true"
         app:showAsAction="ifRoom"
         android:onClick="onDeleteMedClick"/>
+
+    <item
+        android:icon="@android:drawable/ic_menu_save"
+        android:title="@string/save_changes"
+        android:visible="true"
+        app:showAsAction="ifRoom"
+        android:onClick="onSaveEditClick"/>
 </menu>
