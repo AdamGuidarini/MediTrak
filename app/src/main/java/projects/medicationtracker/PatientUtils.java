@@ -1,13 +1,9 @@
 package projects.medicationtracker;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-
-import static java.time.temporal.TemporalAdjusters.previous;
-import static java.util.Calendar.SUNDAY;
 
 public class PatientUtils
 {
