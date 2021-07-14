@@ -3,6 +3,7 @@ package projects.medicationtracker;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -56,7 +57,7 @@ public class MyMedications extends AppCompatActivity
                 ArrayList<Medication> patientMeds = db.getMedications();
 
                 for (Medication medication : patientMeds)
-                    CardCreator.createMyMedCards(medication, myMedsLayout);
+                    CardCreator.createMyMedCards(medication, myMedsLayout, MyMedications.this);
 
             }
             else
@@ -87,7 +88,7 @@ public class MyMedications extends AppCompatActivity
                         ArrayList<Medication> patientMeds = db.getMedicationsForPatient(patient);
 
                         for (Medication medication : patientMeds)
-                            CardCreator.createMyMedCards(medication, myMedsLayout);
+                            CardCreator.createMyMedCards(medication, myMedsLayout, MyMedications.this);
                     }
 
                     @Override

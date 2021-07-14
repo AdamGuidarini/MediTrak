@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -59,24 +60,33 @@ public class EditMedication extends AppCompatActivity
     public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
         if (item.getItemId() == android.R.id.home)
+        {
+            Intent intent = new Intent(this, MyMedications.class);
             finish();
+            startActivity(intent);
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
     /**
-     * Return to MainActivity if back arrow is pressed
+     * Return to MainActivity if back arrow is pressed.
      **************************************************************************/
     @Override
     public void onBackPressed()
     {
-        super.onBackPressed();
+        Intent intent = new Intent(this, MyMedications.class);
         finish();
+        startActivity(intent);
     }
 
+    /**
+     * Deletes medication
+     * @param item Menu item represented by a garbage can icon.
+     **************************************************************************/
     public void onDeleteMedClick(MenuItem item)
     {
-        db.deleteMedication(medication);
-        finish();
+        ConfirmMedicationDeleteFragment confirmMedicationDeleteFragment = new ConfirmMedicationDeleteFragment(db, medication);
+        confirmMedicationDeleteFragment.show(getSupportFragmentManager(), null);
     }
 }

@@ -1,5 +1,6 @@
 package projects.medicationtracker;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.ViewGroup;
@@ -167,7 +168,7 @@ public class CardCreator
      * @param medication The Medication whose details will be displayed.
      * @param baseLayout The LinearLayout in which to place the card
      **************************************************************************/
-    public static void createMyMedCards(Medication medication, LinearLayout baseLayout)
+    public static void createMyMedCards(Medication medication, LinearLayout baseLayout, Activity activity)
     {
         Context context = baseLayout.getContext();
         CardView thisMedCard = new CardView(context);
@@ -232,11 +233,11 @@ public class CardCreator
         // Add LinearLayout for buttons
         Intent intent = new Intent(context, MedicationNotes.class);
         intent.putExtra("medId", medication.getMedId());
-        ButtonManager.createActivityButton("Notes", thisMedLayout, context, intent);
+        ButtonManager.createActivityButton("Notes", thisMedLayout, context, intent, activity);
 
         intent = new Intent(context, EditMedication.class);
         intent.putExtra("medId", medication.getMedId());
-        ButtonManager.createActivityButton("Edit", thisMedLayout, context, intent);
+        ButtonManager.createActivityButton("Edit", thisMedLayout, context, intent, activity);
     }
 
     /**
