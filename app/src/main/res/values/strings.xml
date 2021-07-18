@@ -145,4 +145,5 @@
     <string name="delete_medication">Delete Medication</string>
     <string name="patient_name">Patient Name:</string>
     <string name="save_changes">Save Changes</string>
+    <string name="no_alias">No alias</string>
 </resources>

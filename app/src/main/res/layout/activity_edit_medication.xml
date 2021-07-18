@@ -148,7 +148,7 @@
                                 android:layout_width="350dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="20dp"
-                                android:hint="@string/medication_alias_displays_in_notification"
+                                android:hint="@string/no_alias"
                                 android:importantForAutofill="no"
                                 android:inputType="text" />
                         </LinearLayout>
@@ -216,8 +216,7 @@
                                     android:layout_marginStart="20dp"
                                     android:layout_marginTop="15dp"
                                     android:hint="@string/unitExample"
-                                    android:ems="10"
-                                    android:inputType="textPersonName"/>
+                                    android:ems="10"/>
                             </LinearLayout>
 
                         </LinearLayout>
@@ -245,13 +244,38 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="20dp"
+                                android:layout_marginTop="24dp"
                                 android:text="@string/frequency" />
+
+                            <RadioGroup
+                                android:id="@+id/editFreuqencyGroup"
+                                android:layout_width="187dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp">
+
+                                <RadioButton
+                                    android:id="@+id/editMultiplePerDay"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/multiple_times_per_day"/>
+
+                                <RadioButton
+                                    android:id="@+id/editDailyButton"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/daily"/>
+
+                                <RadioButton
+                                    android:id="@+id/editCustomFreqButton"
+                                    android:layout_width="160dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/custom_frequency" />
+
+                            </RadioGroup>
                         </LinearLayout>
                     </TableRow>
                 </TableLayout>
-
             </androidx.cardview.widget.CardView>
         </LinearLayout>
     </ScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -39,27 +39,9 @@ public class EditMedication extends AppCompatActivity
 
         medication = db.getMedication(getIntent().getLongExtra("medId", 0));
 
-        // Set radio button
-        if (medication.getPatientName().equals("ME!"))
-        {
-            RadioButton meButton = findViewById(R.id.meButtonEdit);
-            meButton.setChecked(true);
-        }
-        else
-        {
-            RadioButton otherButton = findViewById(R.id.otherButtonEdit);
-            otherButton.setChecked(true);
+        new EditMedicationHelper(medication, this);
 
-            EditText enterPatientName = findViewById(R.id.editPatientNameEditText);
-            enterPatientName.setText(medication.getPatientName());
-            enterPatientName.setVisibility(View.VISIBLE);
-        }
 
-        EditText enterMedicationName = findViewById(R.id.editMedicationName);
-        enterMedicationName.setText(medication.getMedName());
-
-        EditText enterAlias = findViewById(R.id.editAlias);
-        enterAlias.setText(medication.getAlias());
     }
 
     /**

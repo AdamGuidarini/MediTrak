@@ -422,12 +422,38 @@ public class DBHelper extends SQLiteOpenHelper
         long frequency = Long.parseLong(cursor.getString(cursor.getColumnIndex(MED_FREQUENCY)));
         int dosage = Integer.parseInt(cursor.getString(cursor.getColumnIndex(MED_DOSAGE)));
         String alias = cursor.getString(cursor.getColumnIndex(ALIAS));
+
         LocalDateTime[] times = new LocalDateTime[0];
 
         cursor.close();
 
         return new Medication(medName, patient, units, times, startDate,
                 medId, frequency, dosage, alias);
+    }
+
+    /**
+     * Retrieves an array of all medication times for given medication from database.
+     * @param id The id of the medication whose times should be retrieved.
+     * @return An array of all of a medications times.
+     */
+    public LocalTime[] getMedicationTimes(long id)
+    {
+        final SQLiteDatabase db = this.getReadableDatabase();
+        final String query = "SELECT " + DRUG_TIME + " FROM " + MEDICATION_TIMES + " WHERE "
+                + MED_ID + " = " + id;
+
+        Cursor cursor = db.rawQuery(query, null);
+        LocalTime[] times = new LocalTime[cursor.getCount()];
+
+        cursor.moveToFirst();
+
+        for (int i = 0; i < cursor.getCount(); i++)
+        {
+            final String time = cursor.getString(cursor.getColumnIndex(DRUG_TIME));
+            times[i] = LocalTime.parse(time);
+        }
+
+        return times;
     }
 
     /**
