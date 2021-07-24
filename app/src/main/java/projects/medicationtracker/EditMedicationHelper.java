@@ -2,9 +2,10 @@ package projects.medicationtracker;
 
 import android.app.Activity;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.Toast;
+import android.widget.RadioGroup;
 
 import java.time.LocalTime;
 
@@ -22,11 +23,15 @@ public class EditMedicationHelper
         this.db = new DBHelper(activity.getBaseContext());
         this.medicationTimes = db.getMedicationTimes(medication.getMedId());
 
+        // Load values into GUI
         setPatientButtons();
         setMedicationName();
         setAlias();
         setDosage();
         setFrequencyButton();
+
+        // Set listeners
+        setNameRadioButtonListeners();
     }
 
     private void setPatientButtons()
@@ -81,5 +86,28 @@ public class EditMedicationHelper
             button = activity.findViewById(R.id.editDailyButton);
         
         button.setChecked(true);
+    }
+
+    private void setNameRadioButtonListeners()
+    {
+        RadioButton meButton = activity.findViewById(R.id.meButtonEdit);
+        RadioButton otherPatient = activity.findViewById(R.id.otherButtonEdit);
+        EditText enterName = activity.findViewById(R.id.editPatientNameEditText);
+
+        meButton.setOnCheckedChangeListener((compoundButton, b) ->
+        {
+            if (meButton.isChecked())
+                enterName.setVisibility(View.GONE);
+            else
+                enterName.setVisibility(View.VISIBLE);
+        });
+
+        otherPatient.setOnCheckedChangeListener(((CompoundButton, b) ->
+        {
+            if (otherPatient.isChecked())
+                enterName.setVisibility(View.VISIBLE);
+            else
+                enterName.setVisibility(View.GONE);
+        }));
     }
 }

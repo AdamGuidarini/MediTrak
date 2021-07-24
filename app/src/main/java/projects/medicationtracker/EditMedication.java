@@ -8,12 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Objects;
 
@@ -91,11 +86,13 @@ public class EditMedication extends AppCompatActivity
      **************************************************************************/
     public void onDeleteMedClick(MenuItem item)
     {
-        ConfirmMedicationDeleteFragment confirmMedicationDeleteFragment = new ConfirmMedicationDeleteFragment(db, medication);
+        ConfirmMedicationDeleteFragment confirmMedicationDeleteFragment =
+                new ConfirmMedicationDeleteFragment(db, medication);
         confirmMedicationDeleteFragment.show(getSupportFragmentManager(), null);
     }
 
     public void onSaveEditClick(MenuItem item)
     {
+        Toast.makeText(this, "This will save the edits to this medication", Toast.LENGTH_SHORT).show();
     }
 }

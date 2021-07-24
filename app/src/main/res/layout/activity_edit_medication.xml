@@ -274,6 +274,101 @@
                             </RadioGroup>
                         </LinearLayout>
                     </TableRow>
+                    <LinearLayout
+                        android:id="@+id/timeLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:id="@+id/numTimesTaken"
+                            android:layout_width="350dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:autofillHints=""
+                            android:ems="10"
+                            android:hint="@string/times_per_day"
+                            android:inputType="number"/>
+
+                        <LinearLayout
+                            android:id="@+id/timesOfTheDay"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"/>
+
+                        <TextView
+                            android:id="@+id/timeTaken1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="20dp"
+                            android:text="@string/at_n_n_tap_to_set_time"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/editCustomFrequencyLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/editTakenEvery"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:labelFor="@id/enterFrequency"
+                            android:text="@string/taken_every"/>
+
+                        <EditText
+                            android:id="@+id/editEnterFrequency"
+                            android:layout_width="132dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:ems="10"
+                            android:importantForAutofill="no"
+                            android:inputType="number" />
+
+                        <Spinner
+                            android:id="@+id/editFrequencySpinner"
+                            android:layout_width="165dp"
+                            android:layout_height="37dp"
+                            android:layout_marginStart="20dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/editStartingLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:text="@string/starting"/>
+
+                            <LinearLayout
+                                android:id="@+id/edittartDateAndTimeLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/editStartDate"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp" />
+
+                                <TextView
+                                    android:id="@+id/editStartTime"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
                 </TableLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
