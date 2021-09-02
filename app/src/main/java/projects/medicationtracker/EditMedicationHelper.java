@@ -1,6 +1,7 @@
 package projects.medicationtracker;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -25,6 +26,11 @@ public class EditMedicationHelper
     final Activity activity;
     final LocalTime[] medicationTimes;
 
+    /**
+     * Builds UI for edit medication activity.
+     * @param medication The medication to edit.
+     * @param activity Edit medication activity.
+     */
     public EditMedicationHelper(Medication medication, Activity activity)
     {
         this.medication = medication;
@@ -42,8 +48,14 @@ public class EditMedicationHelper
         // Set listeners
         setNameRadioButtonListeners();
         setFrequencyButtonListeners();
+        setEnterTimesPerDayListener();
+        setDailyListener();
+        setCustomFrequencyTextViewListeners();
     }
 
+    /**
+     * Creates buttons for editing patient name.
+     */
     private void setPatientButtons()
     {
         // Set radio button
@@ -63,18 +75,27 @@ public class EditMedicationHelper
         }
     }
 
+    /**
+     * Pre-fills medication name
+     */
     private void setMedicationName()
     {
         EditText enterMedicationName = activity.findViewById(R.id.editMedicationName);
         enterMedicationName.setText(medication.getMedName());
     }
 
+    /**
+     * Enters alias if exists
+     */
     private void setAlias()
     {
         EditText enterAlias = activity.findViewById(R.id.editAlias);
         enterAlias.setText(medication.getAlias());
     }
 
+    /**
+     * Fills dosage field
+     */
     private void setDosage()
     {
         EditText enterDosage = activity.findViewById(R.id.editMedDosageEnter);
@@ -84,6 +105,9 @@ public class EditMedicationHelper
         enterDosageUnits.setText(medication.getMedDosageUnits());
     }
 
+    /**
+     * Selects the correct
+     */
     private void setFrequencyButton()
     {
         RadioButton button;
@@ -111,6 +135,9 @@ public class EditMedicationHelper
         button.setChecked(true);
     }
 
+    /**
+     * Sets listeners for frequency name input radio buttons
+     */
     private void setNameRadioButtonListeners()
     {
         RadioButton meButton = activity.findViewById(R.id.meButtonEdit);
@@ -134,6 +161,9 @@ public class EditMedicationHelper
         }));
     }
 
+    /**
+     *  Sets listeners for frequency options
+     */
     private void setFrequencyButtonListeners()
     {
         RadioButton multiplePerDay = activity.findViewById(R.id.editMultiplePerDay);
@@ -141,6 +171,7 @@ public class EditMedicationHelper
         RadioButton customFreq = activity.findViewById(R.id.editCustomFreqButton);
 
         LinearLayout customerFreqLayout = activity.findViewById(R.id.editCustomFrequencyLayout);
+        LinearLayout timesOfDay = activity.findViewById(R.id.editTimesInDay);
         EditText enterNumberOfTimesPerDay = activity.findViewById(R.id.editNumTimesTaken);
         TextView timeTaken = activity.findViewById(R.id.editTimeTaken1);
 
@@ -149,6 +180,7 @@ public class EditMedicationHelper
             if (multiplePerDay.isChecked())
             {
                 enterNumberOfTimesPerDay.setVisibility(View.VISIBLE);
+                enterNumberOfTimesPerDay.setText("");
                 timeTaken.setVisibility(View.GONE);
                 customerFreqLayout.setVisibility(View.GONE);
             }
@@ -161,6 +193,7 @@ public class EditMedicationHelper
                 timeTaken.setVisibility(View.VISIBLE);
                 enterNumberOfTimesPerDay.setVisibility(View.GONE);
                 customerFreqLayout.setVisibility(View.GONE);
+                timesOfDay.setVisibility(View.GONE);
             }
         }));
 
@@ -177,6 +210,9 @@ public class EditMedicationHelper
         }));
     }
 
+    /**
+     * Sets listeners for time entry text views
+     */
     private void setEnterTimesPerDayListener()
     {
         EditText timesPerDay = activity.findViewById(R.id.editNumTimesTaken);
@@ -220,6 +256,48 @@ public class EditMedicationHelper
         });
     }
 
+    /**
+     * Sets listener for daily time TextView, launches time picker fragment
+     */
+    private void setDailyListener()
+    {
+        TextView dailyTime = activity.findViewById(R.id.editTimeTaken1);
+
+        dailyTime.setOnClickListener(view ->
+        {
+            FragmentManager fm = ((FragmentActivity)activity).getSupportFragmentManager();
+
+            DialogFragment dialogFragment = new TimePickerFragment(dailyTime.getId());
+            dialogFragment.show(fm, null);
+        });
+    }
+
+    /**
+     * Sets listeners for editStartDate and editStartTime. Tapping editStartDate opens a
+     * SelectDateFragment and tapping editStartTime opens a TimePickerFragment.
+     */
+    private void setCustomFrequencyTextViewListeners()
+    {
+        TextView selectDate = activity.findViewById(R.id.editStartDate);
+        TextView selectTime = activity.findViewById(R.id.editStartTime);
+        FragmentManager fm = ((FragmentActivity)activity).getSupportFragmentManager();
+
+        selectDate.setOnClickListener(view ->
+        {
+            DialogFragment df = new SelectDateFragment(selectDate.getId());
+            df.show(fm, null);
+        });
+
+        selectTime.setOnClickListener(view ->
+        {
+            DialogFragment df = new TimePickerFragment(selectTime.getId());
+            df.show(fm, null);
+        });
+    }
+
+    /**
+     * Fills time frequency spinner.
+     */
     private void setFrequencySpinner()
     {
         Spinner timesSpinner = activity.findViewById(R.id.editFrequencySpinner);

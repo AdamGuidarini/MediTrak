@@ -146,4 +146,7 @@
     <string name="patient_name">Patient Name:</string>
     <string name="save_changes">Save Changes</string>
     <string name="no_alias">No alias</string>
+    <string name="tap_to_set_date">Tap to set date</string>
+    <string name="at">At:</string>
+    <string name="tap_to_set_time">Tap to set Time</string>
 </resources>

@@ -27,7 +27,8 @@
                 <TableLayout
                     android:id="@+id/medDetailsTable"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="10dp">
 
                     <TableRow
                         android:id="@+id/patientName"
@@ -299,10 +300,10 @@
 
                         <TextView
                             android:id="@+id/editTimeTaken1"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginStart="20dp"
-                            android:text="@string/at_n_n_tap_to_set_time"
+                            android:text="@string/atThisTime"
                             android:visibility="gone"/>
 
                     </LinearLayout>
@@ -359,13 +360,21 @@
                                     android:id="@+id/editStartDate"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginStart="5dp" />
+                                    android:layout_marginStart="5dp"
+                                    android:text="@string/tap_to_set_date"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="15dp"
+                                    android:text="@string/at"/>
 
                                 <TextView
                                     android:id="@+id/editStartTime"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginStart="5dp" />
+                                    android:layout_marginStart="5dp"
+                                    android:text="@string/tap_to_set_time"/>
                             </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
