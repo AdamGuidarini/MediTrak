@@ -155,6 +155,8 @@ public class DBHelper extends SQLiteOpenHelper
             sqLiteDatabase.execSQL(dropQuery);
         }
 
+        cursor.close();
+
         onCreate(sqLiteDatabase);
     }
 
@@ -451,7 +453,10 @@ public class DBHelper extends SQLiteOpenHelper
         {
             final String time = cursor.getString(cursor.getColumnIndex(DRUG_TIME));
             times[i] = LocalTime.parse(time);
+            cursor.moveToNext();
         }
+
+        cursor.close();
 
         return times;
     }
@@ -682,6 +687,8 @@ public class DBHelper extends SQLiteOpenHelper
 
             cursor.moveToNext();
         }
+
+        cursor.close();
 
         return notes;
     }

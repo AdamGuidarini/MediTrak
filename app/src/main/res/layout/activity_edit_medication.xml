@@ -281,6 +281,14 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
+                        <TextView
+                            android:id="@+id/timesPerDayLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="20dp"
+                            android:visibility="gone"
+                            android:text="@string/times_per_day"/>
+
                         <EditText
                             android:id="@+id/editNumTimesTaken"
                             android:layout_width="350dp"

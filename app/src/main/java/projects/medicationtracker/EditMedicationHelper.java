@@ -15,6 +15,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
+import org.w3c.dom.Text;
+
 import java.time.LocalTime;
 
 
@@ -42,6 +44,7 @@ public class EditMedicationHelper
         setMedicationName();
         setAlias();
         setDosage();
+        setFrequencySpinner();
         setFrequencyButtons();
 
         // Set listeners
@@ -114,12 +117,35 @@ public class EditMedicationHelper
         LinearLayout customerFreqLayout = activity.findViewById(R.id.editCustomFrequencyLayout);
         EditText enterNumberOfTimesPerDay = activity.findViewById(R.id.editNumTimesTaken);
         TextView timeTaken = activity.findViewById(R.id.editTimeTaken1);
+        Spinner frequencySpinner = activity.findViewById(R.id.editFrequencySpinner);
+        long medFrequency = medication.getMedFrequency();
 
-        if (medication.getMedFrequency() != 1440)
+        if (medFrequency != 1440)
         {
             button = activity.findViewById(R.id.editCustomFreqButton);
             customerFreqLayout.setVisibility(View.VISIBLE);
+            EditText takenEvery = activity.findViewById(R.id.editEnterFrequency);
+            TextView dateSelect = activity.findViewById(R.id.editStartDate);
+            TextView timeSelect = activity.findViewById(R.id.editStartTime);
 
+            if (medFrequency % 1440 == 0)
+            {
+                takenEvery.setText(String.valueOf(medication.getMedFrequency() / 1440));
+                frequencySpinner.setSelection(1);
+            }
+            else if (medFrequency % (1440 * 7) == 0)
+            {
+                takenEvery.setText(String.valueOf(medFrequency % (1440 / 7)));
+                frequencySpinner.setSelection(2);
+            }
+            else
+            {
+                takenEvery.setText(String.valueOf(medFrequency / 60));
+                frequencySpinner.setSelection(0);
+            }
+
+            dateSelect.setText(TimeFormatting.localDateToString(medication.getStartDate().toLocalDate()));
+            timeSelect.setText(TimeFormatting.localTimeToString(medication.getStartDate().toLocalTime()));
         }
         else if (medicationTimes.length > 1)
         {
@@ -135,6 +161,8 @@ public class EditMedicationHelper
         {
             button = activity.findViewById(R.id.editDailyButton);
             timeTaken.setVisibility(View.VISIBLE);
+            timeTaken.setText(TimeFormatting.localTimeToString(medicationTimes[0]));
+            timeTaken.setTag(medicationTimes[0]);
         }
         
         button.setChecked(true);
@@ -179,15 +207,17 @@ public class EditMedicationHelper
         LinearLayout timesOfDay = activity.findViewById(R.id.editTimesInDay);
         EditText enterNumberOfTimesPerDay = activity.findViewById(R.id.editNumTimesTaken);
         TextView timeTaken = activity.findViewById(R.id.editTimeTaken1);
+        TextView timesPerDay = activity.findViewById(R.id.timesPerDayLabel);
 
         multiplePerDay.setOnCheckedChangeListener(((compoundButton, b) ->
         {
             if (multiplePerDay.isChecked())
             {
                 enterNumberOfTimesPerDay.setVisibility(View.VISIBLE);
-                enterNumberOfTimesPerDay.setText("");
                 timeTaken.setVisibility(View.GONE);
                 customerFreqLayout.setVisibility(View.GONE);
+                timesPerDay.setVisibility(View.VISIBLE);
+                timesOfDay.setVisibility(View.VISIBLE);
             }
         }));
 
@@ -196,6 +226,7 @@ public class EditMedicationHelper
             if (dailyButton.isChecked())
             {
                 timeTaken.setVisibility(View.VISIBLE);
+                timesPerDay.setVisibility(View.GONE);
                 enterNumberOfTimesPerDay.setVisibility(View.GONE);
                 customerFreqLayout.setVisibility(View.GONE);
                 timesOfDay.setVisibility(View.GONE);
@@ -209,8 +240,8 @@ public class EditMedicationHelper
                 customerFreqLayout.setVisibility(View.VISIBLE);
                 timeTaken.setVisibility(View.GONE);
                 enterNumberOfTimesPerDay.setVisibility(View.GONE);
-
-                setFrequencySpinner();
+                timesPerDay.setVisibility(View.GONE);
+                timesOfDay.setVisibility(View.GONE);
             }
         }));
     }
@@ -321,6 +352,13 @@ public class EditMedicationHelper
                 DialogFragment dialogFragment = new TimePickerFragment(id);
                 dialogFragment.show(fm, null);
             });
+
+            if (i < medicationTimes.length)
+            {
+                int hourAndMin[] = {medicationTimes[i].getHour(), medicationTimes[i].getMinute()};
+                tv.setText(TimeFormatting.localTimeToString(medicationTimes[i]));
+                tv.setTag(hourAndMin);
+            }
         }
     }
 }
