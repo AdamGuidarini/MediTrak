@@ -308,6 +308,15 @@ public class EditMedication extends AppCompatActivity
                     every *= 60;
             }
 
+            int[] hourAndMin = (int[]) startTime.getTag();
+
+            LocalDate date = LocalDate.parse((String)startDate.getTag());
+            LocalTime time = LocalTime.parse(TimeFormatting.formatTimeForDB(hourAndMin[0],
+                    hourAndMin[1]));
+
+            LocalDateTime dateTime = LocalDateTime.of(date, time);
+
+            medication.setStartDate(dateTime);
             medication.setMedFrequency(every);
             medication.setTimes(new LocalDateTime[0]);
         }
