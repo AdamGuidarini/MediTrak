@@ -1,7 +1,6 @@
 package projects.medicationtracker;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -43,7 +42,7 @@ public class EditMedicationHelper
         setMedicationName();
         setAlias();
         setDosage();
-        setFrequencyButton();
+        setFrequencyButtons();
 
         // Set listeners
         setNameRadioButtonListeners();
@@ -108,7 +107,7 @@ public class EditMedicationHelper
     /**
      * Selects the correct
      */
-    private void setFrequencyButton()
+    private void setFrequencyButtons()
     {
         RadioButton button;
 
@@ -120,11 +119,17 @@ public class EditMedicationHelper
         {
             button = activity.findViewById(R.id.editCustomFreqButton);
             customerFreqLayout.setVisibility(View.VISIBLE);
+
         }
         else if (medicationTimes.length > 1)
         {
             button = activity.findViewById(R.id.editMultiplePerDay);
             enterNumberOfTimesPerDay.setVisibility(View.VISIBLE);
+
+            int numTimes = medicationTimes.length;
+
+            enterNumberOfTimesPerDay.setText(String.valueOf(numTimes));
+            createMultiplePerDayTextViews(numTimes);
         }
         else
         {
@@ -235,22 +240,7 @@ public class EditMedicationHelper
                 {
                     int dailyDoses = Integer.parseInt(timesPerDay.getText().toString());
 
-                    for (int i = 0; i < dailyDoses; i++)
-                    {
-                        final int id = i;
-                        TextView tv = new TextView(activity);
-                        tv.setId(i);
-
-                        TextViewUtils.setTextViewParams(tv, "Tap to set time", timesOfDay);
-
-                        tv.setOnClickListener(view ->
-                        {
-                            FragmentManager fm = ((FragmentActivity)activity).getSupportFragmentManager();
-
-                            DialogFragment dialogFragment = new TimePickerFragment(id);
-                            dialogFragment.show(fm, null);
-                        });
-                    }
+                    createMultiplePerDayTextViews(dailyDoses);
                 }
             }
         });
@@ -306,5 +296,31 @@ public class EditMedicationHelper
         ArrayAdapter<String> frequencyAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_spinner_item, spinnerFrequencies);
         frequencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         timesSpinner.setAdapter(frequencyAdapter);
+    }
+
+    /**
+     * Creates TextViews based on the number of times per day the user takes a medication
+     * @param dailyDoses The number of dose taken per day.
+     */
+    private void createMultiplePerDayTextViews(int dailyDoses)
+    {
+        LinearLayout timesOfDay = activity.findViewById(R.id.editTimesInDay);
+
+        for (int i = 0; i < dailyDoses; i++)
+        {
+            final int id = i;
+            TextView tv = new TextView(activity);
+            tv.setId(i);
+
+            TextViewUtils.setTextViewParams(tv, "Tap to set time", timesOfDay);
+
+            tv.setOnClickListener(view ->
+            {
+                FragmentManager fm = ((FragmentActivity)activity).getSupportFragmentManager();
+
+                DialogFragment dialogFragment = new TimePickerFragment(id);
+                dialogFragment.show(fm, null);
+            });
+        }
     }
 }
