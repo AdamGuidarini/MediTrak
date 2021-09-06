@@ -280,9 +280,8 @@ public class EditMedication extends AppCompatActivity
         else if (dailyButton.isChecked())
         {
             TextView dailyTime = findViewById(R.id.editTimeTaken1);
-            int[] hourAndMin = (int[]) dailyTime.getTag();
-            LocalTime time =
-                    LocalTime.parse(TimeFormatting.formatTimeForDB(hourAndMin[0], hourAndMin[1]));
+
+            LocalTime time = (LocalTime) dailyTime.getTag();
 
             LocalDateTime dateTime[] = {LocalDateTime.of(LocalDate.now(), time)};
 

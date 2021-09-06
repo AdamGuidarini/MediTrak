@@ -53,13 +53,12 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     public void onTimeSet(TimePicker view, int hourOfDay, int minute)
     {
         String chosenTime;
-        int[] hourAndMin = {hourOfDay, minute};
 
         chosenTime = formatTimeForUser(hourOfDay, minute);
 
         TextView textView = getActivity().findViewById(textViewId);
 
-        textView.setTag(hourAndMin);
+        textView.setTag(TimeFormatting.formatTimeForDB(hourOfDay, minute));
         textView.setText(chosenTime);
     }
 }

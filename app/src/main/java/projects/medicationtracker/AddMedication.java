@@ -27,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
@@ -322,16 +323,14 @@ public class AddMedication extends AppCompatActivity
             for (int i = 0; i < timesOfDay.getChildCount(); i++)
             {
                 textView = findViewById(i);
-                int[] timeArr = (int[]) textView.getTag();
-                times.add(formatTimeForDB(timeArr[0], timeArr[1]));
+                times.add((String) textView.getTag());
             }
         }
         // Daily
         else if (dailyButton.isChecked())
         {
             TextView timeTaken = findViewById(R.id.timeTaken1);
-            int[] timeArr = (int[]) timeTaken.getTag();
-            times.add(formatTimeForDB(timeArr[0], timeArr[1]));
+            times.add((String) timeTaken.getTag());
         }
         // Custom frequency
         else
