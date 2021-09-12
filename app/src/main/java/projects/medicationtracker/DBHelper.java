@@ -470,6 +470,7 @@ public class DBHelper extends SQLiteOpenHelper
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
+        // Update data in Medication table
         cv.put(MED_NAME, medication.getMedName());
         cv.put(MED_DOSAGE, medication.getMedDosage());
         cv.put(MED_FREQUENCY, medication.getMedFrequency());
@@ -479,6 +480,60 @@ public class DBHelper extends SQLiteOpenHelper
         cv.put(ALIAS, medication.getAlias());
 
         db.update(MEDICATION_TABLE, cv, MED_ID + " = " + medication.getMedId(), null);
+
+        cv.clear();
+
+        cv.put(MED_ID, medication.getMedId());
+
+        if (medication.getTimes().length > 0)
+        {
+            // Replace old times in DB
+            LocalTime[] oldTimes = getMedicationTimes(medication.getMedId());
+            int diff = medication.getTimes().length - oldTimes.length;
+            int maxIndex = diff > 0 ? oldTimes.length : oldTimes.length + diff;
+
+            for (int i = 0; i < maxIndex; i++)
+            {
+                System.out.println(i);
+
+                String timeAsString = medication.getTimes()[i].toLocalTime().toString();
+                String whereClause = MED_ID + "=" + medication.getMedId() + " AND "
+                        + DRUG_TIME + "=\"" + oldTimes[i] + "\"";
+
+                cv.put(DRUG_TIME, timeAsString);
+                db.update(MEDICATION_TIMES, cv, whereClause, null);
+
+                cv.remove(DRUG_TIME);
+            }
+
+            // Add additional times
+            if (diff > 0)
+            {
+                for (int i = maxIndex; i < medication.getTimes().length; i++)
+                {
+                    String timeAsString = medication.getTimes()[i].toLocalTime().toString();
+
+                    cv.put(MED_ID, medication.getMedId());
+                    cv.put(DRUG_TIME, timeAsString);
+
+                    db.insert(MEDICATION_TIMES,  null, cv);
+
+                    cv.clear();
+                }
+            }
+            // Delete excess old times if they exist
+            else
+            {
+                for (int i = maxIndex; i < oldTimes.length; i++)
+                {
+                    String oldTimeAsString = oldTimes[i].toString();
+                    String whereClause = DRUG_TIME + "=" + oldTimeAsString + " AND " + MED_ID
+                            + "=" + medication.getMedId();
+
+                    db.delete(MEDICATION_TIMES, whereClause, null);
+                }
+            }
+        }
     }
 
     /**

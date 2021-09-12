@@ -232,6 +232,9 @@ public class EditMedication extends AppCompatActivity
         return inputIsValid;
     }
 
+    /**
+     *  Updates the medication object to contain new medication information
+     */
     private void changeMedicationValues()
     {
         RadioButton otherPatient = findViewById(R.id.otherButtonEdit);
@@ -271,7 +274,7 @@ public class EditMedication extends AppCompatActivity
 
             for (int i = 0; i < times.length; i++)
             {
-                dateTimes[i] = LocalDateTime.of(LocalDate.now(), times[i]);
+                dateTimes[i] = LocalDateTime.of(medication.getStartDate().toLocalDate(), times[i]);
             }
 
             medication.setMedFrequency(1440);
@@ -281,9 +284,10 @@ public class EditMedication extends AppCompatActivity
         {
             TextView dailyTime = findViewById(R.id.editTimeTaken1);
 
-            LocalTime time = (LocalTime) dailyTime.getTag();
+            String tag = (String) dailyTime.getTag();
+            LocalTime time = LocalTime.parse(tag);
 
-            LocalDateTime dateTime[] = {LocalDateTime.of(LocalDate.now(), time)};
+            LocalDateTime dateTime[] = {LocalDateTime.of(medication.getStartDate().toLocalDate(), time)};
 
             medication.setMedFrequency(1440);
             medication.setTimes(dateTime);
