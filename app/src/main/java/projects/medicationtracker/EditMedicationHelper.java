@@ -356,8 +356,10 @@ public class EditMedicationHelper
             if (i < medicationTimes.length)
             {
                 int hourAndMin[] = {medicationTimes[i].getHour(), medicationTimes[i].getMinute()};
+                String time = TimeFormatting.formatTimeForDB(hourAndMin[0], hourAndMin[1]);
+
                 tv.setText(TimeFormatting.localTimeToString(medicationTimes[i]));
-                tv.setTag(hourAndMin);
+                tv.setTag(time);
             }
         }
     }

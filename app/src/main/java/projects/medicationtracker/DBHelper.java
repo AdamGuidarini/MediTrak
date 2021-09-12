@@ -496,10 +496,12 @@ public class DBHelper extends SQLiteOpenHelper
             {
                 System.out.println(i);
 
-                String timeAsString = medication.getTimes()[i].toLocalTime().toString();
-                String whereClause = MED_ID + "=" + medication.getMedId() + " AND "
-                        + DRUG_TIME + "=\"" + oldTimes[i] + "\"";
+                String timeAsString = medication.getTimes()[i].toLocalTime().toString() + ":00";
 
+                String whereClause = MED_ID + "=" + medication.getMedId() + " AND "
+                        + DRUG_TIME + "=\"" + oldTimes[i].toString() + ":00"+ "\"";
+
+                System.out.println(oldTimes[i].toString() + oldTimes[i].getSecond());
                 cv.put(DRUG_TIME, timeAsString);
                 db.update(MEDICATION_TIMES, cv, whereClause, null);
 

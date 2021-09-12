@@ -265,9 +265,9 @@ public class EditMedication extends AppCompatActivity
             {
                 TextView tv = (TextView) timeLayout.getChildAt(i);
 
-                int[] hourAndMin = (int[]) tv.getTag();
+                String time = (String) tv.getTag();
 
-                times[i] = LocalTime.parse(TimeFormatting.formatTimeForDB(hourAndMin[0], hourAndMin[1]));
+                times[i] = LocalTime.parse(time);
             }
 
             LocalDateTime dateTimes[] = new LocalDateTime[times.length];
