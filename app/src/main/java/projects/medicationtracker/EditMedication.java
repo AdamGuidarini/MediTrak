@@ -294,7 +294,7 @@ public class EditMedication extends AppCompatActivity
         }
         else
         {
-            EditText takenEvery = findViewById(R.id.editNumTimesTaken);
+            EditText takenEvery = findViewById(R.id.editEnterFrequency);
             Spinner frequencySpinner = findViewById(R.id.editFrequencySpinner);
             TextView startDate = findViewById(R.id.editStartDate);
             TextView startTime = findViewById(R.id.editStartTime);
@@ -311,11 +311,10 @@ public class EditMedication extends AppCompatActivity
                     every *= 60;
             }
 
-            int[] hourAndMin = (int[]) startTime.getTag();
+            String timeString = (String) startTime.getTag();
 
-            LocalDate date = LocalDate.parse((String)startDate.getTag());
-            LocalTime time = LocalTime.parse(TimeFormatting.formatTimeForDB(hourAndMin[0],
-                    hourAndMin[1]));
+            LocalDate date = (LocalDate) startDate.getTag();
+            LocalTime time = LocalTime.parse(timeString);
 
             LocalDateTime dateTime = LocalDateTime.of(date, time);
 

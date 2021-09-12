@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+import java.time.LocalDate;
+
 public class SelectDateFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener
 {
     private final int id;
@@ -57,8 +59,10 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
     public void populateSetDate(int year, int month, int day)
     {
         TextView textView = getActivity().findViewById(id);
+        LocalDate localDate = LocalDate.of(year, month, day);
+
         String date = month + "/" + day + "/" + year;
         textView.setText(date);
+        textView.setTag(localDate);
     }
-
 }
