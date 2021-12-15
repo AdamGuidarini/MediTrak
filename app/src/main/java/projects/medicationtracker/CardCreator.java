@@ -38,10 +38,62 @@ public class CardCreator
                 medicationsForThisPatient.add(medications.get(i));
         }
 
+        // Sort medications
+        sortMedicationList(medicationsForThisPatient);
+
         String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
         for (int ii = 0; ii < 7; ii++)
             createDayOfWeekCards(days[ii], ii, medicationsForThisPatient, scheduleLayout, db, scheduleLayout.getContext());
+    }
+
+    /**
+     * Sorts the ArrayList of Medications so the Medication with the first time goes first.
+     * @param medications The list of medications to sort.
+     **************************************************************************/
+    public static void sortMedicationList(ArrayList<Medication> medications)
+    {
+        int n = medications.size();
+        Medication temp;
+
+        for (Medication med : medications)
+            med.setTimes(sortMedicationTimeArray(med.getTimes()));
+
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 1; j < (n-i); j++)
+            {
+                if (medications.get(j - 1).getTimes()[0].isAfter(medications.get(j).getTimes()[0]))
+                {
+                    temp = medications.get(j - 1);
+                    medications.set(j - 1, medications.get(j));
+                    medications.set(j, temp);
+                }
+            }
+        }
+    }
+
+    /**
+     * Sorts the array of LocalDataTimes for each medication.
+     * @param times The array to be sorted.
+     * @return A sorted version of the array passed to it.
+     **************************************************************************/
+    public static LocalDateTime[] sortMedicationTimeArray(LocalDateTime[] times)
+    {
+        for (int i = 0; i < times.length; i++)
+        {
+            for (int j = 1; j < (times.length - i); j++)
+            {
+                if (times[j -1].isAfter(times[j]))
+                {
+                    LocalDateTime temp = times[j - 1];
+                    times[j - 1] = times[j];
+                    times[j] = temp;
+                }
+            }
+        }
+
+        return times;
     }
 
     /**
@@ -74,7 +126,7 @@ public class CardCreator
 
         LocalDate thisSunday = TimeFormatting.whenIsSunday();
 
-            // Add day to top of card
+        // Add day to top of card
         TextViewUtils.setTextViewFontAndPadding(dayLabel);
 
         String dayLabelString = dayOfWeek + " " + TimeFormatting.localDateToString(thisSunday.plusDays(day));
@@ -281,21 +333,5 @@ public class CardCreator
         marginLayoutParams.setMargins(25, 40, 25, 20);
         cardView.requestLayout();
         cardView.setRadius(30);
-    }
-
-    /**
-     * Creates a card in which users may edit the given medication
-     * @param editMedLayout The LinearLayout inside the CardView
-     * @param medication The medication to edit
-     **************************************************************************/
-    public static void createEditMedCard(LinearLayout editMedLayout, Medication medication)
-    {
-        final Context context = editMedLayout.getContext();
-
-        String medNameLabel = "Name: " + medication.getMedName();
-
-        Switch medNameSwitch = new Switch(context);
-        medNameSwitch.setText(medNameLabel);
-        editMedLayout.addView(medNameSwitch);
     }
 }
