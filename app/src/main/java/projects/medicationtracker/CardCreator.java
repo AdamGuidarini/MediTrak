@@ -170,15 +170,14 @@ public class CardCreator
         layout.addView(thisDayCard);
     }
 
+    /**
+     * Sorts CheckBoxes in medication schedule.
+     * @param parentLayout Layout containing CheckBoxes to sort.
+     */
     public static void sortMedicationCheckBoxes(LinearLayout parentLayout)
     {
         int count = parentLayout.getChildCount();
         short firstCheckboxIndex = 1;
-
-        ArrayList<CheckBox> checkBoxes = new ArrayList<>();
-
-        for (int i = 1; i < count; i++)
-            checkBoxes.add((CheckBox) parentLayout.getChildAt(i));
 
         for (int i = firstCheckboxIndex; i < count; i++)
         {
