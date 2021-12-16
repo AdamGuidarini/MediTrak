@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.util.Pair;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,62 +39,10 @@ public class CardCreator
                 medicationsForThisPatient.add(medications.get(i));
         }
 
-        // Sort medications
-        sortMedicationList(medicationsForThisPatient);
-
         String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
         for (int ii = 0; ii < 7; ii++)
             createDayOfWeekCards(days[ii], ii, medicationsForThisPatient, scheduleLayout, db, scheduleLayout.getContext());
-    }
-
-    /**
-     * Sorts the ArrayList of Medications so the Medication with the first time goes first.
-     * @param medications The list of medications to sort.
-     **************************************************************************/
-    public static void sortMedicationList(ArrayList<Medication> medications)
-    {
-        int n = medications.size();
-        Medication temp;
-
-        for (Medication med : medications)
-            med.setTimes(sortMedicationTimeArray(med.getTimes()));
-
-        for (int i = 0; i < n; i++)
-        {
-            for (int j = 1; j < (n-i); j++)
-            {
-                if (medications.get(j - 1).getTimes()[0].isAfter(medications.get(j).getTimes()[0]))
-                {
-                    temp = medications.get(j - 1);
-                    medications.set(j - 1, medications.get(j));
-                    medications.set(j, temp);
-                }
-            }
-        }
-    }
-
-    /**
-     * Sorts the array of LocalDataTimes for each medication.
-     * @param times The array to be sorted.
-     * @return A sorted version of the array passed to it.
-     **************************************************************************/
-    public static LocalDateTime[] sortMedicationTimeArray(LocalDateTime[] times)
-    {
-        for (int i = 0; i < times.length; i++)
-        {
-            for (int j = 1; j < (times.length - i); j++)
-            {
-                if (times[j -1].isAfter(times[j]))
-                {
-                    LocalDateTime temp = times[j - 1];
-                    times[j - 1] = times[j];
-                    times[j] = temp;
-                }
-            }
-        }
-
-        return times;
     }
 
     /**
@@ -145,6 +94,7 @@ public class CardCreator
                 {
                     CheckBox thisMedication = new CheckBox(ll.getContext());
                     long medId = medication.getMedId();
+                    Pair<Long, LocalDateTime> tag;
 
                     // Set Checkbox label
                     String medName = medication.getMedName();
@@ -175,16 +125,19 @@ public class CardCreator
                         rowid = db.getDoseId(medId, TimeFormatting.localDateTimeToString(time));
                     }
 
+                    tag = Pair.create(rowid, time);
+
                     if (rowid > 0)
                     {
-                        thisMedication.setTag(rowid);
+                        thisMedication.setTag(tag);
 
                         if (db.getTaken(rowid))
                             thisMedication.setChecked(true);
 
                         thisMedication.setOnCheckedChangeListener((compoundButton, b) ->
                         {
-                            final int doseId = Integer.parseInt(thisMedication.getTag().toString());
+                            Pair<Long, LocalDateTime> tvTag = (Pair<Long, LocalDateTime>) thisMedication.getTag();
+                            final Long doseId = tvTag.first;
 
                             if (LocalDateTime.now().isBefore(time.minusHours(2)))
                             {
@@ -211,8 +164,49 @@ public class CardCreator
 
             TextViewUtils.setTextViewParams(textView, noMed, ll);
         }
+        else
+            sortMedicationCheckBoxes(ll);
 
         layout.addView(thisDayCard);
+    }
+
+    public static void sortMedicationCheckBoxes(LinearLayout parentLayout)
+    {
+        int count = parentLayout.getChildCount();
+        short firstCheckboxIndex = 1;
+
+        ArrayList<CheckBox> checkBoxes = new ArrayList<>();
+
+        for (int i = 1; i < count; i++)
+            checkBoxes.add((CheckBox) parentLayout.getChildAt(i));
+
+        for (int i = firstCheckboxIndex; i < count; i++)
+        {
+            for (int j = firstCheckboxIndex + 1; j < (count - i); j++)
+            {
+                CheckBox child1 = (CheckBox) parentLayout.getChildAt(j - 1);
+                CheckBox child2 = (CheckBox) parentLayout.getChildAt(j);
+
+                Pair<Long, LocalDateTime> child1Pair = (Pair<Long, LocalDateTime>) child1.getTag();
+                Pair<Long, LocalDateTime> child2Pair = (Pair<Long, LocalDateTime>) child2.getTag();
+
+                LocalDateTime child1Time = child1Pair.second;
+                LocalDateTime child2Time = child2Pair.second;
+
+                if (child1Time != null && child1Time.isAfter(child2Time))
+                {
+                      CheckBox temp = new CheckBox(parentLayout.getContext());
+                      temp.setText(child1.getText());
+                      temp.setTag(child1.getTag());
+
+                      child1.setText(child2.getText());
+                      child1.setTag(child2.getTag());
+
+                      child2.setText(temp.getText());
+                      child2.setTag(temp.getTag());
+                }
+            }
+        }
     }
 
     /**
