@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MedicationTracker">
+
         <activity android:name=".EditMedication"></activity>
         <activity android:name=".MedicationNotes" />
         <activity android:name=".MyMedications" />
