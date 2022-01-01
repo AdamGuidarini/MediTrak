@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MedicationTracker">
 
-        <activity android:name=".EditMedication"></activity>
+        <activity android:name=".EditMedication" />
         <activity android:name=".MedicationNotes" />
         <activity android:name=".MyMedications" />
         <activity android:name=".Settings" />
@@ -25,7 +25,26 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".NotificationReceiver" />
+        <receiver
+            android:name=".NotificationReceiver"
+            android:enabled="true"
+            android:exported="false">
+
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+            </intent-filter>
+
+        </receiver>
+
+        <service android:name=".NotificationService"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="NOTIFICATION_SERVICE"/>
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>
