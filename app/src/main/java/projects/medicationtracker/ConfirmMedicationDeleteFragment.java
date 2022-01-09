@@ -30,7 +30,6 @@ public class ConfirmMedicationDeleteFragment extends DialogFragment
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = requireActivity().getLayoutInflater();
 
         builder.setTitle("Are you sure you want to delete this medication?");
 

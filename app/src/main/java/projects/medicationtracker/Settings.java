@@ -59,11 +59,7 @@ public class Settings extends AppCompatActivity
 
     public void onPurgeButtonClick(View view)
     {
-        if (db.purge())
-            Toast.makeText(this, "All Medications deleted", Toast.LENGTH_SHORT).show();
-        else if (db.numberOfRows() == 0)
-            Toast.makeText(this, "No medications to delete", Toast.LENGTH_SHORT).show();
-        else
-            Toast.makeText(this, "An error occurred while deleting medications", Toast.LENGTH_SHORT).show();
+        ConfirmDeleteAllFragment deleteAllFragment = new ConfirmDeleteAllFragment(db);
+        deleteAllFragment.show(getSupportFragmentManager(), null);
     }
 }
