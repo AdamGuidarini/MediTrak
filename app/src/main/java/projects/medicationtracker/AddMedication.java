@@ -27,13 +27,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
-
-import static projects.medicationtracker.TimeFormatting.formatTimeForDB;
 
 public class AddMedication extends AppCompatActivity
 {
@@ -462,7 +459,8 @@ public class AddMedication extends AppCompatActivity
                     dosage.setText("");
                     allClear = false;
                 }
-            } else
+            }
+            else
             {
                 allClear = false;
             }
@@ -491,21 +489,24 @@ public class AddMedication extends AppCompatActivity
                     timesPerDay.setError("Please enter the number of times per day this medication is taken");
                     allClear = false;
                 }
-            } else if (frequencyButton == findViewById(R.id.dailyButton))
+            }
+            else if (frequencyButton == findViewById(R.id.dailyButton))
             {
                 if (timeTaken1.getText().toString().equals(getString(R.string.atThisTime)))
                 {
                     Toast.makeText(this, "Please enter a time", Toast.LENGTH_SHORT).show();
                     allClear = false;
                 }
-            } else if (frequencyButton == findViewById(R.id.customFreqButton))
+            }
+            else if (frequencyButton == findViewById(R.id.customFreqButton))
             {
                 if (TextUtils.isEmpty(takenEvery.getText().toString()))
                 {
                     takenEvery.setError("Please enter a number");
                     allClear = false;
                 }
-            } else
+            }
+            else
             {
                 Toast.makeText(this, "Please choose a frequency option", Toast.LENGTH_SHORT).show();
                 allClear = false;

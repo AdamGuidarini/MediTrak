@@ -16,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -153,7 +154,8 @@ public class EditMedication extends AppCompatActivity
             medName.setError("Enter a name for this medication");
         }
 
-        if (dosage.getText().toString().equals(""))
+        String enteredDosage = dosage.getText().toString();
+        if (enteredDosage.equals("") || !InputValidation.isValidInt(enteredDosage))
         {
             inputIsValid = false;
             dosage.setError("Enter medication dosage");
@@ -214,18 +216,15 @@ public class EditMedication extends AppCompatActivity
                 TextView selectDate = findViewById(R.id.editStartDate);
                 TextView selectTime = findViewById(R.id.editStartTime);
 
-                if (selectDate.getText().toString().equals(getResources()
-                        .getString(R.string.tap_to_set_date)))
-                {
-                    inputIsValid = false;
+                String selectDateText = selectDate.getText().toString();
+                String selectTimeText = selectTime.getText().toString();
+
+                inputIsValid = selectDateText.equals(getResources()
+                        .getString(R.string.tap_to_set_date)) ==
+                        selectTimeText.equals(getResources().getString(R.string.tap_to_set_time));
+
+                if (!inputIsValid)
                     fillOutFields.show();
-                }
-                else if (selectTime.getText().toString().equals(getResources()
-                        .getString(R.string.tap_to_set_time)))
-                {
-                    inputIsValid = false;
-                    fillOutFields.show();
-                }
             }
         }
 
@@ -284,8 +283,7 @@ public class EditMedication extends AppCompatActivity
         {
             TextView dailyTime = findViewById(R.id.editTimeTaken1);
 
-            String tag = (String) dailyTime.getTag();
-            LocalTime time = LocalTime.parse(tag);
+            LocalTime time = (LocalTime) dailyTime.getTag();
 
             LocalDateTime dateTime[] = {LocalDateTime.of(medication.getStartDate().toLocalDate(), time)};
 
