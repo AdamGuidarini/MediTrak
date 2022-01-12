@@ -282,7 +282,17 @@ public class EditMedication extends AppCompatActivity
         {
             TextView dailyTime = findViewById(R.id.editTimeTaken1);
 
-            LocalTime time = (LocalTime) dailyTime.getTag();
+            LocalTime time;
+
+            try
+            {
+                time = (LocalTime) dailyTime.getTag();
+            }
+            catch (ClassCastException e)
+            {
+                e.getCause();
+                time = LocalTime.parse((String) dailyTime.getTag());
+            }
 
             LocalDateTime dateTime[] = {LocalDateTime.of(medication.getStartDate().toLocalDate(), time)};
 
