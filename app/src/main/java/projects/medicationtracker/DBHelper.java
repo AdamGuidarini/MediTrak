@@ -8,6 +8,8 @@ import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 
 import java.time.LocalDate;
@@ -29,6 +31,7 @@ public class DBHelper extends SQLiteOpenHelper
     private static final String MED_DOSAGE = "Dosage";
     private static final String MED_UNITS = "Units";
     private static final String ALIAS = "Alias";
+    private static final String ACTIVE = "Active";
 
     private static final String MEDICATION_TRACKER_TABLE = "MedicationTracker";
     private static final String DOSE_TIME = "DoseTime";
@@ -118,6 +121,9 @@ public class DBHelper extends SQLiteOpenHelper
         for (int i = 0; i < NUM_TABLES; i++)
             sqLiteDatabase.execSQL(queries[i]);
 
+        // Add columns to existing tables
+        if (addColumnIfNotExists(MEDICATION_TABLE, ACTIVE))
+            System.out.println("Failed to add new column in database.");
     }
 
     /**
@@ -158,6 +164,28 @@ public class DBHelper extends SQLiteOpenHelper
         cursor.close();
 
         onCreate(sqLiteDatabase);
+    }
+
+    /**
+     * Adds a new column to an existing table, catches an exceptions.
+     * @param tableName Name of the table holding new column.
+     * @param columnName Name of the column to add to table.
+     * @return True on success, false on failure.
+     */
+    public boolean addColumnIfNotExists(String tableName, String columnName)
+    {
+        SQLiteDatabase dbWrite = this.getWritableDatabase();
+
+        try
+        {
+            dbWrite.execSQL("ALTER TABLE " + tableName + " ADD COLUMN " + columnName + " BOOLEAN;");
+            return true;
+        }
+        catch (SQLException e)
+        {
+            e.getCause();
+            return false;
+        }
     }
 
     /**

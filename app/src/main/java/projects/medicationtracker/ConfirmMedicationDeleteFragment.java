@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
