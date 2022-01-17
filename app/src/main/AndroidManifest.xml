@@ -27,22 +27,13 @@
 
         <receiver
             android:name=".NotificationReceiver"
-            android:enabled="true"
-            android:exported="false">
-
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
-            </intent-filter>
+            android:process=":remote">
 
         </receiver>
 
-        <service android:name=".NotificationService"
-            android:enabled="true"
+        <service
+            android:name=".NotificationService"
             android:exported="false">
-            <intent-filter>
-                <action android:name="NOTIFICATION_SERVICE"/>
-            </intent-filter>
         </service>
 
     </application>
