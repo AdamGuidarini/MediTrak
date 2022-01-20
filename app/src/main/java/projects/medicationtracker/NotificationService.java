@@ -24,8 +24,8 @@ public class NotificationService extends IntentService
                 (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Notification notification = intent.getParcelableExtra(NOTIFICATION);
-        int notificationId = intent.getIntExtra(NOTIFICATION_ID, 0);
+        long notificationId = intent.getLongExtra(NOTIFICATION_ID, System.currentTimeMillis());
 
-        notificationManager.notify(notificationId, notification);
+        notificationManager.notify((int) notificationId, notification);
     }
 }

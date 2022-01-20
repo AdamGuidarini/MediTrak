@@ -20,6 +20,7 @@ import androidx.core.app.NotificationCompat;
 
 public class NotificationHelper
 {
+    final static String GROUP_KEY = "medicationTrackerNotificationGroup";
     final static String CHANNEL_ID = "med_reminder";
 
     public static void scheduleNotification(Context notificationContext, Medication medication,
@@ -46,11 +47,12 @@ public class NotificationHelper
         notificationIntent.putExtra(NotificationReceiver.NOTIFICATION, notification);
         // notificationIntent.putExtra("DOSE_ID", id);
 
-        alarmIntent = PendingIntent.getBroadcast(notificationContext, (int) alarmTimeMillis,
+        alarmIntent = PendingIntent.getBroadcast(notificationContext, (int) notificationId,
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTimeMillis, alarmIntent);
+//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmTimeMillis, AlarmManager.INTERVAL_DAY, alarmIntent);
     }
 
     private static Notification createNotification(String title, Context notificationContext,
@@ -61,7 +63,9 @@ public class NotificationHelper
                 .setContentTitle(title)
                 .setContentText(createMedicationReminderMessage(medication))
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setAutoCancel(true);
+                .setAutoCancel(true)
+                .setGroup(GROUP_KEY)
+                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL);
 
         Intent resIntent
                 = new Intent(notificationContext.getApplicationContext(), MainActivity.class);
