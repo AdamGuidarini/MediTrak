@@ -8,9 +8,10 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import static android.content.Context.ALARM_SERVICE;
 import static projects.medicationtracker.TimeFormatting.*;
@@ -28,23 +29,28 @@ public class NotificationHelper
         PendingIntent alarmIntent;
         AlarmManager alarmManager;
 
-        // final DBHelper db = new DBHelper(notificationContext);
+        final DBHelper db = new DBHelper(notificationContext);
 
         Notification notification = createNotification(TITLE, notificationContext, medication);
 
         String doseTime = localDateTimeToString(medication.getStartDate());
         // long id = db.getDoseId(medication.getMedId(), doseTime);
 
+        ZonedDateTime zdt = time.atZone(ZoneId.systemDefault());
+
+        long alarmTimeMillis = zdt.toInstant().toEpochMilli();
+
         Intent notificationIntent = new Intent(notificationContext, NotificationReceiver.class);
 
         notificationIntent.putExtra(NotificationReceiver.NOTIFICATION_ID, notificationId);
         notificationIntent.putExtra(NotificationReceiver.NOTIFICATION, notification);
+        // notificationIntent.putExtra("DOSE_ID", id);
 
-        alarmIntent = PendingIntent.getBroadcast(notificationContext, 0,
+        alarmIntent = PendingIntent.getBroadcast(notificationContext, (int) alarmTimeMillis,
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, 2000, alarmIntent);
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTimeMillis, alarmIntent);
     }
 
     private static Notification createNotification(String title, Context notificationContext,
