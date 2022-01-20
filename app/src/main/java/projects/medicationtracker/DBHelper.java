@@ -122,8 +122,8 @@ public class DBHelper extends SQLiteOpenHelper
             sqLiteDatabase.execSQL(queries[i]);
 
         // Add columns to existing tables
-        if (addColumnIfNotExists(MEDICATION_TABLE, ACTIVE))
-            System.out.println("Failed to add new column in database.");
+//        if (addColumnIfNotExists(MEDICATION_TABLE, ACTIVE))
+//            System.out.println("Failed to add new column in database.");
     }
 
     /**
