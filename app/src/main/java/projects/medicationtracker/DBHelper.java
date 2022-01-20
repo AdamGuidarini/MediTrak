@@ -212,7 +212,7 @@ public class DBHelper extends SQLiteOpenHelper
         medTableValues.put(START_DATE, startDate);
         medTableValues.put(MED_FREQUENCY, frequency);
         medTableValues.put(ALIAS, alias);
-        medTableValues.put(ACTIVE, 1);
+//        medTableValues.put(ACTIVE, 1);
 
         return db.insert(MEDICATION_TABLE, null, medTableValues);
     }
