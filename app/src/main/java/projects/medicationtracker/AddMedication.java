@@ -27,6 +27,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
@@ -210,27 +213,20 @@ public class AddMedication extends AppCompatActivity
                     timesOfTheDay.removeAllViews();
                     customFrequencyLayout.setVisibility(View.VISIBLE);
 
-                    TextView[] textViews = new TextView[2];
-                    textViews[0] = findViewById(R.id.startDate);
-                    textViews[1] = findViewById(R.id.startTime);
+                    TextView startDate = findViewById(R.id.startDate);
+                    TextView startTime = findViewById(R.id.startTime);
 
-                    TimeFormatting.getCurrentTimeAndDate(textViews[0], textViews[1]);
+                    TimeFormatting.getCurrentTimeAndDate(startDate, startTime);
 
-                    textViews[0].setOnClickListener(view ->
+                    startDate.setOnClickListener(view ->
                     {
-                        final int id3 = 3;
-                        textViews[0].setId(id3);
-
-                        DialogFragment dialogFragment = new SelectDateFragment(id3);
+                        DialogFragment dialogFragment = new SelectDateFragment(R.id.startDate);
                         dialogFragment.show(getSupportFragmentManager(), null);
                     });
 
-                    textViews[1].setOnClickListener(view ->
+                    startTime.setOnClickListener(view ->
                     {
-                        final int id2 = 2;
-                        textViews[1].setId(id2);
-
-                        DialogFragment dialogFragment = new TimePickerFragment(id2);
+                        DialogFragment dialogFragment = new TimePickerFragment(R.id.startTime);
                         dialogFragment.show(getSupportFragmentManager(), null);
                     });
                     break;
@@ -337,6 +333,9 @@ public class AddMedication extends AppCompatActivity
             Adapter adapter = frequencySpinner.getAdapter();
             ArrayList<String> spinnerOptions = new ArrayList<>();
             String frequencyUnit = frequencySpinner.getSelectedItem().toString();
+            TextView startTime = findViewById(R.id.startTime);
+            TextView startDate = findViewById(R.id.startDate);
+
 
             // Get spinner values
             for (int i = 0; i < adapter.getCount(); i++)
@@ -357,6 +356,13 @@ public class AddMedication extends AppCompatActivity
             {
                 frequency = 7 * timesPerFrequency * 24 * 60;
             }
+
+            times.add((String) startTime.getTag());
+
+            LocalDate firstDate = (LocalDate) startDate.getTag();
+            LocalDateTime startDateTime = LocalDateTime.of(firstDate, LocalTime.parse((String) startTime.getTag()));
+
+            firstDoseDate = TimeFormatting.localDateTimeToString(startDateTime);
         }
 
         // Submit to database, return to MainActivity

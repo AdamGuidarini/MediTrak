@@ -334,6 +334,12 @@
                                     android:layout_marginStart="5dp" />
 
                                 <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="15dp"
+                                    android:text="@string/at"/>
+
+                                <TextView
                                     android:id="@+id/startTime"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -347,7 +353,7 @@
             </androidx.cardview.widget.CardView>
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/submitButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
