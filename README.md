@@ -1,7 +1,7 @@
 # MedicationTracker
 An Android app that helps users keep track of their medications.
 
-Development plan as of May 25, 2021:
+Development plan as of January 22, 2022:
 
 Requirements:
 
@@ -10,8 +10,8 @@ Requirements:
 
 Status:
   
-  + In active development.
-  + App can be used as a checklist for medications but notifications are not yet functional.
+  + In active development, this app is a personal project started when.
+  + App can be used as a checklist for medications but notifications are semi-functional. The app can generate separate notifications for each medication dose but if you delete a medication notifications for the current scheduling week will still occur...which isn't exactly what I want.
 
 Completed:
 
@@ -23,11 +23,11 @@ Completed:
 In progress:
 
   + Refactoring and code clean-up.
-
-  + Notifications - Push notifications to alter user that it is time to take a medication.
+  + Bug fixes - The app sometimes crashes when editing medicaiton times.
+  + Notifications - Push notifications are partially functional, however at the moment there is no way to stop pending notifications for deleted medications. The way notifications are created will also need to be changed to use a single repeating alarm instead of multiple single use alarms.
 
 Planned:
 
-  + Improvements to MainActivity - Allow the user to see medications from previous weeks.
+  + Improvements to MainActivity - Allow the user to see medications from previous and future weeks.
   + Settings - Make changes to how the app us used, such as how long before the scheduled dose time a medication can be marked as taken.
   + Cancel medication - Medication will no longer be scheduled but notes an other related data will not be deleted.
