@@ -318,10 +318,22 @@ public class EditMedication extends AppCompatActivity
                     every *= 60;
             }
 
-            String timeString = (String) startTime.getTag();
+            String timeString;
+            LocalTime time;
 
-            LocalDate date = (LocalDate) startDate.getTag();
-            LocalTime time = LocalTime.parse(timeString);
+            if (startTime.getTag() != null)
+            {
+                timeString = (String) startTime.getTag();
+                time = LocalTime.parse(timeString);
+            }
+            else
+                time = medication.getStartDate().toLocalTime();
+
+            LocalDate date;
+            if (startDate.getTag() != null)
+                date = (LocalDate) startDate.getTag();
+            else
+                date = medication.getStartDate().toLocalDate();
 
             LocalDateTime dateTime = LocalDateTime.of(date, time);
 

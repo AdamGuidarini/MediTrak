@@ -26,6 +26,10 @@ public class NotificationHelper
     public static void scheduleNotification(Context notificationContext, Medication medication,
                                             LocalDateTime time, long notificationId)
     {
+        // Prevents scheduling notifications in the past
+        if (time.isBefore(LocalDateTime.now()))
+            return;
+
         final String TITLE = notificationContext.getString(R.string.app_name);
         PendingIntent alarmIntent;
         AlarmManager alarmManager;

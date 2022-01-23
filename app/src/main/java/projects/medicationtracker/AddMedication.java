@@ -360,7 +360,8 @@ public class AddMedication extends AppCompatActivity
             times.add((String) startTime.getTag());
 
             LocalDate firstDate = (LocalDate) startDate.getTag();
-            LocalDateTime startDateTime = LocalDateTime.of(firstDate, LocalTime.parse((String) startTime.getTag()));
+            LocalDateTime startDateTime =
+                    LocalDateTime.of(firstDate, LocalTime.parse((String) startTime.getTag()));
 
             firstDoseDate = TimeFormatting.localDateTimeToString(startDateTime);
         }
@@ -368,7 +369,9 @@ public class AddMedication extends AppCompatActivity
         // Submit to database, return to MainActivity
         DBHelper helper = new DBHelper(this);
 
-        long rowid = helper.addMedication(medName, patient, dosage, medUnits, firstDoseDate, frequency, alias);
+        long rowid =
+                helper.addMedication(medName, patient, dosage, medUnits, firstDoseDate,
+                        frequency, alias);
         // Ensure dose was submitted successfully
         if (rowid == -1)
         {
