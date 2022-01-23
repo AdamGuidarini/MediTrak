@@ -357,11 +357,25 @@ public class AddMedication extends AppCompatActivity
                 frequency = 7 * timesPerFrequency * 24 * 60;
             }
 
-            times.add((String) startTime.getTag());
+            LocalDate firstDate;
 
-            LocalDate firstDate = (LocalDate) startDate.getTag();
+
+            if (startTime.getTag() != null)
+                times.add((String) startTime.getTag());
+            else
+                times.add(LocalTime.now().toString());
+
+            try
+            {
+               firstDate = (LocalDate) startDate.getTag();
+            }
+            catch(Exception e)
+            {
+                firstDate = LocalDate.now();
+            }
+
             LocalDateTime startDateTime =
-                    LocalDateTime.of(firstDate, LocalTime.parse((String) startTime.getTag()));
+                    LocalDateTime.of(firstDate, LocalTime.parse(times.get(0)));
 
             firstDoseDate = TimeFormatting.localDateTimeToString(startDateTime);
         }
