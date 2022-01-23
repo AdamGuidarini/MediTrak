@@ -8,20 +8,24 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import static android.content.Context.ALARM_SERVICE;
-import static projects.medicationtracker.TimeFormatting.*;
 
 import androidx.core.app.NotificationCompat;
 
 public class NotificationHelper
 {
-    final static String GROUP_KEY = "medicationTrackerNotificationGroup";
-    final static String CHANNEL_ID = "med_reminder";
+    public final static String GROUP_KEY = "medicationTrackerNotificationGroup";
+    public final static String CHANNEL_ID = "med_reminder";
+    public final static String MESSAGE = "message";
+    public final static String DOSE_TIME = "doseTime";
+    public final static String MEDICATION_ID = "medicationId";
+    final static int MILLIS_IN_MINUTE = 60000;
 
     public static void scheduleNotification(Context notificationContext, Medication medication,
                                             LocalDateTime time, long notificationId)
@@ -30,16 +34,10 @@ public class NotificationHelper
         if (time.isBefore(LocalDateTime.now()))
             return;
 
-        final String TITLE = notificationContext.getString(R.string.app_name);
         PendingIntent alarmIntent;
         AlarmManager alarmManager;
 
         final DBHelper db = new DBHelper(notificationContext);
-
-        Notification notification = createNotification(TITLE, notificationContext, medication);
-
-        String doseTime = localDateTimeToString(medication.getStartDate());
-        // long id = db.getDoseId(medication.getMedId(), doseTime);
 
         ZonedDateTime zdt = time.atZone(ZoneId.systemDefault());
 
@@ -48,41 +46,16 @@ public class NotificationHelper
         Intent notificationIntent = new Intent(notificationContext, NotificationReceiver.class);
 
         notificationIntent.putExtra(NotificationReceiver.NOTIFICATION_ID, notificationId);
-        notificationIntent.putExtra(NotificationReceiver.NOTIFICATION, notification);
-        // notificationIntent.putExtra("DOSE_ID", id);
+        notificationIntent.putExtra(MESSAGE, createMedicationReminderMessage(medication));
+        notificationIntent.putExtra(DOSE_TIME, time);
+        notificationIntent.putExtra(MEDICATION_ID, medication.getMedId());
 
         alarmIntent = PendingIntent.getBroadcast(notificationContext, (int) notificationId,
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTimeMillis, alarmIntent);
-//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmTimeMillis, AlarmManager.INTERVAL_DAY, alarmIntent);
-    }
-
-    private static Notification createNotification(String title, Context notificationContext,
-                                                   Medication medication)
-    {
-        NotificationCompat.Builder builder
-                = new NotificationCompat.Builder(notificationContext, CHANNEL_ID)
-                .setContentTitle(title)
-                .setContentText(createMedicationReminderMessage(medication))
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setAutoCancel(true)
-                .setGroup(GROUP_KEY)
-                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL);
-
-        Intent resIntent
-                = new Intent(notificationContext.getApplicationContext(), MainActivity.class);
-
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(notificationContext);
-        stackBuilder.addParentStack(MainActivity.class);
-        stackBuilder.addNextIntent(resIntent);
-
-        PendingIntent resPendingIntent
-                = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(resPendingIntent);
-
-        return builder.build();
+//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmTimeMillis, medication.getMedFrequency() * MILLIS_IN_MINUTE, alarmIntent);
     }
 
     private static String createMedicationReminderMessage(Medication medication)
@@ -90,6 +63,9 @@ public class NotificationHelper
         String message;
         String patientName = medication.getPatientName();
         String medicationName = medication.getMedName();
+
+        if (!medication.getAlias().isEmpty())
+            medicationName = medication.getAlias();
 
         if (patientName.equals("ME!"))
         {
@@ -123,4 +99,11 @@ public class NotificationHelper
         notificationManager.createNotificationChannel(channel);
     }
 
+    public static void deletePendingNotification(Medication medication, Context context)
+    {
+        Intent intent = new Intent(context, NotificationReceiver.class);
+
+        PendingIntent.getBroadcast(context, (int) medication.getMedId(), intent,
+                PendingIntent.FLAG_UPDATE_CURRENT).cancel();
+    }
 }

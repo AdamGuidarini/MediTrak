@@ -36,6 +36,7 @@ public class ConfirmMedicationDeleteFragment extends DialogFragment
         {
             Intent intent = new Intent(getContext(), MyMedications.class);
             db.deleteMedication(medication);
+            NotificationHelper.deletePendingNotification(medication, getContext());
             getActivity().finish();
             startActivity(intent);
         }));

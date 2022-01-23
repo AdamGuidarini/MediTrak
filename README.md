@@ -31,3 +31,4 @@ Planned:
   + Improvements to MainActivity - Allow the user to see medications from previous and future weeks.
   + Settings - Make changes to how the app us used, such as how long before the scheduled dose time a medication can be marked as taken.
   + Cancel medication - Medication will no longer be scheduled but notes an other related data will not be deleted.
+  + Database Cleaner - Delete doses for medications whose schedules have been changed.

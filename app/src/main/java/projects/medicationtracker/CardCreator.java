@@ -116,7 +116,6 @@ public class CardCreator
                         if (!time.isBefore(startDate))
                         {
                             rowid = db.addToMedicationTracker(medication, time);
-                            NotificationHelper.scheduleNotification(ll.getContext(), medication, time, rowid);
 
                             if (rowid == -1)
                                 Toast.makeText(context, "An error occurred when attempting to write data to database", Toast.LENGTH_LONG).show();

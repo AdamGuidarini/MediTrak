@@ -1,5 +1,7 @@
 package projects.medicationtracker;
 
+import static projects.medicationtracker.TimeFormatting.stringToLocalDateTime;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -383,9 +385,9 @@ public class AddMedication extends AppCompatActivity
         // Submit to database, return to MainActivity
         DBHelper helper = new DBHelper(this);
 
-        long rowid =
-                helper.addMedication(medName, patient, dosage, medUnits, firstDoseDate,
+        long rowid = helper.addMedication(medName, patient, dosage, medUnits, firstDoseDate,
                         frequency, alias);
+
         // Ensure dose was submitted successfully
         if (rowid == -1)
         {
@@ -402,15 +404,24 @@ public class AddMedication extends AppCompatActivity
             }
         }
 
-         //TODO Use AlarmManager to add medications to database
-         //TODO Use AlarmManager to set notifications
+         //TODO Use AlarmManager to add medication doses to database
 
-//        Medication medication = new Medication(medName, patient, medUnits, new LocalDateTime[0],
-//                stringToLocalDateTime(firstDoseDate), (int) rowid, frequency, Integer.parseInt(dosage), alias);
-//
-//        NotificationHelper notification = new NotificationHelper(this, medication);
-//        android.app.Notification note = notification.createNotification();
-//        notification.scheduleNotification(note);
+        Medication medication = new Medication(medName, patient, medUnits, new LocalDateTime[0],
+                stringToLocalDateTime(firstDoseDate), (int) rowid, frequency, Integer.parseInt(dosage), alias);
+
+        if (dailyButton.isChecked())
+        {
+            NotificationHelper.scheduleNotification(getApplicationContext(), medication,
+                    LocalDateTime.of(LocalDate.now(), LocalTime.parse(times.get(0))), medication.getMedId());
+        }
+        else if (multiplePerDay.isChecked())
+        {
+            Toast.makeText(this, "Repeating notifications not supported for this scheduling type", Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            NotificationHelper.scheduleNotification(getApplicationContext(), medication, LocalDateTime.of(LocalDate.now(), LocalTime.parse(times.get(0))), medication.getMedId());
+        }
 
         finish();
     }

@@ -341,5 +341,20 @@ public class EditMedication extends AppCompatActivity
             medication.setMedFrequency(every);
             medication.setTimes(new LocalDateTime[0]);
         }
+
+        if (dailyButton.isChecked())
+        {
+            NotificationHelper.scheduleNotification(getApplicationContext(), medication,
+                   medication.getTimes()[0], medication.getMedId());
+        }
+        else if (multiplePerDay.isChecked())
+        {
+            Toast.makeText(this, "Repeating notifications not supported for this scheduling type", Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            NotificationHelper.scheduleNotification(getApplicationContext(), medication, medication.getTimes()[0], medication.getMedId());
+        }
+
     }
 }

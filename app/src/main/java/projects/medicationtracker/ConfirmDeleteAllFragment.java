@@ -7,9 +7,12 @@ import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
 
+import java.util.ArrayList;
+
 public class ConfirmDeleteAllFragment extends DialogFragment
 {
     private final DBHelper db;
+    private ArrayList<Medication> medications;
 
     ConfirmDeleteAllFragment(DBHelper database)
     {
@@ -27,6 +30,9 @@ public class ConfirmDeleteAllFragment extends DialogFragment
 
         builder.setPositiveButton("Yes", ((DialogInterface, i) ->
         {
+            medications = db.getMedications();
+            deletePendingNotifications();
+
             db.purge();
             Toast.makeText(this.getContext(), "All data has been deleted", Toast.LENGTH_SHORT)
                     .show();
@@ -35,5 +41,13 @@ public class ConfirmDeleteAllFragment extends DialogFragment
         builder.setNegativeButton("No", ((DialogInterface, i) -> dismiss()));
 
         return builder.create();
+    }
+
+    private void deletePendingNotifications()
+    {
+        for (Medication medication : medications)
+        {
+            NotificationHelper.deletePendingNotification(medication, getContext());
+        }
     }
 }
