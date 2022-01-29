@@ -1,14 +1,19 @@
 package projects.medicationtracker;
 
+import static projects.medicationtracker.NotificationHelper.CHANNEL_ID;
 import static projects.medicationtracker.NotificationHelper.DOSE_TIME;
 import static projects.medicationtracker.NotificationHelper.MEDICATION_ID;
 
+import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.core.app.NotificationCompat;
+
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 public class NotificationReceiver extends BroadcastReceiver
 {
@@ -22,7 +27,7 @@ public class NotificationReceiver extends BroadcastReceiver
         Bundle extras = intent.getExtras();
         DBHelper db = new DBHelper(context);
 
-        service.putExtra(NOTIFICATION_ID, extras.getInt(NOTIFICATION_ID, 0));
+        service.putExtra(NOTIFICATION_ID, extras.getLong(NOTIFICATION_ID, 0));
         service.putExtra(MESSAGE, extras.getString(MESSAGE));
         LocalDateTime doseTime = (LocalDateTime) extras.get(DOSE_TIME);
         long medicationId = extras.getLong(MEDICATION_ID);
@@ -31,7 +36,8 @@ public class NotificationReceiver extends BroadcastReceiver
 
         // Set new Intent for a new notification
         NotificationHelper.scheduleNotification(context, medication,
-                doseTime.plusMinutes(medication.getMedFrequency()), medication.getMedId());
+                doseTime.plusMinutes(medication.getMedFrequency()),
+                medication.getMedId());
 
         context.startService(service);
     }

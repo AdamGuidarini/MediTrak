@@ -9,6 +9,7 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
+import android.widget.Toast;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -25,19 +26,14 @@ public class NotificationHelper
     public final static String MESSAGE = "message";
     public final static String DOSE_TIME = "doseTime";
     public final static String MEDICATION_ID = "medicationId";
-    final static int MILLIS_IN_MINUTE = 60000;
 
     public static void scheduleNotification(Context notificationContext, Medication medication,
                                             LocalDateTime time, long notificationId)
     {
-        // Prevents scheduling notifications in the past
-        if (time.isBefore(LocalDateTime.now()))
-            return;
-
         PendingIntent alarmIntent;
         AlarmManager alarmManager;
-
-        final DBHelper db = new DBHelper(notificationContext);
+        AlarmManager.AlarmClockInfo alarmClockInfo;
+//        final DBHelper db = new DBHelper(notificationContext);
 
         ZonedDateTime zdt = time.atZone(ZoneId.systemDefault());
 
@@ -54,8 +50,9 @@ public class NotificationHelper
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTimeMillis, alarmIntent);
-//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmTimeMillis, medication.getMedFrequency() * MILLIS_IN_MINUTE, alarmIntent);
+        alarmClockInfo = new AlarmManager.AlarmClockInfo(alarmTimeMillis, alarmIntent);
+        alarmManager.setAlarmClock(alarmClockInfo, alarmIntent);
+//        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTimeMillis, alarmIntent);
     }
 
     private static String createMedicationReminderMessage(Medication medication)
