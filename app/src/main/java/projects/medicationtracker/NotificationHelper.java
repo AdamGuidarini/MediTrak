@@ -1,23 +1,17 @@
 package projects.medicationtracker;
 
 import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
-import android.widget.Toast;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import static android.content.Context.ALARM_SERVICE;
-
-import androidx.core.app.NotificationCompat;
 
 public class NotificationHelper
 {
@@ -32,12 +26,12 @@ public class NotificationHelper
     {
         PendingIntent alarmIntent;
         AlarmManager alarmManager;
-        AlarmManager.AlarmClockInfo alarmClockInfo;
 //        final DBHelper db = new DBHelper(notificationContext);
 
         ZonedDateTime zdt = time.atZone(ZoneId.systemDefault());
 
         long alarmTimeMillis = zdt.toInstant().toEpochMilli();
+        long medicationFrequencyInMillis = medication.getMedFrequency() * 60000;
 
         Intent notificationIntent = new Intent(notificationContext, NotificationReceiver.class);
 
@@ -50,9 +44,10 @@ public class NotificationHelper
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
-        alarmClockInfo = new AlarmManager.AlarmClockInfo(alarmTimeMillis, alarmIntent);
-        alarmManager.setAlarmClock(alarmClockInfo, alarmIntent);
 //        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTimeMillis, alarmIntent);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmTimeMillis,
+                medicationFrequencyInMillis, alarmIntent);
     }
 
     private static String createMedicationReminderMessage(Medication medication)
