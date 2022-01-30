@@ -355,11 +355,27 @@ public class EditMedicationHelper
 
             if (i < medicationTimes.length)
             {
-                int hourAndMin[] = {medicationTimes[i].getHour(), medicationTimes[i].getMinute()};
-                String time = TimeFormatting.formatTimeForDB(hourAndMin[0], hourAndMin[1]);
+                int hour = medicationTimes[i].getHour();
+                int minute = medicationTimes[i].getMinute();
 
-                tv.setText(TimeFormatting.localTimeToString(medicationTimes[i]));
-                tv.setTag(time);
+                String dbTime = TimeFormatting.formatTimeForDB(hour, minute);
+
+                String amPm = "AM";
+
+                if (hour >= 12)
+                {
+                    amPm.replace('A', 'P');
+
+                    if (hour > 12)
+                    {
+                        hour -= 12;
+                    }
+                }
+
+                String time = String.valueOf(hour) + ':' + String.valueOf(minute) + ' ' + amPm;
+
+                tv.setText(time);
+                tv.setTag(dbTime);
             }
         }
     }
