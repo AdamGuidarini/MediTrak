@@ -24,15 +24,15 @@ public class NotificationReceiver extends BroadcastReceiver
 
         long medicationId = extras.getLong(MEDICATION_ID);
         Medication medication = db.getMedication(medicationId);
+        LocalDateTime doseTime = (LocalDateTime) extras.get(DOSE_TIME);
 
         service.putExtra(NOTIFICATION_ID, extras.getLong(NOTIFICATION_ID, 0));
         service.putExtra(MESSAGE, extras.getString(MESSAGE));
-        LocalDateTime doseTime = (LocalDateTime) extras.get(DOSE_TIME);
 
         // Set new Intent for a new notification
-//        NotificationHelper.scheduleNotification(context, medication,
-//                doseTime.plusMinutes(medication.getMedFrequency()),
-//                medication.getMedId());
+        NotificationHelper.scheduleNotification(context, medication,
+                doseTime.plusMinutes(medication.getMedFrequency()),
+                medication.getMedId());
 
         context.startService(service);
     }

@@ -29,9 +29,7 @@ public class NotificationHelper
 //        final DBHelper db = new DBHelper(notificationContext);
 
         ZonedDateTime zdt = time.atZone(ZoneId.systemDefault());
-
         long alarmTimeMillis = zdt.toInstant().toEpochMilli();
-        long medicationFrequencyInMillis = medication.getMedFrequency() * 60000;
 
         Intent notificationIntent = new Intent(notificationContext, NotificationReceiver.class);
 
@@ -44,10 +42,7 @@ public class NotificationHelper
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
-//        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTimeMillis, alarmIntent);
-
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmTimeMillis,
-                medicationFrequencyInMillis, alarmIntent);
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTimeMillis, alarmIntent);
     }
 
     private static String createMedicationReminderMessage(Medication medication)
