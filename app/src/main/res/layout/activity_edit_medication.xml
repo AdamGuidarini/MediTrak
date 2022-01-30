@@ -85,12 +85,6 @@
 
                     </TableRow>
 
-                    <TableRow android:layout_height="1px" android:background="#606060">
-                        <TextView android:layout_span="2" android:layout_height="1px"
-                            android:layout_width="fill_parent" android:text="">
-                        </TextView>
-                    </TableRow>
-
                     <TableRow
                         android:id="@+id/medicationName"
                         android:layout_width="match_parent"
@@ -120,12 +114,6 @@
                         </LinearLayout>
                     </TableRow>
 
-                    <TableRow android:layout_height="1px" android:background="#606060">
-                        <TextView android:layout_span="2" android:layout_height="1px"
-                            android:layout_width="fill_parent" android:text="">
-                        </TextView>
-                    </TableRow>
-
                     <TableRow
                         android:id="@+id/medicationAlias"
                         android:layout_width="match_parent"
@@ -153,12 +141,6 @@
                                 android:importantForAutofill="no"
                                 android:inputType="text" />
                         </LinearLayout>
-                    </TableRow>
-
-                    <TableRow android:layout_height="1px" android:background="#606060">
-                        <TextView android:layout_span="2" android:layout_height="1px"
-                            android:layout_width="fill_parent" android:text="">
-                        </TextView>
                     </TableRow>
 
                     <TableRow
@@ -221,12 +203,6 @@
                             </LinearLayout>
 
                         </LinearLayout>
-                    </TableRow>
-
-                    <TableRow android:layout_height="1px" android:background="#606060">
-                        <TextView android:layout_span="2" android:layout_height="1px"
-                            android:layout_width="fill_parent" android:text="">
-                        </TextView>
                     </TableRow>
 
                     <TableRow
