@@ -360,19 +360,10 @@ public class EditMedicationHelper
 
                 String dbTime = TimeFormatting.formatTimeForDB(hour, minute);
 
-                String amPm = "AM";
+                String amPm = hour >= 12 ? "PM" : "AM";
+                hour = hour > 12 ? hour - 12 : hour;
 
-                if (hour >= 12)
-                {
-                    amPm.replace('A', 'P');
-
-                    if (hour > 12)
-                    {
-                        hour -= 12;
-                    }
-                }
-
-                String time = String.valueOf(hour) + ':' + String.valueOf(minute) + ' ' + amPm;
+                String time = hour + ':' + minute + ' ' + amPm;
 
                 tv.setText(time);
                 tv.setTag(dbTime);

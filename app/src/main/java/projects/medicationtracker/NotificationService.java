@@ -23,6 +23,10 @@ public class NotificationService extends IntentService
         super("NotificationService");
     }
 
+    /**
+     * Handles intent sent from NotificationReceiver and issues notification.
+     * @param intent Intent sent from NotificationReceiver.
+     */
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         NotificationManager notificationManager =
@@ -30,17 +34,22 @@ public class NotificationService extends IntentService
 
         String message = intent.getStringExtra(MESSAGE);
 
-        Notification notification = createNotification(this, message);
+        Notification notification = createNotification(message);
 
         long notificationId = intent.getLongExtra(NOTIFICATION_ID, System.currentTimeMillis());
 
         notificationManager.notify((int) notificationId, notification);
     }
 
-    private Notification createNotification(Context notificationContext, String message)
+    /**
+     * Creates a notification
+     * @param message Message to display in the notification.
+     * @return A built notification.
+     */
+    private Notification createNotification(String message)
     {
         NotificationCompat.Builder builder
-                = new NotificationCompat.Builder(notificationContext, CHANNEL_ID)
+                = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(message)
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
@@ -49,9 +58,9 @@ public class NotificationService extends IntentService
                 .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL);
 
         Intent resIntent
-                = new Intent(notificationContext.getApplicationContext(), MainActivity.class);
+                = new Intent(this.getApplicationContext(), MainActivity.class);
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(notificationContext);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(resIntent);
 

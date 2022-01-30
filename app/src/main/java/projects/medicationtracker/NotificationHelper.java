@@ -21,6 +21,13 @@ public class NotificationHelper
     public final static String DOSE_TIME = "doseTime";
     public final static String MEDICATION_ID = "medicationId";
 
+    /**
+     * Sets an alarm to create a notification.
+     * @param notificationContext Context for the alarm.
+     * @param medication Medication form which the user will be notified.
+     * @param time Time the notification will be set.
+     * @param notificationId ID for the PendingIntent that stores data for the notification.
+     */
     public static void scheduleNotification(Context notificationContext, Medication medication,
                                             LocalDateTime time, long notificationId)
     {
@@ -45,6 +52,11 @@ public class NotificationHelper
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTimeMillis, alarmIntent);
     }
 
+    /**
+     * Creates a message for a notification.
+     * @param medication Medication corresponding to the notification.
+     * @return The content text to display in the notification.
+     */
     private static String createMedicationReminderMessage(Medication medication)
     {
         String message;
@@ -69,6 +81,10 @@ public class NotificationHelper
         return message;
     }
 
+    /**
+     * Creates a channel for notifications
+     * @param context Application context
+     */
     public static void createNotificationChannel(Context context)
     {
         CharSequence name = "Medication Reminder";
@@ -86,11 +102,16 @@ public class NotificationHelper
         notificationManager.createNotificationChannel(channel);
     }
 
-    public static void deletePendingNotification(Medication medication, Context context)
+    /**
+     * Deletes a pending intent based on context and notification ID
+     * @param notificationId ID of the notification to be deleted
+     * @param context Pending intent's context
+     */
+    public static void deletePendingNotification(long notificationId, Context context)
     {
         Intent intent = new Intent(context, NotificationReceiver.class);
 
-        PendingIntent.getBroadcast(context, (int) medication.getMedId(), intent,
+        PendingIntent.getBroadcast(context, (int) notificationId, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT).cancel();
     }
 }

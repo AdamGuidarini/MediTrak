@@ -47,7 +47,7 @@ public class ConfirmDeleteAllFragment extends DialogFragment
     {
         for (Medication medication : medications)
         {
-            NotificationHelper.deletePendingNotification(medication, getContext());
+            NotificationHelper.deletePendingNotification(medication.getMedId(), getContext());
         }
     }
 }

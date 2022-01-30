@@ -15,6 +15,11 @@ public class NotificationReceiver extends BroadcastReceiver
     public static String NOTIFICATION_ID = "notification-id";
     public static String MESSAGE = "message";
 
+    /**
+     * Receiver for notification PendingIntent
+     * @param context Context of caller.
+     * @param intent Intent to receive.
+     */
     @Override
     public void onReceive(Context context, Intent intent)
     {
