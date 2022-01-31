@@ -39,6 +39,8 @@ public class NotificationReceiver extends BroadcastReceiver
                 doseTime.plusMinutes(medication.getMedFrequency()),
                 medication.getMedId());
 
-        context.startService(service);
+        // Fire notification if enabled
+        if (db.getNotificationEnabled())
+            context.startService(service);
     }
 }

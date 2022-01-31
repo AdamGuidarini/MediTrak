@@ -15,6 +15,45 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/disableTimeBeforeDose"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:text="@string/disable_time_before_dose_requirement" />
+
+        <LinearLayout
+            android:id="@+id/timeBeforeDoseLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="15dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="291dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/number_of_hours_before_dose_can_be_taken"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+            <EditText
+                android:id="@+id/enterTimeBeforeDose"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:hint="@string/hours"
+                android:inputType="number"
+                android:layout_marginStart="20dp"/>
+        </LinearLayout>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/enableNotificationSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/enable_notifications"
+            android:layout_margin="15dp"/>
+
         <Button
             android:id="@+id/purgeButton"
             android:layout_width="match_parent"

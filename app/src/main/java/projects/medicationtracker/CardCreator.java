@@ -104,8 +104,6 @@ public class CardCreator
                     String thisMedicationLabel = medName + " - " + dosage + " - " + dosageTime;
                     thisMedication.setText(thisMedicationLabel);
 
-                    //TODO Change this so it is done with AlarmManager
-
                     // Check database for this dosage, if not add it
                     // if it is, get the DoseId
                     long rowid = 0;
@@ -139,11 +137,15 @@ public class CardCreator
                         {
                             Pair<Long, LocalDateTime> tvTag = (Pair<Long, LocalDateTime>) thisMedication.getTag();
                             final Long doseId = tvTag.first;
+                            int timeBeforeDose = db.getTimeBeforeDose();
 
-                            if (LocalDateTime.now().isBefore(time.minusHours(2)))
+                            if (LocalDateTime.now().isBefore(time.minusHours(timeBeforeDose)) && timeBeforeDose != -1)
                             {
                                 thisMedication.setChecked(false);
-                                Toast.makeText(context, "Cannot take medications more than 2 hours in advance", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context,
+                                        "Cannot take medications more than "
+                                                + timeBeforeDose + " hours in advance",
+                                        Toast.LENGTH_SHORT).show();
                                 return;
                             }
 

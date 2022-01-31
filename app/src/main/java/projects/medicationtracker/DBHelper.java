@@ -1,6 +1,5 @@
 package projects.medicationtracker;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,7 +7,6 @@ import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -18,11 +16,11 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper
 {
     private static final String DATABASE_NAME = "Medications.db";
+    private final static int DATABASE_VERSION = 2;
 
     private static final String MEDICATION_TABLE = "Medication";
     private static final String MED_ID = "MedicationID";
@@ -55,8 +53,11 @@ public class DBHelper extends SQLiteOpenHelper
     private static final String NOTE = "Note";
     private static final String ENTRY_TIME = "EntryTime";
 
+    private static final String SETTINGS_TABLE = "Settings";
+    private static final String TIME_BEFORE_DOSE = "TimeBeforeDose";
+    private static final String ENABLE_NOTIFICATIONS = "EnableNotifications";
 
-    public DBHelper(@Nullable Context context) { super(context, DATABASE_NAME, null, 1);}
+    public DBHelper(@Nullable Context context) { super(context, DATABASE_NAME, null, DATABASE_VERSION);}
 
     /**
      * Creates DBHelper object, adds tables to DB if the don't exist
@@ -120,10 +121,6 @@ public class DBHelper extends SQLiteOpenHelper
 
         for (int i = 0; i < NUM_TABLES; i++)
             sqLiteDatabase.execSQL(queries[i]);
-
-        // Add columns to existing tables
-//        if (addColumnIfNotExists(MEDICATION_TABLE, ACTIVE))
-//            System.out.println("Failed to add new column in database.");
     }
 
     /**
@@ -141,54 +138,36 @@ public class DBHelper extends SQLiteOpenHelper
     /**
      * Instructions to perform on database upgrade
      * @param sqLiteDatabase Database instance
-     * @param i Unused by required param
-     * @param i1 Unused but required param
+     * @param i Old version of database
+     * @param i1 New Version of database
      **************************************************************************/
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1)
     {
-        // Remove tables
-        @SuppressLint("Recycle") Cursor cursor = sqLiteDatabase.rawQuery(
-                "SELECT name FROM sqlite_master WHERE type = 'table'", null);
-        List<String> tables = new ArrayList<>();
-
-        while (cursor.moveToNext())
-            tables.add(cursor.getString(0));
-
-        for (String table : tables)
+        switch (i)
         {
-            String dropQuery = "DROP TABLE IF EXISTS " + table;
-            sqLiteDatabase.execSQL(dropQuery);
-        }
+            case 1:
+                sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + ACTIVE + " BOOLEAN DEFAULT 1;");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
+                        + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
+                        + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1)");
 
-        cursor.close();
+                sqLiteDatabase.execSQL("INSERT INTO " + SETTINGS_TABLE + "(" + ENABLE_NOTIFICATIONS + "," + TIME_BEFORE_DOSE + ")"
+                                + " VALUES (1, 2)");
+            default:
+                break;
+        }
 
         onCreate(sqLiteDatabase);
     }
 
-    /**
-     * Adds a new column to an existing table, catches an exceptions.
-     * @param tableName Name of the table holding new column.
-     * @param columnName Name of the column to add to table.
-     * @return True on success, false on failure.
-     */
-    public boolean addColumnIfNotExists(String tableName, String columnName)
-    {
-        SQLiteDatabase dbWrite = this.getWritableDatabase();
-
-        try
+    /**        if (i < 2)
         {
-            dbWrite.execSQL("ALTER TABLE " + tableName + " ADD COLUMN " + columnName + " BOOLEAN;");
-            return true;
+            sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + ACTIVE + " BOOLEAN DEFAULT 1;");
+            sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
+                    + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
+                    + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1)");
         }
-        catch (SQLException e)
-        {
-            e.getCause();
-            return false;
-        }
-    }
-
-    /**
      * Adds new Medication to database
      * @param medName Name of Medication
      * @param patientName Name of patient
@@ -212,7 +191,6 @@ public class DBHelper extends SQLiteOpenHelper
         medTableValues.put(START_DATE, startDate);
         medTableValues.put(MED_FREQUENCY, frequency);
         medTableValues.put(ALIAS, alias);
-//        medTableValues.put(ACTIVE, 1);
 
         return db.insert(MEDICATION_TABLE, null, medTableValues);
     }
@@ -777,5 +755,58 @@ public class DBHelper extends SQLiteOpenHelper
         cursor.close();
 
         return notes;
+    }
+
+    public void setTimeBeforeDose(int hoursBeforeDose)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(TIME_BEFORE_DOSE, hoursBeforeDose);
+
+        db.update(SETTINGS_TABLE, cv, null, null);
+    }
+
+    public int getTimeBeforeDose()
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = " SELECT " + TIME_BEFORE_DOSE + " FROM " + SETTINGS_TABLE;
+
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+
+        int timeBefore = Integer.parseInt(cursor.getString(cursor.getColumnIndex(TIME_BEFORE_DOSE)));
+
+        cursor.close();
+
+        return timeBefore;
+    }
+
+    public void setNotificationEnabled(boolean status)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(ENABLE_NOTIFICATIONS, status);
+
+        db.update(SETTINGS_TABLE, cv, null, null);
+    }
+
+    public boolean getNotificationEnabled()
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = " SELECT " + ENABLE_NOTIFICATIONS + " FROM " + SETTINGS_TABLE;
+
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+
+        boolean enabled
+                = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ENABLE_NOTIFICATIONS))) == 1;
+
+        cursor.close();
+
+        return enabled;
     }
 }
