@@ -757,6 +757,28 @@ public class DBHelper extends SQLiteOpenHelper
         return notes;
     }
 
+    public long[] getMedicationTimeIds(Medication medication)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " + TIME_ID + " FROM " + MEDICATION_TIMES + " WHERE " + MED_ID
+                + " = " + medication.getMedId();
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        long[] timeIds = new long[cursor.getCount()];
+
+        cursor.moveToFirst();
+
+        for (int i = 0; i < cursor.getCount(); i++)
+        {
+            timeIds[i] = Long.parseLong(cursor.getString(cursor.getColumnIndex(TIME_ID)));
+        }
+
+        cursor.close();
+
+        return timeIds;
+    }
+
     public void setTimeBeforeDose(int hoursBeforeDose)
     {
         SQLiteDatabase db = this.getWritableDatabase();

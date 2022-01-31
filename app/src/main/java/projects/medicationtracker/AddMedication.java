@@ -404,8 +404,6 @@ public class AddMedication extends AppCompatActivity
             }
         }
 
-         //TODO Use AlarmManager to add medication doses to database
-
         Medication medication = new Medication(medName, patient, medUnits, new LocalDateTime[0],
                 stringToLocalDateTime(firstDoseDate), (int) rowid, frequency, Integer.parseInt(dosage), alias);
 
@@ -416,7 +414,17 @@ public class AddMedication extends AppCompatActivity
         }
         else if (multiplePerDay.isChecked())
         {
-            Toast.makeText(this, "Repeating notifications not supported for this scheduling type", Toast.LENGTH_LONG).show();
+            long[] timeIds = dbHelper.getMedicationTimeIds(medication);
+
+            for (int i = 0; i < timeIds.length; i++)
+            {
+                NotificationHelper.scheduleNotification(getApplicationContext(),
+                        medication,
+                        LocalDateTime.of(LocalDate.now(), LocalTime.parse(times.get(i))),
+                        timeIds[i] * -1
+                );
+            }
+
         }
         else
         {
