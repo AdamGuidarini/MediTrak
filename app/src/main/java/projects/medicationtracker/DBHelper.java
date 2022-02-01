@@ -121,6 +121,14 @@ public class DBHelper extends SQLiteOpenHelper
 
         for (int i = 0; i < NUM_TABLES; i++)
             sqLiteDatabase.execSQL(queries[i]);
+
+        sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + ACTIVE + " BOOLEAN DEFAULT 1;");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
+                + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
+                + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1)");
+
+        sqLiteDatabase.execSQL("INSERT INTO " + SETTINGS_TABLE + "(" + ENABLE_NOTIFICATIONS + "," + TIME_BEFORE_DOSE + ")"
+                + " VALUES (1, 2)");
     }
 
     /**
