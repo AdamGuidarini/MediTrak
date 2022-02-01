@@ -1,8 +1,6 @@
 # MediTrak
 An Android app that helps users keep track of their medications.
 
-Development plan as of January 22, 2022:
-
 ### Requirements:
 
   + Android 8.0 Oreo or newer
