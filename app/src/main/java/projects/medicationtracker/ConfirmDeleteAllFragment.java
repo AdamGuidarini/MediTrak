@@ -47,7 +47,19 @@ public class ConfirmDeleteAllFragment extends DialogFragment
     {
         for (Medication medication : medications)
         {
-            NotificationHelper.deletePendingNotification(medication.getMedId(), getContext());
+            if (medication.getMedFrequency() == 1440)
+            {
+                NotificationHelper.deletePendingNotification(medication.getMedId(), getContext());
+            }
+            else
+            {
+                long[] timeIds = db.getMedicationTimeIds(medication);
+
+                for (long timeId : timeIds)
+                {
+                    NotificationHelper.deletePendingNotification(timeId * -1, getContext());
+                }
+            }
         }
     }
 }

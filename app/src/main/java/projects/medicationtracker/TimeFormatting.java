@@ -22,35 +22,17 @@ public class TimeFormatting
      **************************************************************************/
     public static String formatTimeForUser(int hour, int minute)
     {
-        String chosenTime;
-        String min;
-        String amOrPm;
+        String minString;
+        String amPm = hour >= 12 ? "PM" : "AM";
 
-        if (hour >= 12 && hour < 24)
-        {
-            if (hour > 12)
-                chosenTime = String.valueOf(hour - 12);
-            else
-                chosenTime = String.valueOf(hour);
-
-            amOrPm = " PM";
-        }
-        else
-        {
-            if (hour < 12 && hour != 0)
-                chosenTime = String.valueOf(hour);
-            else
-                chosenTime = "12";
-
-            amOrPm = " AM";
-        }
+        hour = hour > 12 ? hour - 12 : hour;
 
         if (minute < 10)
-            min = "0" + minute;
+            minString = "0" + minute;
         else
-            min = String.valueOf(minute);
+            minString = String.valueOf(minute);
 
-        return chosenTime + ":" + min + amOrPm;
+        return hour + ":" + minString + " " + amPm;
     }
 
     /**

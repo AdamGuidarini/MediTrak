@@ -544,7 +544,7 @@ public class DBHelper extends SQLiteOpenHelper
                 for (int i = maxIndex; i < oldTimes.length; i++)
                 {
                     String oldTimeAsString = oldTimes[i].toString();
-                    String whereClause = DRUG_TIME + "=" + oldTimeAsString + " AND " + MED_ID
+                    String whereClause = DRUG_TIME + "=\"" + oldTimeAsString + "\" AND " + MED_ID
                             + "=" + medication.getMedId();
 
                     db.delete(MEDICATION_TIMES, whereClause, null);

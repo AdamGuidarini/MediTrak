@@ -112,6 +112,8 @@ public class EditMedication extends AppCompatActivity
 
             changeMedicationValues();
 
+            clearPreviousNotifications();
+
             db.updateMedication(medication);
 
             finish();
@@ -335,11 +337,11 @@ public class EditMedication extends AppCompatActivity
             else
                 date = medication.getStartDate().toLocalDate();
 
-            LocalDateTime dateTime = LocalDateTime.of(date, time);
+            LocalDateTime[] dateTimes = {LocalDateTime.of(date, time)};
 
-            medication.setStartDate(dateTime);
+            medication.setStartDate(dateTimes[0]);
             medication.setMedFrequency(every);
-            medication.setTimes(new LocalDateTime[0]);
+            medication.setTimes(dateTimes);
         }
 
         if (dailyButton.isChecked())
@@ -365,6 +367,27 @@ public class EditMedication extends AppCompatActivity
         else
         {
             NotificationHelper.scheduleNotification(getApplicationContext(), medication, medication.getTimes()[0], medication.getMedId());
+        }
+
+    }
+
+    /**
+     * Clears all pending notifications for a medication when it's changed
+     */
+    private void clearPreviousNotifications()
+    {
+        if (medication.getMedFrequency() == 1440)
+        {
+            NotificationHelper.deletePendingNotification(medication.getMedId(), this);
+        }
+        else
+        {
+            long[] ids = db.getMedicationTimeIds(medication);
+
+            for (long id : ids)
+            {
+                NotificationHelper.deletePendingNotification(id * -1, this);
+            }
         }
 
     }
