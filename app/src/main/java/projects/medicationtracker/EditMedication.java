@@ -376,7 +376,9 @@ public class EditMedication extends AppCompatActivity
      */
     private void clearPreviousNotifications()
     {
-        if (medication.getMedFrequency() == 1440)
+        long[] medIds = db.getMedicationTimeIds(medication);
+
+        if (medIds.length == 0)
         {
             NotificationHelper.deletePendingNotification(medication.getMedId(), this);
         }
