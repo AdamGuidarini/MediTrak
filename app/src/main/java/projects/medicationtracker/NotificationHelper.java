@@ -31,6 +31,12 @@ public class NotificationHelper
     public static void scheduleNotification(Context notificationContext, Medication medication,
                                             LocalDateTime time, long notificationId)
     {
+        // Loops to increase time, prevents notification bombardment when editing time.
+        while (time.isBefore(LocalDateTime.now().minusSeconds(10)))
+        {
+            time = time.plusMinutes(medication.getMedFrequency());
+        }
+
         PendingIntent alarmIntent;
         AlarmManager alarmManager;
 //        final DBHelper db = new DBHelper(notificationContext);
