@@ -274,7 +274,7 @@ public class DBHelper extends SQLiteOpenHelper
             if (alias == null)
                 alias = "";
 
-            LocalDateTime times[];
+            LocalDateTime[] times;
 
             String query2 = "Select " + DRUG_TIME + " FROM " + MEDICATION_TIMES + " WHERE "
                     + MED_ID + " = " + medId;
@@ -506,21 +506,19 @@ public class DBHelper extends SQLiteOpenHelper
             LocalTime[] oldTimes = getMedicationTimes(medication.getMedId());
             int diff = medication.getTimes().length - oldTimes.length;
             int maxIndex = diff > 0 ? oldTimes.length : oldTimes.length + diff;
+            long[] timeIds = this.getMedicationTimeIds(medication);
+
 
             for (int i = 0; i < maxIndex; i++)
             {
-                System.out.println(i);
-
                 String timeAsString = medication.getTimes()[i].toLocalTime().toString() + ":00";
 
-                String whereClause = MED_ID + "=" + medication.getMedId() + " AND "
-                        + DRUG_TIME + "=\"" + oldTimes[i].toString() + ":00"+ "\"";
+                String whereClause = TIME_ID + '=' + timeIds[i];
 
-                System.out.println(oldTimes[i].toString() + oldTimes[i].getSecond());
                 cv.put(DRUG_TIME, timeAsString);
                 db.update(MEDICATION_TIMES, cv, whereClause, null);
 
-                cv.remove(DRUG_TIME);
+                cv.clear();
             }
 
             // Add additional times
@@ -780,6 +778,7 @@ public class DBHelper extends SQLiteOpenHelper
         for (int i = 0; i < cursor.getCount(); i++)
         {
             timeIds[i] = Long.parseLong(cursor.getString(cursor.getColumnIndex(TIME_ID)));
+            cursor.moveToNext();
         }
 
         cursor.close();

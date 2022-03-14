@@ -270,7 +270,7 @@ public class EditMedication extends AppCompatActivity
                 times[i] = LocalTime.parse(time);
             }
 
-            LocalDateTime dateTimes[] = new LocalDateTime[times.length];
+            LocalDateTime[] dateTimes = new LocalDateTime[times.length];
 
             for (int i = 0; i < times.length; i++)
             {
@@ -296,7 +296,7 @@ public class EditMedication extends AppCompatActivity
                 time = LocalTime.parse((String) dailyTime.getTag());
             }
 
-            LocalDateTime dateTime[] = {LocalDateTime.of(medication.getStartDate().toLocalDate(), time)};
+            LocalDateTime[] dateTime = {LocalDateTime.of(medication.getStartDate().toLocalDate(), time)};
 
             medication.setMedFrequency(1440);
             medication.setTimes(dateTime);
