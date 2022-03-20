@@ -41,10 +41,6 @@
             android:name=".NotificationService"
             android:exported="false">
         </service>
-        <service
-            android:name=".BootService"
-            android:exported="false">
-        </service>
 
     </application>
 
