@@ -23,6 +23,12 @@ public class BootReceiver extends BroadcastReceiver
         }
     }
 
+    /**
+     * Prepares pending notifications on boot
+     * @param context Notification context
+     * @param db DBHelper containing medication data
+     * @param medication Medication in need of a notification
+     */
     private void prepareNotification(Context context, DBHelper db, Medication medication)
     {
         LocalTime[] times = db.getMedicationTimes(medication.getMedId());
