@@ -153,4 +153,8 @@
     <string name="hours">Hours</string>
     <string name="enable_notifications">Enable Notifications</string>
     <string name="disable_time_before_dose_requirement">Disable time before dose requirement</string>
+    <string name="theme">Theme</string>
+    <string name="light_mode">Light mode</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="match_system_theme">Match system theme</string>
 </resources>

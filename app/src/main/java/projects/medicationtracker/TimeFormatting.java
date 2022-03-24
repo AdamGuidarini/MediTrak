@@ -73,21 +73,18 @@ public class TimeFormatting
     public static void getCurrentTimeAndDate(TextView date, TextView time)
     {
         String dateForUser;
-        String timeForUser;
         String dateTime;
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
-        SimpleDateFormat dateFormat1 = new SimpleDateFormat("HH:mm", Locale.getDefault());
         SimpleDateFormat dateForDb = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 
         Date myDate = new Date();
         dateForUser = dateFormat.format(myDate);
-        timeForUser = dateFormat1.format(myDate);
         dateTime = dateForDb.format(myDate);
 
         date.setTag(dateTime);
         date.setText(dateForUser);
-        time.setText(timeForUser);
+        time.setText(formatTimeForUser(LocalTime.now().getHour(), LocalTime.now().getMinute()));
     }
 
     /**
