@@ -569,7 +569,7 @@ public class DBHelper extends SQLiteOpenHelper
      * @param time Time of dose
      * @return True if present, false if not present
      **************************************************************************/
-    public boolean isInMedicationTracker (Medication medication, LocalDateTime time)
+    public boolean isInMedicationTracker(Medication medication, LocalDateTime time)
     {
         SQLiteDatabase db = this.getReadableDatabase();
         String dateTime = TimeFormatting.localDateTimeToString(time);
@@ -679,11 +679,11 @@ public class DBHelper extends SQLiteOpenHelper
     /**
      * Deletes all entries from database
      **************************************************************************/
-    public boolean purge()
+    public void purge()
     {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        return db.delete(MEDICATION_TABLE, "1", null) != 0;
+        db.delete(MEDICATION_TABLE, "1", null);
     }
 
     /**

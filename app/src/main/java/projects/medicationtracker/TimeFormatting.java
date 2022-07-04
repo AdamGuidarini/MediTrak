@@ -197,10 +197,11 @@ public class TimeFormatting
         return conversion;
     }
 
-    public static LocalDate whenIsSunday()
+    public static LocalDate whenIsSunday(LocalDate now)
     {
         LocalDate thisSunday;
-        LocalDate now = LocalDate.now(Clock.systemDefaultZone());
+        if (now == null)
+            now = LocalDate.now(Clock.systemDefaultZone());
 
         if (now.getDayOfWeek() == DayOfWeek.SUNDAY)
             thisSunday = now.minusDays(0);

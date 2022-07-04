@@ -29,6 +29,7 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity
 {
     private final DBHelper db = new DBHelper(this);
+    private LocalDate beginSchedule;
 
     /**
      * Runs at start of activity, builds MainActivity
@@ -40,6 +41,8 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        beginSchedule = LocalDate.now();
 
         Objects.requireNonNull(getSupportActionBar()).setTitle("Medication Schedule");
 
@@ -124,7 +127,7 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
-        ArrayList<Medication> medications = PatientUtils.medicationsForThisWeek(db);
+        ArrayList<Medication> medications = PatientUtils.medicationsForThisWeek(db, beginSchedule);
         ArrayList<String> names = db.getPatients();
 
         // Load contents into spinner, or print results for only patient
@@ -188,7 +191,7 @@ public class MainActivity extends AppCompatActivity
      * @param db The database from which to pull data
      * @param scheduleLayout The LinearLayout into which the cards will be placed
      */
-    public static void createMedicationSchedule(ArrayList<Medication> medications, String name, DBHelper db, LinearLayout scheduleLayout)
+    public void createMedicationSchedule(ArrayList<Medication> medications, String name, DBHelper db, LinearLayout scheduleLayout)
     {
         ArrayList<Medication> medicationsForThisPatient = new ArrayList<>();
 
@@ -220,7 +223,7 @@ public class MainActivity extends AppCompatActivity
      * @param medications The list of medications to be taken on the given day
      * @param layout The LinearLayout in which to place the CardView
      */
-    public static void createDayOfWeekCards (String dayOfWeek, int day, ArrayList<Medication> medications, LinearLayout layout, DBHelper db, Context context)
+    public void createDayOfWeekCards (String dayOfWeek, int day, ArrayList<Medication> medications, LinearLayout layout, DBHelper db, Context context)
     {
         CardView thisDayCard = new CardView(context);
         TextView dayLabel = new TextView(context);
@@ -232,7 +235,7 @@ public class MainActivity extends AppCompatActivity
 
         CardCreator.setCardParams(thisDayCard);
 
-        LocalDate thisSunday = TimeFormatting.whenIsSunday();
+        LocalDate thisSunday = TimeFormatting.whenIsSunday(beginSchedule);
 
         // Add day to top of card
         TextViewUtils.setTextViewFontAndPadding(dayLabel);
@@ -336,7 +339,7 @@ public class MainActivity extends AppCompatActivity
      * Sorts CheckBoxes in medication schedule.
      * @param parentLayout Layout containing CheckBoxes to sort.
      */
-    public static void sortMedicationCheckBoxes(LinearLayout parentLayout)
+    public void sortMedicationCheckBoxes(LinearLayout parentLayout)
     {
         int count = parentLayout.getChildCount();
         short firstCheckboxIndex = 1;
@@ -375,22 +378,23 @@ public class MainActivity extends AppCompatActivity
      */
     private void prepareNotifications()
     {
-        ArrayList<Medication> medications = db.getMedications();
-
-        for (Medication medication : medications)
-        {
-            LocalTime[] times = db.getMedicationTimes(medication.getMedId());
-            long[] timeIds = db.getMedicationTimeIds(medication);
-
-            for (int i = 0; i < times.length; i++)
-            {
-                NotificationHelper.scheduleNotification(
-                        this,
-                        medication,
-                        LocalDateTime.of(medication.getStartDate().toLocalDate(), times[i]),
-                        times.length > 1 ? timeIds[i] * -1 : medication.getMedId()
-                );
-            }
-        }
+        //TODO fix this method so it doesn't break notifications
+//        ArrayList<Medication> medications = db.getMedications();
+//
+//        for (Medication medication : medications)
+//        {
+//            LocalTime[] times = db.getMedicationTimes(medication.getMedId());
+//            long[] timeIds = db.getMedicationTimeIds(medication);
+//
+//            for (int i = 0; i < times.length; i++)
+//            {
+//                NotificationHelper.scheduleNotification(
+//                        this,
+//                        medication,
+//                        LocalDateTime.of(medication.getStartDate().toLocalDate(), times[i]),
+//                        times.length > 1 ? timeIds[i] * -1 : medication.getMedId()
+//                );
+//            }
+//        }
     }
 }

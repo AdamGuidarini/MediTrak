@@ -12,12 +12,12 @@ public class PatientUtils
      * @param db The DBHelper to draw data from
      * @return List of all Medications for this week
      **************************************************************************/
-    public static ArrayList<Medication> medicationsForThisWeek(DBHelper db)
+    public static ArrayList<Medication> medicationsForThisWeek(DBHelper db, LocalDate dateInSoughtWeek)
     {
         ArrayList<Medication> medications = db.getMedications();
 
         // Add times to custom frequency
-        LocalDate thisSunday = TimeFormatting.whenIsSunday();
+        LocalDate thisSunday = TimeFormatting.whenIsSunday(dateInSoughtWeek);
 
         // Look at each medication
         for (int i = 0; i < medications.size(); i++)
