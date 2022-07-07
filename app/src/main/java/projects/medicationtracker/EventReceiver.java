@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
-public class BootReceiver extends BroadcastReceiver
+public class EventReceiver extends BroadcastReceiver
 {
     @Override
     public void onReceive(Context context, Intent intent)
