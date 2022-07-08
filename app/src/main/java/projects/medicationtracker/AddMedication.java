@@ -2,12 +2,6 @@ package projects.medicationtracker;
 
 import static projects.medicationtracker.TimeFormatting.stringToLocalDateTime;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.DialogFragment;
-
 import android.annotation.SuppressLint;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
@@ -28,6 +22,12 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.DialogFragment;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

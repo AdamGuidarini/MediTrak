@@ -4,19 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
-import androidx.core.util.Pair;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 
 public class CardCreator
 {

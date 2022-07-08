@@ -3,7 +3,6 @@ package projects.medicationtracker;
 import androidx.annotation.NonNull;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 public class Medication implements Cloneable
 {

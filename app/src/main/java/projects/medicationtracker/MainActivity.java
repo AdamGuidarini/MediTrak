@@ -1,9 +1,5 @@
 package projects.medicationtracker;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.core.util.Pair;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +15,10 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.core.util.Pair;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

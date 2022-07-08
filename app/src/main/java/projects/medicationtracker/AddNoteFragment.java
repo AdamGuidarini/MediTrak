@@ -12,8 +12,8 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import androidx.fragment.app.DialogFragment;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
 

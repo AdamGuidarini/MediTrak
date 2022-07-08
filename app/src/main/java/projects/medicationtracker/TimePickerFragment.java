@@ -1,5 +1,7 @@
 package projects.medicationtracker;
 
+import static projects.medicationtracker.TimeFormatting.formatTimeForUser;
+
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.icu.util.Calendar;
@@ -10,8 +12,6 @@ import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
-
-import static projects.medicationtracker.TimeFormatting.formatTimeForUser;
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener
 {
