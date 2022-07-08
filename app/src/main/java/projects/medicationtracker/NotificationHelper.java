@@ -39,7 +39,6 @@ public class NotificationHelper
 
         PendingIntent alarmIntent;
         AlarmManager alarmManager;
-//        final DBHelper db = new DBHelper(notificationContext);
 
         ZonedDateTime zdt = time.atZone(ZoneId.systemDefault());
         long alarmTimeMillis = zdt.toInstant().toEpochMilli();

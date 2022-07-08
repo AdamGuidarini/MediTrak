@@ -3,11 +3,19 @@ package projects.medicationtracker;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -24,6 +32,7 @@ import java.util.Objects;
 public class EditMedication extends AppCompatActivity
 {
     final DBHelper db = new DBHelper(this);
+    LocalTime[] medicationTimes;
     Medication medication;
 
     /**
@@ -43,9 +52,22 @@ public class EditMedication extends AppCompatActivity
 
         medication = db.getMedication(getIntent().getLongExtra("medId", 0));
 
-        new EditMedicationHelper(medication, this);
+        medicationTimes = db.getMedicationTimes(medication.getMedId());
 
+        // Load values into GUI
+        setPatientButtons();
+        setMedicationName();
+        setAlias();
+        setDosage();
+        setFrequencySpinner();
+        setFrequencyButtons();
 
+        // Set listeners
+        setNameRadioButtonListeners();
+        setFrequencyButtonListeners();
+        setEnterTimesPerDayListener();
+        setDailyListener();
+        setCustomFrequencyTextViewListeners();
     }
 
     /**
@@ -123,6 +145,319 @@ public class EditMedication extends AppCompatActivity
         {
             Toast.makeText(this, "Please complete the required fields",
                     Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Creates buttons for editing patient name.
+     */
+    private void setPatientButtons()
+    {
+        // Set radio button
+        if (medication.getPatientName().equals("ME!"))
+        {
+            RadioButton meButton = this.findViewById(R.id.meButtonEdit);
+            meButton.setChecked(true);
+        }
+        else
+        {
+            RadioButton otherButton = this.findViewById(R.id.otherButtonEdit);
+            otherButton.setChecked(true);
+
+            EditText enterPatientName = this.findViewById(R.id.editPatientNameEditText);
+            enterPatientName.setText(medication.getPatientName());
+            enterPatientName.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * Pre-fills medication name
+     */
+    private void setMedicationName()
+    {
+        EditText enterMedicationName = this.findViewById(R.id.editMedicationName);
+        enterMedicationName.setText(medication.getMedName());
+    }
+
+    /**
+     * Enters alias if exists
+     */
+    private void setAlias()
+    {
+        EditText enterAlias = this.findViewById(R.id.editAlias);
+        enterAlias.setText(medication.getAlias());
+    }
+
+    /**
+     * Fills dosage field
+     */
+    private void setDosage()
+    {
+        EditText enterDosage = this.findViewById(R.id.editMedDosageEnter);
+        enterDosage.setText(String.valueOf(medication.getMedDosage()));
+
+        EditText enterDosageUnits = this.findViewById(R.id.editEnterMedUnits);
+        enterDosageUnits.setText(medication.getMedDosageUnits());
+    }
+
+    /**
+     * Selects the correct
+     */
+    private void setFrequencyButtons()
+    {
+        RadioButton button;
+
+        LinearLayout customerFreqLayout = this.findViewById(R.id.editCustomFrequencyLayout);
+        EditText enterNumberOfTimesPerDay = this.findViewById(R.id.editNumTimesTaken);
+        TextView timeTaken = this.findViewById(R.id.editTimeTaken1);
+        Spinner frequencySpinner = this.findViewById(R.id.editFrequencySpinner);
+        long medFrequency = medication.getMedFrequency();
+
+        if (medFrequency != 1440)
+        {
+            button = this.findViewById(R.id.editCustomFreqButton);
+            customerFreqLayout.setVisibility(View.VISIBLE);
+            EditText takenEvery = this.findViewById(R.id.editEnterFrequency);
+            TextView dateSelect = this.findViewById(R.id.editStartDate);
+            TextView timeSelect = this.findViewById(R.id.editStartTime);
+
+            if (medFrequency % 1440 == 0)
+            {
+                takenEvery.setText(String.valueOf(medication.getMedFrequency() / 1440));
+                frequencySpinner.setSelection(1);
+            }
+            else if (medFrequency % (1440 * 7) == 0)
+            {
+                takenEvery.setText(String.valueOf(medFrequency % (1440 / 7)));
+                frequencySpinner.setSelection(2);
+            }
+            else
+            {
+                takenEvery.setText(String.valueOf(medFrequency / 60));
+                frequencySpinner.setSelection(0);
+            }
+
+            dateSelect.setText(TimeFormatting.localDateToString(medication.getStartDate().toLocalDate()));
+            timeSelect.setText(TimeFormatting.localTimeToString(medication.getStartDate().toLocalTime()));
+        }
+        else if (medicationTimes.length > 1)
+        {
+            button = this.findViewById(R.id.editMultiplePerDay);
+            enterNumberOfTimesPerDay.setVisibility(View.VISIBLE);
+
+            int numTimes = medicationTimes.length;
+
+            enterNumberOfTimesPerDay.setText(String.valueOf(numTimes));
+            createMultiplePerDayTextViews(numTimes);
+        }
+        else
+        {
+            button = this.findViewById(R.id.editDailyButton);
+            timeTaken.setVisibility(View.VISIBLE);
+            timeTaken.setText(TimeFormatting.localTimeToString(medicationTimes[0]));
+            timeTaken.setTag(medicationTimes[0]);
+        }
+
+        button.setChecked(true);
+    }
+
+    /**
+     * Sets listeners for frequency name input radio buttons
+     */
+    private void setNameRadioButtonListeners()
+    {
+        RadioButton meButton = this.findViewById(R.id.meButtonEdit);
+        RadioButton otherPatient = this.findViewById(R.id.otherButtonEdit);
+        EditText enterName = this.findViewById(R.id.editPatientNameEditText);
+
+        meButton.setOnCheckedChangeListener((compoundButton, b) ->
+        {
+            if (meButton.isChecked())
+                enterName.setVisibility(View.GONE);
+            else
+                enterName.setVisibility(View.VISIBLE);
+        });
+
+        otherPatient.setOnCheckedChangeListener(((CompoundButton, b) ->
+        {
+            if (otherPatient.isChecked())
+                enterName.setVisibility(View.VISIBLE);
+            else
+                enterName.setVisibility(View.GONE);
+        }));
+    }
+
+    /**
+     *  Sets listeners for frequency options
+     */
+    private void setFrequencyButtonListeners()
+    {
+        RadioButton multiplePerDay = this.findViewById(R.id.editMultiplePerDay);
+        RadioButton dailyButton = this.findViewById(R.id.editDailyButton);
+        RadioButton customFreq = this.findViewById(R.id.editCustomFreqButton);
+
+        LinearLayout customerFreqLayout = this.findViewById(R.id.editCustomFrequencyLayout);
+        LinearLayout timesOfDay = this.findViewById(R.id.editTimesInDay);
+        EditText enterNumberOfTimesPerDay = this.findViewById(R.id.editNumTimesTaken);
+        TextView timeTaken = this.findViewById(R.id.editTimeTaken1);
+        TextView timesPerDay = this.findViewById(R.id.timesPerDayLabel);
+
+        multiplePerDay.setOnCheckedChangeListener(((compoundButton, b) ->
+        {
+            if (multiplePerDay.isChecked())
+            {
+                enterNumberOfTimesPerDay.setVisibility(View.VISIBLE);
+                timeTaken.setVisibility(View.GONE);
+                customerFreqLayout.setVisibility(View.GONE);
+                timesPerDay.setVisibility(View.VISIBLE);
+                timesOfDay.setVisibility(View.VISIBLE);
+            }
+        }));
+
+        dailyButton.setOnCheckedChangeListener(((compoundButton, b) ->
+        {
+            if (dailyButton.isChecked())
+            {
+                timeTaken.setVisibility(View.VISIBLE);
+                timesPerDay.setVisibility(View.GONE);
+                enterNumberOfTimesPerDay.setVisibility(View.GONE);
+                customerFreqLayout.setVisibility(View.GONE);
+                timesOfDay.setVisibility(View.GONE);
+            }
+        }));
+
+        customFreq.setOnCheckedChangeListener(((compoundButton, b) ->
+        {
+            if (customFreq.isChecked())
+            {
+                customerFreqLayout.setVisibility(View.VISIBLE);
+                timeTaken.setVisibility(View.GONE);
+                enterNumberOfTimesPerDay.setVisibility(View.GONE);
+                timesPerDay.setVisibility(View.GONE);
+                timesOfDay.setVisibility(View.GONE);
+            }
+        }));
+    }
+
+    /**
+     * Sets listeners for time entry text views
+     */
+    private void setEnterTimesPerDayListener()
+    {
+        EditText timesPerDay = this.findViewById(R.id.editNumTimesTaken);
+        LinearLayout timesOfDay = this.findViewById(R.id.editTimesInDay);
+
+        timesPerDay.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void afterTextChanged(Editable editable)
+            {
+                timesOfDay.removeAllViews();
+
+                if (!timesPerDay.getText().toString().equals(""))
+                {
+                    int dailyDoses = Integer.parseInt(timesPerDay.getText().toString());
+
+                    createMultiplePerDayTextViews(dailyDoses);
+                }
+            }
+        });
+    }
+
+    /**
+     * Sets listener for daily time TextView, launches time picker fragment
+     */
+    private void setDailyListener()
+    {
+        TextView dailyTime = this.findViewById(R.id.editTimeTaken1);
+
+        dailyTime.setOnClickListener(view ->
+        {
+            FragmentManager fm = ((FragmentActivity)this).getSupportFragmentManager();
+
+            DialogFragment dialogFragment = new TimePickerFragment(dailyTime.getId());
+            dialogFragment.show(fm, null);
+        });
+    }
+
+    /**
+     * Sets listeners for editStartDate and editStartTime. Tapping editStartDate opens a
+     * SelectDateFragment and tapping editStartTime opens a TimePickerFragment.
+     */
+    private void setCustomFrequencyTextViewListeners()
+    {
+        TextView selectDate = this.findViewById(R.id.editStartDate);
+        TextView selectTime = this.findViewById(R.id.editStartTime);
+        FragmentManager fm = ((FragmentActivity)this).getSupportFragmentManager();
+
+        selectDate.setOnClickListener(view ->
+        {
+            DialogFragment df = new SelectDateFragment(selectDate.getId());
+            df.show(fm, null);
+        });
+
+        selectTime.setOnClickListener(view ->
+        {
+            DialogFragment df = new TimePickerFragment(selectTime.getId());
+            df.show(fm, null);
+        });
+    }
+
+    /**
+     * Fills time frequency spinner.
+     */
+    private void setFrequencySpinner()
+    {
+        Spinner timesSpinner = this.findViewById(R.id.editFrequencySpinner);
+
+        String[] spinnerFrequencies = {"Hour(s)", "Day(s)", "week(s)"};
+        ArrayAdapter<String> frequencyAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerFrequencies);
+        frequencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        timesSpinner.setAdapter(frequencyAdapter);
+    }
+
+    /**
+     * Creates TextViews based on the number of times per day the user takes a medication
+     * @param dailyDoses The number of dose taken per day.
+     */
+    private void createMultiplePerDayTextViews(int dailyDoses)
+    {
+        LinearLayout timesOfDay = this.findViewById(R.id.editTimesInDay);
+
+        for (int i = 0; i < dailyDoses; i++)
+        {
+            final int id = i;
+            TextView tv = new TextView(this);
+            tv.setId(i);
+
+            TextViewUtils.setTextViewParams(tv, "Tap to set time", timesOfDay);
+
+            tv.setOnClickListener(view ->
+            {
+                FragmentManager fm = ((FragmentActivity)this).getSupportFragmentManager();
+
+                DialogFragment dialogFragment = new TimePickerFragment(id);
+                dialogFragment.show(fm, null);
+            });
+
+            if (i < medicationTimes.length)
+            {
+                int hour = medicationTimes[i].getHour();
+                int minute = medicationTimes[i].getMinute();
+
+                String dbTime = TimeFormatting.formatTimeForDB(hour, minute);
+
+                String time = TimeFormatting.formatTimeForUser(hour, minute);
+
+                tv.setText(time);
+                tv.setTag(dbTime);
+            }
         }
     }
 
