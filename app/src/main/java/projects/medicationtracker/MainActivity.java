@@ -458,23 +458,22 @@ public class MainActivity extends AppCompatActivity
      */
     private void prepareNotifications()
     {
-        //TODO fix this method so it doesn't break notifications
-//        ArrayList<Medication> medications = db.getMedications();
-//
-//        for (Medication medication : medications)
-//        {
-//            LocalTime[] times = db.getMedicationTimes(medication.getMedId());
-//            long[] timeIds = db.getMedicationTimeIds(medication);
-//
-//            for (int i = 0; i < times.length; i++)
-//            {
-//                NotificationHelper.scheduleNotification(
-//                        this,
-//                        medication,
-//                        LocalDateTime.of(medication.getStartDate().toLocalDate(), times[i]),
-//                        times.length > 1 ? timeIds[i] * -1 : medication.getMedId()
-//                );
-//            }
-//        }
+        ArrayList<Medication> medications = db.getMedications();
+
+        for (Medication medication : medications)
+        {
+            LocalTime[] times = db.getMedicationTimes(medication.getMedId());
+            long[] timeIds = db.getMedicationTimeIds(medication);
+
+            for (int i = 0; i < times.length; i++)
+            {
+                NotificationHelper.scheduleNotification(
+                        this,
+                        medication,
+                        LocalDateTime.of(medication.getStartDate().toLocalDate(), times[i]),
+                        times.length > 1 ? timeIds[i] * -1 : medication.getMedId()
+                );
+            }
+        }
     }
 }
