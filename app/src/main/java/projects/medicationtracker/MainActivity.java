@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity
         Objects.requireNonNull(getSupportActionBar()).setTitle("Medication Schedule");
 
         NotificationHelper.createNotificationChannel(this);
-        prepareNotifications();
+//        prepareNotifications();
 
         createMainActivityViews();
     }
