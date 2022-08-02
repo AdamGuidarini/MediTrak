@@ -48,20 +48,20 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_gravity="bottom"
+            android:outlineAmbientShadowColor="#000000"
             android:layout_weight=".01">
 
 
-            <View
+            <Button
                 android:id="@+id/navButtonLeft"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:background="@android:drawable/ic_media_play"
-                android:rotation="180"
+                android:background="@android:drawable/ic_menu_more"
+                android:rotation="90"
                 android:layout_gravity="left"
-                android:layout_marginStart="10dp"
                 android:onClick="onLeftClick"/>
 
-            <View
+            <Button
                 android:id="@+id/todayButton"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
@@ -72,13 +72,13 @@
                 android:layout_marginRight="130dp"
                 android:onClick="onTodayClick"/>
 
-            <View
+            <Button
                 android:id="@+id/navButtonRight"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:background="@android:drawable/ic_media_play"
+                android:background="@android:drawable/ic_menu_more"
+                android:rotation="-90"
                 android:layout_gravity="right"
-                android:layout_marginEnd="10dp"
                 android:onClick="onRightClick"/>
         </LinearLayout>
 

@@ -2,6 +2,7 @@ package projects.medicationtracker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -16,8 +18,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.ColorRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.core.util.Pair;
 
 import java.time.LocalDate;
@@ -475,5 +479,20 @@ public class MainActivity extends AppCompatActivity
                 );
             }
         }
+    }
+
+    public void onLeftClick(View view)
+    {
+        Toast.makeText(this, "Left clicked", Toast.LENGTH_SHORT).show();
+    }
+
+    public void onTodayClick(View view)
+    {
+        Toast.makeText(this, "today clicked", Toast.LENGTH_SHORT).show();
+    }
+
+    public void onRightClick(View view)
+    {
+        Toast.makeText(this, "Right clicked", Toast.LENGTH_SHORT).show();
     }
 }
