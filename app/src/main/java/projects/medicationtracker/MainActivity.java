@@ -9,8 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.util.Pair;
+import androidx.fragment.app.DialogFragment;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -126,6 +129,7 @@ public class MainActivity extends AppCompatActivity
             noMeds.setVisibility(View.VISIBLE);
             scheduleScrollView.setVisibility(View.GONE);
             patientNames.setVisibility(View.GONE);
+            this.findViewById(R.id.navButtonLayout).setVisibility(View.GONE);
             return;
         }
 
