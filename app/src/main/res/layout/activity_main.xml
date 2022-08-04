@@ -55,10 +55,9 @@
                 android:id="@+id/navButtonLeft"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:background="@android:drawable/ic_media_play"
+                android:background="@drawable/abc_vector_test"
                 android:onClick="onLeftClick"
-                android:rotation="180"
-                android:layout_alignParentStart="true"/>
+                android:layout_alignParentStart="true" />
 
             <Button
                 android:id="@+id/todayButton"
@@ -66,13 +65,14 @@
                 android:layout_height="45dp"
                 android:background="@android:drawable/ic_menu_today"
                 android:onClick="onTodayClick"
-                android:layout_centerInParent="true"/>
+                android:layout_centerInParent="true" />
 
             <Button
                 android:id="@+id/navButtonRight"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:background="@android:drawable/ic_media_play"
+                android:background="@drawable/abc_vector_test"
+                android:rotation="180"
                 android:onClick="onRightClick"
                 android:gravity="end"
                 android:layout_alignParentEnd="true" />
