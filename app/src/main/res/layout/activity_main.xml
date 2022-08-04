@@ -42,7 +42,7 @@
                 android:orientation="vertical" />
         </ScrollView>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/navButtonLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -56,35 +56,27 @@
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:background="@android:drawable/ic_media_play"
-                android:rotation="180"
-                android:layout_gravity="left"
-                android:layout_marginStart="10dp"
                 android:onClick="onLeftClick"
-                style="?android:attr/buttonBarButtonStyle" />
+                android:rotation="180"
+                android:layout_alignParentStart="true"/>
 
             <Button
                 android:id="@+id/todayButton"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:background="@android:drawable/ic_menu_today"
-                android:layout_gravity="center_horizontal"
-                android:backgroundTint="#818187"
-                android:layout_marginLeft="130dp"
-                android:layout_marginRight="130dp"
                 android:onClick="onTodayClick"
-                android:longClickable="true"
-                style="?android:attr/buttonBarButtonStyle" />
+                android:layout_centerInParent="true"/>
 
             <Button
                 android:id="@+id/navButtonRight"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:background="@android:drawable/ic_media_play"
-                android:layout_gravity="right"
-                android:layout_marginEnd="10dp"
                 android:onClick="onRightClick"
-                style="?android:attr/buttonBarButtonStyle" />
-        </LinearLayout>
+                android:gravity="end"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
 
     </LinearLayout>
 
