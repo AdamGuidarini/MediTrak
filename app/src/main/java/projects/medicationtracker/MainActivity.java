@@ -9,8 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.util.Pair;
+import androidx.fragment.app.DialogFragment;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,7 +32,8 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity
 {
     private final DBHelper db = new DBHelper(this);
-    private LocalDate beginSchedule;
+    private LinearLayout scheduleLayout;
+    private LocalDate aDayThisWeek;
 
     /**
      * Runs at start of activity, builds MainActivity
@@ -42,7 +46,9 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        beginSchedule = LocalDate.now();
+        aDayThisWeek = LocalDate.now();
+
+        scheduleLayout = findViewById(R.id.scheduleLayout);
 
         Objects.requireNonNull(getSupportActionBar()).setTitle("Medication Schedule");
 
@@ -113,7 +119,6 @@ public class MainActivity extends AppCompatActivity
      */
     public void createMainActivityViews()
     {
-        LinearLayout scheduleLayout = findViewById(R.id.scheduleLayout);
         TextView noMeds = findViewById(R.id.noMeds);
         ScrollView scheduleScrollView = findViewById(R.id.scheduleScrollView);
         Spinner patientNames = findViewById(R.id.patientSpinner);
@@ -124,6 +129,7 @@ public class MainActivity extends AppCompatActivity
             noMeds.setVisibility(View.VISIBLE);
             scheduleScrollView.setVisibility(View.GONE);
             patientNames.setVisibility(View.GONE);
+            this.findViewById(R.id.navButtonLayout).setVisibility(View.GONE);
             return;
         }
 
@@ -135,7 +141,7 @@ public class MainActivity extends AppCompatActivity
         {
             patientNames.setVisibility(View.GONE);
 
-            createMedicationSchedule(medications, names.get(0), db, scheduleLayout);
+            createMedicationSchedule(medications, names.get(0), db);
         }
         else
         {
@@ -173,7 +179,7 @@ public class MainActivity extends AppCompatActivity
                     if (name.equals("You"))
                         name = "ME!";
 
-                    createMedicationSchedule(medications, name, db, scheduleLayout);
+                    createMedicationSchedule(medications, name, db);
                 }
 
                 @Override
@@ -191,7 +197,7 @@ public class MainActivity extends AppCompatActivity
         ArrayList<Medication> medications = db.getMedications();
 
         // Add times to custom frequency
-        LocalDate thisSunday = TimeFormatting.whenIsSunday(beginSchedule);
+        LocalDate thisSunday = TimeFormatting.whenIsSunday(aDayThisWeek);
 
         // Look at each medication
         for (int i = 0; i < medications.size(); i++)
@@ -269,9 +275,8 @@ public class MainActivity extends AppCompatActivity
      *                    Medications where patientName equals name passed to method.
      * @param name The name of the patient whose Medications should be displayed
      * @param db The database from which to pull data
-     * @param scheduleLayout The LinearLayout into which the cards will be placed
      */
-    public void createMedicationSchedule(ArrayList<Medication> medications, String name, DBHelper db, LinearLayout scheduleLayout)
+    public void createMedicationSchedule(ArrayList<Medication> medications, String name, DBHelper db)
     {
         ArrayList<Medication> medicationsForThisPatient = new ArrayList<>();
 
@@ -315,7 +320,7 @@ public class MainActivity extends AppCompatActivity
 
         CardCreator.setCardParams(thisDayCard);
 
-        LocalDate thisSunday = TimeFormatting.whenIsSunday(beginSchedule);
+        LocalDate thisSunday = TimeFormatting.whenIsSunday(aDayThisWeek);
 
         // Add day to top of card
         TextViewUtils.setTextViewFontAndPadding(dayLabel);
@@ -475,5 +480,32 @@ public class MainActivity extends AppCompatActivity
                 );
             }
         }
+    }
+
+    public void onLeftClick(View view)
+    {
+        aDayThisWeek = aDayThisWeek.minusWeeks(1);
+
+        scheduleLayout.removeAllViews();
+
+        createMainActivityViews();
+    }
+
+    public void onTodayClick(View view)
+    {
+        aDayThisWeek = LocalDate.now();
+
+        scheduleLayout.removeAllViews();
+
+        createMainActivityViews();
+    }
+
+    public void onRightClick(View view)
+    {
+        aDayThisWeek = aDayThisWeek.plusWeeks(1);
+
+        scheduleLayout.removeAllViews();
+
+        createMainActivityViews();
     }
 }

@@ -19,8 +19,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="gone" />
 
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -34,9 +32,8 @@
         <ScrollView
             android:id="@+id/scheduleScrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="wrap_content"
+            android:layout_weight=".7">
 
             <LinearLayout
                 android:id="@+id/scheduleLayout"
@@ -44,6 +41,42 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
         </ScrollView>
+
+        <RelativeLayout
+            android:id="@+id/navButtonLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="bottom"
+            android:layout_weight=".01">
+
+
+            <Button
+                android:id="@+id/navButtonLeft"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@android:drawable/ic_media_play"
+                android:onClick="onLeftClick"
+                android:rotation="180"
+                android:layout_alignParentStart="true"/>
+
+            <Button
+                android:id="@+id/todayButton"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@android:drawable/ic_menu_today"
+                android:onClick="onTodayClick"
+                android:layout_centerInParent="true"/>
+
+            <Button
+                android:id="@+id/navButtonRight"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@android:drawable/ic_media_play"
+                android:onClick="onRightClick"
+                android:gravity="end"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
 
     </LinearLayout>
 
