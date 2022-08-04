@@ -27,8 +27,7 @@ An Android app that helps users keep track of their medications.
 
 ### Planned:
 
-  + Improvements to MainActivity - Allow the user to see medications from previous and future weeks.
-  + Cancel medication - Medication will no longer be scheduled but notes an other related data will not be deleted.
++ Cancel medication - Medication will no longer be scheduled but notes an other related data will not be deleted.
   + Database Cleaner - Delete doses for medications whose schedules have been changed.
   + User interface improvements.
   + Mark a medication as take from it's notification.
