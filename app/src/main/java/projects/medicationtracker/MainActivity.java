@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity
         Objects.requireNonNull(getSupportActionBar()).setTitle("Medication Schedule");
 
         NotificationHelper.createNotificationChannel(this);
-//        prepareNotifications();
+        prepareNotifications();
 
         createMainActivityViews();
     }
@@ -467,17 +468,46 @@ public class MainActivity extends AppCompatActivity
 
         for (Medication medication : medications)
         {
-            LocalTime[] times = db.getMedicationTimes(medication.getMedId());
-            long[] timeIds = db.getMedicationTimeIds(medication);
+            long[] medicationTimeIds = db.getMedicationTimeIds(medication);
 
-            for (int i = 0; i < times.length; i++)
+            if (medication.getMedFrequency() == 1440)
+            {
+                NotificationHelper.deletePendingNotification(medication.getMedId(), this);
+
+            }
+            else
+            {
+                for (int i = 0; i < medicationTimeIds.length; i++)
+                {
+                    NotificationHelper.deletePendingNotification(medicationTimeIds[i], this);
+                }
+            }
+        }
+
+        for (Medication medication : medications)
+        {
+            long[] medicationTimeIds = db.getMedicationTimeIds(medication);
+
+            if (medication.getMedFrequency() == 1440)
             {
                 NotificationHelper.scheduleNotification(
-                        this,
+                        getApplicationContext(),
                         medication,
-                        LocalDateTime.of(medication.getStartDate().toLocalDate(), times[i]),
-                        times.length > 1 ? timeIds[i] * -1 : medication.getMedId()
+                        LocalDateTime.of(LocalDate.now(), medication.getTimes()[0].toLocalTime()),
+                        medication.getMedId()
                 );
+            }
+            else
+            {
+                for (int i = 0; i < medicationTimeIds.length; i++)
+                {
+                    NotificationHelper.scheduleNotification(
+                            getApplicationContext(),
+                            medication,
+                            LocalDateTime.of(LocalDate.now(), medication.getTimes()[i].toLocalTime()),
+                            medicationTimeIds[i] * -1
+                    );
+                }
             }
         }
     }

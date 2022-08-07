@@ -128,7 +128,7 @@ public class CardCreator
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         cardView.setLayoutParams(layoutParams);
         ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) cardView.getLayoutParams();
-        marginLayoutParams.setMargins(25, 40, 25, 20);
+        marginLayoutParams.setMargins(25, 40, 10, 10);
         cardView.requestLayout();
         cardView.setRadius(30);
     }

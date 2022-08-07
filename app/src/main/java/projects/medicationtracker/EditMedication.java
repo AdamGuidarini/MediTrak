@@ -718,9 +718,7 @@ public class EditMedication extends AppCompatActivity
         }
         else
         {
-            long[] ids = db.getMedicationTimeIds(medication);
-
-            for (long id : ids)
+            for (long id : medIds)
             {
                 NotificationHelper.deletePendingNotification(id * -1, this);
             }
