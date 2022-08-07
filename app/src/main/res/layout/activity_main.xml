@@ -50,7 +50,6 @@
             android:layout_gravity="bottom"
             android:layout_weight=".01">
 
-
             <Button
                 android:id="@+id/navButtonLeft"
                 android:layout_width="45dp"
@@ -77,7 +76,5 @@
                 android:gravity="end"
                 android:layout_alignParentEnd="true" />
         </RelativeLayout>
-
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
