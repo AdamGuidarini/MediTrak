@@ -28,6 +28,6 @@ An Android app that helps users keep track of their medications.
 ### Planned:
 
 + Cancel medication - Medication will no longer be scheduled but notes an other related data will not be deleted.
-  + Database Cleaner - Delete doses for medications whose schedules have been changed.
-  + User interface improvements.
-  + Mark a medication as take from its notification.
++ Database Cleaner - Delete doses for medications whose schedules have been changed.
++ User interface improvements.
++ Mark a medication as take from its notification.
