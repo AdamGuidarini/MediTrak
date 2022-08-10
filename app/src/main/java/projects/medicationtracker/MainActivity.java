@@ -504,7 +504,7 @@ public class MainActivity extends AppCompatActivity
                     NotificationHelper.scheduleNotification(
                             getApplicationContext(),
                             medication,
-                            LocalDateTime.of(LocalDate.now(), medication.getTimes()[i].toLocalTime()),
+                            LocalDateTime.of(medication.getStartDate().toLocalDate(), medication.getTimes()[i].toLocalTime()),
                             medicationTimeIds[i] * -1
                     );
                 }
