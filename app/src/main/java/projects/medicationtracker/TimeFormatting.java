@@ -25,12 +25,8 @@ public class TimeFormatting
         String minString;
         String amPm = hour >= 12 ? "PM" : "AM";
 
-        hour = hour > 12 ? hour - 12 : hour;
-
-        if (minute < 10)
-            minString = "0" + minute;
-        else
-            minString = String.valueOf(minute);
+        hour = hour > 12 ? hour - 12 : hour == 0 ? 12 : hour;
+        minString = minute < 10 ? "0" + minute : String.valueOf(minute);
 
         return hour + ":" + minString + " " + amPm;
     }
