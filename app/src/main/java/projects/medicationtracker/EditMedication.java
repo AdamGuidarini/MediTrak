@@ -378,7 +378,7 @@ public class EditMedication extends AppCompatActivity
 
         dailyTime.setOnClickListener(view ->
         {
-            FragmentManager fm = ((FragmentActivity)this).getSupportFragmentManager();
+            FragmentManager fm = this.getSupportFragmentManager();
 
             DialogFragment dialogFragment = new TimePickerFragment(dailyTime.getId());
             dialogFragment.show(fm, null);
@@ -393,7 +393,7 @@ public class EditMedication extends AppCompatActivity
     {
         TextView selectDate = this.findViewById(R.id.editStartDate);
         TextView selectTime = this.findViewById(R.id.editStartTime);
-        FragmentManager fm = ((FragmentActivity)this).getSupportFragmentManager();
+        FragmentManager fm = this.getSupportFragmentManager();
 
         selectDate.setOnClickListener(view ->
         {
@@ -439,7 +439,7 @@ public class EditMedication extends AppCompatActivity
 
             tv.setOnClickListener(view ->
             {
-                FragmentManager fm = ((FragmentActivity)this).getSupportFragmentManager();
+                FragmentManager fm = this.getSupportFragmentManager();
 
                 DialogFragment dialogFragment = new TimePickerFragment(id);
                 dialogFragment.show(fm, null);

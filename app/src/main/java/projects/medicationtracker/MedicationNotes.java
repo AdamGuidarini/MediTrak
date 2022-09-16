@@ -1,5 +1,8 @@
 package projects.medicationtracker;
 
+import static projects.medicationtracker.CardCreator.setCardParams;
+
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -94,7 +97,7 @@ public class MedicationNotes extends AppCompatActivity
         }
 
         for (int i = 0; i < notes.size(); i++)
-            CardCreator.createNoteCard(notes.get(i), findViewById(R.id.notesLayout));
+            createNoteCard(notes.get(i), findViewById(R.id.notesLayout));
     }
 
     /**
@@ -140,5 +143,35 @@ public class MedicationNotes extends AppCompatActivity
                 editNote.show(getSupportFragmentManager(), null);
             });
         }
+    }
+
+    /**
+     * Creates a CardView with a note in it
+     * @param note The Note in the CardView
+     * @param baseLayout The LinearLayout the holds the CardView
+     **************************************************************************/
+    private void createNoteCard(Note note, LinearLayout baseLayout)
+    {
+        Context context = baseLayout.getContext();
+        CardView noteCard = new CardView(context);
+        LinearLayout cardLayout = new LinearLayout(context);
+
+        cardLayout.setOrientation(LinearLayout.VERTICAL);
+        setCardParams(noteCard);
+
+        baseLayout.addView(noteCard);
+        noteCard.addView(cardLayout);
+
+        TextView noteText = new TextView(context);
+        TextViewUtils.setTextViewParams(noteText, "\"" + note.getNote() + "\"", cardLayout);
+
+        TextView noteDate = new TextView(context);
+        String noteDateLabel =
+                "Date: " + TimeFormatting.localDateToString(note.getNoteTime().toLocalDate())
+                + " at: " + TimeFormatting.localTimeToString(note.getNoteTime().toLocalTime());
+
+        TextViewUtils.setTextViewParams(noteDate, noteDateLabel, cardLayout);
+
+        noteText.setTag(note);
     }
 }

@@ -1,5 +1,6 @@
 package projects.medicationtracker;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -13,7 +14,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -56,8 +59,7 @@ public class MyMedications extends AppCompatActivity
                 ArrayList<Medication> patientMeds = db.getMedications();
 
                 for (Medication medication : patientMeds)
-                    CardCreator.createMyMedCards(medication, myMedsLayout, MyMedications.this);
-
+                    createMyMedCards(medication, myMedsLayout);
             }
             else
             {
@@ -87,7 +89,7 @@ public class MyMedications extends AppCompatActivity
                         ArrayList<Medication> patientMeds = db.getMedicationsForPatient(patient);
 
                         for (Medication medication : patientMeds)
-                            CardCreator.createMyMedCards(medication, myMedsLayout, MyMedications.this);
+                            createMyMedCards(medication, myMedsLayout);
                     }
 
                     @Override
@@ -124,5 +126,82 @@ public class MyMedications extends AppCompatActivity
         Intent intent = new Intent(this, MainActivity.class);
         finish();
         startActivity(intent);
+    }
+
+    /**
+     * Creates a CardView containing all information on a Medication
+     * @param medication The Medication whose details will be displayed.
+     * @param baseLayout The LinearLayout in which to place the card
+     **************************************************************************/
+    private void createMyMedCards(Medication medication, LinearLayout baseLayout)
+    {
+        Context context = baseLayout.getContext();
+        CardView thisMedCard = new CardView(context);
+        LinearLayout thisMedLayout = new LinearLayout(context);
+        thisMedLayout.setOrientation(LinearLayout.VERTICAL);
+        baseLayout.addView(thisMedCard);
+
+        CardCreator.setCardParams(thisMedCard);
+
+        thisMedCard.addView(thisMedLayout);
+
+        // Add name to thisMedLayout
+        TextView name = new TextView(context);
+        String nameLabel = "Medication name: " + medication.getMedName();
+        TextViewUtils.setTextViewParams(name, nameLabel, thisMedLayout);
+
+        // Add Dosage
+        TextView doseInfo = new TextView(context);
+        String doseInfoLabel = "Dosage: " + medication.getMedDosage() + " " + medication.getMedDosageUnits();
+        TextViewUtils.setTextViewParams(doseInfo, doseInfoLabel, thisMedLayout);
+
+        // Add Frequency
+        TextView freq = new TextView(context);
+        StringBuilder freqLabel;
+
+        if (medication.getMedFrequency() == 1440 && (medication.getTimes().length == 1))
+        {
+            String time = TimeFormatting.localTimeToString(medication.getTimes()[0].toLocalTime());
+            freqLabel = new StringBuilder("Taken daily at: " + time);
+        }
+        else if (medication.getMedFrequency() == 1440 && (medication.getTimes().length > 1))
+        {
+            freqLabel = new StringBuilder("Taken daily at: ");
+
+            for (int i = 0; i < medication.getTimes().length; i++)
+            {
+                LocalTime time = medication.getTimes()[i].toLocalTime();
+                freqLabel.append(TimeFormatting.localTimeToString(time));
+
+                if (i != (medication.getTimes().length - 1))
+                    freqLabel.append(", ");
+            }
+        }
+        else
+            freqLabel = new StringBuilder("Taken every: " + TimeFormatting.freqConversion(medication.getMedFrequency()));
+
+        TextViewUtils.setTextViewParams(freq, freqLabel.toString(), thisMedLayout);
+
+        // Add alias (if exists)
+        if (!medication.getAlias().equals(""))
+        {
+            TextView alias = new TextView(context);
+            String aliasLabel = "Alias: " + medication.getAlias();
+            TextViewUtils.setTextViewParams(alias, aliasLabel, thisMedLayout);
+        }
+
+        // Add start date
+        TextView startDate = new TextView(context);
+        String startDateLabel = "Taken Since: " + TimeFormatting.localDateToString(medication.getStartDate().toLocalDate());
+        TextViewUtils.setTextViewParams(startDate, startDateLabel, thisMedLayout);
+
+        // Add LinearLayout for buttons
+        Intent intent = new Intent(context, MedicationNotes.class);
+        intent.putExtra("medId", medication.getMedId());
+        ButtonManager.createActivityButton("Notes", thisMedLayout, context, intent, this);
+
+        intent = new Intent(context, EditMedication.class);
+        intent.putExtra("medId", medication.getMedId());
+        ButtonManager.createActivityButton("Edit", thisMedLayout, context, intent, this);
     }
 }
