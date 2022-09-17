@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.MyMedicationsFragment">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/myMedCardMedicationName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="@style/standardTextView"/>
+
+        <TextView
+            android:id="@+id/myMedCardDosage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="@style/standardTextView"/>
+
+        <TextView
+            android:id="@+id/myMedCardFrequency"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="@style/standardTextView"/>
+
+        <TextView
+            android:id="@+id/myMedCardAlias"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            style="@style/standardTextView"/>
+
+        <TextView
+            android:id="@+id/myMedCardTakenSince"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="@style/standardTextView"/>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/myMedsNotes"
+                android:layout_width="50pt"
+                android:layout_height="wrap_content"
+                android:text="@string/notes"
+                android:layout_marginStart="25pt"
+                android:layout_alignParentStart="true"/>
+
+            <Button
+                android:id="@+id/myMedsEdit"
+                android:layout_width="50pt"
+                android:layout_height="wrap_content"
+                android:text="@string/edit"
+                android:layout_marginEnd="25pt"
+                android:layout_alignParentEnd="true"/>
+
+        </RelativeLayout>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</FrameLayout>
