@@ -157,4 +157,6 @@
     <string name="light_mode">Light mode</string>
     <string name="dark_mode">Dark mode</string>
     <string name="match_system_theme">Match system theme</string>
+    <string name="notes">Notes</string>
+    <string name="edit">Edit</string>
 </resources>

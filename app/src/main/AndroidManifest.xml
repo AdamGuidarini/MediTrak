@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="projects.medicationtracker">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -13,13 +14,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MedicationTracker">
 
-        <activity android:name=".EditMedication" />
-        <activity android:name=".MedicationNotes" />
-        <activity android:name=".MyMedications" />
-        <activity android:name=".Settings" />
-        <activity android:name=".AddMedication" />
+        <activity android:name=".EditMedication"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".MedicationNotes"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"  />
+        <activity android:name=".MyMedications"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".Settings"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".AddMedication"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"  />
         <activity android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
