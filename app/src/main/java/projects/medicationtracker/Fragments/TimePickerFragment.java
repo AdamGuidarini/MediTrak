@@ -1,6 +1,6 @@
-package projects.medicationtracker;
+package projects.medicationtracker.Fragments;
 
-import static projects.medicationtracker.TimeFormatting.formatTimeForUser;
+import static projects.medicationtracker.Helpers.TimeFormatting.formatTimeForUser;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -13,6 +13,8 @@ import android.widget.TimePicker;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+import projects.medicationtracker.Helpers.TimeFormatting;
+
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener
 {
     private final int textViewId;
@@ -21,7 +23,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
      * Constructor
      * @param id Id of text view that will store selected time
      **************************************************************************/
-    TimePickerFragment (int id)
+    public TimePickerFragment(int id)
     {
         textViewId = id;
     }

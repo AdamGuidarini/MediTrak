@@ -1,4 +1,4 @@
-package projects.medicationtracker;
+package projects.medicationtracker.Fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -16,6 +16,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
+
+import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.MedicationNotes;
+import projects.medicationtracker.SimpleClasses.Note;
+import projects.medicationtracker.R;
 
 
 public class AddNoteFragment extends DialogFragment

@@ -1,4 +1,4 @@
-package projects.medicationtracker;
+package projects.medicationtracker.Fragments;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -20,7 +20,7 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
      * Creates a new SelectDateFragment
      * @param viewId The id of the View, ideally a Text View, to write the selected date to
      *************************************************************************/
-    SelectDateFragment (int viewId) { id = viewId; }
+    public SelectDateFragment(int viewId) { id = viewId; }
 
     /**
      * Instructions for how to create fragment

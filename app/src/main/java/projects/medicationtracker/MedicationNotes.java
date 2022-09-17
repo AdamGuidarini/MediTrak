@@ -1,7 +1,5 @@
 package projects.medicationtracker;
 
-import static projects.medicationtracker.CardCreator.setCardParams;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +17,14 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
 import java.util.Objects;
+
+import projects.medicationtracker.Fragments.AddNoteFragment;
+import projects.medicationtracker.Fragments.EditNoteFragment;
+import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.TextViewUtils;
+import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.SimpleClasses.Note;
+import projects.medicationtracker.Views.StandardCardView;
 
 public class MedicationNotes extends AppCompatActivity
 {
@@ -153,11 +159,10 @@ public class MedicationNotes extends AppCompatActivity
     private void createNoteCard(Note note, LinearLayout baseLayout)
     {
         Context context = baseLayout.getContext();
-        CardView noteCard = new CardView(context);
+        StandardCardView noteCard = new StandardCardView(context);
         LinearLayout cardLayout = new LinearLayout(context);
 
         cardLayout.setOrientation(LinearLayout.VERTICAL);
-        setCardParams(noteCard);
 
         baseLayout.addView(noteCard);
         noteCard.addView(cardLayout);

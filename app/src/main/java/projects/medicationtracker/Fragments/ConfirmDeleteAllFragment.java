@@ -1,4 +1,4 @@
-package projects.medicationtracker;
+package projects.medicationtracker.Fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -9,12 +9,16 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
 
+import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NotificationHelper;
+import projects.medicationtracker.SimpleClasses.Medication;
+
 public class ConfirmDeleteAllFragment extends DialogFragment
 {
     private final DBHelper db;
     private ArrayList<Medication> medications;
 
-    ConfirmDeleteAllFragment(DBHelper database)
+    public ConfirmDeleteAllFragment(DBHelper database)
     {
         db = database;
     }

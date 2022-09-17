@@ -1,4 +1,4 @@
-package projects.medicationtracker;
+package projects.medicationtracker.SimpleClasses;
 
 import androidx.annotation.NonNull;
 

@@ -1,12 +1,12 @@
 package projects.medicationtracker;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -14,11 +14,16 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Objects;
+
+import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.TextViewUtils;
+import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.SimpleClasses.Medication;
+import projects.medicationtracker.Views.StandardCardView;
 
 public class MyMedications extends AppCompatActivity
 {
@@ -135,28 +140,26 @@ public class MyMedications extends AppCompatActivity
      **************************************************************************/
     private void createMyMedCards(Medication medication, LinearLayout baseLayout)
     {
-        Context context = baseLayout.getContext();
-        CardView thisMedCard = new CardView(context);
-        LinearLayout thisMedLayout = new LinearLayout(context);
+        StandardCardView thisMedCard = new StandardCardView(this);
+        LinearLayout thisMedLayout = new LinearLayout(this);
+        LinearLayout buttonLayout = new LinearLayout(this);
         thisMedLayout.setOrientation(LinearLayout.VERTICAL);
         baseLayout.addView(thisMedCard);
-
-        CardCreator.setCardParams(thisMedCard);
 
         thisMedCard.addView(thisMedLayout);
 
         // Add name to thisMedLayout
-        TextView name = new TextView(context);
+        TextView name = new TextView(this);
         String nameLabel = "Medication name: " + medication.getMedName();
         TextViewUtils.setTextViewParams(name, nameLabel, thisMedLayout);
 
         // Add Dosage
-        TextView doseInfo = new TextView(context);
+        TextView doseInfo = new TextView(this);
         String doseInfoLabel = "Dosage: " + medication.getMedDosage() + " " + medication.getMedDosageUnits();
         TextViewUtils.setTextViewParams(doseInfo, doseInfoLabel, thisMedLayout);
 
         // Add Frequency
-        TextView freq = new TextView(context);
+        TextView freq = new TextView(this);
         StringBuilder freqLabel;
 
         if (medication.getMedFrequency() == 1440 && (medication.getTimes().length == 1))
@@ -185,23 +188,43 @@ public class MyMedications extends AppCompatActivity
         // Add alias (if exists)
         if (!medication.getAlias().equals(""))
         {
-            TextView alias = new TextView(context);
+            TextView alias = new TextView(this);
             String aliasLabel = "Alias: " + medication.getAlias();
             TextViewUtils.setTextViewParams(alias, aliasLabel, thisMedLayout);
         }
 
         // Add start date
-        TextView startDate = new TextView(context);
+        TextView startDate = new TextView(this);
         String startDateLabel = "Taken Since: " + TimeFormatting.localDateToString(medication.getStartDate().toLocalDate());
         TextViewUtils.setTextViewParams(startDate, startDateLabel, thisMedLayout);
 
         // Add LinearLayout for buttons
-        Intent intent = new Intent(context, MedicationNotes.class);
+        Intent intent = new Intent(this, MedicationNotes.class);
         intent.putExtra("medId", medication.getMedId());
-        ButtonManager.createActivityButton("Notes", thisMedLayout, context, intent, this);
 
-        intent = new Intent(context, EditMedication.class);
-        intent.putExtra("medId", medication.getMedId());
-        ButtonManager.createActivityButton("Edit", thisMedLayout, context, intent, this);
+        Button notesButton = new Button(this);
+        notesButton.setText("Notes");
+
+        notesButton.setOnClickListener(view ->
+        {
+            this.finish();
+            this.startActivity(intent);
+        });
+
+        Intent editMedIntent = new Intent(this, EditMedication.class);
+        editMedIntent.putExtra("medId", medication.getMedId());
+
+        Button editMedButton = new Button(this);
+        editMedButton.setText("Edit");
+
+
+        editMedButton.setOnClickListener(view ->
+        {
+            this.finish();
+            this.startActivity(editMedIntent);
+        });
+
+        thisMedLayout.addView(notesButton);
+        thisMedLayout.addView(editMedButton);
     }
 }

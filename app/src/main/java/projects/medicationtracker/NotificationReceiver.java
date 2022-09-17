@@ -1,7 +1,7 @@
 package projects.medicationtracker;
 
-import static projects.medicationtracker.NotificationHelper.DOSE_TIME;
-import static projects.medicationtracker.NotificationHelper.MEDICATION_ID;
+import static projects.medicationtracker.Helpers.NotificationHelper.DOSE_TIME;
+import static projects.medicationtracker.Helpers.NotificationHelper.MEDICATION_ID;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,6 +9,10 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import java.time.LocalDateTime;
+
+import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NotificationHelper;
+import projects.medicationtracker.SimpleClasses.Medication;
 
 public class NotificationReceiver extends BroadcastReceiver
 {
