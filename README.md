@@ -14,7 +14,7 @@ An Android app that helps users keep track of their medications.
 ### Completed:
 
   + AddMedication activty - Gives users the ability to add a new medication.
-  + MainActivity - Provides a GUI to view all medications to be taken during the current week. User can mark medications taken or not.
+  + MainActivity - Provides a GUI to view all medications to be taken during the current week. User can mark medications taken or not. Users can also use the three buttons on the bottom to view future or previous weeks or return to the current week.
   + Medication notes - Allows users to take notes to keep track of how their medications affect them.
   + MyMedications activity - Displays all medications stored in the database. Allows users to edit, cancel, or delete them, make notes about them, and view statistics about them.
   + Notifications - Push notifications that remind you to take your medications at the times you set.
@@ -23,11 +23,11 @@ An Android app that helps users keep track of their medications.
 ### In progress:
 
   + Refactoring and code clean-up.
-  + Bug fixes - The app sometimes crashes when editing medicaiton times.
+  + User interface improvements.
+  + Bug fixes - There's always a bug hidding somewhere.
 
 ### Planned:
 
 + Cancel medication - Medication will no longer be scheduled but notes an other related data will not be deleted.
 + Database Cleaner - Delete doses for medications whose schedules have been changed.
-+ User interface improvements.
 + Mark a medication as take from its notification.
