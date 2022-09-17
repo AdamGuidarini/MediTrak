@@ -18,9 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import java.time.LocalDate;
@@ -45,9 +43,6 @@ public class EditMedication extends AppCompatActivity
         setContentView(R.layout.activity_edit_medication);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Edit Medication");
-
-        CardView editMedCard = findViewById(R.id.editMedCard);
-        CardCreator.setCardParams(editMedCard);
 
         medication = db.getMedication(getIntent().getLongExtra("medId", 0));
 

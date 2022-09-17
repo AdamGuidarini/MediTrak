@@ -77,7 +77,6 @@ public class AddMedication extends AppCompatActivity
         frequencySpinner =  findViewById(R.id.frequencySpinner);
 
         CardView addMedCard = findViewById(R.id.addMedsCard);
-        CardCreator.setCardParams(addMedCard);
 
         String[] spinnerFrequencies = {"Hour(s)", "Day(s)", "week(s)"};
         ArrayAdapter<String> frequencyAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerFrequencies);

@@ -9,25 +9,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.util.Pair;
-import androidx.fragment.app.DialogFragment;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity
@@ -311,15 +306,13 @@ public class MainActivity extends AppCompatActivity
      */
     public void createDayOfWeekCards (String dayOfWeek, int day, ArrayList<Medication> medications, LinearLayout layout, DBHelper db, Context context)
     {
-        CardView thisDayCard = new CardView(context);
+        StandardCardView thisDayCard = new StandardCardView(context);
         TextView dayLabel = new TextView(context);
         LinearLayout ll = new LinearLayout(context);
 
         LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         ll.setLayoutParams(llParams);
         ll.setOrientation(LinearLayout.VERTICAL);
-
-        CardCreator.setCardParams(thisDayCard);
 
         LocalDate thisSunday = TimeFormatting.whenIsSunday(aDayThisWeek);
 

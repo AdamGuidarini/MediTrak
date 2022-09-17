@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="StandardTheme" parent="android:Theme">
+        <item name="materialCardViewStyle">@style/StandardCard</item>
+    </style>
+
+    <style name="StandardCard" parent="Widget.MaterialComponents.CardView">
+        <item name="android:radius">30dp</item>
+        <item name="android:layout_marginStart">25dp</item>
+        <item name="android:layout_marginTop">40dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+</resources>

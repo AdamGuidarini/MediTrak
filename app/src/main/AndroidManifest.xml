@@ -18,7 +18,8 @@
         <activity android:name=".MyMedications" />
         <activity android:name=".Settings" />
         <activity android:name=".AddMedication" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,7 +32,8 @@
             android:process=":remote">
 
         </receiver>
-        <receiver android:name=".EventReceiver">
+        <receiver android:name=".EventReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.TIMEZONE_CHANGED"/>
