@@ -14,7 +14,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import projects.medicationtracker.SimpleClasses.Medication;
-import projects.medicationtracker.NotificationReceiver;
+import projects.medicationtracker.Receivers.NotificationReceiver;
 
 public class NotificationHelper
 {

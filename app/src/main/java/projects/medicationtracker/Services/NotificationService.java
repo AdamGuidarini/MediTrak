@@ -1,9 +1,9 @@
-package projects.medicationtracker;
+package projects.medicationtracker.Services;
 
 import static projects.medicationtracker.Helpers.NotificationHelper.CHANNEL_ID;
 import static projects.medicationtracker.Helpers.NotificationHelper.GROUP_KEY;
-import static projects.medicationtracker.NotificationReceiver.MESSAGE;
-import static projects.medicationtracker.NotificationReceiver.NOTIFICATION_ID;
+import static projects.medicationtracker.Receivers.NotificationReceiver.MESSAGE;
+import static projects.medicationtracker.Receivers.NotificationReceiver.NOTIFICATION_ID;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -15,6 +15,9 @@ import android.content.Intent;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+
+import projects.medicationtracker.MainActivity;
+import projects.medicationtracker.R;
 
 public class NotificationService extends IntentService
 {

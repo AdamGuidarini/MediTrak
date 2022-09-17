@@ -41,11 +41,11 @@
         </activity>
 
         <receiver
-            android:name=".NotificationReceiver"
+            android:name=".Receivers.NotificationReceiver"
             android:process=":remote">
 
         </receiver>
-        <receiver android:name=".EventReceiver"
+        <receiver android:name=".Receivers.EventReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
@@ -54,7 +54,7 @@
         </receiver>
 
         <service
-            android:name=".NotificationService"
+            android:name=".Services.NotificationService"
             android:exported="false">
         </service>
 

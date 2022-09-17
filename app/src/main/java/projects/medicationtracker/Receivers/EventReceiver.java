@@ -1,4 +1,4 @@
-package projects.medicationtracker;
+package projects.medicationtracker.Receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

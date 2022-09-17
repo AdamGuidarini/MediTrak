@@ -1,4 +1,4 @@
-package projects.medicationtracker;
+package projects.medicationtracker.Receivers;
 
 import static projects.medicationtracker.Helpers.NotificationHelper.DOSE_TIME;
 import static projects.medicationtracker.Helpers.NotificationHelper.MEDICATION_ID;
@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
+import projects.medicationtracker.Services.NotificationService;
 import projects.medicationtracker.SimpleClasses.Medication;
 
 public class NotificationReceiver extends BroadcastReceiver
