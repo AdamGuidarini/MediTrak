@@ -1,4 +1,4 @@
-package projects.medicationtracker;
+package projects.medicationtracker.Helpers;
 
 import android.icu.text.SimpleDateFormat;
 import android.widget.TextView;

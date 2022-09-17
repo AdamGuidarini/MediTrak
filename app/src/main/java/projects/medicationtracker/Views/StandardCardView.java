@@ -1,4 +1,4 @@
-package projects.medicationtracker;
+package projects.medicationtracker.Views;
 
 import android.content.Context;
 import android.view.ViewGroup;

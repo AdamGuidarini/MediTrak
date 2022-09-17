@@ -1,11 +1,9 @@
 package projects.medicationtracker;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -16,11 +14,16 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Objects;
+
+import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.TextViewUtils;
+import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.SimpleClasses.Medication;
+import projects.medicationtracker.Views.StandardCardView;
 
 public class MyMedications extends AppCompatActivity
 {
@@ -218,7 +221,7 @@ public class MyMedications extends AppCompatActivity
         editMedButton.setOnClickListener(view ->
         {
             this.finish();
-            this.startActivity(intent);
+            this.startActivity(editMedIntent);
         });
 
         thisMedLayout.addView(notesButton);

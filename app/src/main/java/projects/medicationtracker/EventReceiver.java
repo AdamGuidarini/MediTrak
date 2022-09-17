@@ -9,6 +9,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
+import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NotificationHelper;
+import projects.medicationtracker.SimpleClasses.Medication;
+
 public class EventReceiver extends BroadcastReceiver
 {
     @Override

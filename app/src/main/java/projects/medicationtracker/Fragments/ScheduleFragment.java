@@ -1,4 +1,4 @@
-package projects.medicationtracker;
+package projects.medicationtracker.Fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+
+import projects.medicationtracker.R;
 
 /**
  * A simple {@link Fragment} subclass.

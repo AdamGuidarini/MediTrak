@@ -16,6 +16,10 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import java.util.Objects;
 
+import projects.medicationtracker.Fragments.ConfirmDeleteAllFragment;
+import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.InputValidation;
+
 public class Settings extends AppCompatActivity
 {
     DBHelper db = new DBHelper(this);

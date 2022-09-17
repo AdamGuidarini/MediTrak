@@ -1,7 +1,7 @@
 package projects.medicationtracker;
 
-import static projects.medicationtracker.NotificationHelper.CHANNEL_ID;
-import static projects.medicationtracker.NotificationHelper.GROUP_KEY;
+import static projects.medicationtracker.Helpers.NotificationHelper.CHANNEL_ID;
+import static projects.medicationtracker.Helpers.NotificationHelper.GROUP_KEY;
 import static projects.medicationtracker.NotificationReceiver.MESSAGE;
 import static projects.medicationtracker.NotificationReceiver.NOTIFICATION_ID;
 

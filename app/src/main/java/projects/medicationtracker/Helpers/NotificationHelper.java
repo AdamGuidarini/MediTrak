@@ -1,4 +1,4 @@
-package projects.medicationtracker;
+package projects.medicationtracker.Helpers;
 
 import static android.content.Context.ALARM_SERVICE;
 
@@ -12,6 +12,9 @@ import android.content.Intent;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+
+import projects.medicationtracker.SimpleClasses.Medication;
+import projects.medicationtracker.NotificationReceiver;
 
 public class NotificationHelper
 {

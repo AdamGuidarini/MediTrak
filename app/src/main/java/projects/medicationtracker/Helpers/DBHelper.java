@@ -1,4 +1,4 @@
-package projects.medicationtracker;
+package projects.medicationtracker.Helpers;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -16,6 +16,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+
+import projects.medicationtracker.SimpleClasses.Medication;
+import projects.medicationtracker.SimpleClasses.Note;
 
 public class DBHelper extends SQLiteOpenHelper
 {

@@ -18,6 +18,14 @@ import androidx.fragment.app.DialogFragment;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import projects.medicationtracker.Fragments.AddNoteFragment;
+import projects.medicationtracker.Fragments.EditNoteFragment;
+import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.TextViewUtils;
+import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.SimpleClasses.Note;
+import projects.medicationtracker.Views.StandardCardView;
+
 public class MedicationNotes extends AppCompatActivity
 {
     final DBHelper db = new DBHelper(this);
