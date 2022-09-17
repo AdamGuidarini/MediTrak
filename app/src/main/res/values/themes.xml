@@ -12,6 +12,5 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-        <item name="materialCardViewStyle">@style/StandardCard</item>
     </style>
 </resources>
