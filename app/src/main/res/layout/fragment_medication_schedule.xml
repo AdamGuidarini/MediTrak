@@ -5,16 +5,22 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.MedicationScheduleFragment">
 
-    <TextView
-        android:id="@+id/dateLabel"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/medicationSchedule"
+        android:id="@+id/dailySchedule"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"/>
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/dateLabel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="@style/standardTextView"
+            android:text="hello"/>
 
-
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/medicationSchedule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </FrameLayout>

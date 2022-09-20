@@ -1,5 +1,7 @@
 package projects.medicationtracker;
 
+import static projects.medicationtracker.Fragments.MedicationScheduleFragment.MEDICATIONS;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +20,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Pair;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainerView;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,6 +30,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import projects.medicationtracker.Fragments.MedicationScheduleFragment;
+import projects.medicationtracker.Fragments.MyMedicationsFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.Helpers.TextViewUtils;
@@ -311,17 +318,30 @@ public class MainActivity extends AppCompatActivity
      * @param medications The list of medications to be taken on the given day
      * @param layout The LinearLayout in which to place the CardView
      */
-    public void createDayOfWeekCards (String dayOfWeek, int day, ArrayList<Medication> medications, LinearLayout layout, DBHelper db, Context context)
+    public void createDayOfWeekCards(String dayOfWeek, int day, ArrayList<Medication> medications, LinearLayout layout, DBHelper db, Context context)
     {
         StandardCardView thisDayCard = new StandardCardView(context);
         TextView dayLabel = new TextView(context);
-        LinearLayout ll = new LinearLayout(context);
+        FragmentContainerView fragmentContainer = new FragmentContainerView(this);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        Fragment myMedsFrag = MedicationScheduleFragment.newInstance(
+                medications,
+                "Hello"
+        );
+        Bundle bundle = new Bundle();
+//        LinearLayout ll = new LinearLayout(context);
 
-        LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        ll.setLayoutParams(llParams);
-        ll.setOrientation(LinearLayout.VERTICAL);
-
+//        LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        ll.setLayoutParams(llParams);
+//        ll.setOrientation(LinearLayout.VERTICAL);
         LocalDate thisSunday = TimeFormatting.whenIsSunday(aDayThisWeek);
+        bundle.putSerializable(MEDICATIONS, medications);
+
+        thisDayCard.addView(fragmentContainer);
+
+        fragmentContainer.setId(day);
+
+        fragmentTransaction.add(day, myMedsFrag).commit();
 
         // Add day to top of card
         TextViewUtils.setTextViewFontAndPadding(dayLabel);
@@ -329,94 +349,96 @@ public class MainActivity extends AppCompatActivity
         String dayLabelString = dayOfWeek + " " + TimeFormatting.localDateToString(thisSunday.plusDays(day));
 
         dayLabel.setText(dayLabelString);
-        ll.addView(dayLabel);
+//        ll.addView(dayLabel);
 
         // Add medications
-        thisDayCard.addView(ll);
+//        thisDayCard.addView(ll);
 
-        for (Medication medication : medications)
-        {
-            for (LocalDateTime time : medication.getTimes())
-            {
-                if (time.toLocalDate().isEqual(thisSunday.plusDays(day)))
-                {
-                    CheckBox thisMedication = new CheckBox(ll.getContext());
-                    long medId = medication.getMedId();
-                    Pair<Long, LocalDateTime> tag;
-
-                    // Set Checkbox label
-                    String medName = medication.getMedName();
-                    String dosage = medication.getMedDosage() + " " + medication.getMedDosageUnits();
-                    String dosageTime = TimeFormatting.formatTimeForUser(time.getHour(), time.getMinute());
-
-                    String thisMedicationLabel = medName + " - " + dosage + " - " + dosageTime;
-                    thisMedication.setText(thisMedicationLabel);
-
-                    // Check database for this dosage, if not add it
-                    // if it is, get the DoseId
-                    long rowid = 0;
-
-                    if (!db.isInMedicationTracker(medication, time))
-                    {
-                        LocalDateTime startDate = medication.getStartDate();
-                        if (!time.isBefore(startDate))
-                        {
-                            rowid = db.addToMedicationTracker(medication, time);
-
-                            if (rowid == -1)
-                                Toast.makeText(context, "An error occurred when attempting to write data to database", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                    else
-                    {
-                        rowid = db.getDoseId(medId, TimeFormatting.localDateTimeToString(time));
-                    }
-
-                    tag = Pair.create(rowid, time);
-
-                    if (rowid > 0)
-                    {
-                        thisMedication.setTag(tag);
-
-                        if (db.getTaken(rowid))
-                            thisMedication.setChecked(true);
-
-                        thisMedication.setOnCheckedChangeListener((compoundButton, b) ->
-                        {
-                            Pair<Long, LocalDateTime> tvTag = (Pair<Long, LocalDateTime>) thisMedication.getTag();
-                            final Long doseId = tvTag.first;
-                            int timeBeforeDose = db.getTimeBeforeDose();
-
-                            if (LocalDateTime.now().isBefore(time.minusHours(timeBeforeDose)) && timeBeforeDose != -1)
-                            {
-                                thisMedication.setChecked(false);
-                                Toast.makeText(context,
-                                        "Cannot take medications more than "
-                                                + timeBeforeDose + " hours in advance",
-                                        Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-
-
-                            String now = TimeFormatting.localDateTimeToString(LocalDateTime.now());
-                            db.updateDoseStatus(doseId, now, thisMedication.isChecked());
-                        });
-
-                        ll.addView(thisMedication);
-                    }
-                }
-            }
-        }
-
-        if (ll.getChildCount() == 1)
-        {
-            TextView textView = new TextView(thisDayCard.getContext());
-            String noMed = "No medications for " + dayOfWeek;
-
-            TextViewUtils.setTextViewParams(textView, noMed, ll);
-        }
-        else
-            sortMedicationCheckBoxes(ll);
+//        for (Medication medication : medications)
+//        {
+//            for (LocalDateTime time : medication.getTimes())
+//            {
+//                if (time.toLocalDate().isEqual(thisSunday.plusDays(day)))
+//                {
+//                    CheckBox thisMedication = new CheckBox(ll.getContext());
+//                    long medId = medication.getMedId();
+//                    Pair<Long, LocalDateTime> tag;
+//
+//                    // Set Checkbox label
+//                    String medName = medication.getMedName();
+//                    String dosage = medication.getMedDosage() + " " + medication.getMedDosageUnits();
+//                    String dosageTime = TimeFormatting.formatTimeForUser(time.getHour(), time.getMinute());
+//
+//                    String thisMedicationLabel = medName + " - " + dosage + " - " + dosageTime;
+//                    thisMedication.setText(thisMedicationLabel);
+//
+//                    // Check database for this dosage, if not add it
+//                    // if it is, get the DoseId
+//                    long rowid = 0;
+//
+//                    if (!db.isInMedicationTracker(medication, time))
+//                    {
+//                        LocalDateTime startDate = medication.getStartDate();
+//                        if (!time.isBefore(startDate))
+//                        {
+//                            rowid = db.addToMedicationTracker(medication, time);
+//
+//                            if (rowid == -1)
+//                                Toast.makeText(context, "An error occurred when attempting to write data to database", Toast.LENGTH_LONG).show();
+//                        }
+//                    }
+//                    else
+//                    {
+//                        rowid = db.getDoseId(medId, TimeFormatting.localDateTimeToString(time));
+//                    }
+//
+//                    tag = Pair.create(rowid, time);
+//
+//                    if (rowid > 0)
+//                    {
+//                        thisMedication.setTag(tag);
+//
+//                        if (db.getTaken(rowid))
+//                            thisMedication.setChecked(true);
+//
+//                        thisMedication.setOnCheckedChangeListener((compoundButton, b) ->
+//                        {
+//                            Pair<Long, LocalDateTime> tvTag = (Pair<Long, LocalDateTime>) thisMedication.getTag();
+//                            final Long doseId = tvTag.first;
+//                            int timeBeforeDose = db.getTimeBeforeDose();
+//
+//                            if (LocalDateTime.now().isBefore(time.minusHours(timeBeforeDose)) && timeBeforeDose != -1)
+//                            {
+//                                thisMedication.setChecked(false);
+//                                Toast.makeText(context,
+//                                        "Cannot take medications more than "
+//                                                + timeBeforeDose + " hours in advanrowidce",
+//                                        Toast.LENGTH_SHORT).show();
+//                                return;
+//                            }
+//
+//
+//                            String now = TimeFormatting.localDateTimeToString(LocalDateTime.now());
+//                            db.updateDoseStatus(doseId, now, thisMedication.isChecked());
+//                        });
+//
+//                        ll.addView(thisMedication);
+//                    }
+//                }
+//            }
+//        }
+//
+//        if (ll.getChildCount() == 1)
+//        {
+//            TextView textView = new TextView(thisDayCard.getContext());
+//            String noMed = "No medications for " + dayOfWeek;
+//
+//            TextViewUtils.setTextViewParams(textView, noMed, ll);
+//        }
+//        else
+//        {
+//            sortMedicationCheckBoxes(ll);
+//        }
 
         layout.addView(thisDayCard);
     }
