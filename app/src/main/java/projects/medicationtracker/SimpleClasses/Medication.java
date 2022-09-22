@@ -1,10 +1,13 @@
 package projects.medicationtracker.SimpleClasses;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 
 import java.time.LocalDateTime;
 
-public class Medication implements Cloneable
+public class Medication implements Cloneable, Parcelable
 {
 
     private String medName;
@@ -43,6 +46,28 @@ public class Medication implements Cloneable
         medDosage = dosage;
         alias = medAlias;
     }
+
+    protected Medication(Parcel in) {
+        medName = in.readString();
+        medDosageUnits = in.readString();
+        patientName = in.readString();
+        alias = in.readString();
+        medId = in.readLong();
+        medFrequency = in.readLong();
+        medDosage = in.readInt();
+    }
+
+    public static final Creator<Medication> CREATOR = new Creator<Medication>() {
+        @Override
+        public Medication createFromParcel(Parcel in) {
+            return new Medication(in);
+        }
+
+        @Override
+        public Medication[] newArray(int size) {
+            return new Medication[size];
+        }
+    };
 
     /**
      * Returns Medication ID
@@ -172,5 +197,21 @@ public class Medication implements Cloneable
             throw new RuntimeException(e);
         }
         return clone;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(medName);
+        parcel.writeString(medDosageUnits);
+        parcel.writeString(patientName);
+        parcel.writeString(alias);
+        parcel.writeLong(medId);
+        parcel.writeLong(medFrequency);
+        parcel.writeInt(medDosage);
     }
 }

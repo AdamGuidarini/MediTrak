@@ -1,5 +1,7 @@
 package projects.medicationtracker.Helpers;
 
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -12,7 +14,7 @@ public class TextViewUtils
      * @param text Text to display
      * @param parent The view to will hold the TextView
      **************************************************************************/
-    public static void setTextViewParams(TextView textView, String text, LinearLayout parent)
+    public static void setTextViewParams(TextView textView, String text, ViewGroup parent)
     {
         textView.setText(text);
 

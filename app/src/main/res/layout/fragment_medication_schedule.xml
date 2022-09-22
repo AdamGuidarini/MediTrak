@@ -14,8 +14,7 @@
             android:id="@+id/dateLabel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            style="@style/standardTextView"
-            android:text="hello"/>
+            style="@style/standardTextView"/>
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/medicationSchedule"
