@@ -1,23 +1,25 @@
 package projects.medicationtracker;
 
-import android.content.Context;
+import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DAY_IN_CURRENT_WEEK;
+import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DAY_NUMBER;
+import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DAY_OF_WEEK;
+import static projects.medicationtracker.Fragments.MedicationScheduleFragment.MEDICATIONS;
+
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.util.Pair;
+import androidx.fragment.app.FragmentContainerView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,9 +27,9 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import projects.medicationtracker.Fragments.MedicationScheduleFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
-import projects.medicationtracker.Helpers.TextViewUtils;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.SimpleClasses.Medication;
 import projects.medicationtracker.Views.StandardCardView;
@@ -144,7 +146,7 @@ public class MainActivity extends AppCompatActivity
         {
             patientNames.setVisibility(View.GONE);
 
-            createMedicationSchedule(medications, names.get(0), db);
+            createMedicationSchedule(medications, names.get(0));
         }
         else
         {
@@ -182,7 +184,7 @@ public class MainActivity extends AppCompatActivity
                     if (name.equals("You"))
                         name = "ME!";
 
-                    createMedicationSchedule(medications, name, db);
+                    createMedicationSchedule(medications, name);
                 }
 
                 @Override
@@ -208,19 +210,26 @@ public class MainActivity extends AppCompatActivity
             LocalDateTime[] timeArr;
 
             // If a medication is taken once per day
-            if (medications.get(i).getTimes().length == 1 && medications.get(i).getMedFrequency() == 1440)
+            if (
+                    medications.get(i).getTimes().length == 1
+                    && medications.get(i).getMedFrequency() == 1440
+            )
             {
                 // if the Medication is taken once per day just add the start of each date to
                 timeArr = new LocalDateTime[7];
                 LocalTime localtime = medications.get(i).getTimes()[0].toLocalTime();
 
                 for (int j = 0; j < 7; j++)
-                    timeArr[j] = LocalDateTime.of(LocalDate.from(thisSunday.plusDays(j)), localtime);
+                    timeArr[j] =
+                            LocalDateTime.of(LocalDate.from(thisSunday.plusDays(j)), localtime);
 
                 medications.get(i).setTimes(timeArr);
             }
             // If a medication is taken multiple times per day
-            else if (medications.get(i).getTimes().length > 1 && medications.get(i).getMedFrequency() == 1440)
+            else if (
+                    medications.get(i).getTimes().length > 1
+                    && medications.get(i).getMedFrequency() == 1440
+            )
             {
                 int numberOfTimes = medications.get(i).getTimes().length;
                 int index = 0;
@@ -235,7 +244,10 @@ public class MainActivity extends AppCompatActivity
                 {
                     for (int y = 0; y < numberOfTimes; y++)
                     {
-                        timeArr[index] = LocalDateTime.of(LocalDate.from(thisSunday.plusDays(j)), drugTimes[y]);
+                        timeArr[index] =
+                                LocalDateTime.of(
+                                        LocalDate.from(thisSunday.plusDays(j)), drugTimes[y]
+                                );
                         index++;
                     }
                 }
@@ -277,9 +289,8 @@ public class MainActivity extends AppCompatActivity
      * @param medications An ArrayList of Medications. Will be searched for
      *                    Medications where patientName equals name passed to method.
      * @param name The name of the patient whose Medications should be displayed
-     * @param db The database from which to pull data
      */
-    public void createMedicationSchedule(ArrayList<Medication> medications, String name, DBHelper db)
+    public void createMedicationSchedule(ArrayList<Medication> medications, String name)
     {
         ArrayList<Medication> medicationsForThisPatient = new ArrayList<>();
 
@@ -289,17 +300,25 @@ public class MainActivity extends AppCompatActivity
                 medicationsForThisPatient.add(medications.get(i));
         }
 
-        String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+        String[] days =
+                {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
         for (int ii = 0; ii < 7; ii++)
-            createDayOfWeekCards(days[ii], ii, medicationsForThisPatient, scheduleLayout, db, scheduleLayout.getContext());
+        {
+            createDayOfWeekCards(
+                    days[ii],
+                    ii,
+                    medicationsForThisPatient,
+                    scheduleLayout
+            );
+        }
     }
 
     /**
      * Creates a CardView for each day of the week containing information
      * on the medications to be taken that day
      *
-     * @param dayOfWeek The day of the week represented by the CardView.
+     * @param dayOfWeek String for the name of the day
      * @param day The number representing the day of the week
      *            - Sunday = 0
      *            - Monday = 1
@@ -311,152 +330,31 @@ public class MainActivity extends AppCompatActivity
      * @param medications The list of medications to be taken on the given day
      * @param layout The LinearLayout in which to place the CardView
      */
-    public void createDayOfWeekCards (String dayOfWeek, int day, ArrayList<Medication> medications, LinearLayout layout, DBHelper db, Context context)
+    public void createDayOfWeekCards(
+            String dayOfWeek,
+            int day,
+            ArrayList<Medication> medications,
+            LinearLayout layout
+    )
     {
-        StandardCardView thisDayCard = new StandardCardView(context);
-        TextView dayLabel = new TextView(context);
-        LinearLayout ll = new LinearLayout(context);
+        StandardCardView thisDayCard = new StandardCardView(this);
+        FragmentContainerView fragmentContainer = new FragmentContainerView(this);
 
-        LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        ll.setLayoutParams(llParams);
-        ll.setOrientation(LinearLayout.VERTICAL);
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(MEDICATIONS, medications);
+        bundle.putString(DAY_OF_WEEK, dayOfWeek);
+        bundle.putLong(DAY_IN_CURRENT_WEEK, aDayThisWeek.toEpochDay());
+        bundle.putInt(DAY_NUMBER, day);
 
-        LocalDate thisSunday = TimeFormatting.whenIsSunday(aDayThisWeek);
+        thisDayCard.addView(fragmentContainer);
 
-        // Add day to top of card
-        TextViewUtils.setTextViewFontAndPadding(dayLabel);
-
-        String dayLabelString = dayOfWeek + " " + TimeFormatting.localDateToString(thisSunday.plusDays(day));
-
-        dayLabel.setText(dayLabelString);
-        ll.addView(dayLabel);
-
-        // Add medications
-        thisDayCard.addView(ll);
-
-        for (Medication medication : medications)
-        {
-            for (LocalDateTime time : medication.getTimes())
-            {
-                if (time.toLocalDate().isEqual(thisSunday.plusDays(day)))
-                {
-                    CheckBox thisMedication = new CheckBox(ll.getContext());
-                    long medId = medication.getMedId();
-                    Pair<Long, LocalDateTime> tag;
-
-                    // Set Checkbox label
-                    String medName = medication.getMedName();
-                    String dosage = medication.getMedDosage() + " " + medication.getMedDosageUnits();
-                    String dosageTime = TimeFormatting.formatTimeForUser(time.getHour(), time.getMinute());
-
-                    String thisMedicationLabel = medName + " - " + dosage + " - " + dosageTime;
-                    thisMedication.setText(thisMedicationLabel);
-
-                    // Check database for this dosage, if not add it
-                    // if it is, get the DoseId
-                    long rowid = 0;
-
-                    if (!db.isInMedicationTracker(medication, time))
-                    {
-                        LocalDateTime startDate = medication.getStartDate();
-                        if (!time.isBefore(startDate))
-                        {
-                            rowid = db.addToMedicationTracker(medication, time);
-
-                            if (rowid == -1)
-                                Toast.makeText(context, "An error occurred when attempting to write data to database", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                    else
-                    {
-                        rowid = db.getDoseId(medId, TimeFormatting.localDateTimeToString(time));
-                    }
-
-                    tag = Pair.create(rowid, time);
-
-                    if (rowid > 0)
-                    {
-                        thisMedication.setTag(tag);
-
-                        if (db.getTaken(rowid))
-                            thisMedication.setChecked(true);
-
-                        thisMedication.setOnCheckedChangeListener((compoundButton, b) ->
-                        {
-                            Pair<Long, LocalDateTime> tvTag = (Pair<Long, LocalDateTime>) thisMedication.getTag();
-                            final Long doseId = tvTag.first;
-                            int timeBeforeDose = db.getTimeBeforeDose();
-
-                            if (LocalDateTime.now().isBefore(time.minusHours(timeBeforeDose)) && timeBeforeDose != -1)
-                            {
-                                thisMedication.setChecked(false);
-                                Toast.makeText(context,
-                                        "Cannot take medications more than "
-                                                + timeBeforeDose + " hours in advance",
-                                        Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-
-
-                            String now = TimeFormatting.localDateTimeToString(LocalDateTime.now());
-                            db.updateDoseStatus(doseId, now, thisMedication.isChecked());
-                        });
-
-                        ll.addView(thisMedication);
-                    }
-                }
-            }
-        }
-
-        if (ll.getChildCount() == 1)
-        {
-            TextView textView = new TextView(thisDayCard.getContext());
-            String noMed = "No medications for " + dayOfWeek;
-
-            TextViewUtils.setTextViewParams(textView, noMed, ll);
-        }
-        else
-            sortMedicationCheckBoxes(ll);
-
+        fragmentContainer.setId(day);
         layout.addView(thisDayCard);
-    }
 
-    /**
-     * Sorts CheckBoxes in medication schedule.
-     * @param parentLayout Layout containing CheckBoxes to sort.
-     */
-    public void sortMedicationCheckBoxes(LinearLayout parentLayout)
-    {
-        int count = parentLayout.getChildCount();
-        short firstCheckboxIndex = 1;
-
-        for (int i = firstCheckboxIndex; i < count; i++)
-        {
-            for (int j = firstCheckboxIndex + 1; j < (count - i); j++)
-            {
-                CheckBox child1 = (CheckBox) parentLayout.getChildAt(j - 1);
-                CheckBox child2 = (CheckBox) parentLayout.getChildAt(j);
-
-                Pair<Long, LocalDateTime> child1Pair = (Pair<Long, LocalDateTime>) child1.getTag();
-                Pair<Long, LocalDateTime> child2Pair = (Pair<Long, LocalDateTime>) child2.getTag();
-
-                LocalDateTime child1Time = child1Pair.second;
-                LocalDateTime child2Time = child2Pair.second;
-
-                if (child1Time != null && child1Time.isAfter(child2Time))
-                {
-                    CheckBox temp = new CheckBox(parentLayout.getContext());
-                    temp.setText(child1.getText());
-                    temp.setTag(child1.getTag());
-
-                    child1.setText(child2.getText());
-                    child1.setTag(child2.getTag());
-
-                    child2.setText(temp.getText());
-                    child2.setTag(temp.getTag());
-                }
-            }
-        }
+        getSupportFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .add(day, MedicationScheduleFragment.class, bundle)
+                .commit();
     }
 
     /**
@@ -477,9 +375,9 @@ public class MainActivity extends AppCompatActivity
             }
             else
             {
-                for (int i = 0; i < medicationTimeIds.length; i++)
+                for (long medicationTimeId : medicationTimeIds)
                 {
-                    NotificationHelper.deletePendingNotification(medicationTimeIds[i], this);
+                    NotificationHelper.deletePendingNotification(medicationTimeId, this);
                 }
             }
         }
@@ -504,7 +402,10 @@ public class MainActivity extends AppCompatActivity
                     NotificationHelper.scheduleNotification(
                             getApplicationContext(),
                             medication,
-                            LocalDateTime.of(medication.getStartDate().toLocalDate(), medication.getTimes()[i].toLocalTime()),
+                            LocalDateTime.of(
+                                    medication.getStartDate().toLocalDate(),
+                                    medication.getTimes()[i].toLocalTime()
+                            ),
                             medicationTimeIds[i] * -1
                     );
                 }
@@ -512,6 +413,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Navigates one week back from the currently viewed week
+     */
     public void onLeftClick(View view)
     {
         aDayThisWeek = aDayThisWeek.minusWeeks(1);
@@ -521,6 +425,9 @@ public class MainActivity extends AppCompatActivity
         createMainActivityViews();
     }
 
+    /**
+     * Navigates to the current week
+     */
     public void onTodayClick(View view)
     {
         aDayThisWeek = LocalDate.now();
@@ -530,6 +437,9 @@ public class MainActivity extends AppCompatActivity
         createMainActivityViews();
     }
 
+    /**
+     * Navigates one week forward from the currently viewed week
+     */
     public void onRightClick(View view)
     {
         aDayThisWeek = aDayThisWeek.plusWeeks(1);
