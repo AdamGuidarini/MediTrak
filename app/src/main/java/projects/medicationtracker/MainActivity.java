@@ -5,28 +5,21 @@ import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DA
 import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DAY_OF_WEEK;
 import static projects.medicationtracker.Fragments.MedicationScheduleFragment.MEDICATIONS;
 
-import android.content.Context;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.util.Pair;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
-import androidx.fragment.app.FragmentTransaction;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,10 +28,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import projects.medicationtracker.Fragments.MedicationScheduleFragment;
-import projects.medicationtracker.Fragments.MyMedicationsFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
-import projects.medicationtracker.Helpers.TextViewUtils;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.SimpleClasses.Medication;
 import projects.medicationtracker.Views.StandardCardView;
@@ -219,19 +210,26 @@ public class MainActivity extends AppCompatActivity
             LocalDateTime[] timeArr;
 
             // If a medication is taken once per day
-            if (medications.get(i).getTimes().length == 1 && medications.get(i).getMedFrequency() == 1440)
+            if (
+                    medications.get(i).getTimes().length == 1
+                    && medications.get(i).getMedFrequency() == 1440
+            )
             {
                 // if the Medication is taken once per day just add the start of each date to
                 timeArr = new LocalDateTime[7];
                 LocalTime localtime = medications.get(i).getTimes()[0].toLocalTime();
 
                 for (int j = 0; j < 7; j++)
-                    timeArr[j] = LocalDateTime.of(LocalDate.from(thisSunday.plusDays(j)), localtime);
+                    timeArr[j] =
+                            LocalDateTime.of(LocalDate.from(thisSunday.plusDays(j)), localtime);
 
                 medications.get(i).setTimes(timeArr);
             }
             // If a medication is taken multiple times per day
-            else if (medications.get(i).getTimes().length > 1 && medications.get(i).getMedFrequency() == 1440)
+            else if (
+                    medications.get(i).getTimes().length > 1
+                    && medications.get(i).getMedFrequency() == 1440
+            )
             {
                 int numberOfTimes = medications.get(i).getTimes().length;
                 int index = 0;
@@ -246,7 +244,10 @@ public class MainActivity extends AppCompatActivity
                 {
                     for (int y = 0; y < numberOfTimes; y++)
                     {
-                        timeArr[index] = LocalDateTime.of(LocalDate.from(thisSunday.plusDays(j)), drugTimes[y]);
+                        timeArr[index] =
+                                LocalDateTime.of(
+                                        LocalDate.from(thisSunday.plusDays(j)), drugTimes[y]
+                                );
                         index++;
                     }
                 }
@@ -299,16 +300,25 @@ public class MainActivity extends AppCompatActivity
                 medicationsForThisPatient.add(medications.get(i));
         }
 
-        String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+        String[] days =
+                {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
         for (int ii = 0; ii < 7; ii++)
-            createDayOfWeekCards(days[ii], ii, medicationsForThisPatient, scheduleLayout, scheduleLayout.getContext());
+        {
+            createDayOfWeekCards(
+                    days[ii],
+                    ii,
+                    medicationsForThisPatient,
+                    scheduleLayout
+            );
+        }
     }
 
     /**
      * Creates a CardView for each day of the week containing information
      * on the medications to be taken that day
      *
+     * @param dayOfWeek String for the name of the day
      * @param day The number representing the day of the week
      *            - Sunday = 0
      *            - Monday = 1
@@ -320,9 +330,14 @@ public class MainActivity extends AppCompatActivity
      * @param medications The list of medications to be taken on the given day
      * @param layout The LinearLayout in which to place the CardView
      */
-    public void createDayOfWeekCards(String dayOfWeek, int day, ArrayList<Medication> medications, LinearLayout layout, Context context)
+    public void createDayOfWeekCards(
+            String dayOfWeek,
+            int day,
+            ArrayList<Medication> medications,
+            LinearLayout layout
+    )
     {
-        StandardCardView thisDayCard = new StandardCardView(context);
+        StandardCardView thisDayCard = new StandardCardView(this);
         FragmentContainerView fragmentContainer = new FragmentContainerView(this);
 
         Bundle bundle = new Bundle();
@@ -387,7 +402,10 @@ public class MainActivity extends AppCompatActivity
                     NotificationHelper.scheduleNotification(
                             getApplicationContext(),
                             medication,
-                            LocalDateTime.of(medication.getStartDate().toLocalDate(), medication.getTimes()[i].toLocalTime()),
+                            LocalDateTime.of(
+                                    medication.getStartDate().toLocalDate(),
+                                    medication.getTimes()[i].toLocalTime()
+                            ),
                             medicationTimeIds[i] * -1
                     );
                 }
@@ -395,6 +413,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Navigates one week back from the currently viewed week
+     */
     public void onLeftClick(View view)
     {
         aDayThisWeek = aDayThisWeek.minusWeeks(1);
@@ -404,6 +425,9 @@ public class MainActivity extends AppCompatActivity
         createMainActivityViews();
     }
 
+    /**
+     * Navigates to the current week
+     */
     public void onTodayClick(View view)
     {
         aDayThisWeek = LocalDate.now();
@@ -413,6 +437,9 @@ public class MainActivity extends AppCompatActivity
         createMainActivityViews();
     }
 
+    /**
+     * Navigates one week forward from the currently viewed week
+     */
     public void onRightClick(View view)
     {
         aDayThisWeek = aDayThisWeek.plusWeeks(1);

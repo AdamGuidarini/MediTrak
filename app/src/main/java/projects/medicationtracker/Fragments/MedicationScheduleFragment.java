@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +54,10 @@ public class MedicationScheduleFragment extends Fragment
      * this fragment using the provided parameters.
      *
      * @param medications Medications to display in schedule.
+     * @param day The name of the day this fragment will display
+     * @param aDayThisWeek A LocalDate in the week the user is viewing
+     * @param dayNum the number of the day in the week being viewed (0 Sunday - 6 Saturday)
+     *
      * @return A new instance of fragment MedicationScheduleFragment.
      */
     public static MedicationScheduleFragment newInstance(
@@ -83,6 +86,10 @@ public class MedicationScheduleFragment extends Fragment
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * Builds an instance of the fragment
+     * @return The fragment inflated
+     */
     @Override
     public View onCreateView(
             LayoutInflater inflater,
@@ -107,9 +114,13 @@ public class MedicationScheduleFragment extends Fragment
         return rootView;
     }
 
+    /**
+     * Creates a list of the medications for the current given day in places them in the fragment
+     * @param rootView The main view of the fragment
+     */
     private void createSchedule(View rootView)
     {
-        LinearLayoutCompat checkBoxHolder = rootView.findViewById(R.id.dailySchedule);
+        LinearLayoutCompat checkBoxHolder = rootView.findViewById(R.id.medicationSchedule);
         TextView dayLabel = rootView.findViewById(R.id.dateLabel);
         LocalDate thisSunday = TimeFormatting.whenIsSunday(dayInCurrentWeek);
         DBHelper db = new DBHelper(rootView.getContext());
@@ -224,7 +235,7 @@ public class MedicationScheduleFragment extends Fragment
      * Sorts CheckBoxes in medication schedule.
      * @param parentLayout Layout containing CheckBoxes to sort.
      */
-    public void sortMedicationCheckBoxes(LinearLayoutCompat parentLayout)
+    private void sortMedicationCheckBoxes(LinearLayoutCompat parentLayout)
     {
         int count = parentLayout.getChildCount();
         short firstCheckboxIndex = 1;
