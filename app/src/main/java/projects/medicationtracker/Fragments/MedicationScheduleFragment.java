@@ -136,7 +136,7 @@ public class MedicationScheduleFragment extends Fragment
         {
             for (LocalDateTime time : medication.getTimes())
             {
-                if (time.toLocalDate().isEqual(thisSunday.plusDays(dayNumber)))
+                if (time.toLocalDate().isEqual(thisSunday.plusDays(dayNumber)) && !time.isBefore(medication.getStartDate()))
                 {
                     CheckBox thisMedication = new CheckBox(rootView.getContext());
                     long medId = medication.getMedId();
@@ -154,66 +154,60 @@ public class MedicationScheduleFragment extends Fragment
 
                     // Check database for this dosage, if not add it
                     // if it is, get the DoseId
-                    long rowid = 0;
-
-                    if (!db.isInMedicationTracker(medication, time))
-                    {
-                        LocalDateTime startDate = medication.getStartDate();
-                        if (!time.isBefore(startDate))
-                        {
-                            rowid = db.addToMedicationTracker(medication, time);
-
-                            if (rowid == -1)
-                                Toast.makeText(
-                                        rootView.getContext(),
-                                        "An error occurred when attempting to write data to database",
-                                        Toast.LENGTH_LONG
-                                ).show();
-                        }
-                    }
-                    else
-                    {
-                        rowid = db.getDoseId(medId, TimeFormatting.localDateTimeToString(time));
-                    }
+                    long rowid = db.getDoseId(medId, TimeFormatting.localDateTimeToString(time));
 
                     tag = Pair.create(rowid, time);
 
-                    if (rowid > 0)
+                    thisMedication.setTag(tag);
+
+                    if (rowid != -1 && db.getTaken(rowid))
+                        thisMedication.setChecked(true);
+
+                    thisMedication.setOnCheckedChangeListener((compoundButton, b) ->
                     {
-                        thisMedication.setTag(tag);
+                        Pair<Long, LocalDateTime> tvTag =
+                                (Pair<Long, LocalDateTime>) thisMedication.getTag();
+                        final Long doseId = tvTag.first;
+                        int timeBeforeDose = db.getTimeBeforeDose();
 
-                        if (db.getTaken(rowid))
-                            thisMedication.setChecked(true);
-
-                        thisMedication.setOnCheckedChangeListener((compoundButton, b) ->
+                        if (
+                                LocalDateTime.now().isBefore(time.minusHours(timeBeforeDose))
+                                && timeBeforeDose != -1
+                        )
                         {
-                            Pair<Long, LocalDateTime> tvTag =
-                                    (Pair<Long, LocalDateTime>) thisMedication.getTag();
-                            final Long doseId = tvTag.first;
-                            int timeBeforeDose = db.getTimeBeforeDose();
-
-                            if (
-                                    LocalDateTime.now().isBefore(time.minusHours(timeBeforeDose))
-                                    && timeBeforeDose != -1
-                            )
-                            {
-                                thisMedication.setChecked(false);
-                                Toast.makeText(
-                                        rootView.getContext(),
-                                        "Cannot take medications more than "
-                                                + timeBeforeDose + " hours in advance",
-                                        Toast.LENGTH_SHORT
-                                ).show();
-                                return;
-                            }
+                            thisMedication.setChecked(false);
+                            Toast.makeText(
+                                    rootView.getContext(),
+                                    "Cannot take medications more than "
+                                            + timeBeforeDose + " hours in advance",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                            return;
+                        }
 
 
-                            String now = TimeFormatting.localDateTimeToString(LocalDateTime.now());
+                        String now = TimeFormatting.localDateTimeToString(LocalDateTime.now());
+
+                        if (doseId != -1)
+                        {
                             db.updateDoseStatus(doseId, now, thisMedication.isChecked());
-                        });
+                        }
+                        else
+                        {
+                            long id = db.addToMedicationTracker(
+                                    medication,
+                                    tvTag.second
+                            );
 
-                        checkBoxHolder.addView(thisMedication);
-                    }
+                            db.updateDoseStatus(
+                                    id,
+                                    TimeFormatting.localDateTimeToString(LocalDateTime.now()),
+                                    true
+                            );
+                        }
+                    });
+
+                    checkBoxHolder.addView(thisMedication);
                 }
             }
         }

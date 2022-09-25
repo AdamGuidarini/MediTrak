@@ -1,5 +1,6 @@
 package projects.medicationtracker.Receivers;
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -71,6 +72,8 @@ public class EventReceiver extends BroadcastReceiver
         DBHelper db = new DBHelper(context);
         Medication med;
         LocalDateTime doseTime = LocalDateTime.parse(doseTimeString);
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (notificationId == 0 )
         {
@@ -87,8 +90,12 @@ public class EventReceiver extends BroadcastReceiver
 
         long doseId = db.isInMedicationTracker(med, doseTime) ?
                 db.getDoseId(med.getMedId(), TimeFormatting.localDateTimeToString(doseTime)) :
-                db.addDose(med.getMedId(), TimeFormatting.localDateTimeToString(doseTime));
+                db.addToMedicationTracker(med, doseTime);
 
-        db.updateDoseStatus(doseId, TimeFormatting.localDateTimeToString(LocalDateTime.now()), true);
+        db.updateDoseStatus(
+                doseId, TimeFormatting.localDateTimeToString(LocalDateTime.now()), true
+        );
+
+        notificationManager.cancel((int) notificationId);
     }
 }
