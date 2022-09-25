@@ -75,7 +75,7 @@ public class NotificationService extends IntentService
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
                 .setAutoCancel(true)
                 .setGroup(GROUP_KEY)
-                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
+                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
                 .addAction(
                         android.R.drawable.ic_dialog_info,
                         "Mark as Taken",

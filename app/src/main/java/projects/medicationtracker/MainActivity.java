@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentContainerView;
@@ -348,12 +349,12 @@ public class MainActivity extends AppCompatActivity
 
         thisDayCard.addView(fragmentContainer);
 
-        fragmentContainer.setId(day);
+        fragmentContainer.setId(day == 0 ? 7 : day);
         layout.addView(thisDayCard);
 
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .add(day, MedicationScheduleFragment.class, bundle)
+                .add(day == 0 ? 7 : day, MedicationScheduleFragment.class, bundle)
                 .commit();
     }
 
