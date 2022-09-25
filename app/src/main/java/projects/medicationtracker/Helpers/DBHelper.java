@@ -640,6 +640,24 @@ public class DBHelper extends SQLiteOpenHelper
         return rowId;
     }
 
+    public long getMedicationIdFromTimeId(long timeId)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        long rowId;
+        String query =
+                "SELECT " + MED_ID + " FROM " + MEDICATION_TIMES
+                + " WHERE " + TIME_ID + " = " + timeId;
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        cursor.moveToFirst();
+
+        rowId = Integer.parseInt(cursor.getString(cursor.getColumnIndex(DOSE_ID)));
+        cursor.close();
+
+        return rowId;
+    }
+
     /**
      * Status of entry in MedicationTracker
      * @param doseId ID of dose in table
@@ -663,11 +681,11 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Updates status of dose
-     * @param id ID of Medication
+     * @param doseId ID of dose
      * @param timeTaken Time of dose
      * @param status Status of whether dose has been taken or not
      **************************************************************************/
-    public void updateDoseStatus(long id, String timeTaken, boolean status)
+    public void updateDoseStatus(long doseId, String timeTaken, boolean status)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues newValues = new ContentValues();
@@ -676,7 +694,7 @@ public class DBHelper extends SQLiteOpenHelper
         newValues.put(TAKEN, bool);
         newValues.put(TIME_TAKEN, timeTaken);
 
-        db.update(MEDICATION_TRACKER_TABLE, newValues, DOSE_ID + "=?", new String[]{String.valueOf(id)});
+        db.update(MEDICATION_TRACKER_TABLE, newValues, DOSE_ID + "=?", new String[]{String.valueOf(doseId)});
     }
 
     /**
