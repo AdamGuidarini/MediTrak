@@ -74,17 +74,9 @@ public class NotificationHelper
         if (!medication.getAlias().isEmpty())
             medicationName = medication.getAlias();
 
-        if (patientName.equals("ME!"))
-        {
-            if (medicationName.equalsIgnoreCase("vitamin d"))
-                // Inside joke with a potential tested who repeatedly asked me
-                // "did you take your vitamin D?" after I started taking it.
-                message = "Did you take your Vitamin D?";
-            else
-                message = "It's time to take your " + medicationName;
-        }
-        else
-            message = "It's time for " + patientName + "'s " + medicationName;
+        message = patientName.equals("ME!") ?
+            "It's time to take your " + medicationName :
+            "It's time for " + patientName + "'s " + medicationName;
 
         return message;
     }

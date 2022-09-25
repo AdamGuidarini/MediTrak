@@ -3,6 +3,7 @@ package projects.medicationtracker.Receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,6 +12,8 @@ import java.util.ArrayList;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
+import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.Services.NotificationService;
 import projects.medicationtracker.SimpleClasses.Medication;
 
 public class EventReceiver extends BroadcastReceiver
@@ -20,6 +23,17 @@ public class EventReceiver extends BroadcastReceiver
     {
         final DBHelper db = new DBHelper(context);
         ArrayList<Medication> medications = db.getMedications();
+
+        if (intent.getAction().equals(NotificationService.MARK_AS_TAKEN_ACTION))
+        {
+            markDoseTaken(
+                    context,
+                    intent.getLongExtra(NotificationReceiver.NOTIFICATION_ID, 0),
+                    intent.getStringExtra(NotificationHelper.DOSE_TIME)
+            );
+
+            return;
+        }
 
         for (final Medication medication : medications)
         {
@@ -50,5 +64,31 @@ public class EventReceiver extends BroadcastReceiver
                     notificationId
             );
         }
+    }
+
+    private void markDoseTaken(Context context, long notificationId, String doseTimeString)
+    {
+        DBHelper db = new DBHelper(context);
+        Medication med;
+        LocalDateTime doseTime = LocalDateTime.parse(doseTimeString);
+
+        if (notificationId == 0 )
+        {
+            Toast.makeText(
+                    context, "Medication could not be determined", Toast.LENGTH_LONG
+            ).show();
+
+            return;
+        }
+
+        med = notificationId > 0 ?
+                db.getMedication(notificationId) :
+                db.getMedication(db.getMedicationIdFromTimeId(notificationId * -1));
+
+        long doseId = db.isInMedicationTracker(med, doseTime) ?
+                db.getDoseId(med.getMedId(), TimeFormatting.localDateTimeToString(doseTime)) :
+                db.addDose(med.getMedId(), TimeFormatting.localDateTimeToString(doseTime));
+
+        db.updateDoseStatus(doseId, TimeFormatting.localDateTimeToString(LocalDateTime.now()), true);
     }
 }

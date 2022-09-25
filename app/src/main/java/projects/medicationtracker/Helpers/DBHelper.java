@@ -230,7 +230,9 @@ public class DBHelper extends SQLiteOpenHelper
     public ArrayList<String> getPatients()
     {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor result = db.rawQuery("SELECT DISTINCT " + PATIENT_NAME + " FROM " + MEDICATION_TABLE, null);
+        Cursor result = db.rawQuery(
+                "SELECT DISTINCT " + PATIENT_NAME + " FROM " + MEDICATION_TABLE, null
+        );
 
         ArrayList<String> patients = new ArrayList<>();
 
@@ -621,7 +623,7 @@ public class DBHelper extends SQLiteOpenHelper
      * Get ID of dose
      * @param medId ID of Medication
      * @param doseTime Time of dose
-     * @return rowid of match found in MedicationTracker table
+     * @return Dose ID of match found in MedicationTracker table
      **************************************************************************/
     public long getDoseId (long medId, String doseTime)
     {
@@ -629,6 +631,24 @@ public class DBHelper extends SQLiteOpenHelper
         long rowId;
         String query = "SELECT " + DOSE_ID + " FROM " + MEDICATION_TRACKER_TABLE + " WHERE "
                 + MED_ID + "=" + medId + " AND " + DOSE_TIME + "=\"" + doseTime + "\"";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        cursor.moveToFirst();
+
+        rowId = Integer.parseInt(cursor.getString(cursor.getColumnIndex(DOSE_ID)));
+        cursor.close();
+
+        return rowId;
+    }
+
+    public long getMedicationIdFromTimeId(long timeId)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        long rowId;
+        String query =
+                "SELECT " + MED_ID + " FROM " + MEDICATION_TIMES
+                + " WHERE " + TIME_ID + " = " + timeId;
 
         Cursor cursor = db.rawQuery(query, null);
 
@@ -663,11 +683,11 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Updates status of dose
-     * @param id ID of Medication
+     * @param doseId ID of dose
      * @param timeTaken Time of dose
      * @param status Status of whether dose has been taken or not
      **************************************************************************/
-    public void updateDoseStatus(long id, String timeTaken, boolean status)
+    public void updateDoseStatus(long doseId, String timeTaken, boolean status)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues newValues = new ContentValues();
@@ -676,7 +696,7 @@ public class DBHelper extends SQLiteOpenHelper
         newValues.put(TAKEN, bool);
         newValues.put(TIME_TAKEN, timeTaken);
 
-        db.update(MEDICATION_TRACKER_TABLE, newValues, DOSE_ID + "=?", new String[]{String.valueOf(id)});
+        db.update(MEDICATION_TRACKER_TABLE, newValues, DOSE_ID + "=?", new String[]{String.valueOf(doseId)});
     }
 
     /**
