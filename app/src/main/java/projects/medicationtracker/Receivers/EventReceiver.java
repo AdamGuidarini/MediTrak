@@ -85,12 +85,10 @@ public class EventReceiver extends BroadcastReceiver
                 db.getMedication(notificationId) :
                 db.getMedication(db.getMedicationIdFromTimeId(notificationId * -1));
 
-
         long doseId = db.isInMedicationTracker(med, doseTime) ?
                 db.getDoseId(med.getMedId(), TimeFormatting.localDateTimeToString(doseTime)) :
                 db.addDose(med.getMedId(), TimeFormatting.localDateTimeToString(doseTime));
 
         db.updateDoseStatus(doseId, TimeFormatting.localDateTimeToString(LocalDateTime.now()), true);
-
     }
 }

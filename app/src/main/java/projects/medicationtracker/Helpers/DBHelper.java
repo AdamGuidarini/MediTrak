@@ -230,7 +230,9 @@ public class DBHelper extends SQLiteOpenHelper
     public ArrayList<String> getPatients()
     {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor result = db.rawQuery("SELECT DISTINCT " + PATIENT_NAME + " FROM " + MEDICATION_TABLE, null);
+        Cursor result = db.rawQuery(
+                "SELECT DISTINCT " + PATIENT_NAME + " FROM " + MEDICATION_TABLE, null
+        );
 
         ArrayList<String> patients = new ArrayList<>();
 
@@ -621,7 +623,7 @@ public class DBHelper extends SQLiteOpenHelper
      * Get ID of dose
      * @param medId ID of Medication
      * @param doseTime Time of dose
-     * @return rowid of match found in MedicationTracker table
+     * @return Dose ID of match found in MedicationTracker table
      **************************************************************************/
     public long getDoseId (long medId, String doseTime)
     {
