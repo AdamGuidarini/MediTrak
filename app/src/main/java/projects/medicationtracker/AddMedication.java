@@ -405,7 +405,7 @@ public class AddMedication extends AppCompatActivity
 
         for (int i = 0; i < times.size(); i++)
         {
-            if (helper.addDose(rowid, times.get(i)) == -1)
+            if (helper.addDoseTime(rowid, times.get(i)) == -1)
             {
                 Toast.makeText(this, "An error Occurred", Toast.LENGTH_SHORT).show();
                 return;

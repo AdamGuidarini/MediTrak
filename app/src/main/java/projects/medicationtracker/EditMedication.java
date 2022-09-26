@@ -705,7 +705,9 @@ public class EditMedication extends AppCompatActivity
         }
         else
         {
-            NotificationHelper.scheduleNotification(getApplicationContext(), medication, medication.getTimes()[0], medication.getMedId());
+            NotificationHelper.scheduleNotification(
+                    getApplicationContext(), medication, medication.getTimes()[0], medication.getMedId()
+            );
         }
 
     }

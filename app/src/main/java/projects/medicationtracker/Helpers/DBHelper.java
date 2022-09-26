@@ -212,11 +212,10 @@ public class DBHelper extends SQLiteOpenHelper
      * @param drugTime Time to take Medication
      * @return rowid on success, -1 on failure
      **************************************************************************/
-    public long addDose(long medId, String drugTime)
+    public long addDoseTime(long medId, String drugTime)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues doseValues = new ContentValues();
-
         doseValues.put(MED_ID, medId);
         doseValues.put(DRUG_TIME, drugTime);
 
@@ -449,8 +448,9 @@ public class DBHelper extends SQLiteOpenHelper
 
         cursor.close();
 
-        return new Medication(medName, patient, units, times, startDate,
-                medId, frequency, dosage, alias);
+        return new Medication(
+                medName, patient, units, times, startDate, medId, frequency, dosage, alias
+        );
     }
 
     /**
@@ -604,7 +604,7 @@ public class DBHelper extends SQLiteOpenHelper
      * @param time Time of dose
      * @return rowid of added dose on success, -1 on failure
      **************************************************************************/
-    public long addToMedicationTracker (Medication medication, LocalDateTime time)
+    public long addToMedicationTracker(Medication medication, LocalDateTime time)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues medTrackerValues = new ContentValues();
@@ -623,9 +623,10 @@ public class DBHelper extends SQLiteOpenHelper
      * Get ID of dose
      * @param medId ID of Medication
      * @param doseTime Time of dose
+     * @param doseTime Time of dose
      * @return Dose ID of match found in MedicationTracker table
      **************************************************************************/
-    public long getDoseId (long medId, String doseTime)
+    public long getDoseId(long medId, String doseTime)
     {
         SQLiteDatabase db = this.getReadableDatabase();
         long rowId;
@@ -636,7 +637,9 @@ public class DBHelper extends SQLiteOpenHelper
 
         cursor.moveToFirst();
 
-        rowId = Integer.parseInt(cursor.getString(cursor.getColumnIndex(DOSE_ID)));
+        rowId = cursor.getCount() > 0 ?
+                Integer.parseInt(cursor.getString(cursor.getColumnIndex(DOSE_ID))) : -1;
+
         cursor.close();
 
         return rowId;
@@ -665,7 +668,7 @@ public class DBHelper extends SQLiteOpenHelper
      * @param doseId ID of dose in table
      * @return Status of dose
      **************************************************************************/
-    public boolean getTaken (long doseId)
+    public boolean getTaken(long doseId)
     {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " + TAKEN + " FROM " + MEDICATION_TRACKER_TABLE

@@ -6,6 +6,8 @@ import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DA
 import static projects.medicationtracker.Fragments.MedicationScheduleFragment.MEDICATIONS;
 
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentContainerView;
@@ -348,21 +351,26 @@ public class MainActivity extends AppCompatActivity
 
         thisDayCard.addView(fragmentContainer);
 
-        fragmentContainer.setId(day);
+        fragmentContainer.setId(day == 0 ? 7 : day);
         layout.addView(thisDayCard);
 
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .add(day, MedicationScheduleFragment.class, bundle)
+                .add(day == 0 ? 7 : day, MedicationScheduleFragment.class, bundle)
                 .commit();
     }
 
     /**
      * Prepares pending intents for notifications, useful if app is force stopped
+     * Clears all open notifications as well
      */
     private void prepareNotifications()
     {
         ArrayList<Medication> medications = db.getMedications();
+        NotificationManager notificationManager =
+                (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.cancelAll();
 
         for (Medication medication : medications)
         {
