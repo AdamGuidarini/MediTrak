@@ -448,8 +448,9 @@ public class DBHelper extends SQLiteOpenHelper
 
         cursor.close();
 
-        return new Medication(medName, patient, units, times, startDate,
-                medId, frequency, dosage, alias);
+        return new Medication(
+                medName, patient, units, times, startDate, medId, frequency, dosage, alias
+        );
     }
 
     /**
@@ -635,7 +636,6 @@ public class DBHelper extends SQLiteOpenHelper
         Cursor cursor = db.rawQuery(query, null);
 
         cursor.moveToFirst();
-
 
         rowId = cursor.getCount() > 0 ?
                 Integer.parseInt(cursor.getString(cursor.getColumnIndex(DOSE_ID))) : -1;

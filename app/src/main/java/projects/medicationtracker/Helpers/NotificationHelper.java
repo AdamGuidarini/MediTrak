@@ -2,6 +2,7 @@ package projects.medicationtracker.Helpers;
 
 import static android.content.Context.ALARM_SERVICE;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -23,6 +24,7 @@ public class NotificationHelper
     public final static String MESSAGE = "message";
     public final static String DOSE_TIME = "doseTime";
     public final static String MEDICATION_ID = "medicationId";
+    public final static String NOTIFICATION_ID = "notification-id";
 
     /**
      * Sets an alarm to create a notification.
@@ -31,11 +33,12 @@ public class NotificationHelper
      * @param time Time the notification will be set.
      * @param notificationId ID for the PendingIntent that stores data for the notification.
      */
+    @SuppressLint("UnspecifiedImmutableFlag")
     public static void scheduleNotification(Context notificationContext, Medication medication,
                                             LocalDateTime time, long notificationId)
     {
         // Loops to increase time, prevents notification bombardment when editing time.
-        while (time.isBefore(LocalDateTime.now().minusSeconds(10)))
+        while (time.isBefore(LocalDateTime.now().minusSeconds(1)))
         {
             time = time.plusMinutes(medication.getMedFrequency());
         }
@@ -48,7 +51,7 @@ public class NotificationHelper
 
         Intent notificationIntent = new Intent(notificationContext, NotificationReceiver.class);
 
-        notificationIntent.putExtra(NotificationReceiver.NOTIFICATION_ID, notificationId);
+        notificationIntent.putExtra(NOTIFICATION_ID, notificationId);
         notificationIntent.putExtra(MESSAGE, createMedicationReminderMessage(medication));
         notificationIntent.putExtra(DOSE_TIME, time);
         notificationIntent.putExtra(MEDICATION_ID, medication.getMedId());
@@ -107,6 +110,7 @@ public class NotificationHelper
      * @param notificationId ID of the notification to be deleted
      * @param context Pending intent's context
      */
+    @SuppressLint("UnspecifiedImmutableFlag")
     public static void deletePendingNotification(long notificationId, Context context)
     {
         Intent intent = new Intent(context, NotificationReceiver.class);

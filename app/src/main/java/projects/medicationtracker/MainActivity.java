@@ -6,6 +6,8 @@ import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DA
 import static projects.medicationtracker.Fragments.MedicationScheduleFragment.MEDICATIONS;
 
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -360,10 +362,15 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Prepares pending intents for notifications, useful if app is force stopped
+     * Clears all open notifications as well
      */
     private void prepareNotifications()
     {
         ArrayList<Medication> medications = db.getMedications();
+        NotificationManager notificationManager =
+                (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.cancelAll();
 
         for (Medication medication : medications)
         {

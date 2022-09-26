@@ -3,9 +3,9 @@ package projects.medicationtracker.Services;
 import static projects.medicationtracker.Helpers.NotificationHelper.CHANNEL_ID;
 import static projects.medicationtracker.Helpers.NotificationHelper.DOSE_TIME;
 import static projects.medicationtracker.Helpers.NotificationHelper.GROUP_KEY;
-import static projects.medicationtracker.Receivers.NotificationReceiver.MESSAGE;
-import static projects.medicationtracker.Receivers.NotificationReceiver.NOTIFICATION_ID;
-
+import static projects.medicationtracker.Helpers.NotificationHelper.MEDICATION_ID;
+import static projects.medicationtracker.Helpers.NotificationHelper.MESSAGE;
+import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION_ID;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -35,7 +35,8 @@ public class NotificationService extends IntentService
      * @param intent Intent sent from NotificationReceiver.
      */
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
+    protected void onHandleIntent(@Nullable Intent intent)
+    {
         NotificationManager notificationManager =
                 (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -43,7 +44,9 @@ public class NotificationService extends IntentService
         String doseTime = intent.getStringExtra(DOSE_TIME);
         long notificationId = intent.getLongExtra(NOTIFICATION_ID, System.currentTimeMillis());
 
-        Notification notification = createNotification(message, doseTime, notificationId);
+        Notification notification = createNotification(
+                message, doseTime, notificationId, intent.getLongExtra(MEDICATION_ID, 0)
+        );
 
         notificationManager.notify((int) notificationId, notification);
     }
@@ -53,11 +56,13 @@ public class NotificationService extends IntentService
      * @param message Message to display in the notification.
      * @return A built notification.
      */
-    private Notification createNotification(String message, String doseTime, long notificationId)
+    private Notification createNotification(
+            String message, String doseTime, long notificationId, long medId)
     {
         Intent markTakenIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
         markTakenIntent.setAction(MARK_AS_TAKEN_ACTION);
-        markTakenIntent.putExtra(NOTIFICATION_ID,   notificationId);
+        markTakenIntent.putExtra(MEDICATION_ID, medId);
+        markTakenIntent.putExtra(NOTIFICATION_ID, notificationId);
         markTakenIntent.putExtra(DOSE_TIME, doseTime);
 
         PendingIntent markAsTakenPendingIntent =
@@ -75,12 +80,12 @@ public class NotificationService extends IntentService
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
                 .setAutoCancel(true)
                 .setGroup(GROUP_KEY)
-                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
-                .addAction(
-                        android.R.drawable.ic_dialog_info,
-                        "Mark as Taken",
-                        markAsTakenPendingIntent
-                );
+                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL);
+//                .addAction(
+//                        android.R.drawable.ic_dialog_info,
+//                        "Mark as Taken",
+//                        markAsTakenPendingIntent
+//                );
 
         Intent resIntent =
                 new Intent(this.getApplicationContext(), MainActivity.class);
@@ -89,7 +94,7 @@ public class NotificationService extends IntentService
         stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(resIntent);
 
-        PendingIntent resPendingIntent=
+        PendingIntent resPendingIntent =
                 stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(resPendingIntent);
 
