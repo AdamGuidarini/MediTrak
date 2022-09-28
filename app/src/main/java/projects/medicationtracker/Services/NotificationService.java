@@ -60,10 +60,12 @@ public class NotificationService extends IntentService
             String message, String doseTime, long notificationId, long medId)
     {
         Intent markTakenIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
-        markTakenIntent.setAction(MARK_AS_TAKEN_ACTION);
-        markTakenIntent.putExtra(MEDICATION_ID, medId);
-        markTakenIntent.putExtra(NOTIFICATION_ID, notificationId);
-        markTakenIntent.putExtra(DOSE_TIME, doseTime);
+        String embeddedMedId = "_" + medId;
+
+        markTakenIntent.setAction(MARK_AS_TAKEN_ACTION + embeddedMedId);
+        markTakenIntent.putExtra(MEDICATION_ID + embeddedMedId, medId);
+        markTakenIntent.putExtra(NOTIFICATION_ID + embeddedMedId, notificationId);
+        markTakenIntent.putExtra(DOSE_TIME + embeddedMedId, doseTime);
 
         PendingIntent markAsTakenPendingIntent =
                 PendingIntent.getBroadcast(
@@ -80,12 +82,12 @@ public class NotificationService extends IntentService
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
                 .setAutoCancel(true)
                 .setGroup(GROUP_KEY)
-                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL);
-//                .addAction(
-//                        android.R.drawable.ic_dialog_info,
-//                        "Mark as Taken",
-//                        markAsTakenPendingIntent
-//                );
+                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
+                .addAction(
+                        android.R.drawable.ic_dialog_info,
+                        "Mark as Taken",
+                        markAsTakenPendingIntent
+                );
 
         Intent resIntent =
                 new Intent(this.getApplicationContext(), MainActivity.class);

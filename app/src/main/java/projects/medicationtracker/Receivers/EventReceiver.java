@@ -28,13 +28,15 @@ public class EventReceiver extends BroadcastReceiver
         final DBHelper db = new DBHelper(context);
         ArrayList<Medication> medications = db.getMedications();
 
-        if (intent.getAction().equals(NotificationService.MARK_AS_TAKEN_ACTION))
+        if (intent.getAction().contains(NotificationService.MARK_AS_TAKEN_ACTION))
         {
+            String medId = "_" + intent.getAction().split("_")[1];
+
             markDoseTaken(
                     context,
-                    intent.getLongExtra(NOTIFICATION_ID, 0),
-                    intent.getLongExtra(MEDICATION_ID, 0),
-                    intent.getStringExtra(NotificationHelper.DOSE_TIME)
+                    intent.getLongExtra(NOTIFICATION_ID + medId, 0),
+                    intent.getLongExtra(MEDICATION_ID + medId, 0),
+                    intent.getStringExtra(NotificationHelper.DOSE_TIME + medId)
             );
 
             return;
