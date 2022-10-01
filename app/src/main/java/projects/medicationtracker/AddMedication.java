@@ -28,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentContainerView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,6 +38,7 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
 
+import projects.medicationtracker.Fragments.AddEditFormFragment;
 import projects.medicationtracker.Fragments.SelectDateFragment;
 import projects.medicationtracker.Fragments.TimePickerFragment;
 import projects.medicationtracker.Helpers.DBHelper;
@@ -242,6 +244,11 @@ public class AddMedication extends AppCompatActivity
                     break;
             }
         });
+
+        getSupportFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .add(R.id.addFragmentView, AddEditFormFragment.class, null)
+                .commit();
     }
 
     /**

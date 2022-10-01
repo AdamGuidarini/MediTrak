@@ -30,7 +30,6 @@ public class AddEditFormFragment extends Fragment
      * @param medId ID if medication if editing, -1 if adding
      * @return A new instance of fragment AddEditFormFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static AddEditFormFragment newInstance(long medId)
     {
         AddEditFormFragment fragment = new AddEditFormFragment();
