@@ -39,7 +39,8 @@
                     <RadioGroup
                         android:id="@+id/patientRadioGroup"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp">
                         <RadioButton
                             android:id="@+id/patientIsMe"
                             android:layout_width="wrap_content"
@@ -106,7 +107,6 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
                         android:orientation="horizontal">
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -115,13 +115,13 @@
                             android:layout_marginBottom="15dp"
                             android:layout_alignParentStart="true"
                             android:layout_marginStart="10dp"
-
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
                         <EditText
                                 android:id="@+id/dosageAmount"
                                 android:layout_width="170dp"
                                 android:layout_height="match_parent"
+                                android:inputType="number"
                                 android:hint="@string/medication_dosage"/>
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -156,7 +156,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginBottom="15dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -164,10 +165,48 @@
                         android:text="@string/frequency"
                         style="@style/standardTextView"/>
 
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/frequency"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
 
-                    <Spinner
-                        android:layout_width="280dp"
-                        android:layout_height="wrap_content"/>
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/frequencyOptionsDropdown"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+                    <LinearLayout
+                        android:id="@+id/dailyMedFrequency"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/multiplePerDayFrequency"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/customFrequencyLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+                    </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
