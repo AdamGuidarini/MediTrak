@@ -365,7 +365,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:onClick="onSubmitClick"
-                android:text="@string/submit" />
+                android:text="@string/submit"
+                android:visibility="gone"/>
 
         </LinearLayout>
     </ScrollView>

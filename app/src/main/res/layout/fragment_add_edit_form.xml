@@ -15,7 +15,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -28,43 +27,50 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/patient"
+                        android:text="Who takes this medication?"
                         style="@style/standardTextView"/>
 
                     <RadioGroup
                         android:id="@+id/patientRadioGroup"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp">
-                        <RadioButton
+                        android:layout_height="wrap_content">
+                        <com.google.android.material.radiobutton.MaterialRadioButton
                             android:id="@+id/patientIsMe"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/patientIsMe"/>
 
-                        <RadioButton
+                        <com.google.android.material.radiobutton.MaterialRadioButton
                             android:id="@+id/patientIsNotMe"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/other"/>
                     </RadioGroup>
 
-                    <EditText
-                        android:id="@+id/enterPatientName"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/patientNameInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/text_box"
-                        android:drawablePadding="20dp"
-                        android:hint="@string/name"
+                        android:layout_marginBottom="15dp"
+                        android:gravity="center"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
-                        android:layout_marginBottom="5dp"
-                        android:visibility="gone"/>
+                        android:visibility="gone"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+                        <EditText
+                            android:id="@+id/patientNameInput"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/name"/>
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -80,12 +86,14 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/medication_name_amp_dosage"
+                        android:text="What is the medication's name &amp; how much is taken?"
                         style="@style/standardTextView"/>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -93,8 +101,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="15dp"
                         android:gravity="center"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
                         <EditText
@@ -102,6 +108,28 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/medication_name"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/aliasSwitch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Alias for notifications"/>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/aliasInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="15dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:id="@+id/enterAlias"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:inputType="text"
+                            android:hint="@string/alias_for_medication"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <RelativeLayout
@@ -114,7 +142,6 @@
                             android:layout_height="match_parent"
                             android:layout_marginBottom="15dp"
                             android:layout_alignParentStart="true"
-                            android:layout_marginStart="10dp"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
                         <EditText
@@ -132,12 +159,10 @@
                             android:layout_alignParentEnd="true"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
-
                         <EditText
-                                android:id="@+id/medUnits"
+                                android:id="@+id/dosageUnits"
                                 android:layout_width="170dp"
                                 android:layout_height="match_parent"
-                                android:layout_marginEnd="10dp"
                                 android:hint="@string/units"/>
                         </com.google.android.material.textfield.TextInputLayout>
                     </RelativeLayout>
@@ -156,21 +181,21 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     android:orientation="vertical"
                     android:layout_marginBottom="15dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/frequency"
+                        android:text="How often is the medication taken?"
                         style="@style/standardTextView"/>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/frequency"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -179,8 +204,6 @@
                             android:layout_height="wrap_content"
                             android:inputType="none"/>
                     </com.google.android.material.textfield.TextInputLayout>
-
-
 
                     <LinearLayout
                         android:id="@+id/dailyMedFrequency"
@@ -209,6 +232,14 @@
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/saveButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:cornerRadius="30dp"
+                android:text="@string/save"/>
         </LinearLayout>
     </ScrollView>
 </FrameLayout>

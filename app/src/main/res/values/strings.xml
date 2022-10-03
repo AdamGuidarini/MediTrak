@@ -160,4 +160,5 @@
     <string name="notes">Notes</string>
     <string name="edit">Edit</string>
     <string name="medication_name_amp_dosage"><![CDATA[Medication Name & Dosage]]></string>
+    <string name="save">Save</string>
 </resources>
