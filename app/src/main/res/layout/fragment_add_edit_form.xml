@@ -34,7 +34,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Who takes this medication?"
+                        android:text="@string/who_takes_this_medication"
                         style="@style/standardTextView"/>
 
                     <RadioGroup
@@ -53,7 +53,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="15dp"
-                            android:text="@string/other"/>
+                            android:text="@string/someone_else"/>
                     </RadioGroup>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -62,8 +62,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="15dp"
                         android:gravity="center"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
                         android:visibility="gone"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
@@ -95,7 +93,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="What is the medication's name &amp; how much is taken?"
+                        android:text="@string/what_is_the_medication_s_name_amp_how_much_is_taken"
                         style="@style/standardTextView"/>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -116,7 +114,7 @@
                         android:id="@+id/aliasSwitch"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Alias for notifications"/>
+                        android:text="@string/alias_for_notifications"/>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/aliasInputLayout"
@@ -191,7 +189,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="How often is the medication taken?"
+                        android:text="@string/how_often_is_the_medication_taken"
                         style="@style/standardTextView"/>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -207,15 +205,45 @@
                             android:inputType="none"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <LinearLayout
+
+                    <RelativeLayout
                         android:id="@+id/dailyMedFrequency"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
+                        android:orientation="horizontal"
                         android:visibility="visible">
 
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/startDateTaken"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginBottom="15dp"
+                            android:hint="Start Date"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
-                    </LinearLayout>
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/dailyMedStart"
+                                android:layout_width="170dp"
+                                android:layout_height="wrap_content"
+                                android:inputType="none"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/timeTakenLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:hint="Taken at"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/dailyMedTime"
+                                android:layout_width="170dp"
+                                android:layout_height="wrap_content"
+                                android:inputType="none"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </RelativeLayout>
 
                     <LinearLayout
                         android:id="@+id/multiplePerDayFrequency"
@@ -223,6 +251,11 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="multiple per day"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -231,6 +264,11 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="custom freq"/>
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -241,6 +279,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 app:cornerRadius="30dp"
+                android:onClick="onSaveClick"
                 android:text="@string/save"/>
         </LinearLayout>
     </ScrollView>

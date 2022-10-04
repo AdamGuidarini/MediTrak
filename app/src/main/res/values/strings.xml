@@ -161,4 +161,9 @@
     <string name="edit">Edit</string>
     <string name="medication_name_amp_dosage"><![CDATA[Medication Name & Dosage]]></string>
     <string name="save">Save</string>
+    <string name="who_takes_this_medication">Who takes this medication?</string>
+    <string name="someone_else">Someone else</string>
+    <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[What is the medication\'s name & how much is taken?]]></string>
+    <string name="alias_for_notifications">Alias for notifications</string>
+    <string name="how_often_is_the_medication_taken">How often is the medication taken?</string>
 </resources>

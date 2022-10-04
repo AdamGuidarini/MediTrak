@@ -2,20 +2,28 @@ package projects.medicationtracker.Fragments;
 
 import android.os.Bundle;
 
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import projects.medicationtracker.Helpers.DBHelper;
@@ -51,6 +59,8 @@ public class AddEditFormFragment extends Fragment
 
     //TODO add all frequency inputs
     private MaterialAutoCompleteTextView frequencyDropDown;
+
+    private MaterialButton saveButton;
 
     public AddEditFormFragment() { }
 
@@ -110,11 +120,7 @@ public class AddEditFormFragment extends Fragment
         patientNameInput = rootView.findViewById(R.id.patientNameInput);
         patientNameInputLayout = rootView.findViewById(R.id.patientNameInputLayout);
 
-        if (medId == -1)
-        {
-            meButton.setChecked(true);
-        }
-        else if (medication.getPatientName().equals("ME!"))
+        if (medId == -1 || (medication != null && medication.getPatientName().equals("ME!")))
         {
             meButton.setChecked(true);
         }
@@ -161,10 +167,87 @@ public class AddEditFormFragment extends Fragment
                 aliasInput.setText("");
             }
         });
+
+        if (medId != -1)
+        {
+            medNameInput.setText(medication.getMedName());
+            if (!medication.getAlias().isEmpty())
+            {
+                aliasInput.setText(medication.getAlias());
+            }
+
+            dosageAmountInput.setText(medication.getMedDosage());
+            dosageUnitsInput.setText(medication.getMedDosageUnits());
+        }
     }
 
     private void setFrequencyCard()
     {
+        RelativeLayout dailyLayout = rootView.findViewById(R.id.dailyMedFrequency);
+        LinearLayout multiplePerDay = rootView.findViewById(R.id.multiplePerDayFrequency);
+        LinearLayout custom = rootView.findViewById(R.id.customFrequencyLayout);
+        ArrayAdapter<String> frequencyOptions;
+        ArrayList<String> options = new ArrayList<>();
+        EditText dailyMedTime = rootView.findViewById(R.id.dailyMedTime);
+        EditText dailyMedStartDate = rootView.findViewById(R.id.dailyMedStart);
 
+        frequencyDropDown = rootView.findViewById(R.id.frequencyOptionsDropdown);
+
+        options.add(getString(R.string.multiple_times_per_day));
+        options.add(getString(R.string.daily));
+        options.add(getString(R.string.custom_frequency));
+
+         frequencyOptions = new ArrayAdapter<String>(
+                rootView.getContext(), android.R.layout.simple_dropdown_item_1line, options
+        );
+
+        frequencyDropDown.setAdapter(frequencyOptions);
+
+        frequencyDropDown.setOnItemClickListener((adapterView, view, i, l) ->
+        {
+            switch (i)
+            {
+                case 0:
+                    dailyLayout.setVisibility(View.GONE);
+                    custom.setVisibility(View.GONE);
+
+                    multiplePerDay.setVisibility(View.VISIBLE);
+                    break;
+                case 1:
+                    custom.setVisibility(View.GONE);
+                    multiplePerDay.setVisibility(View.GONE);
+
+                    dailyLayout.setVisibility(View.VISIBLE);
+                    break;
+                case 2:
+                    dailyLayout.setVisibility(View.GONE);
+                    multiplePerDay.setVisibility(View.GONE);
+
+                    custom.setVisibility(View.VISIBLE);
+                    break;
+            }
+        });
+
+        dailyMedTime.setOnFocusChangeListener((view, b) ->
+        {
+            if (view.equals(dailyMedTime))
+            {
+                DialogFragment dialogFragment = new TimePickerFragment(dailyMedTime.getId());
+                dialogFragment.show(getParentFragmentManager(), null);
+            }
+        });
+
+        dailyMedStartDate.setOnFocusChangeListener((view, b) ->
+        {
+            if (view.equals(dailyMedStartDate))
+            {
+                DialogFragment df = new SelectDateFragment(dailyMedStartDate.getId());
+                df.show(getParentFragmentManager(), null);
+            }
+        });
+    }
+
+    public void onSaveClick(View view)
+    {
     }
 }
