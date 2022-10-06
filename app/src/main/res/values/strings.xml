@@ -24,7 +24,7 @@
     <string name="monthly">Monthly</string>
     <string name="custom_frequency">Custom Frequency</string>
     <string name="at_n_n_tap_to_set_time">At: \n\n Tap to set time</string>
-    <string name="times_per_day">Times per day:</string>
+    <string name="times_per_day">Times per day</string>
     <string name="atThisTime">At: Tap to set time</string>
     <string name="starting">Starting:</string>
     <string name="no_medications_found">No medications found</string>

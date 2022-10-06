@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Medication;
 
@@ -189,11 +190,6 @@ public class AddEditFormFragment extends Fragment
         LinearLayout custom = rootView.findViewById(R.id.customFrequencyLayout);
         ArrayAdapter<String> frequencyOptions;
         ArrayList<String> options = new ArrayList<>();
-        EditText dailyMedTime = rootView.findViewById(R.id.dailyMedTime);
-        EditText dailyMedStartDate = rootView.findViewById(R.id.dailyMedStart);
-
-        dailyMedTime.setShowSoftInputOnFocus(false);
-        dailyMedStartDate.setShowSoftInputOnFocus(false);
 
         frequencyDropDown = rootView.findViewById(R.id.frequencyOptionsDropdown);
 
@@ -232,6 +228,25 @@ public class AddEditFormFragment extends Fragment
             }
         });
 
+        setMultiplePerDayFrequencyViews();
+        setDailyFrequencyViews();
+        setSaveButton();
+    }
+
+    private void setMultiplePerDayFrequencyViews()
+    {
+
+    }
+
+    private void setDailyFrequencyViews()
+    {
+        EditText dailyMedTime = rootView.findViewById(R.id.dailyMedTime);
+        EditText dailyMedStartDate = rootView.findViewById(R.id.dailyMedStart);
+
+        dailyMedTime.setShowSoftInputOnFocus(false);
+        dailyMedStartDate.setShowSoftInputOnFocus(false);
+
+
         dailyMedTime.setOnFocusChangeListener((view, b) ->
         {
             if (b)
@@ -249,9 +264,28 @@ public class AddEditFormFragment extends Fragment
                 df.show(getParentFragmentManager(), null);
             }
         });
+
+        if (medId != -1)
+        {
+            dailyMedStartDate.setTag(medication.getStartDate().toLocalDate());
+            dailyMedStartDate.setText(
+                    TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
+            );
+
+            dailyMedTime.setTag(medication.getStartDate().toLocalTime());
+            dailyMedTime.setText(
+                    TimeFormatting.localTimeToString(medication.getStartDate().toLocalTime())
+            );
+        }
     }
 
-    public void onSaveClick(View view)
+    public void setSaveButton()
     {
+        saveButton = rootView.findViewById(R.id.saveButton);
+
+        saveButton.setOnClickListener((view ->
+        {
+            Toast.makeText(rootView.getContext(), "This will save stuff", Toast.LENGTH_LONG).show();
+        }));
     }
 }
