@@ -22,6 +22,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -191,15 +192,18 @@ public class AddEditFormFragment extends Fragment
         EditText dailyMedTime = rootView.findViewById(R.id.dailyMedTime);
         EditText dailyMedStartDate = rootView.findViewById(R.id.dailyMedStart);
 
+        dailyMedTime.setShowSoftInputOnFocus(false);
+        dailyMedStartDate.setShowSoftInputOnFocus(false);
+
         frequencyDropDown = rootView.findViewById(R.id.frequencyOptionsDropdown);
 
         options.add(getString(R.string.multiple_times_per_day));
         options.add(getString(R.string.daily));
         options.add(getString(R.string.custom_frequency));
 
-         frequencyOptions = new ArrayAdapter<String>(
-                rootView.getContext(), android.R.layout.simple_dropdown_item_1line, options
-        );
+         frequencyOptions = new ArrayAdapter<>(
+                 rootView.getContext(), android.R.layout.simple_dropdown_item_1line, options
+         );
 
         frequencyDropDown.setAdapter(frequencyOptions);
 
@@ -230,7 +234,7 @@ public class AddEditFormFragment extends Fragment
 
         dailyMedTime.setOnFocusChangeListener((view, b) ->
         {
-            if (view.equals(dailyMedTime))
+            if (b)
             {
                 DialogFragment dialogFragment = new TimePickerFragment(dailyMedTime.getId());
                 dialogFragment.show(getParentFragmentManager(), null);
@@ -239,7 +243,7 @@ public class AddEditFormFragment extends Fragment
 
         dailyMedStartDate.setOnFocusChangeListener((view, b) ->
         {
-            if (view.equals(dailyMedStartDate))
+            if (b)
             {
                 DialogFragment df = new SelectDateFragment(dailyMedStartDate.getId());
                 df.show(getParentFragmentManager(), null);

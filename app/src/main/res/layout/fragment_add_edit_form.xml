@@ -210,6 +210,7 @@
                         android:id="@+id/dailyMedFrequency"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
                         android:orientation="horizontal"
                         android:visibility="visible">
 
@@ -226,7 +227,8 @@
                                 android:id="@+id/dailyMedStart"
                                 android:layout_width="170dp"
                                 android:layout_height="wrap_content"
-                                android:inputType="none"/>
+                                android:cursorVisible="false"
+                                android:inputType="date"/>
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -241,7 +243,8 @@
                                 android:id="@+id/dailyMedTime"
                                 android:layout_width="170dp"
                                 android:layout_height="wrap_content"
-                                android:inputType="none"/>
+                                android:cursorVisible="false"
+                                android:inputType="time"/>
                         </com.google.android.material.textfield.TextInputLayout>
                     </RelativeLayout>
 
