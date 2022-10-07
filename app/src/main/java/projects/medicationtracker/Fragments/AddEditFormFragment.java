@@ -2,9 +2,13 @@ package projects.medicationtracker.Fragments;
 
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +25,7 @@ import android.widget.Toast;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
 
@@ -159,6 +164,30 @@ public class AddEditFormFragment extends Fragment
 
         aliasSwitch.setChecked(medId != -1 && !medication.getAlias().isEmpty());
 
+        dosageAmountInput.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable)
+            {
+                int dosage;
+
+                try
+                {
+                    dosage = Integer.parseInt(dosageAmountInput.getText().toString());
+                }
+                catch (Exception e)
+                {
+                    dosageAmountInput.setError("Provided value is too big");
+                }
+            }
+        });
+
         aliasSwitch.setOnCheckedChangeListener((compoundButton, b) ->
         {
             if (aliasInputLayout.getVisibility() == View.GONE)
@@ -235,7 +264,80 @@ public class AddEditFormFragment extends Fragment
 
     private void setMultiplePerDayFrequencyViews()
     {
+        EditText numberOfTimersPerDay = rootView.findViewById(R.id.numberOfTimersPerDay);
+        EditText startDateMultiplePerDay = rootView.findViewById(R.id.startDateMultiplePerDay);
+        LinearLayout timesPerDayHolder = rootView.findViewById(R.id.timesPerDayHolder);
 
+        startDateMultiplePerDay.setShowSoftInputOnFocus(false);
+        startDateMultiplePerDay.setOnFocusChangeListener((view, b) ->
+        {
+            if (b)
+            {
+                DialogFragment datePicker = new SelectDateFragment(startDateMultiplePerDay.getId());
+                datePicker.show(getParentFragmentManager(), null);
+            }
+        });
+
+        numberOfTimersPerDay.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable)
+            {
+                int days;
+
+                try
+                {
+                    days = Integer.parseInt(numberOfTimersPerDay.getText().toString());
+                }
+                catch (Exception e)
+                {
+                    numberOfTimersPerDay.setError("Provided value is too big");
+
+                    return;
+                }
+
+                if (timesPerDayHolder.getChildCount() > days)
+                {
+                    timesPerDayHolder.removeAllViews();
+                }
+                else
+                {
+                    days -= timesPerDayHolder.getChildCount();
+                }
+
+                for (int ind = 0; ind < days; ind++)
+                {
+                    TextInputLayout textLayout = new TextInputLayout(new ContextThemeWrapper(rootView.getContext(), R.style.Widget_MaterialComponents_TextInputLayout_OutlinedBox_Dense));
+                    TextInputEditText timeEntry = new TextInputEditText(textLayout.getContext());
+
+                    textLayout.setHint(getString(R.string.taken_at));
+                    textLayout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE);
+                    textLayout.setBoxBackgroundColor(ContextCompat.getColor(rootView.getContext(), android.R.color.transparent));
+                    textLayout.setBoxCornerRadii(10, 10, 10, 10);
+                    textLayout.addView(timeEntry);
+
+                    timeEntry.setId(ind);
+                    timeEntry.setShowSoftInputOnFocus(false);
+
+                    timeEntry.setOnFocusChangeListener((view, b) ->
+                    {
+                        if (b)
+                        {
+                            DialogFragment dialogFragment = new TimePickerFragment(timeEntry.getId());
+                            dialogFragment.show(getParentFragmentManager(), null);
+                        }
+                    });
+
+                    timesPerDayHolder.addView(textLayout);
+                }
+            }
+        });
     }
 
     private void setDailyFrequencyViews()

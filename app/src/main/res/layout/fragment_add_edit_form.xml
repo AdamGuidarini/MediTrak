@@ -220,7 +220,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:layout_marginBottom="15dp"
-                            android:hint="Start Date"
+                            android:hint="@string/start_date"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -236,7 +236,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
-                            android:hint="Taken at"
+                            android:hint="@string/taken_at"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -252,22 +252,52 @@
                         android:id="@+id/multiplePerDayFrequency"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
                         android:orientation="vertical"
                         android:visibility="gone">
 
-                        <com.google.android.material.textfield.TextInputLayout
+                        <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="15dp"
-                            android:hint="@string/times_per_day"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
 
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/numberOfTimersPerDay"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:inputType="number"/>
-                        </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginBottom="15dp"
+                                android:layout_alignParentStart="true"
+                                android:hint="@string/times_per_day"
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/numberOfTimersPerDay"
+                                    android:layout_width="170dp"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="number"/>
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginBottom="15dp"
+                                android:layout_alignParentEnd="true"
+                                android:hint="@string/start_date"
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+                                <EditText
+                                    android:id="@+id/startDateMultiplePerDay"
+                                    android:layout_width="170dp"
+                                    android:layout_height="match_parent"
+                                    android:cursorVisible="false"
+                                    android:inputType="date"/>
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:id="@+id/timesPerDayHolder"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
                     </LinearLayout>
 
                     <LinearLayout

@@ -166,4 +166,6 @@
     <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[What is the medication\'s name & how much is taken?]]></string>
     <string name="alias_for_notifications">Alias for notifications</string>
     <string name="how_often_is_the_medication_taken">How often is the medication taken?</string>
+    <string name="start_date">Start Date</string>
+    <string name="taken_at">Taken at</string>
 </resources>
