@@ -63,9 +63,9 @@
                         android:layout_marginBottom="15dp"
                         android:gravity="center"
                         android:visibility="gone"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
 
-                        <EditText
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/patientNameInput"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -107,6 +107,7 @@
                             android:id="@+id/medicationName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:inputType="text"
                             android:hint="@string/medication_name"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -160,10 +161,11 @@
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
                         <EditText
-                                android:id="@+id/dosageUnits"
-                                android:layout_width="170dp"
-                                android:layout_height="match_parent"
-                                android:hint="@string/units"/>
+                            android:id="@+id/dosageUnits"
+                            android:layout_width="170dp"
+                            android:layout_height="match_parent"
+                            android:inputType="text"
+                            android:hint="@string/units"/>
                         </com.google.android.material.textfield.TextInputLayout>
                     </RelativeLayout>
                 </LinearLayout>
@@ -266,21 +268,6 @@
                                 android:layout_height="match_parent"
                                 android:layout_marginBottom="15dp"
                                 android:layout_alignParentStart="true"
-                                android:hint="@string/times_per_day"
-                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/numberOfTimersPerDay"
-                                    android:layout_width="170dp"
-                                    android:layout_height="wrap_content"
-                                    android:inputType="number"/>
-                            </com.google.android.material.textfield.TextInputLayout>
-
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_marginBottom="15dp"
-                                android:layout_alignParentEnd="true"
                                 android:hint="@string/start_date"
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
@@ -290,6 +277,21 @@
                                     android:layout_height="match_parent"
                                     android:cursorVisible="false"
                                     android:inputType="date"/>
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginBottom="15dp"
+                                android:layout_alignParentEnd="true"
+                                android:hint="@string/times_per_day"
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/numberOfTimersPerDay"
+                                    android:layout_width="170dp"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="number"/>
                             </com.google.android.material.textfield.TextInputLayout>
                         </RelativeLayout>
 
@@ -307,10 +309,86 @@
                         android:orientation="vertical"
                         android:visibility="gone">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <RelativeLayout
+                            android:id="@+id/CustomFreqMedFrequency"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="custom freq"/>
+                            android:layout_marginTop="15dp"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/customFreqStartDate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
+                                android:layout_marginBottom="15dp"
+                                android:hint="@string/start_date"
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/CustomFreqMedStart"
+                                    android:layout_width="170dp"
+                                    android:layout_height="wrap_content"
+                                    android:cursorVisible="false"
+                                    android:inputType="date"/>
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/CustomFreqTimeTakenLayout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:hint="@string/taken_at"
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/CustomFreqMedTime"
+                                    android:layout_width="170dp"
+                                    android:layout_height="wrap_content"
+                                    android:cursorVisible="false"
+                                    android:inputType="time"/>
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/CustomFreqFrequency"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/customFreqTakenEveryLayout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
+                                android:layout_marginBottom="15dp"
+                                android:hint="@string/taken_every"
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/CustomFreqMTakenEveryEnter"
+                                    android:layout_width="170dp"
+                                    android:layout_height="wrap_content"
+                                    android:cursorVisible="false"
+                                    android:inputType="number"/>
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/CustomFreqTimeUnitLayout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:hint="Unit of Time"
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
+
+                                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                                    android:id="@+id/CustomFreqTimeUnitEnter"
+                                    android:layout_width="170dp"
+                                    android:layout_height="wrap_content"
+                                    android:cursorVisible="false"
+                                    android:inputType="none"/>
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </RelativeLayout>
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

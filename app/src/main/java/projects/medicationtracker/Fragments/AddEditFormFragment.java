@@ -7,6 +7,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -31,6 +33,7 @@ import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
@@ -55,7 +58,7 @@ public class AddEditFormFragment extends Fragment
     private RadioButton meButton;
     private RadioButton otherButton;
     private TextInputLayout patientNameInputLayout;
-    private EditText patientNameInput;
+    private MaterialAutoCompleteTextView patientNameInput;
 
     private EditText medNameInput;
     private SwitchMaterial aliasSwitch;
@@ -121,11 +124,24 @@ public class AddEditFormFragment extends Fragment
 
     private void setPatientCard()
     {
+        ArrayAdapter<String> patientNamesAdapter;
+        ArrayList<String> patientNames;
         patientGroup = rootView.findViewById(R.id.patientRadioGroup);
         meButton = rootView.findViewById(R.id.patientIsMe);
         otherButton = rootView.findViewById(R.id.patientIsNotMe);
         patientNameInput = rootView.findViewById(R.id.patientNameInput);
         patientNameInputLayout = rootView.findViewById(R.id.patientNameInputLayout);
+
+        patientNames = db.getPatients();
+        patientNames.removeIf(n -> n.equals("ME!"));
+
+         patientNamesAdapter = new ArrayAdapter<>(
+                 rootView.getContext(),
+                 android.R.layout.simple_dropdown_item_1line,
+                 patientNames
+         );
+
+         patientNameInput.setAdapter(patientNamesAdapter);
 
         if (medId == -1 || (medication != null && medication.getPatientName().equals("ME!")))
         {
@@ -140,15 +156,14 @@ public class AddEditFormFragment extends Fragment
 
         patientGroup.setOnCheckedChangeListener((radioGroup, i) ->
         {
-            switch (radioGroup.findViewById(i).getId())
+            if (meButton.isChecked())
             {
-                case R.id.patientIsMe:
-                    if (patientNameInputLayout.getVisibility() == View.VISIBLE)
-                        patientNameInputLayout.setVisibility(View.GONE);
-                    break;
-                case R.id.patientIsNotMe:
-                    patientNameInputLayout.setVisibility(View.VISIBLE);
-                    break;
+                if (patientNameInputLayout.getVisibility() == View.VISIBLE)
+                    patientNameInputLayout.setVisibility(View.GONE);
+            }
+            else
+            {
+                patientNameInputLayout.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -175,15 +190,14 @@ public class AddEditFormFragment extends Fragment
             @Override
             public void afterTextChanged(Editable editable)
             {
-                int dosage;
-
                 try
                 {
-                    dosage = Integer.parseInt(dosageAmountInput.getText().toString());
+                    Integer.parseInt(dosageAmountInput.getText().toString());
                 }
                 catch (Exception e)
                 {
-                    dosageAmountInput.setError("Provided value is too big");
+                    if (!dosageAmountInput.getText().toString().isEmpty())
+                        dosageAmountInput.setError("Provided value is too big");
                 }
             }
         });
@@ -259,6 +273,7 @@ public class AddEditFormFragment extends Fragment
 
         setMultiplePerDayFrequencyViews();
         setDailyFrequencyViews();
+        setCustomFrequencyViews();
         setSaveButton();
     }
 
@@ -282,7 +297,6 @@ public class AddEditFormFragment extends Fragment
         {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
@@ -304,7 +318,12 @@ public class AddEditFormFragment extends Fragment
 
                 if (timesPerDayHolder.getChildCount() > days)
                 {
-                    timesPerDayHolder.removeAllViews();
+                    for (int i = timesPerDayHolder.getChildCount(); i > days; i--)
+                    {
+                        timesPerDayHolder.removeViewAt(i - 1);
+                    }
+
+                    return;
                 }
                 else
                 {
@@ -324,6 +343,7 @@ public class AddEditFormFragment extends Fragment
 
                     timeEntry.setId(ind);
                     timeEntry.setShowSoftInputOnFocus(false);
+                    timeEntry.setInputType(InputType.TYPE_NULL);
 
                     timeEntry.setOnFocusChangeListener((view, b) ->
                     {
@@ -379,6 +399,70 @@ public class AddEditFormFragment extends Fragment
                     TimeFormatting.localTimeToString(medication.getStartDate().toLocalTime())
             );
         }
+    }
+
+    private void setCustomFrequencyViews()
+    {
+        TextInputEditText customFreqStartDate = rootView.findViewById(R.id.CustomFreqMedStart);
+        TextInputEditText customFreqMedTime = rootView.findViewById(R.id.CustomFreqMedTime);
+        TextInputEditText customFreqMTakenEveryEnter =
+                rootView.findViewById(R.id.CustomFreqMTakenEveryEnter);
+        MaterialAutoCompleteTextView customFreqTimeUnitEnter =
+                rootView.findViewById(R.id.CustomFreqTimeUnitEnter);
+        ArrayList<String> timeUnits = new ArrayList<>();
+        ArrayAdapter<String> timeUnitsAdapter;
+
+        customFreqMedTime.setOnFocusChangeListener((view, b) ->
+        {
+            if (b)
+            {
+                DialogFragment dialogFragment = new TimePickerFragment(customFreqMedTime.getId());
+                dialogFragment.show(getParentFragmentManager(), null);
+            }
+        });
+
+        customFreqStartDate.setOnFocusChangeListener((view, b) ->
+        {
+            if (b)
+            {
+                DialogFragment df = new SelectDateFragment(customFreqStartDate.getId());
+                df.show(getParentFragmentManager(), null);
+            }
+        });
+
+        customFreqMTakenEveryEnter.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable)
+            {
+                try
+                {
+                    Integer.parseInt(customFreqMTakenEveryEnter.getText().toString());
+                }
+                catch (Exception e)
+                {
+                    if (!customFreqMTakenEveryEnter.getText().toString().isEmpty())
+                        customFreqMTakenEveryEnter.setError("Provided value is too big");
+                }
+            }
+        });
+
+        timeUnits.add("Minutes");
+        timeUnits.add("Hours");
+        timeUnits.add("Days");
+        timeUnits.add("Weeks");
+
+        timeUnitsAdapter = new ArrayAdapter<>(
+                rootView.getContext(), android.R.layout.simple_dropdown_item_1line, timeUnits
+        );
+
+        customFreqTimeUnitEnter.setAdapter(timeUnitsAdapter);
     }
 
     public void setSaveButton()
