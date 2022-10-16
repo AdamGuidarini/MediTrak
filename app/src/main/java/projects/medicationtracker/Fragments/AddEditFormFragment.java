@@ -465,13 +465,45 @@ public class AddEditFormFragment extends Fragment
         customFreqTimeUnitEnter.setAdapter(timeUnitsAdapter);
     }
 
-    public void setSaveButton()
+    private void setSaveButton()
     {
         saveButton = rootView.findViewById(R.id.saveButton);
 
         saveButton.setOnClickListener((view ->
         {
-            Toast.makeText(rootView.getContext(), "This will save stuff", Toast.LENGTH_LONG).show();
+            saveMedication();
         }));
+    }
+
+    private void saveMedication()
+    {
+        if (isNameCardValid() && isMedNameAndDosageCardValid() && isFrequencyCardValid())
+        {
+            Toast.makeText(rootView.getContext(), "This med can be saved", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            Toast.makeText(rootView.getContext(), "This med cannot be saved", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean isNameCardValid()
+    {
+        if (meButton.isChecked())
+            return true;
+
+
+
+        return false;
+    }
+
+    private boolean isMedNameAndDosageCardValid()
+    {
+        return false;
+    }
+
+    private boolean isFrequencyCardValid()
+    {
+        return false;
     }
 }
