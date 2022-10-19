@@ -13,10 +13,7 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -29,11 +26,8 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.function.Predicate;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
@@ -60,15 +54,22 @@ public class AddEditFormFragment extends Fragment
     private TextInputLayout patientNameInputLayout;
     private MaterialAutoCompleteTextView patientNameInput;
 
+    private TextInputLayout medicationNameInputLayout;
     private EditText medNameInput;
     private SwitchMaterial aliasSwitch;
     private TextInputLayout aliasInputLayout;
     private EditText aliasInput;
+    private TextInputLayout dosageAmountInputLayout;
     private EditText dosageAmountInput;
+    private TextInputLayout dosageUnitsInputLayout;
     private EditText dosageUnitsInput;
 
-    //TODO add all frequency inputs
     private MaterialAutoCompleteTextView frequencyDropDown;
+    private TextInputLayout numberOfTimersPerDayLayout;
+    private TextInputEditText customFreqStartDate;
+    private TextInputEditText customFreqMedTime;
+    private TextInputEditText customFreqMTakenEveryEnter;
+    private MaterialAutoCompleteTextView customFreqTimeUnitEnter;
 
     private MaterialButton saveButton;
 
@@ -108,7 +109,7 @@ public class AddEditFormFragment extends Fragment
         rootView = inflater.inflate(R.layout.fragment_add_edit_form, container, false);
         db = new DBHelper(rootView.getContext());
 
-        medication = medId != -1 ? db.getMedication(medId) : null;
+        medication = medId != -1 ? db.getMedication(medId) : new Medication();
 
         buildViews();
 
@@ -159,7 +160,9 @@ public class AddEditFormFragment extends Fragment
             if (meButton.isChecked())
             {
                 if (patientNameInputLayout.getVisibility() == View.VISIBLE)
+                {
                     patientNameInputLayout.setVisibility(View.GONE);
+                }
             }
             else
             {
@@ -170,11 +173,14 @@ public class AddEditFormFragment extends Fragment
 
     private void setMedNameAndDosageCard()
     {
+        medicationNameInputLayout = rootView.findViewById(R.id.medicationNameInputLayout);
         medNameInput = rootView.findViewById(R.id.medicationName);
         aliasSwitch = rootView.findViewById(R.id.aliasSwitch);
         aliasInput = rootView.findViewById(R.id.enterAlias);
         aliasInputLayout = rootView.findViewById(R.id.aliasInputLayout);
+        dosageAmountInputLayout = rootView.findViewById(R.id.dosageAmountInputLayout);
         dosageAmountInput = rootView.findViewById(R.id.dosageAmount);
+        dosageUnitsInputLayout = rootView.findViewById(R.id.dosageUnitsInputLayout);
         dosageUnitsInput = rootView.findViewById(R.id.dosageUnits);
 
         aliasSwitch.setChecked(medId != -1 && !medication.getAlias().isEmpty());
@@ -193,11 +199,15 @@ public class AddEditFormFragment extends Fragment
                 try
                 {
                     Integer.parseInt(dosageAmountInput.getText().toString());
+
+                    dosageAmountInputLayout.setErrorEnabled(false);
                 }
                 catch (Exception e)
                 {
                     if (!dosageAmountInput.getText().toString().isEmpty())
-                        dosageAmountInput.setError("Provided value is too big");
+                    {
+                        dosageAmountInputLayout.setError("Provided value is too big");
+                    }
                 }
             }
         });
@@ -205,7 +215,9 @@ public class AddEditFormFragment extends Fragment
         aliasSwitch.setOnCheckedChangeListener((compoundButton, b) ->
         {
             if (aliasInputLayout.getVisibility() == View.GONE)
+            {
                 aliasInputLayout.setVisibility(View.VISIBLE);
+            }
             else
             {
                 aliasInputLayout.setVisibility(View.GONE);
@@ -282,6 +294,8 @@ public class AddEditFormFragment extends Fragment
         EditText numberOfTimersPerDay = rootView.findViewById(R.id.numberOfTimersPerDay);
         EditText startDateMultiplePerDay = rootView.findViewById(R.id.startDateMultiplePerDay);
         LinearLayout timesPerDayHolder = rootView.findViewById(R.id.timesPerDayHolder);
+        numberOfTimersPerDayLayout = rootView.findViewById(R.id.numberOfTimersPerDayLayout);
+
 
         startDateMultiplePerDay.setShowSoftInputOnFocus(false);
         startDateMultiplePerDay.setOnFocusChangeListener((view, b) ->
@@ -311,9 +325,20 @@ public class AddEditFormFragment extends Fragment
                 }
                 catch (Exception e)
                 {
-                    numberOfTimersPerDay.setError("Provided value is too big");
+                    numberOfTimersPerDayLayout.setError("Provided value is too big");
 
                     return;
+                }
+
+                if (days > 50)
+                {
+                    numberOfTimersPerDayLayout.setError("Provided value is too big");
+
+                    return;
+                }
+                else
+                {
+                    numberOfTimersPerDayLayout.setErrorEnabled(false);
                 }
 
                 if (timesPerDayHolder.getChildCount() > days)
@@ -403,12 +428,10 @@ public class AddEditFormFragment extends Fragment
 
     private void setCustomFrequencyViews()
     {
-        TextInputEditText customFreqStartDate = rootView.findViewById(R.id.CustomFreqMedStart);
-        TextInputEditText customFreqMedTime = rootView.findViewById(R.id.CustomFreqMedTime);
-        TextInputEditText customFreqMTakenEveryEnter =
-                rootView.findViewById(R.id.CustomFreqMTakenEveryEnter);
-        MaterialAutoCompleteTextView customFreqTimeUnitEnter =
-                rootView.findViewById(R.id.CustomFreqTimeUnitEnter);
+        customFreqStartDate = rootView.findViewById(R.id.CustomFreqMedStart);
+        customFreqMedTime = rootView.findViewById(R.id.CustomFreqMedTime);
+        customFreqMTakenEveryEnter = rootView.findViewById(R.id.CustomFreqMTakenEveryEnter);
+        customFreqTimeUnitEnter = rootView.findViewById(R.id.CustomFreqTimeUnitEnter);
         ArrayList<String> timeUnits = new ArrayList<>();
         ArrayAdapter<String> timeUnitsAdapter;
 
@@ -448,7 +471,9 @@ public class AddEditFormFragment extends Fragment
                 catch (Exception e)
                 {
                     if (!customFreqMTakenEveryEnter.getText().toString().isEmpty())
+                    {
                         customFreqMTakenEveryEnter.setError("Provided value is too big");
+                    }
                 }
             }
         });
@@ -489,17 +514,105 @@ public class AddEditFormFragment extends Fragment
 
     private boolean isNameCardValid()
     {
+        String patientName;
+
+        patientNameInputLayout.setErrorEnabled(false);
+
         if (meButton.isChecked())
+        {
+            medication.setPatientName("ME!");
+
             return true;
+        }
 
+        patientName = patientNameInput.getText().toString();
 
+        if (!patientName.isEmpty() && !patientName.equals("ME!"))
+        {
+            medication.setPatientName(patientName);
+
+            return true;
+        }
+        else if (patientName.equals("ME!"))
+        {
+            patientNameInputLayout.setError("Provided name is invalid");
+        }
+        else
+        {
+            patientNameInputLayout.setError("Please provide a name");
+        }
 
         return false;
     }
 
     private boolean isMedNameAndDosageCardValid()
     {
-        return false;
+        boolean isValid = true;
+
+        medicationNameInputLayout.setErrorEnabled(false);
+        dosageUnitsInputLayout.setErrorEnabled(false);
+
+        if (medNameInput.getText().toString().isEmpty())
+        {
+            medicationNameInputLayout.setError("Please enter a name for this medication");
+            isValid = false;
+        }
+        else
+        {
+            medication.setMedName(medNameInput.getText().toString());
+        }
+
+        if (aliasSwitch.isChecked() && !aliasInput.getText().toString().isEmpty())
+        {
+            medication.setAlias(aliasInput.getText().toString());
+        }
+
+        if (
+                (dosageAmountInputLayout.getError() == null ||
+                intIsParsable(dosageAmountInput.getText().toString())) &&
+                !dosageAmountInput.getText().toString().isEmpty()
+        )
+        {
+            medication.setMedDosage(Integer.parseInt(dosageAmountInput.getText().toString()));
+
+            dosageAmountInputLayout.setErrorEnabled(false);
+        }
+        else
+        {
+            isValid = false;
+
+            if (dosageAmountInput.getText().toString().isEmpty())
+            {
+                dosageAmountInputLayout.setError("Please enter a dosage");
+            }
+        }
+
+        if (dosageUnitsInput.getText().toString().isEmpty())
+        {
+            dosageUnitsInputLayout.setError("Please enter the units for this medication");
+        }
+        else
+        {
+            isValid = false;
+
+            medication.setMedDosageUnits(dosageUnitsInput.getText().toString());
+        }
+
+        return isValid;
+    }
+
+    private boolean intIsParsable(String intToParse)
+    {
+        try
+        {
+            Integer.parseInt(intToParse);
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
     }
 
     private boolean isFrequencyCardValid()

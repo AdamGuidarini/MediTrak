@@ -97,6 +97,7 @@
                         style="@style/standardTextView"/>
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/medicationNameInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="15dp"
@@ -139,6 +140,7 @@
                         android:orientation="horizontal">
 
                         <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/dosageAmountInputLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginBottom="15dp"
@@ -154,6 +156,7 @@
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/dosageUnitsInputLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginBottom="15dp"
@@ -280,6 +283,7 @@
                             </com.google.android.material.textfield.TextInputLayout>
 
                             <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/numberOfTimersPerDayLayout"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:layout_marginBottom="15dp"
@@ -378,7 +382,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
-                                android:hint="Unit of Time"
+                                android:hint="@string/unit_of_time"
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
 
                                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
