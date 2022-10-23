@@ -27,6 +27,9 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 import projects.medicationtracker.Helpers.DBHelper;
@@ -42,6 +45,8 @@ import projects.medicationtracker.SimpleClasses.Medication;
 public class AddEditFormFragment extends Fragment
 {
     final public static String MED_ID = "medId";
+    final public static int MINUTES_IN_DAY = 1440;
+
     private DBHelper db;
 
     private long medId = -1;
@@ -66,10 +71,16 @@ public class AddEditFormFragment extends Fragment
 
     private MaterialAutoCompleteTextView frequencyDropDown;
     private TextInputLayout numberOfTimersPerDayLayout;
+    private EditText dailyMedTime;
+    private EditText dailyMedStartDate;
     private TextInputEditText customFreqStartDate;
     private TextInputEditText customFreqMedTime;
     private TextInputEditText customFreqMTakenEveryEnter;
     private MaterialAutoCompleteTextView customFreqTimeUnitEnter;
+    private EditText startDateMultiplePerDay;
+    private EditText numberOfTimersPerDay;
+    private int selectedFrequencyTypeIndex = -1;
+    private ArrayList<String> timeUnits;
 
     private MaterialButton saveButton;
 
@@ -267,18 +278,24 @@ public class AddEditFormFragment extends Fragment
                     custom.setVisibility(View.GONE);
 
                     multiplePerDay.setVisibility(View.VISIBLE);
+
+                    selectedFrequencyTypeIndex = 0;
                     break;
                 case 1:
                     custom.setVisibility(View.GONE);
                     multiplePerDay.setVisibility(View.GONE);
 
                     dailyLayout.setVisibility(View.VISIBLE);
+
+                    selectedFrequencyTypeIndex = 1;
                     break;
                 case 2:
                     dailyLayout.setVisibility(View.GONE);
                     multiplePerDay.setVisibility(View.GONE);
 
                     custom.setVisibility(View.VISIBLE);
+
+                    selectedFrequencyTypeIndex = 2;
                     break;
             }
         });
@@ -291,8 +308,8 @@ public class AddEditFormFragment extends Fragment
 
     private void setMultiplePerDayFrequencyViews()
     {
-        EditText numberOfTimersPerDay = rootView.findViewById(R.id.numberOfTimersPerDay);
-        EditText startDateMultiplePerDay = rootView.findViewById(R.id.startDateMultiplePerDay);
+        numberOfTimersPerDay = rootView.findViewById(R.id.numberOfTimersPerDay);
+        startDateMultiplePerDay = rootView.findViewById(R.id.startDateMultiplePerDay);
         LinearLayout timesPerDayHolder = rootView.findViewById(R.id.timesPerDayHolder);
         numberOfTimersPerDayLayout = rootView.findViewById(R.id.numberOfTimersPerDayLayout);
 
@@ -387,8 +404,8 @@ public class AddEditFormFragment extends Fragment
 
     private void setDailyFrequencyViews()
     {
-        EditText dailyMedTime = rootView.findViewById(R.id.dailyMedTime);
-        EditText dailyMedStartDate = rootView.findViewById(R.id.dailyMedStart);
+        dailyMedTime = rootView.findViewById(R.id.dailyMedTime);
+        dailyMedStartDate = rootView.findViewById(R.id.dailyMedStart);
 
         dailyMedTime.setShowSoftInputOnFocus(false);
         dailyMedStartDate.setShowSoftInputOnFocus(false);
@@ -428,12 +445,13 @@ public class AddEditFormFragment extends Fragment
 
     private void setCustomFrequencyViews()
     {
+        ArrayAdapter<String> timeUnitsAdapter;
+
         customFreqStartDate = rootView.findViewById(R.id.CustomFreqMedStart);
         customFreqMedTime = rootView.findViewById(R.id.CustomFreqMedTime);
         customFreqMTakenEveryEnter = rootView.findViewById(R.id.CustomFreqMTakenEveryEnter);
         customFreqTimeUnitEnter = rootView.findViewById(R.id.CustomFreqTimeUnitEnter);
-        ArrayList<String> timeUnits = new ArrayList<>();
-        ArrayAdapter<String> timeUnitsAdapter;
+        timeUnits = new ArrayList<>();
 
         customFreqMedTime.setOnFocusChangeListener((view, b) ->
         {
@@ -567,11 +585,7 @@ public class AddEditFormFragment extends Fragment
             medication.setAlias(aliasInput.getText().toString());
         }
 
-        if (
-                (dosageAmountInputLayout.getError() == null ||
-                intIsParsable(dosageAmountInput.getText().toString())) &&
-                !dosageAmountInput.getText().toString().isEmpty()
-        )
+        if ((dosageAmountInputLayout.getError() == null || intIsParsable(dosageAmountInput.getText().toString())) && !dosageAmountInput.getText().toString().isEmpty())
         {
             medication.setMedDosage(Integer.parseInt(dosageAmountInput.getText().toString()));
 
@@ -590,17 +604,116 @@ public class AddEditFormFragment extends Fragment
         if (dosageUnitsInput.getText().toString().isEmpty())
         {
             dosageUnitsInputLayout.setError("Please enter the units for this medication");
+            isValid = false;
         }
         else
         {
-            isValid = false;
-
             medication.setMedDosageUnits(dosageUnitsInput.getText().toString());
         }
 
         return isValid;
     }
 
+    private boolean isFrequencyCardValid()
+    {
+        switch (selectedFrequencyTypeIndex)
+        {
+            case 0:
+                return isMultiplePerDayValid();
+            case 1:
+                return isDailyValid();
+            case 2:
+                return isCustomFrequencyValid();
+        }
+
+        return false;
+    }
+
+    private boolean isMultiplePerDayValid()
+    {
+        //TODO add error messages
+
+        if (!startDateMultiplePerDay.getText().toString().isEmpty() && !numberOfTimersPerDay.getText().toString().isEmpty())
+        {
+            LinearLayout ll = rootView.findViewById(R.id.timesPerDayHolder);
+            LocalDateTime[] times = new LocalDateTime[ll.getChildCount()];
+            LocalDateTime start = LocalDateTime.of((LocalDate) startDateMultiplePerDay.getTag(), LocalTime.now());
+
+            medication.setStartDate(start);
+            medication.setMedFrequency(MINUTES_IN_DAY);
+
+            for (int i = 0; i < ll.getChildCount(); i++)
+            {
+                TextInputLayout childLayout = (TextInputLayout) ll.getChildAt(i);
+                EditText time = (EditText) childLayout.getEditText();
+
+                if (time.getText().toString().isEmpty())
+                {
+                    return false;
+                }
+
+                times[i] = LocalDateTime.of(start.toLocalDate(), (LocalTime) time .getTag());
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isDailyValid()
+    {
+        //TODO add error messages
+
+        if (!dailyMedStartDate.getText().toString().isEmpty() && !dailyMedTime.getText().toString().isEmpty()) {
+            LocalDateTime[] times = {
+                LocalDateTime.of(
+                    (LocalDate) dailyMedStartDate.getTag(), (LocalTime) dailyMedTime.getTag()
+                )
+            };
+
+            medication.setStartDate(times[0]);
+            medication.setTimes(times);
+            medication.setMedFrequency(MINUTES_IN_DAY);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isCustomFrequencyValid()
+    {
+        //TODO add error messages
+
+        boolean allInputsFilled = !(
+            customFreqStartDate.getText().toString().isEmpty()
+            && customFreqMedTime.getText().toString().isEmpty()
+            && customFreqMTakenEveryEnter.getText().toString().isEmpty()
+            && customFreqTimeUnitEnter.getText().toString().isEmpty()
+            && intIsParsable(customFreqTimeUnitEnter.getText().toString())
+        );
+
+        if (allInputsFilled)
+        {
+            LocalDate startDate = (LocalDate) customFreqStartDate.getTag();
+            LocalTime startTime = (LocalTime) customFreqMedTime.getTag();
+            int takenEvery = Integer.parseInt(customFreqTimeUnitEnter.getText().toString());
+            int selectedTimeUnitIndex = timeUnits.indexOf(customFreqTimeUnitEnter.getText().toString());
+
+            medication.setStartDate(LocalDateTime.of(startDate, startTime));
+
+
+        }
+
+        return false;
+    }
+
+    /**
+     * Determines if a string can be parsed to int
+     * @param intToParse String to try to convert
+     * @return True if the string can be converted, else false
+     */
     private boolean intIsParsable(String intToParse)
     {
         try
@@ -613,10 +726,5 @@ public class AddEditFormFragment extends Fragment
         {
             return false;
         }
-    }
-
-    private boolean isFrequencyCardValid()
-    {
-        return false;
     }
 }
