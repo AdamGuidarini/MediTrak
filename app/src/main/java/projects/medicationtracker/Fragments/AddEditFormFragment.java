@@ -73,8 +73,11 @@ public class AddEditFormFragment extends Fragment
     private TextInputLayout numberOfTimersPerDayLayout;
     private EditText dailyMedTime;
     private EditText dailyMedStartDate;
+    private TextInputLayout customFreqStartDateLayout;
     private TextInputEditText customFreqStartDate;
+    private TextInputLayout customFreqTakenEveryLayout;
     private TextInputEditText customFreqMedTime;
+    private TextInputLayout customFreqTimeUnitLayout;
     private TextInputEditText customFreqMTakenEveryEnter;
     private MaterialAutoCompleteTextView customFreqTimeUnitEnter;
     private EditText startDateMultiplePerDay;
@@ -447,11 +450,18 @@ public class AddEditFormFragment extends Fragment
     {
         ArrayAdapter<String> timeUnitsAdapter;
 
+        customFreqStartDateLayout = rootView.findViewById(R.id.customFreqStartDate);
         customFreqStartDate = rootView.findViewById(R.id.CustomFreqMedStart);
         customFreqMedTime = rootView.findViewById(R.id.CustomFreqMedTime);
+        customFreqTimeUnitLayout = rootView.findViewById(R.id.CustomFreqTimeUnitLayout);
+        customFreqTakenEveryLayout = rootView.findViewById(R.id.customFreqTakenEveryLayout);
         customFreqMTakenEveryEnter = rootView.findViewById(R.id.CustomFreqMTakenEveryEnter);
         customFreqTimeUnitEnter = rootView.findViewById(R.id.CustomFreqTimeUnitEnter);
         timeUnits = new ArrayList<>();
+
+        customFreqStartDate.setShowSoftInputOnFocus(false);
+        customFreqMedTime.setShowSoftInputOnFocus(false);
+        customFreqTimeUnitEnter.setShowSoftInputOnFocus(false);
 
         customFreqMedTime.setOnFocusChangeListener((view, b) ->
         {
@@ -485,12 +495,17 @@ public class AddEditFormFragment extends Fragment
                 try
                 {
                     Integer.parseInt(customFreqMTakenEveryEnter.getText().toString());
+
+                    if (Integer.parseInt(customFreqMTakenEveryEnter.getText().toString()) == 0)
+                    {
+                        customFreqTimeUnitLayout.setError("Value must be greater than 0");
+                    }
                 }
                 catch (Exception e)
                 {
                     if (!customFreqMTakenEveryEnter.getText().toString().isEmpty())
                     {
-                        customFreqMTakenEveryEnter.setError("Provided value is too big");
+                        customFreqTimeUnitLayout.setError("Provided value is too big");
                     }
                 }
             }
@@ -691,20 +706,28 @@ public class AddEditFormFragment extends Fragment
             && customFreqMedTime.getText().toString().isEmpty()
             && customFreqMTakenEveryEnter.getText().toString().isEmpty()
             && customFreqTimeUnitEnter.getText().toString().isEmpty()
-            && intIsParsable(customFreqTimeUnitEnter.getText().toString())
+            && intIsParsable(customFreqMTakenEveryEnter.getText().toString())
         );
 
         if (allInputsFilled)
         {
+
             LocalDate startDate = (LocalDate) customFreqStartDate.getTag();
             LocalTime startTime = (LocalTime) customFreqMedTime.getTag();
-            int takenEvery = Integer.parseInt(customFreqTimeUnitEnter.getText().toString());
+            int takenEvery = Integer.parseInt(customFreqMTakenEveryEnter.getText().toString());
             int selectedTimeUnitIndex = timeUnits.indexOf(customFreqTimeUnitEnter.getText().toString());
+
+            if (!customFreqTimeUnitLayout.getError().toString().isEmpty())
+            {
+                return false;
+            }
 
             medication.setStartDate(LocalDateTime.of(startDate, startTime));
 
-
+            return true;
         }
+
+
 
         return false;
     }
