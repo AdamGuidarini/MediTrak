@@ -31,6 +31,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
@@ -69,6 +70,7 @@ public class AddEditFormFragment extends Fragment
     private TextInputLayout dosageUnitsInputLayout;
     private EditText dosageUnitsInput;
 
+    private TextInputLayout frequencyDropdownLayout;
     private MaterialAutoCompleteTextView frequencyDropDown;
     private TextInputLayout numberOfTimersPerDayLayout;
     private EditText dailyMedTime;
@@ -76,6 +78,7 @@ public class AddEditFormFragment extends Fragment
     private TextInputLayout customFreqStartDateLayout;
     private TextInputEditText customFreqStartDate;
     private TextInputLayout customFreqTakenEveryLayout;
+    private TextInputLayout customFreqTimeTakenLayout;
     private TextInputEditText customFreqMedTime;
     private TextInputLayout customFreqTimeUnitLayout;
     private TextInputEditText customFreqMTakenEveryEnter;
@@ -260,7 +263,10 @@ public class AddEditFormFragment extends Fragment
         ArrayAdapter<String> frequencyOptions;
         ArrayList<String> options = new ArrayList<>();
 
+        frequencyDropdownLayout = rootView.findViewById(R.id.frequencyDropdownLayout);
         frequencyDropDown = rootView.findViewById(R.id.frequencyOptionsDropdown);
+
+        frequencyDropDown.setShowSoftInputOnFocus(false);
 
         options.add(getString(R.string.multiple_times_per_day));
         options.add(getString(R.string.daily));
@@ -274,6 +280,8 @@ public class AddEditFormFragment extends Fragment
 
         frequencyDropDown.setOnItemClickListener((adapterView, view, i, l) ->
         {
+            frequencyDropdownLayout.setErrorEnabled(false);
+
             switch (i)
             {
                 case 0:
@@ -345,14 +353,20 @@ public class AddEditFormFragment extends Fragment
                 }
                 catch (Exception e)
                 {
-                    numberOfTimersPerDayLayout.setError("Provided value is too big");
+                    numberOfTimersPerDayLayout.setError("Provided value cannot exceed 50");
 
                     return;
                 }
 
                 if (days > 50)
                 {
-                    numberOfTimersPerDayLayout.setError("Provided value is too big");
+                    numberOfTimersPerDayLayout.setError("Provided value cannot exceed 50");
+
+                    return;
+                }
+                else if (days == 0)
+                {
+                    numberOfTimersPerDayLayout.setError("Provided value must be greater than 0");
 
                     return;
                 }
@@ -455,6 +469,7 @@ public class AddEditFormFragment extends Fragment
         customFreqMedTime = rootView.findViewById(R.id.CustomFreqMedTime);
         customFreqTimeUnitLayout = rootView.findViewById(R.id.CustomFreqTimeUnitLayout);
         customFreqTakenEveryLayout = rootView.findViewById(R.id.customFreqTakenEveryLayout);
+        customFreqTimeTakenLayout = rootView.findViewById(R.id.CustomFreqTimeTakenLayout);
         customFreqMTakenEveryEnter = rootView.findViewById(R.id.CustomFreqMTakenEveryEnter);
         customFreqTimeUnitEnter = rootView.findViewById(R.id.CustomFreqTimeUnitEnter);
         timeUnits = new ArrayList<>();
@@ -492,20 +507,22 @@ public class AddEditFormFragment extends Fragment
             @Override
             public void afterTextChanged(Editable editable)
             {
+                customFreqTakenEveryLayout.setErrorEnabled(false);
+
                 try
                 {
                     Integer.parseInt(customFreqMTakenEveryEnter.getText().toString());
 
                     if (Integer.parseInt(customFreqMTakenEveryEnter.getText().toString()) == 0)
                     {
-                        customFreqTimeUnitLayout.setError("Value must be greater than 0");
+                        customFreqTakenEveryLayout.setError("Value must be greater than 0");
                     }
                 }
                 catch (Exception e)
                 {
                     if (!customFreqMTakenEveryEnter.getText().toString().isEmpty())
                     {
-                        customFreqTimeUnitLayout.setError("Provided value is too big");
+                        customFreqTakenEveryLayout.setError("Provided value is too big");
                     }
                 }
             }
@@ -639,6 +656,8 @@ public class AddEditFormFragment extends Fragment
                 return isDailyValid();
             case 2:
                 return isCustomFrequencyValid();
+            default:
+                frequencyDropdownLayout.setError("Please select a frequency type");
         }
 
         return false;
@@ -646,13 +665,21 @@ public class AddEditFormFragment extends Fragment
 
     private boolean isMultiplePerDayValid()
     {
-        //TODO add error messages
+        TextInputLayout multiplePerDayStartDateLayout =
+                rootView.findViewById(R.id.multiplePerDayStartDateLayout);
 
-        if (!startDateMultiplePerDay.getText().toString().isEmpty() && !numberOfTimersPerDay.getText().toString().isEmpty())
+        if (!startDateMultiplePerDay.getText().toString().isEmpty()
+            && !numberOfTimersPerDay.getText().toString().isEmpty()
+            && intIsParsable(numberOfTimersPerDay.getText().toString())
+            && numberOfTimersPerDayLayout.getError() == null)
         {
             LinearLayout ll = rootView.findViewById(R.id.timesPerDayHolder);
             LocalDateTime[] times = new LocalDateTime[ll.getChildCount()];
             LocalDateTime start = LocalDateTime.of((LocalDate) startDateMultiplePerDay.getTag(), LocalTime.now());
+            int errorCount = 0;
+
+            multiplePerDayStartDateLayout.setErrorEnabled(false);
+            numberOfTimersPerDayLayout.setErrorEnabled(false);
 
             medication.setStartDate(start);
             medication.setMedFrequency(MINUTES_IN_DAY);
@@ -660,17 +687,42 @@ public class AddEditFormFragment extends Fragment
             for (int i = 0; i < ll.getChildCount(); i++)
             {
                 TextInputLayout childLayout = (TextInputLayout) ll.getChildAt(i);
-                EditText time = (EditText) childLayout.getEditText();
+                EditText time = childLayout.getEditText();
+
+                childLayout.setErrorEnabled(false);
 
                 if (time.getText().toString().isEmpty())
                 {
-                    return false;
-                }
+                    childLayout.setError("Please select a time");
 
-                times[i] = LocalDateTime.of(start.toLocalDate(), (LocalTime) time .getTag());
+                    errorCount++;
+                }
+                else
+                {
+                    times[i] = LocalDateTime.of(start.toLocalDate(), (LocalTime) time .getTag());
+                }
             }
 
+            if (errorCount > 0)
+            {
+                return false;
+            }
+
+            medication.setTimes(times);
+
             return true;
+        }
+
+        if (startDateMultiplePerDay.getText().toString().isEmpty())
+        {
+            multiplePerDayStartDateLayout.setError("Please select a start date.");
+        }
+
+        if (numberOfTimersPerDay.getText().toString().isEmpty())
+        {
+            numberOfTimersPerDayLayout.setError(
+                    "Please enter the number of times this medication is taken in a day"
+            );
         }
 
         return false;
@@ -678,7 +730,11 @@ public class AddEditFormFragment extends Fragment
 
     private boolean isDailyValid()
     {
-        //TODO add error messages
+        TextInputLayout dailyStartDateLayout = rootView.findViewById(R.id.startDateTaken);
+        TextInputLayout timeTakenLayout = rootView.findViewById(R.id.timeTakenLayout);
+
+        dailyStartDateLayout.setErrorEnabled(false);
+        timeTakenLayout.setErrorEnabled(false);
 
         if (!dailyMedStartDate.getText().toString().isEmpty() && !dailyMedTime.getText().toString().isEmpty()) {
             LocalDateTime[] times = {
@@ -694,40 +750,85 @@ public class AddEditFormFragment extends Fragment
             return true;
         }
 
+        if (dailyMedStartDate.getText().toString().isEmpty())
+        {
+            dailyStartDateLayout.setError("Please select a start date.");
+        }
+
+        if (dailyMedTime.getText().toString().isEmpty())
+        {
+            timeTakenLayout.setError("Please select a time.");
+        }
+
         return false;
     }
 
     private boolean isCustomFrequencyValid()
     {
-        //TODO add error messages
-
         boolean allInputsFilled = !(
-            customFreqStartDate.getText().toString().isEmpty()
-            && customFreqMedTime.getText().toString().isEmpty()
-            && customFreqMTakenEveryEnter.getText().toString().isEmpty()
+            Objects.requireNonNull(customFreqStartDate.getText()).toString().isEmpty()
+            && Objects.requireNonNull(customFreqMedTime.getText()).toString().isEmpty()
+            && Objects.requireNonNull(customFreqMTakenEveryEnter.getText()).toString().isEmpty()
             && customFreqTimeUnitEnter.getText().toString().isEmpty()
-            && intIsParsable(customFreqMTakenEveryEnter.getText().toString())
-        );
+            ) && intIsParsable(Objects.requireNonNull(customFreqMTakenEveryEnter.getText()).toString())
+        ;
 
         if (allInputsFilled)
         {
 
             LocalDate startDate = (LocalDate) customFreqStartDate.getTag();
             LocalTime startTime = (LocalTime) customFreqMedTime.getTag();
-            int takenEvery = Integer.parseInt(customFreqMTakenEveryEnter.getText().toString());
             int selectedTimeUnitIndex = timeUnits.indexOf(customFreqTimeUnitEnter.getText().toString());
+            int takenEvery = Integer.parseInt(customFreqMTakenEveryEnter.getText().toString());
 
-            if (!customFreqTimeUnitLayout.getError().toString().isEmpty())
+            customFreqStartDateLayout.setErrorEnabled(false);
+            customFreqTimeTakenLayout.setErrorEnabled(false);
+            customFreqTimeUnitLayout.setErrorEnabled(false);
+
+            if (customFreqTakenEveryLayout.getError() != null)
             {
                 return false;
             }
 
             medication.setStartDate(LocalDateTime.of(startDate, startTime));
 
+            switch (selectedTimeUnitIndex)
+            {
+                case 3:
+                    takenEvery *= 7;
+                case 2:
+                    takenEvery *= 24;
+                case 1:
+                    takenEvery *= 60;
+            }
+
+            medication.setMedFrequency(takenEvery);
+            medication.setTimes(new LocalDateTime[]{LocalDateTime.of(startDate, startTime)});
+
             return true;
         }
 
+        if (customFreqStartDate.getText().toString().isEmpty())
+        {
+            customFreqStartDateLayout.setError("Please select a start date.");
+        }
 
+        if (Objects.requireNonNull(customFreqMedTime.getText()).toString().isEmpty())
+        {
+            customFreqTimeTakenLayout.setError("Please enter a start time.");
+        }
+
+        if (customFreqMTakenEveryEnter.getText().toString().isEmpty())
+        {
+            customFreqTakenEveryLayout.setError(
+                    "Please enter how often the medication is taken."
+            );
+        }
+
+        if (customFreqTimeUnitEnter.getText().toString().isEmpty())
+        {
+            customFreqTimeUnitLayout.setError("Please select a time unit.");
+        }
 
         return false;
     }
