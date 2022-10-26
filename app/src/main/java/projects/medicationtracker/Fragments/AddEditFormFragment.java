@@ -1,5 +1,6 @@
 package projects.medicationtracker.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.core.content.ContextCompat;
@@ -35,6 +36,7 @@ import java.util.Objects;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.MainActivity;
 import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Medication;
 
@@ -133,6 +135,9 @@ public class AddEditFormFragment extends Fragment
         return rootView;
     }
 
+    /**
+     * Builds all views in activity
+     */
     private void buildViews()
     {
         setPatientCard();
@@ -140,6 +145,9 @@ public class AddEditFormFragment extends Fragment
         setFrequencyCard();
     }
 
+    /**
+     * Prepares medication card
+     */
     private void setPatientCard()
     {
         ArrayAdapter<String> patientNamesAdapter;
@@ -188,6 +196,9 @@ public class AddEditFormFragment extends Fragment
         });
     }
 
+    /**
+     * Prepares input for medication dosage & name card
+     */
     private void setMedNameAndDosageCard()
     {
         medicationNameInputLayout = rootView.findViewById(R.id.medicationNameInputLayout);
@@ -255,6 +266,9 @@ public class AddEditFormFragment extends Fragment
         }
     }
 
+    /**
+     * Prepares frequency card
+     */
     private void setFrequencyCard()
     {
         RelativeLayout dailyLayout = rootView.findViewById(R.id.dailyMedFrequency);
@@ -317,6 +331,9 @@ public class AddEditFormFragment extends Fragment
         setSaveButton();
     }
 
+    /**
+     * Sets UI for multiple per day input
+     */
     private void setMultiplePerDayFrequencyViews()
     {
         numberOfTimersPerDay = rootView.findViewById(R.id.numberOfTimersPerDay);
@@ -419,6 +436,9 @@ public class AddEditFormFragment extends Fragment
         });
     }
 
+    /**
+     * Sets UI for daily medication input
+     */
     private void setDailyFrequencyViews()
     {
         dailyMedTime = rootView.findViewById(R.id.dailyMedTime);
@@ -460,6 +480,9 @@ public class AddEditFormFragment extends Fragment
         }
     }
 
+    /**
+     * Builds UI for custom frequency
+     */
     private void setCustomFrequencyViews()
     {
         ArrayAdapter<String> timeUnitsAdapter;
@@ -540,6 +563,9 @@ public class AddEditFormFragment extends Fragment
         customFreqTimeUnitEnter.setAdapter(timeUnitsAdapter);
     }
 
+    /**
+     * Creates an onClickListener for the save button
+     */
     private void setSaveButton()
     {
         saveButton = rootView.findViewById(R.id.saveButton);
@@ -550,18 +576,51 @@ public class AddEditFormFragment extends Fragment
         }));
     }
 
+    /**
+     * Saves medication and calls validation methods. Validation methods also assign/update values
+     *  of the medication being created/edited.
+     */
     private void saveMedication()
     {
-        if (isNameCardValid() && isMedNameAndDosageCardValid() && isFrequencyCardValid())
+        boolean nameCardValid = isNameCardValid(),
+                dosageCardValid = isMedNameAndDosageCardValid(),
+                frequencyCardValid = isFrequencyCardValid();
+        Intent intent = new Intent(rootView.getContext(), MainActivity.class);
+
+        if (!(nameCardValid && dosageCardValid && frequencyCardValid))
         {
-            Toast.makeText(rootView.getContext(), "This med can be saved", Toast.LENGTH_SHORT).show();
+            return;
         }
-        else
+
+        if (medId == -1)
         {
-            Toast.makeText(rootView.getContext(), "This med cannot be saved", Toast.LENGTH_SHORT).show();
+            long id = db.addMedication(
+                    medication.getMedName(),
+                    medication.getPatientName(),
+                    String.valueOf(medication.getMedDosage()),
+                    medication.getMedDosageUnits(),
+                    TimeFormatting.localDateTimeToString(medication.getStartDate()),
+                    (int) medication.getMedFrequency(),
+                    medication.getAlias()
+            );
+
+            for (LocalDateTime time : medication.getTimes())
+            {
+                db.addDoseTime(
+                        id,
+                        TimeFormatting.formatTimeForDB(time.getHour(), time.getMinute())
+                );
+            }
+
+            getActivity().finish();
+            startActivity(intent);
         }
     }
 
+    /**
+     * Validates patient name input card
+     * @return True if valid
+     */
     private boolean isNameCardValid()
     {
         String patientName;
@@ -595,6 +654,11 @@ public class AddEditFormFragment extends Fragment
         return false;
     }
 
+    /**
+     * Validates medication name and dosage information are valid. Sets error messages for invalid
+     *  items.
+     * @return True if valid.
+     */
     private boolean isMedNameAndDosageCardValid()
     {
         boolean isValid = true;
@@ -646,6 +710,11 @@ public class AddEditFormFragment extends Fragment
         return isValid;
     }
 
+    /**
+     * Determines which frequency option is selected and which form to validate.
+     * @return False if no option is selected, else the return value of the validation method for
+     *  the selected form.
+     */
     private boolean isFrequencyCardValid()
     {
         switch (selectedFrequencyTypeIndex)
@@ -663,6 +732,10 @@ public class AddEditFormFragment extends Fragment
         return false;
     }
 
+    /**
+     * Determines if the multiple per day card is valid & sets error messages on any invalid items.
+     * @return True if valid
+     */
     private boolean isMultiplePerDayValid()
     {
         TextInputLayout multiplePerDayStartDateLayout =
@@ -728,6 +801,10 @@ public class AddEditFormFragment extends Fragment
         return false;
     }
 
+    /**
+     * Determines if the daily medication card is valid and set error messages on any invalid items.
+     * @return True if valid.
+     */
     private boolean isDailyValid()
     {
         TextInputLayout dailyStartDateLayout = rootView.findViewById(R.id.startDateTaken);
@@ -763,6 +840,11 @@ public class AddEditFormFragment extends Fragment
         return false;
     }
 
+    /**
+     * Determines if the contents of the frequency card are valid if custom frequency is selected.
+     * Sets error messages on any invalid items.
+     * @return True if valid, false if invalid
+     */
     private boolean isCustomFrequencyValid()
     {
         boolean allInputsFilled = !(
