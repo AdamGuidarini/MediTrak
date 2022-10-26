@@ -937,6 +937,9 @@ public class AddEditFormFragment extends Fragment
         }
     }
 
+    /**
+     * Schedules a notification for medication/dose time
+     */
     private void scheduleNotifications()
     {
         long[] medicationTimeIds = db.getMedicationTimeIds(medication);
