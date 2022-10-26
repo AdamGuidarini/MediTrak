@@ -20,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -35,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.MainActivity;
 import projects.medicationtracker.R;
@@ -604,13 +604,16 @@ public class AddEditFormFragment extends Fragment
                     medication.getAlias()
             );
 
+            medication.setMedId(id);
+
             for (LocalDateTime time : medication.getTimes())
             {
                 db.addDoseTime(
-                        id,
-                        TimeFormatting.formatTimeForDB(time.getHour(), time.getMinute())
+                        id, TimeFormatting.formatTimeForDB(time.getHour(), time.getMinute())
                 );
             }
+
+            scheduleNotifications();
 
             getActivity().finish();
             startActivity(intent);
@@ -931,6 +934,36 @@ public class AddEditFormFragment extends Fragment
         catch (Exception e)
         {
             return false;
+        }
+    }
+
+    private void scheduleNotifications()
+    {
+        long[] medicationTimeIds = db.getMedicationTimeIds(medication);
+
+        if (medication.getMedFrequency() == 1440)
+        {
+            NotificationHelper.scheduleNotification(
+                    rootView.getContext(),
+                    medication,
+                    LocalDateTime.of(LocalDate.now(), medication.getTimes()[0].toLocalTime()),
+                    medication.getMedId()
+            );
+        }
+        else
+        {
+            for (int i = 0; i < medicationTimeIds.length; i++)
+            {
+                NotificationHelper.scheduleNotification(
+                        rootView.getContext(),
+                        medication,
+                        LocalDateTime.of(
+                                medication.getStartDate().toLocalDate(),
+                                medication.getTimes()[i].toLocalTime()
+                        ),
+                        medicationTimeIds[i] * -1
+                );
+            }
         }
     }
 }
