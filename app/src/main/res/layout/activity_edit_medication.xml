@@ -308,7 +308,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="20dp"
-                            android:labelFor="@id/enterFrequency"
+                            android:labelFor="@+id/enterFrequency"
                             android:text="@string/taken_every"/>
 
                         <EditText
