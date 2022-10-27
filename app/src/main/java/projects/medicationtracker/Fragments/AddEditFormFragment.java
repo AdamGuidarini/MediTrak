@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -37,6 +38,7 @@ import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.MainActivity;
+import projects.medicationtracker.MyMedications;
 import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Medication;
 
@@ -261,7 +263,7 @@ public class AddEditFormFragment extends Fragment
                 aliasInput.setText(medication.getAlias());
             }
 
-            dosageAmountInput.setText(medication.getMedDosage());
+            dosageAmountInput.setText(String.valueOf(medication.getMedDosage()));
             dosageUnitsInput.setText(medication.getMedDosageUnits());
         }
     }
@@ -585,7 +587,7 @@ public class AddEditFormFragment extends Fragment
         boolean nameCardValid = isNameCardValid(),
                 dosageCardValid = isMedNameAndDosageCardValid(),
                 frequencyCardValid = isFrequencyCardValid();
-        Intent intent = new Intent(rootView.getContext(), MainActivity.class);
+        Intent intent;
 
         if (!(nameCardValid && dosageCardValid && frequencyCardValid))
         {
@@ -594,6 +596,8 @@ public class AddEditFormFragment extends Fragment
 
         if (medId == -1)
         {
+            intent = new Intent(rootView.getContext(), MainActivity.class);
+
             long id = db.addMedication(
                     medication.getMedName(),
                     medication.getPatientName(),
@@ -613,6 +617,18 @@ public class AddEditFormFragment extends Fragment
                 );
             }
 
+            scheduleNotifications();
+
+            getActivity().finish();
+            startActivity(intent);
+        }
+        else
+        {
+            intent = new Intent(rootView.getContext(), MyMedications.class);
+
+            db.updateMedication(medication);
+
+            clearExistingNotifications();
             scheduleNotifications();
 
             getActivity().finish();
@@ -966,6 +982,23 @@ public class AddEditFormFragment extends Fragment
                         ),
                         medicationTimeIds[i] * -1
                 );
+            }
+        }
+    }
+
+    private void clearExistingNotifications()
+    {
+        long[] medIds = db.getMedicationTimeIds(medication);
+
+        if (medIds.length == 0)
+        {
+            NotificationHelper.deletePendingNotification(medication.getMedId(), rootView.getContext());
+        }
+        else
+        {
+            for (long id : medIds)
+            {
+                NotificationHelper.deletePendingNotification(id * -1, rootView.getContext());
             }
         }
     }

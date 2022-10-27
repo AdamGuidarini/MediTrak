@@ -19,355 +19,360 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/editMedCard"
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/editFragmentView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="5dp"
-                app:cardCornerRadius="5dp">
+                android:layout_height="wrap_content"/>
 
-                <TableLayout
-                    android:id="@+id/medDetailsTable"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="10dp">
+<!--            <androidx.cardview.widget.CardView-->
+<!--                android:id="@+id/editMedCard"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_marginLeft="5dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:layout_marginRight="5dp"-->
+<!--                app:cardCornerRadius="5dp">-->
 
-                    <TableRow
-                        android:id="@+id/patientName"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+<!--                <TableLayout-->
+<!--                    android:id="@+id/medDetailsTable"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_marginBottom="10dp">-->
 
-                        <LinearLayout
-                            android:id="@+id/editPatientLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
+<!--                    <TableRow-->
+<!--                        android:id="@+id/patientName"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent">-->
 
-                            <TextView
-                                android:id="@+id/patientNameTextView"
-                                android:text="@string/patient_name"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="24dp"/>
+<!--                        <LinearLayout-->
+<!--                            android:id="@+id/editPatientLayout"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:orientation="vertical">-->
 
-                            <RadioGroup
-                                android:id="@+id/editPatientGroup"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
+<!--                            <TextView-->
+<!--                                android:id="@+id/patientNameTextView"-->
+<!--                                android:text="@string/patient_name"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_marginStart="20dp"-->
+<!--                                android:layout_marginTop="24dp"/>-->
 
-                                <RadioButton
-                                    android:id="@+id/meButtonEdit"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="20dp"
-                                    android:tag="ME!"
-                                    android:text="@string/patientIsMe"
-                                    android:checked="true"/>
+<!--                            <RadioGroup-->
+<!--                                android:id="@+id/editPatientGroup"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content">-->
 
-                                <RadioButton
-                                    android:id="@+id/otherButtonEdit"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="20dp"
-                                    android:text="@string/other"/>
-                            </RadioGroup>
+<!--                                <RadioButton-->
+<!--                                    android:id="@+id/meButtonEdit"-->
+<!--                                    android:layout_width="wrap_content"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_marginStart="20dp"-->
+<!--                                    android:tag="ME!"-->
+<!--                                    android:text="@string/patientIsMe"-->
+<!--                                    android:checked="true"/>-->
 
-                            <EditText
-                                android:id="@+id/editPatientNameEditText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_marginStart="20dp"
-                                android:ems="10"
-                                android:hint="@string/name"
-                                android:importantForAutofill="no"
-                                android:inputType="textAutoComplete"
-                                android:visibility="gone" />
-                        </LinearLayout>
+<!--                                <RadioButton-->
+<!--                                    android:id="@+id/otherButtonEdit"-->
+<!--                                    android:layout_width="wrap_content"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_marginStart="20dp"-->
+<!--                                    android:text="@string/other"/>-->
+<!--                            </RadioGroup>-->
 
-                    </TableRow>
+<!--                            <EditText-->
+<!--                                android:id="@+id/editPatientNameEditText"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="match_parent"-->
+<!--                                android:layout_marginStart="20dp"-->
+<!--                                android:ems="10"-->
+<!--                                android:hint="@string/name"-->
+<!--                                android:importantForAutofill="no"-->
+<!--                                android:inputType="textAutoComplete"-->
+<!--                                android:visibility="gone" />-->
+<!--                        </LinearLayout>-->
 
-                    <TableRow
-                        android:id="@+id/medicationName"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+<!--                    </TableRow>-->
 
-                        <LinearLayout
-                            android:id="@+id/editMedicationNameLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
+<!--                    <TableRow-->
+<!--                        android:id="@+id/medicationName"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent" >-->
 
-                            <TextView
-                                android:id="@+id/editMedNameLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="24dp"
-                                android:labelFor="@+id/editMedicationName"
-                                android:text="@string/medication_name"/>
+<!--                        <LinearLayout-->
+<!--                            android:id="@+id/editMedicationNameLayout"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:orientation="vertical">-->
 
-                            <EditText
-                                android:id="@+id/editMedicationName"
-                                android:layout_width="350dp"
-                                android:layout_height="54dp"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="15dp" />
-                        </LinearLayout>
-                    </TableRow>
+<!--                            <TextView-->
+<!--                                android:id="@+id/editMedNameLabel"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_marginStart="20dp"-->
+<!--                                android:layout_marginTop="24dp"-->
+<!--                                android:labelFor="@+id/editMedicationName"-->
+<!--                                android:text="@string/medication_name"/>-->
 
-                    <TableRow
-                        android:id="@+id/medicationAlias"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+<!--                            <EditText-->
+<!--                                android:id="@+id/editMedicationName"-->
+<!--                                android:layout_width="350dp"-->
+<!--                                android:layout_height="54dp"-->
+<!--                                android:layout_marginStart="20dp"-->
+<!--                                android:layout_marginTop="15dp" />-->
+<!--                        </LinearLayout>-->
+<!--                    </TableRow>-->
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
+<!--                    <TableRow-->
+<!--                        android:id="@+id/medicationAlias"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent" >-->
 
-                            <TextView
-                                android:id="@+id/editAliasLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="24dp"
-                                android:text="@string/alias_for_medication"/>
+<!--                        <LinearLayout-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:orientation="vertical">-->
 
-                            <EditText
-                                android:id="@+id/editAlias"
-                                android:layout_width="350dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:hint="@string/no_alias"
-                                android:importantForAutofill="no"
-                                android:inputType="text" />
-                        </LinearLayout>
-                    </TableRow>
+<!--                            <TextView-->
+<!--                                android:id="@+id/editAliasLabel"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_marginStart="20dp"-->
+<!--                                android:layout_marginTop="24dp"-->
+<!--                                android:text="@string/alias_for_medication"/>-->
 
-                    <TableRow
-                        android:id="@+id/editDosageAndUnits"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+<!--                            <EditText-->
+<!--                                android:id="@+id/editAlias"-->
+<!--                                android:layout_width="350dp"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_marginStart="20dp"-->
+<!--                                android:hint="@string/no_alias"-->
+<!--                                android:importantForAutofill="no"-->
+<!--                                android:inputType="text" />-->
+<!--                        </LinearLayout>-->
+<!--                    </TableRow>-->
 
-                        <LinearLayout
-                            android:id="@+id/editDosageLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
+<!--                    <TableRow-->
+<!--                        android:id="@+id/editDosageAndUnits"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent">-->
 
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical">
+<!--                        <LinearLayout-->
+<!--                            android:id="@+id/editDosageLayout"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:orientation="horizontal">-->
 
-                                <TextView
-                                    android:id="@+id/editMedDosageLabel"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="20dp"
-                                    android:layout_marginTop="27dp"
-                                    android:labelFor="@+id/medDosageEnter"
-                                    android:text="@string/medication_dosage"/>
+<!--                            <LinearLayout-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="match_parent"-->
+<!--                                android:orientation="vertical">-->
 
-                                <EditText
-                                    android:id="@+id/editMedDosageEnter"
-                                    android:layout_width="140dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="20dp"
-                                    android:layout_marginTop="15dp"
-                                    android:importantForAutofill="no"
-                                    android:inputType="numberDecimal"/>
-                            </LinearLayout>
+<!--                                <TextView-->
+<!--                                    android:id="@+id/editMedDosageLabel"-->
+<!--                                    android:layout_width="wrap_content"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_marginStart="20dp"-->
+<!--                                    android:layout_marginTop="27dp"-->
+<!--                                    android:labelFor="@+id/medDosageEnter"-->
+<!--                                    android:text="@string/medication_dosage"/>-->
 
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical">
+<!--                                <EditText-->
+<!--                                    android:id="@+id/editMedDosageEnter"-->
+<!--                                    android:layout_width="140dp"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_marginStart="20dp"-->
+<!--                                    android:layout_marginTop="15dp"-->
+<!--                                    android:importantForAutofill="no"-->
+<!--                                    android:inputType="numberDecimal"/>-->
+<!--                            </LinearLayout>-->
 
-                                <TextView
-                                    android:id="@+id/editMedUnits"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="20dp"
-                                    android:layout_marginTop="27dp"
-                                    android:labelFor="@+id/editTextUnits"
-                                    android:text="@string/units"/>
+<!--                            <LinearLayout-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="match_parent"-->
+<!--                                android:orientation="vertical">-->
 
-                                <EditText
-                                    android:id="@+id/editEnterMedUnits"
-                                    android:layout_width="140dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="20dp"
-                                    android:layout_marginTop="15dp"
-                                    android:hint="@string/unitExample"
-                                    android:ems="10"/>
-                            </LinearLayout>
+<!--                                <TextView-->
+<!--                                    android:id="@+id/editMedUnits"-->
+<!--                                    android:layout_width="wrap_content"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_marginStart="20dp"-->
+<!--                                    android:layout_marginTop="27dp"-->
+<!--                                    android:labelFor="@+id/editTextUnits"-->
+<!--                                    android:text="@string/units"/>-->
 
-                        </LinearLayout>
-                    </TableRow>
+<!--                                <EditText-->
+<!--                                    android:id="@+id/editEnterMedUnits"-->
+<!--                                    android:layout_width="140dp"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_marginStart="20dp"-->
+<!--                                    android:layout_marginTop="15dp"-->
+<!--                                    android:hint="@string/unitExample"-->
+<!--                                    android:ems="10"/>-->
+<!--                            </LinearLayout>-->
 
-                    <TableRow
-                        android:id="@+id/medicationFrequency"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+<!--                        </LinearLayout>-->
+<!--                    </TableRow>-->
 
-                        <LinearLayout
-                            android:id="@+id/editFrequencyLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
+<!--                    <TableRow-->
+<!--                        android:id="@+id/medicationFrequency"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent" >-->
 
-                            <TextView
-                                android:id="@+id/EditChooseIntervalLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="24dp"
-                                android:text="@string/frequency" />
+<!--                        <LinearLayout-->
+<!--                            android:id="@+id/editFrequencyLayout"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:orientation="vertical">-->
 
-                            <RadioGroup
-                                android:id="@+id/editFreuqencyGroup"
-                                android:layout_width="187dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp">
+<!--                            <TextView-->
+<!--                                android:id="@+id/EditChooseIntervalLabel"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_marginStart="20dp"-->
+<!--                                android:layout_marginTop="24dp"-->
+<!--                                android:text="@string/frequency" />-->
 
-                                <RadioButton
-                                    android:id="@+id/editMultiplePerDay"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/multiple_times_per_day"/>
+<!--                            <RadioGroup-->
+<!--                                android:id="@+id/editFreuqencyGroup"-->
+<!--                                android:layout_width="187dp"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_marginStart="20dp">-->
 
-                                <RadioButton
-                                    android:id="@+id/editDailyButton"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/daily"/>
+<!--                                <RadioButton-->
+<!--                                    android:id="@+id/editMultiplePerDay"-->
+<!--                                    android:layout_width="match_parent"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:text="@string/multiple_times_per_day"/>-->
 
-                                <RadioButton
-                                    android:id="@+id/editCustomFreqButton"
-                                    android:layout_width="160dp"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/custom_frequency" />
+<!--                                <RadioButton-->
+<!--                                    android:id="@+id/editDailyButton"-->
+<!--                                    android:layout_width="match_parent"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:text="@string/daily"/>-->
 
-                            </RadioGroup>
-                        </LinearLayout>
-                    </TableRow>
-                    <LinearLayout
-                        android:id="@+id/editTimeLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+<!--                                <RadioButton-->
+<!--                                    android:id="@+id/editCustomFreqButton"-->
+<!--                                    android:layout_width="160dp"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:text="@string/custom_frequency" />-->
 
-                        <TextView
-                            android:id="@+id/timesPerDayLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="20dp"
-                            android:visibility="gone"
-                            android:text="@string/times_per_day"/>
+<!--                            </RadioGroup>-->
+<!--                        </LinearLayout>-->
+<!--                    </TableRow>-->
+<!--                    <LinearLayout-->
+<!--                        android:id="@+id/editTimeLayout"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:orientation="vertical">-->
 
-                        <EditText
-                            android:id="@+id/editNumTimesTaken"
-                            android:layout_width="350dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:autofillHints=""
-                            android:ems="10"
-                            android:hint="@string/times_per_day"
-                            android:inputType="number"
-                            android:visibility="gone"/>
+<!--                        <TextView-->
+<!--                            android:id="@+id/timesPerDayLabel"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:layout_marginStart="20dp"-->
+<!--                            android:visibility="gone"-->
+<!--                            android:text="@string/times_per_day"/>-->
 
-                        <LinearLayout
-                            android:id="@+id/editTimesInDay"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"/>
+<!--                        <EditText-->
+<!--                            android:id="@+id/editNumTimesTaken"-->
+<!--                            android:layout_width="350dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="20dp"-->
+<!--                            android:autofillHints=""-->
+<!--                            android:ems="10"-->
+<!--                            android:hint="@string/times_per_day"-->
+<!--                            android:inputType="number"-->
+<!--                            android:visibility="gone"/>-->
 
-                        <TextView
-                            android:id="@+id/editTimeTaken1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="20dp"
-                            android:text="@string/atThisTime"
-                            android:visibility="gone"/>
+<!--                        <LinearLayout-->
+<!--                            android:id="@+id/editTimesInDay"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:orientation="vertical"/>-->
 
-                    </LinearLayout>
+<!--                        <TextView-->
+<!--                            android:id="@+id/editTimeTaken1"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:layout_marginStart="20dp"-->
+<!--                            android:text="@string/atThisTime"-->
+<!--                            android:visibility="gone"/>-->
 
-                    <LinearLayout
-                        android:id="@+id/editCustomFrequencyLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:visibility="gone">
+<!--                    </LinearLayout>-->
 
-                        <TextView
-                            android:id="@+id/editTakenEvery"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:labelFor="@+id/enterFrequency"
-                            android:text="@string/taken_every"/>
+<!--                    <LinearLayout-->
+<!--                        android:id="@+id/editCustomFrequencyLayout"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:orientation="vertical"-->
+<!--                        android:visibility="gone">-->
 
-                        <EditText
-                            android:id="@+id/editEnterFrequency"
-                            android:layout_width="132dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:ems="10"
-                            android:importantForAutofill="no"
-                            android:inputType="number" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/editTakenEvery"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="20dp"-->
+<!--                            android:labelFor="@+id/enterFrequency"-->
+<!--                            android:text="@string/taken_every"/>-->
 
-                        <Spinner
-                            android:id="@+id/editFrequencySpinner"
-                            android:layout_width="165dp"
-                            android:layout_height="37dp"
-                            android:layout_marginStart="20dp" />
+<!--                        <EditText-->
+<!--                            android:id="@+id/editEnterFrequency"-->
+<!--                            android:layout_width="132dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="20dp"-->
+<!--                            android:ems="10"-->
+<!--                            android:importantForAutofill="no"-->
+<!--                            android:inputType="number" />-->
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
+<!--                        <Spinner-->
+<!--                            android:id="@+id/editFrequencySpinner"-->
+<!--                            android:layout_width="165dp"-->
+<!--                            android:layout_height="37dp"-->
+<!--                            android:layout_marginStart="20dp" />-->
 
-                            <TextView
-                                android:id="@+id/editStartingLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:text="@string/starting"/>
+<!--                        <LinearLayout-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:orientation="horizontal">-->
 
-                            <LinearLayout
-                                android:id="@+id/editDateAndTimeLayout"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
+<!--                            <TextView-->
+<!--                                android:id="@+id/editStartingLabel"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_marginStart="20dp"-->
+<!--                                android:text="@string/starting"/>-->
 
-                                <TextView
-                                    android:id="@+id/editStartDate"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="5dp"
-                                    android:text="@string/tap_to_set_date"/>
+<!--                            <LinearLayout-->
+<!--                                android:id="@+id/editDateAndTimeLayout"-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="match_parent"-->
+<!--                                android:orientation="horizontal">-->
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="15dp"
-                                    android:text="@string/at"/>
+<!--                                <TextView-->
+<!--                                    android:id="@+id/editStartDate"-->
+<!--                                    android:layout_width="wrap_content"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_marginStart="5dp"-->
+<!--                                    android:text="@string/tap_to_set_date"/>-->
 
-                                <TextView
-                                    android:id="@+id/editStartTime"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="5dp"
-                                    android:text="@string/tap_to_set_time"/>
-                            </LinearLayout>
-                        </LinearLayout>
-                    </LinearLayout>
-                </TableLayout>
-            </androidx.cardview.widget.CardView>
+<!--                                <TextView-->
+<!--                                    android:layout_width="wrap_content"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_marginStart="15dp"-->
+<!--                                    android:text="@string/at"/>-->
+
+<!--                                <TextView-->
+<!--                                    android:id="@+id/editStartTime"-->
+<!--                                    android:layout_width="wrap_content"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_marginStart="5dp"-->
+<!--                                    android:text="@string/tap_to_set_time"/>-->
+<!--                            </LinearLayout>-->
+<!--                        </LinearLayout>-->
+<!--                    </LinearLayout>-->
+<!--                </TableLayout>-->
+<!--            </androidx.cardview.widget.CardView>-->
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
