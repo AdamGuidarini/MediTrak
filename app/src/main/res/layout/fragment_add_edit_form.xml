@@ -78,7 +78,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="20dp"
                 app:cardCornerRadius="20px">
@@ -178,7 +177,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="20dp"
                 app:cardCornerRadius="20px">
@@ -271,7 +269,6 @@
                                 android:id="@+id/multiplePerDayStartDateLayout"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:layout_marginBottom="15dp"
                                 android:layout_alignParentStart="true"
                                 android:hint="@string/start_date"
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
@@ -288,7 +285,6 @@
                                 android:id="@+id/numberOfTimersPerDayLayout"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:layout_marginBottom="15dp"
                                 android:layout_alignParentEnd="true"
                                 android:hint="@string/times_per_day"
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">

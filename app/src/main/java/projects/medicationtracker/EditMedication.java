@@ -56,6 +56,8 @@ public class EditMedication extends AppCompatActivity
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Edit Medication");
 
+        medication = db.getMedication(getIntent().getLongExtra("medId", 0));
+
         Bundle medBundle = new Bundle();
         medBundle.putLong(MED_ID, getIntent().getLongExtra("medId", 0));
 

@@ -130,7 +130,24 @@ public class AddEditFormFragment extends Fragment
         rootView = inflater.inflate(R.layout.fragment_add_edit_form, container, false);
         db = new DBHelper(rootView.getContext());
 
-        medication = medId != -1 ? db.getMedication(medId) : new Medication();
+        if (medId != -1)
+        {
+            LocalTime[] times = db.getMedicationTimes(medId);
+            LocalDateTime[] dateTimes = new LocalDateTime[times.length];
+
+            medication = db.getMedication(medId);
+
+            for (int i = 0; i < times.length; i++)
+            {
+                dateTimes[i] = LocalDateTime.of(medication.getStartDate().toLocalDate(), times[i]);
+            }
+
+            medication.setTimes(dateTimes);
+        }
+        else
+        {
+            medication = new Medication();
+        }
 
         buildViews();
 
@@ -294,6 +311,40 @@ public class AddEditFormFragment extends Fragment
 
         frequencyDropDown.setAdapter(frequencyOptions);
 
+        if (medId != -1)
+        {
+            if (medication.getMedFrequency() == MINUTES_IN_DAY && medication.getTimes().length == 1)
+            {
+                frequencyDropDown.setText(
+                        frequencyDropDown.getAdapter().getItem(1).toString(), false
+                );
+
+                selectedFrequencyTypeIndex = 1;
+
+                dailyLayout.setVisibility(View.VISIBLE);
+            }
+            else if (medication.getTimes().length > 1)
+            {
+                frequencyDropDown.setText(
+                        frequencyDropDown.getAdapter().getItem(0).toString(), false
+                );
+
+                selectedFrequencyTypeIndex = 0;
+
+                multiplePerDay.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                frequencyDropDown.setText(
+                        frequencyDropDown.getAdapter().getItem(2).toString(), false
+                );
+
+                selectedFrequencyTypeIndex = 2;
+
+                custom.setVisibility(View.VISIBLE);
+            }
+        }
+
         frequencyDropDown.setOnItemClickListener((adapterView, view, i, l) ->
         {
             frequencyDropdownLayout.setErrorEnabled(false);
@@ -412,6 +463,12 @@ public class AddEditFormFragment extends Fragment
                 {
                     TextInputLayout textLayout = new TextInputLayout(new ContextThemeWrapper(rootView.getContext(), R.style.Widget_MaterialComponents_TextInputLayout_OutlinedBox_Dense));
                     TextInputEditText timeEntry = new TextInputEditText(textLayout.getContext());
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
+
+                    params.setMargins(0, 20, 0, 0);
+                    textLayout.setLayoutParams(params);
 
                     textLayout.setHint(getString(R.string.taken_at));
                     textLayout.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE);
@@ -436,6 +493,27 @@ public class AddEditFormFragment extends Fragment
                 }
             }
         });
+
+        if (medId != -1 && selectedFrequencyTypeIndex == 0)
+        {
+            LocalDateTime[] medTimes = medication.getTimes();
+
+            numberOfTimersPerDay.setText(String.valueOf(medTimes.length));
+            startDateMultiplePerDay.setText(
+                    TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
+            );
+            startDateMultiplePerDay.setTag(medication.getStartDate().toLocalDate());
+
+            for (int i = 0; i < medTimes.length; i++)
+            {
+                LocalTime time = medTimes[i].toLocalTime();
+                TextInputLayout childLayout = (TextInputLayout) timesPerDayHolder.getChildAt(i);
+                EditText timeInput = childLayout.getEditText();
+
+                timeInput.setText(TimeFormatting.localTimeToString(time));
+                timeInput.setTag(time);
+            }
+        }
     }
 
     /**
@@ -468,7 +546,7 @@ public class AddEditFormFragment extends Fragment
             }
         });
 
-        if (medId != -1)
+        if (medId != -1 && selectedFrequencyTypeIndex == 1)
         {
             dailyMedStartDate.setTag(medication.getStartDate().toLocalDate());
             dailyMedStartDate.setText(
@@ -563,6 +641,49 @@ public class AddEditFormFragment extends Fragment
         );
 
         customFreqTimeUnitEnter.setAdapter(timeUnitsAdapter);
+
+        if (medId != -1 && selectedFrequencyTypeIndex == 2)
+        {
+            long freq = medication.getMedFrequency();
+            long displayedFreq = 0;
+            int index = 0;
+
+            customFreqStartDate.setText(
+                    TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
+            );
+            customFreqStartDate.setTag(medication.getStartDate().toLocalDate());
+
+            customFreqMedTime.setText(
+                    TimeFormatting.localTimeToString(medication.getStartDate().toLocalTime())
+            );
+            customFreqMedTime.setTag(medication.getStartDate().toLocalTime());
+
+            if (freq % (60 * 24 * 7) == 0)
+            {
+                index = 3;
+                displayedFreq = freq / (60 * 24  * 7);
+            }
+            else if (freq % (60 * 24) == 0)
+            {
+                index = 2;
+                displayedFreq = freq / (60 * 24);
+            }
+            else if (freq % 60 == 0)
+            {
+                index = 1;
+                displayedFreq = freq / (60);
+            }
+            else
+            {
+                displayedFreq = freq;
+            }
+
+            customFreqTimeUnitEnter.setText(
+                    customFreqTimeUnitEnter.getAdapter().getItem(index).toString(), false
+            );
+
+            customFreqMTakenEveryEnter.setText(String.valueOf(displayedFreq));
+        }
     }
 
     /**
@@ -617,10 +738,6 @@ public class AddEditFormFragment extends Fragment
                 );
             }
 
-            scheduleNotifications();
-
-            getActivity().finish();
-            startActivity(intent);
         }
         else
         {
@@ -629,11 +746,12 @@ public class AddEditFormFragment extends Fragment
             db.updateMedication(medication);
 
             clearExistingNotifications();
-            scheduleNotifications();
 
-            getActivity().finish();
-            startActivity(intent);
         }
+
+        scheduleNotifications();
+        getActivity().finish();
+        startActivity(intent);
     }
 
     /**
