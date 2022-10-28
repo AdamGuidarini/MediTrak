@@ -47,6 +47,19 @@ public class Medication implements Cloneable, Parcelable
         alias = medAlias;
     }
 
+    public Medication()
+    {
+        medName = "";
+        patientName = "";
+        medDosageUnits = "";
+        times = new LocalDateTime[0];
+        medId = -1;
+        medFrequency = 0;
+        startDate = LocalDateTime.now();
+        medDosage = 0;
+        alias = "";
+    }
+
     protected Medication(Parcel in) {
         medName = in.readString();
         medDosageUnits = in.readString();

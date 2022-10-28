@@ -22,7 +22,7 @@ public class StandardCardView extends CardView
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         this.setLayoutParams(layoutParams);
         ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) this.getLayoutParams();
-        marginLayoutParams.setMargins(25, 40, 10, 10);
+        marginLayoutParams.setMargins(25, 20, 25, 20);
         this.requestLayout();
         this.setRadius(20);
     }

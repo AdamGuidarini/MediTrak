@@ -13,6 +13,8 @@ import android.widget.TimePicker;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+import java.time.LocalTime;
+
 import projects.medicationtracker.Helpers.TimeFormatting;
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener
@@ -60,7 +62,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
         TextView textView = getActivity().findViewById(textViewId);
 
-        textView.setTag(TimeFormatting.formatTimeForDB(hourOfDay, minute));
+        textView.setTag(LocalTime.of(hourOfDay, minute));
         textView.setText(chosenTime);
     }
 }
