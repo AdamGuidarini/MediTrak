@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.MedicationTracker" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#ACADAF</item>
+        <item name="colorPrimary">#4556B3</item>
         <item name="colorPrimaryVariant">#4A5BB6</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->

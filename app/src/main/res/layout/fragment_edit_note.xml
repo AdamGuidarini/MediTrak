@@ -10,16 +10,24 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/alterNote"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            tools:ignore="LabelFor"/>
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="4dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
+            <EditText
+                android:id="@+id/alterNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                tools:ignore="LabelFor"/>
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
-
 </androidx.core.widget.NestedScrollView>

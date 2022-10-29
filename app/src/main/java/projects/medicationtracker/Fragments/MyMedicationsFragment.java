@@ -1,5 +1,7 @@
 package projects.medicationtracker.Fragments;
 
+import static projects.medicationtracker.Fragments.AddEditFormFragment.MINUTES_IN_DAY;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.time.LocalTime;
@@ -48,9 +49,7 @@ public class MyMedicationsFragment extends Fragment
     // TODO: Rename and change types and number of parameters
     public static MyMedicationsFragment newInstance()
     {
-        MyMedicationsFragment fragment = new MyMedicationsFragment();
-
-        return fragment;
+        return new MyMedicationsFragment();
     }
 
     @Override
@@ -75,6 +74,11 @@ public class MyMedicationsFragment extends Fragment
     @SuppressLint("SetTextI18n")
     private void insertMedicationData(long medId, View v)
     {
+        DBHelper db = new DBHelper(getContext());
+        Medication medication = db.getMedication(medId);
+        LocalTime[] times = db.getMedicationTimes(medId);
+        LocalDateTime[] dateTimes = new LocalDateTime[times.length];
+
         name = v.findViewById(R.id.myMedCardMedicationName);
         dosage = v.findViewById(R.id.myMedCardDosage);
         alias = v.findViewById(R.id.myMedCardAlias);
@@ -82,19 +86,25 @@ public class MyMedicationsFragment extends Fragment
         takenSince = v.findViewById(R.id.myMedCardTakenSince);
         notesButton = v.findViewById(R.id.myMedsNotes);
         editButton = v.findViewById(R.id.myMedsEdit);
-        Medication medication = new DBHelper(getContext()).getMedication(medId);
+
+        for (int i = 0; i < times.length; i++)
+        {
+            dateTimes[i] = LocalDateTime.of(medication.getStartDate().toLocalDate(), times[i]);
+        }
+
+        medication.setTimes(dateTimes);
 
         name.setText("Medication name: " + medication.getMedName());
         dosage.setText("Dosage: " + medication.getMedDosage() + " " + medication.getMedDosageUnits());
 
         StringBuilder freqLabel;
 
-        if (medication.getMedFrequency() == 1440 && (medication.getTimes().length == 1))
+        if (medication.getMedFrequency() == MINUTES_IN_DAY && (medication.getTimes().length == 1))
         {
             String time = TimeFormatting.localTimeToString(medication.getTimes()[0].toLocalTime());
             freqLabel = new StringBuilder("Taken daily at: " + time);
         }
-        else if (medication.getMedFrequency() == 1440 && (medication.getTimes().length > 1))
+        else if (medication.getMedFrequency() == MINUTES_IN_DAY && (medication.getTimes().length > 1))
         {
             freqLabel = new StringBuilder("Taken daily at: ");
 
