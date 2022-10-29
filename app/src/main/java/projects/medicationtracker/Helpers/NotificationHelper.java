@@ -57,7 +57,7 @@ public class NotificationHelper
         notificationIntent.putExtra(MEDICATION_ID, medication.getMedId());
 
         alarmIntent = PendingIntent.getBroadcast(notificationContext, (int) notificationId,
-                notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
         alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTimeMillis, alarmIntent);
@@ -116,6 +116,6 @@ public class NotificationHelper
         Intent intent = new Intent(context, NotificationReceiver.class);
 
         PendingIntent.getBroadcast(context, (int) notificationId, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT).cancel();
+                PendingIntent.FLAG_IMMUTABLE).cancel();
     }
 }
