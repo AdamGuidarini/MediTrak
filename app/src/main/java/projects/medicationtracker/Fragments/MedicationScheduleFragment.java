@@ -128,8 +128,7 @@ public class MedicationScheduleFragment extends Fragment
         checkBoxHolder.setOrientation(LinearLayoutCompat.VERTICAL);
 
         String dayLabelString =
-                dayOfWeek + " "
-                + TimeFormatting.localDateToString(thisSunday.plusDays(dayNumber));
+                dayOfWeek + " " + TimeFormatting.localDateToString(thisSunday.plusDays(dayNumber));
         dayLabel.setText(dayLabelString);
 
         for (Medication medication : meds)
@@ -232,14 +231,15 @@ public class MedicationScheduleFragment extends Fragment
     private void sortMedicationCheckBoxes(LinearLayoutCompat parentLayout)
     {
         int count = parentLayout.getChildCount();
-        short firstCheckboxIndex = 1;
 
-        for (int i = firstCheckboxIndex; i < count; i++)
+        for (int i = 1; i < count; i++)
         {
-            for (int j = firstCheckboxIndex + 1; j < (count - i); j++)
+            for (int j = 0; j < (count - i); j++)
             {
-                CheckBox child1 = (CheckBox) parentLayout.getChildAt(j - 1);
-                CheckBox child2 = (CheckBox) parentLayout.getChildAt(j);
+                CheckBox child1 = (CheckBox) parentLayout.getChildAt(j);
+                CheckBox child2 = (CheckBox) parentLayout.getChildAt(j + 1);
+
+                System.out.println(child1.getText().toString());
 
                 Pair<Long, LocalDateTime> child1Pair = (Pair<Long, LocalDateTime>) child1.getTag();
                 Pair<Long, LocalDateTime> child2Pair = (Pair<Long, LocalDateTime>) child2.getTag();

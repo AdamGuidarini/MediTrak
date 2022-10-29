@@ -44,7 +44,7 @@ public class NotificationReceiver extends BroadcastReceiver
         NotificationHelper.scheduleNotification(
                 context,
                 medication,
-                doseTime.plusMinutes(medication.getMedFrequency()),
+                medication.getStartDate(),
                 extras.getLong(NOTIFICATION_ID, 0)
         );
 
