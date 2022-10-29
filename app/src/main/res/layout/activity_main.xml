@@ -42,39 +42,46 @@
                 android:orientation="vertical" />
         </ScrollView>
 
-        <RelativeLayout
-            android:id="@+id/navButtonLayout"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="bottom"
-            android:layout_weight=".01">
+            android:layout_marginTop="1dp">
 
-            <Button
-                android:id="@+id/navButtonLeft"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:background="@drawable/abc_vector_test"
-                android:onClick="onLeftClick"
-                android:layout_alignParentStart="true" />
+            <RelativeLayout
+                android:id="@+id/navButtonLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="bottom"
+                android:layout_weight=".01">
 
-            <Button
-                android:id="@+id/todayButton"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:background="@android:drawable/ic_menu_today"
-                android:onClick="onTodayClick"
-                android:layout_centerInParent="true" />
+                <Button
+                    android:id="@+id/navButtonLeft"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="10dp"
+                    android:background="?attr/actionModeCloseDrawable"
+                    android:onClick="onLeftClick"
+                    android:layout_alignParentStart="true" />
 
-            <Button
-                android:id="@+id/navButtonRight"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:background="@drawable/abc_vector_test"
-                android:rotation="180"
-                android:onClick="onRightClick"
-                android:gravity="end"
-                android:layout_alignParentEnd="true" />
-        </RelativeLayout>
+                <Button
+                    android:id="@+id/todayButton"
+                    android:layout_width="40dp"
+                    android:layout_height="45dp"
+                    android:background="@android:drawable/ic_menu_today"
+                    android:onClick="onTodayClick"
+                    android:layout_centerInParent="true" />
+
+                <Button
+                    android:id="@+id/navButtonRight"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="?attr/actionModeCloseDrawable"
+                    android:rotation="180"
+                    android:onClick="onRightClick"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
