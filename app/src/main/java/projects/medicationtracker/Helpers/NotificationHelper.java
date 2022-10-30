@@ -1,6 +1,7 @@
 package projects.medicationtracker.Helpers;
 
 import static android.content.Context.ALARM_SERVICE;
+import static android.os.Build.VERSION.SDK_INT;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -9,6 +10,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -57,7 +59,9 @@ public class NotificationHelper
         notificationIntent.putExtra(MEDICATION_ID, medication.getMedId());
 
         alarmIntent = PendingIntent.getBroadcast(notificationContext, (int) notificationId,
-                notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+                notificationIntent,
+                SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT
+        );
 
         alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTimeMillis, alarmIntent);
@@ -116,6 +120,8 @@ public class NotificationHelper
         Intent intent = new Intent(context, NotificationReceiver.class);
 
         PendingIntent.getBroadcast(context, (int) notificationId, intent,
-                PendingIntent.FLAG_IMMUTABLE).cancel();
+                SDK_INT >= Build.VERSION_CODES.S ?
+                        PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT
+        ).cancel();
     }
 }

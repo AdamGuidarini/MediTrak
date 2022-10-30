@@ -1,5 +1,6 @@
 package projects.medicationtracker.Services;
 
+import static android.os.Build.VERSION.SDK_INT;
 import static projects.medicationtracker.Helpers.NotificationHelper.CHANNEL_ID;
 import static projects.medicationtracker.Helpers.NotificationHelper.DOSE_TIME;
 import static projects.medicationtracker.Helpers.NotificationHelper.GROUP_KEY;
@@ -13,6 +14,7 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -72,7 +74,8 @@ public class NotificationService extends IntentService
                         this.getApplicationContext(),
                         0,
                         markTakenIntent,
-                        0
+                        SDK_INT >= Build.VERSION_CODES.S ?
+                                PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
         NotificationCompat.Builder builder =
@@ -97,7 +100,10 @@ public class NotificationService extends IntentService
         stackBuilder.addNextIntent(resIntent);
 
         PendingIntent resPendingIntent =
-                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                stackBuilder.getPendingIntent(
+                        0,
+                        SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT
+                );
         builder.setContentIntent(resPendingIntent);
 
         return builder.build();
