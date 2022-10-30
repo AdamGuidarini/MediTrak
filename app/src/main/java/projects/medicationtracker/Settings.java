@@ -179,7 +179,6 @@ public class Settings extends AppCompatActivity
         ArrayList<String> availableThemes = new ArrayList<>();
         ArrayAdapter<String> themes;
         String savedTheme = db.getSavedTheme();
-        Activity _this = this;
 
         availableThemes.add(getString(R.string.match_system_theme));
         availableThemes.add(getString(R.string.light_mode));
@@ -220,6 +219,31 @@ public class Settings extends AppCompatActivity
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     db.saveTheme(DARK);
                     break;
+            }
+
+            themeSelector.clearFocus();
+        });
+
+        themeSelector.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s)
+            {
+                ArrayList<String> _availableThemes = new ArrayList<>();
+
+                _availableThemes.add(getString(R.string.match_system_theme));
+                _availableThemes.add(getString(R.string.light_mode));
+                _availableThemes.add(getString(R.string.dark_mode));
+
+                themeSelector.setAdapter(new ArrayAdapter<>(
+                        getApplicationContext(), android.R.layout.simple_dropdown_item_1line, _availableThemes
+                ));
             }
         });
     }
