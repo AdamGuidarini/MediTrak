@@ -24,11 +24,12 @@ An Android app that helps users keep track of their medications.
   + MyMedications activity - Displays all medications stored in the database. Allows users to edit, cancel, or delete them, make notes about them, and view statistics about them.
   + Notifications - Push notifications that remind you to take your medications at the times you set.
   + Settings - Make changes to how the app us used, such as how long before the scheduled dose time a medication can be marked as taken.
+  + Mark a medication as take from its notification.
 
 ### In progress:
 
+  + Change app theme from settings.
   + Refactoring and code clean-up.
-  + User interface improvements.
   + Bug fixes - There's always a bug hidding somewhere.
 
 ### Planned:
