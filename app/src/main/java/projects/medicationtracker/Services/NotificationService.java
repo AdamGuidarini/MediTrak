@@ -88,7 +88,7 @@ public class NotificationService extends IntentService
                 .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
                 .addAction(
                         android.R.drawable.ic_dialog_info,
-                        "Mark as Taken",
+                        getString(R.string.mark_as_taken),
                         markAsTakenPendingIntent
                 );
 

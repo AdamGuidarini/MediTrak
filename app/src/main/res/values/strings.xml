@@ -169,4 +169,5 @@
     <string name="start_date">Start Date</string>
     <string name="taken_at">Taken at</string>
     <string name="unit_of_time">Unit of Time</string>
+    <string name="mark_as_taken">Mark as taken</string>
 </resources>
