@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,13 +55,6 @@ public class Settings extends AppCompatActivity
         setTimeBeforeDoseRestrictionSwitch();
         setEnableNotificationSwitch();
         setThemeMenu();
-    }
-
-    @Override
-    protected void onApplyThemeResource(Resources.Theme theme, int resid, boolean first)
-    {
-        super.onApplyThemeResource(theme, resid, first);
-        super.recreate();
     }
 
     /**
