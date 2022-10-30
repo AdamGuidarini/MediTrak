@@ -4,6 +4,7 @@ import static projects.medicationtracker.Helpers.DBHelper.DARK;
 import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 
+import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,10 +16,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
@@ -53,6 +54,13 @@ public class Settings extends AppCompatActivity
         setTimeBeforeDoseRestrictionSwitch();
         setEnableNotificationSwitch();
         setThemeMenu();
+    }
+
+    @Override
+    protected void onApplyThemeResource(Resources.Theme theme, int resid, boolean first)
+    {
+        super.onApplyThemeResource(theme, resid, first);
+        super.recreate();
     }
 
     /**
@@ -176,8 +184,8 @@ public class Settings extends AppCompatActivity
         MaterialAutoCompleteTextView themeSelector = findViewById(R.id.themeSelector);
         ArrayList<String> availableThemes = new ArrayList<>();
         ArrayAdapter<String> themes;
-        Resources.Theme selectedTheme = getTheme();
         String savedTheme = db.getSavedTheme();
+        Activity _this = this;
 
         availableThemes.add(getString(R.string.match_system_theme));
         availableThemes.add(getString(R.string.light_mode));
@@ -189,17 +197,37 @@ public class Settings extends AppCompatActivity
 
         themeSelector.setAdapter(themes);
 
-        Toast.makeText(this, savedTheme, Toast.LENGTH_SHORT).show();
-
         switch (savedTheme)
         {
             case DEFAULT:
+                themeSelector.setText(themeSelector.getAdapter().getItem(0).toString(), false);
                 break;
             case LIGHT:
+                themeSelector.setText(themeSelector.getAdapter().getItem(1).toString(), false);
                 break;
             case DARK:
+                themeSelector.setText(themeSelector.getAdapter().getItem(2).toString(), false);
                 break;
         }
+
+        themeSelector.setOnItemClickListener((parent, view, position, id) ->
+        {
+            switch (position)
+            {
+                case 0:
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                    db.saveTheme(DEFAULT);
+                    break;
+                case 1:
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    db.saveTheme(LIGHT);
+                    break;
+                case 2:
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    db.saveTheme(DARK);
+                    break;
+            }
+        });
     }
 
     /**
