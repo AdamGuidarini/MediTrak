@@ -176,19 +176,9 @@ public class Settings extends AppCompatActivity
     private void setThemeMenu()
     {
         MaterialAutoCompleteTextView themeSelector = findViewById(R.id.themeSelector);
-        ArrayList<String> availableThemes = new ArrayList<>();
-        ArrayAdapter<String> themes;
         String savedTheme = db.getSavedTheme();
 
-        availableThemes.add(getString(R.string.match_system_theme));
-        availableThemes.add(getString(R.string.light_mode));
-        availableThemes.add(getString(R.string.dark_mode));
-
-        themes = new ArrayAdapter<>(
-                this, android.R.layout.simple_dropdown_item_1line, availableThemes
-        );
-
-        themeSelector.setAdapter(themes);
+        themeSelector.setAdapter(createThemeMenuAdapter());
 
         switch (savedTheme)
         {
@@ -241,11 +231,22 @@ public class Settings extends AppCompatActivity
                 _availableThemes.add(getString(R.string.light_mode));
                 _availableThemes.add(getString(R.string.dark_mode));
 
-                themeSelector.setAdapter(new ArrayAdapter<>(
-                        getApplicationContext(), android.R.layout.simple_dropdown_item_1line, _availableThemes
-                ));
+                themeSelector.setAdapter(createThemeMenuAdapter());
             }
         });
+    }
+
+    private ArrayAdapter<String> createThemeMenuAdapter()
+    {
+        ArrayList<String> availableThemes = new ArrayList<>();
+
+        availableThemes.add(getString(R.string.match_system_theme));
+        availableThemes.add(getString(R.string.light_mode));
+        availableThemes.add(getString(R.string.dark_mode));
+
+        return new ArrayAdapter<>(
+                this, android.R.layout.simple_dropdown_item_1line, availableThemes
+        );
     }
 
     /**
