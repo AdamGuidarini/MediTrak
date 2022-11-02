@@ -82,12 +82,12 @@ public class NotificationService extends IntentService
                 new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(message)
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setSmallIcon(R.drawable.mt_icon)
                 .setAutoCancel(true)
                 .setGroup(GROUP_KEY)
                 .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
                 .addAction(
-                        android.R.drawable.ic_dialog_info,
+                        R.drawable.mt_icon,
                         getString(R.string.mark_as_taken),
                         markAsTakenPendingIntent
                 );
