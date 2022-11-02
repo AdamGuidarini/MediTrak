@@ -1,5 +1,6 @@
 package projects.medicationtracker.Helpers;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -23,7 +24,7 @@ import projects.medicationtracker.SimpleClasses.Note;
 public class DBHelper extends SQLiteOpenHelper
 {
     private static final String DATABASE_NAME = "Medications.db";
-    private final static int DATABASE_VERSION = 2;
+    private final static int DATABASE_VERSION = 1;
 
     private static final String MEDICATION_TABLE = "Medication";
     private static final String MED_ID = "MedicationID";
@@ -59,6 +60,10 @@ public class DBHelper extends SQLiteOpenHelper
     private static final String SETTINGS_TABLE = "Settings";
     private static final String TIME_BEFORE_DOSE = "TimeBeforeDose";
     private static final String ENABLE_NOTIFICATIONS = "EnableNotifications";
+    private static final String THEME = "Theme";
+    public static final String DEFAULT = "default";
+    public static final String LIGHT = "light";
+    public static final String DARK = "dark";
 
     public DBHelper(@Nullable Context context) { super(context, DATABASE_NAME, null, DATABASE_VERSION);}
 
@@ -69,7 +74,7 @@ public class DBHelper extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase)
     {
-        final int NUM_TABLES = 5;
+        final int NUM_TABLES = 6;
         String[] queries = new String[NUM_TABLES];
 
         // Holds all constant information on a given medication
@@ -82,6 +87,7 @@ public class DBHelper extends SQLiteOpenHelper
                 + START_DATE + " DATETIME,"
                 + MED_FREQUENCY + " INT,"
                 + ALIAS + " TEXT"
+                + ACTIVE + " BOOLEAN DEFAULT " + 1
                 + ")";
 
         // Holds data on past doses, as well as doses for current week
@@ -122,16 +128,17 @@ public class DBHelper extends SQLiteOpenHelper
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +") ON DELETE CASCADE"
                 + ")";
 
+        queries[5] = "CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
+                + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
+                + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1, "
+                + THEME + " TEXT DEFAULT '" + DEFAULT + "')";
+
         for (int i = 0; i < NUM_TABLES; i++)
             sqLiteDatabase.execSQL(queries[i]);
 
-        sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + ACTIVE + " BOOLEAN DEFAULT 1;");
-        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
-                + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
-                + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1)");
-
-        sqLiteDatabase.execSQL("INSERT INTO " + SETTINGS_TABLE + "(" + ENABLE_NOTIFICATIONS + "," + TIME_BEFORE_DOSE + ")"
-                + " VALUES (1, 2)");
+        sqLiteDatabase.execSQL("INSERT INTO " + SETTINGS_TABLE + "("
+                + ENABLE_NOTIFICATIONS + ", " + TIME_BEFORE_DOSE + ")"
+                + "VALUES (1, 2)");
     }
 
     /**
@@ -155,20 +162,6 @@ public class DBHelper extends SQLiteOpenHelper
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1)
     {
-        switch (i)
-        {
-            case 1:
-                sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + ACTIVE + " BOOLEAN DEFAULT 1;");
-                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
-                        + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
-                        + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1)");
-
-                sqLiteDatabase.execSQL("INSERT INTO " + SETTINGS_TABLE + "(" + ENABLE_NOTIFICATIONS + "," + TIME_BEFORE_DOSE + ")"
-                                + " VALUES (1, 2)");
-            default:
-                break;
-        }
-
         onCreate(sqLiteDatabase);
     }
 
@@ -226,6 +219,7 @@ public class DBHelper extends SQLiteOpenHelper
      * Creates an ArrayList of all patients
      * @return ArrayList of all patients, except
      **************************************************************************/
+    @SuppressLint("Range")
     public ArrayList<String> getPatients()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -253,6 +247,7 @@ public class DBHelper extends SQLiteOpenHelper
      * @param patient The name of the patient whose Medications are sought
      * @return An ArrayList of all Medications for given patient
      */
+    @SuppressLint("Range")
     public ArrayList<Medication> getMedicationsForPatient(String patient)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -342,6 +337,7 @@ public class DBHelper extends SQLiteOpenHelper
      * Create ArrayList of all Medications in MedicationTable
      * @return All Medications in MedicationTable
      **************************************************************************/
+    @SuppressLint("Range")
     public ArrayList<Medication> getMedications()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -385,7 +381,7 @@ public class DBHelper extends SQLiteOpenHelper
 
                 for (int i = 0; i < count; i++)
                 {
-                    LocalTime lt = LocalTime.parse(cursor.getString(cursor.getColumnIndex(DRUG_TIME)));
+                    @SuppressLint("Range") LocalTime lt = LocalTime.parse(cursor.getString(cursor.getColumnIndex(DRUG_TIME)));
 
                     timesArr.add(LocalDateTime.of(LocalDate.MIN, lt));
 
@@ -424,6 +420,7 @@ public class DBHelper extends SQLiteOpenHelper
      * @param id The ID of the Medication
      * @return Medication retrieved from database
      **************************************************************************/
+    @SuppressLint("Range")
     public Medication getMedication(long id)
     {
         SQLiteDatabase db =this.getReadableDatabase();
@@ -458,6 +455,7 @@ public class DBHelper extends SQLiteOpenHelper
      * @param id The id of the medication whose times should be retrieved.
      * @return An array of all of a medications times.
      */
+    @SuppressLint("Range")
     public LocalTime[] getMedicationTimes(long id)
     {
         final SQLiteDatabase db = this.getReadableDatabase();
@@ -626,6 +624,7 @@ public class DBHelper extends SQLiteOpenHelper
      * @param doseTime Time of dose
      * @return Dose ID of match found in MedicationTracker table
      **************************************************************************/
+    @SuppressLint("Range")
     public long getDoseId(long medId, String doseTime)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -645,6 +644,7 @@ public class DBHelper extends SQLiteOpenHelper
         return rowId;
     }
 
+    @SuppressLint("Range")
     public long getMedicationIdFromTimeId(long timeId)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -668,6 +668,7 @@ public class DBHelper extends SQLiteOpenHelper
      * @param doseId ID of dose in table
      * @return Status of dose
      **************************************************************************/
+    @SuppressLint("Range")
     public boolean getTaken(long doseId)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -760,6 +761,7 @@ public class DBHelper extends SQLiteOpenHelper
      * @param medId ID of Medication pertaining to Note
      * @return An ArrayList of all notes about given Medication
      **************************************************************************/
+    @SuppressLint("Range")
     public ArrayList<Note> getNotes(long medId)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -789,6 +791,7 @@ public class DBHelper extends SQLiteOpenHelper
         return notes;
     }
 
+    @SuppressLint("Range")
     public long[] getMedicationTimeIds(Medication medication)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -822,6 +825,7 @@ public class DBHelper extends SQLiteOpenHelper
         db.update(SETTINGS_TABLE, cv, null, null);
     }
 
+    @SuppressLint("Range")
     public int getTimeBeforeDose()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -848,6 +852,7 @@ public class DBHelper extends SQLiteOpenHelper
         db.update(SETTINGS_TABLE, cv, null, null);
     }
 
+    @SuppressLint("Range")
     public boolean getNotificationEnabled()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -863,5 +868,32 @@ public class DBHelper extends SQLiteOpenHelper
         cursor.close();
 
         return enabled;
+    }
+
+    @SuppressLint("Range")
+    public String getSavedTheme()
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " + THEME + " FROM " + SETTINGS_TABLE;
+        String theme;
+
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+
+        theme = cursor.getString(cursor.getColumnIndex(THEME));
+
+        cursor.close();
+
+        return theme;
+    }
+
+    public void saveTheme(String theme)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(THEME, theme);
+
+        db.update(SETTINGS_TABLE, cv, null, null);
     }
 }

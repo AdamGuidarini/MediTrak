@@ -1,19 +1,31 @@
 package projects.medicationtracker;
 
+import static projects.medicationtracker.Helpers.DBHelper.DARK;
+import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
+import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
+
+import android.app.Activity;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+
+import java.util.ArrayList;
 import java.util.Objects;
 
 import projects.medicationtracker.Fragments.ConfirmDeleteAllFragment;
@@ -27,7 +39,7 @@ public class Settings extends AppCompatActivity
     /**
      * Create Settings
      * @param savedInstanceState Saved instance
-     **************************************************************************/
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -42,13 +54,14 @@ public class Settings extends AppCompatActivity
 
         setTimeBeforeDoseRestrictionSwitch();
         setEnableNotificationSwitch();
+        setThemeMenu();
     }
 
     /**
      * Determines which button was selected
      * @param item Selected menu option
      * @return Selected option
-     **************************************************************************/
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
@@ -60,7 +73,7 @@ public class Settings extends AppCompatActivity
 
     /**
      * Return to MainActivity if back arrow is pressed
-     **************************************************************************/
+     */
     @Override
     public void onBackPressed()
     {
@@ -68,6 +81,9 @@ public class Settings extends AppCompatActivity
         finish();
     }
 
+    /**
+     * Prepares dose restriction switch
+     */
     private void setTimeBeforeDoseRestrictionSwitch()
     {
         SwitchCompat timeBeforeDoseSwitch = findViewById(R.id.disableTimeBeforeDose);
@@ -95,6 +111,9 @@ public class Settings extends AppCompatActivity
         setHoursBeforeDoseEditText(timeBeforeDose, timeBeforeDoseSwitch.isChecked());
     }
 
+    /**
+     * Prepares dose restriction EditText
+     */
     private void setHoursBeforeDoseEditText(int hoursBefore, boolean disabled)
     {
         if (disabled)
@@ -138,6 +157,9 @@ public class Settings extends AppCompatActivity
         });
     }
 
+    /**
+     * Enable notifications for application
+     */
     private void setEnableNotificationSwitch()
     {
         SwitchCompat enableNotificationsSwitch = findViewById(R.id.enableNotificationSwitch);
@@ -149,8 +171,86 @@ public class Settings extends AppCompatActivity
     }
 
     /**
+     * Prepares the menu for themes
+     */
+    private void setThemeMenu()
+    {
+        MaterialAutoCompleteTextView themeSelector = findViewById(R.id.themeSelector);
+        String savedTheme = db.getSavedTheme();
+
+        themeSelector.setAdapter(createThemeMenuAdapter());
+
+        switch (savedTheme)
+        {
+            case DEFAULT:
+                themeSelector.setText(themeSelector.getAdapter().getItem(0).toString(), false);
+                break;
+            case LIGHT:
+                themeSelector.setText(themeSelector.getAdapter().getItem(1).toString(), false);
+                break;
+            case DARK:
+                themeSelector.setText(themeSelector.getAdapter().getItem(2).toString(), false);
+                break;
+        }
+
+        themeSelector.setOnItemClickListener((parent, view, position, id) ->
+        {
+            switch (position)
+            {
+                case 0:
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                    db.saveTheme(DEFAULT);
+                    break;
+                case 1:
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    db.saveTheme(LIGHT);
+                    break;
+                case 2:
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    db.saveTheme(DARK);
+                    break;
+            }
+
+            themeSelector.clearFocus();
+        });
+
+        themeSelector.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s)
+            {
+                ArrayList<String> _availableThemes = new ArrayList<>();
+
+                _availableThemes.add(getString(R.string.match_system_theme));
+                _availableThemes.add(getString(R.string.light_mode));
+                _availableThemes.add(getString(R.string.dark_mode));
+
+                themeSelector.setAdapter(createThemeMenuAdapter());
+            }
+        });
+    }
+
+    private ArrayAdapter<String> createThemeMenuAdapter()
+    {
+        ArrayList<String> availableThemes = new ArrayList<>();
+
+        availableThemes.add(getString(R.string.match_system_theme));
+        availableThemes.add(getString(R.string.light_mode));
+        availableThemes.add(getString(R.string.dark_mode));
+
+        return new ArrayAdapter<>(
+                this, android.R.layout.simple_dropdown_item_1line, availableThemes
+        );
+    }
+
+    /**
      * Listener for button that deletes all saved data
-     * @param view
      */
     public void onPurgeButtonClick(View view)
     {

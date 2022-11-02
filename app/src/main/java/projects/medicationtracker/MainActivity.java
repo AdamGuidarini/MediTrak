@@ -4,6 +4,9 @@ import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DA
 import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DAY_NUMBER;
 import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DAY_OF_WEEK;
 import static projects.medicationtracker.Fragments.MedicationScheduleFragment.MEDICATIONS;
+import static projects.medicationtracker.Helpers.DBHelper.DARK;
+import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
+import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 
 
 import android.app.NotificationManager;
@@ -22,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentContainerView;
 
 import java.time.LocalDate;
@@ -53,6 +57,21 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        String theme = db.getSavedTheme();
+
+        if (theme.equals(DARK))
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+        else if (theme.equals(LIGHT))
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+        else
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        }
 
         aDayThisWeek = LocalDate.now();
 
