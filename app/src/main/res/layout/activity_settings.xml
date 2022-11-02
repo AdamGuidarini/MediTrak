@@ -121,11 +121,42 @@
                 android:layout_marginBottom="5dp"
                 app:cardCornerRadius="20px" >
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/license"
-                    style="@style/standardTextView"/>
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/license"
+                        style="@style/standardTextView"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/copyright"
+                        style="@style/standardTextView"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/licenseInfo"
+                        style="@style/standardTextView"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/warranty"
+                        style="@style/standardTextView"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/copyOfGPL2"
+                        style="@style/standardTextView"/>
+                </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <Button

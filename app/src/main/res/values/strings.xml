@@ -172,4 +172,8 @@
     <string name="mark_as_taken">Mark as taken</string>
     <string name="options">Options</string>
     <string name="license">License</string>
+    <string name="copyright">Copyright © 2022 Adam Guidarini</string>
+    <string name="licenseInfo">MediTrak is free software and may be redistributed and/or modified under the terms of the GNU General Public License as published by the Free software foundation, either version 2 or (or at your option) later.</string>
+    <string name="warranty">MediTrak is distributed WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</string>
+    <string name="copyOfGPL2">A copy of the GNU General Public License should have been included along with this application. If it was not, see https://www.gni.org/licenses.</string>
 </resources>

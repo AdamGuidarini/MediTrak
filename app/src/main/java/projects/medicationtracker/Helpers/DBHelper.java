@@ -24,7 +24,7 @@ import projects.medicationtracker.SimpleClasses.Note;
 public class DBHelper extends SQLiteOpenHelper
 {
     private static final String DATABASE_NAME = "Medications.db";
-    private final static int DATABASE_VERSION = 2;
+    private final static int DATABASE_VERSION = 1;
 
     private static final String MEDICATION_TABLE = "Medication";
     private static final String MED_ID = "MedicationID";
@@ -74,7 +74,7 @@ public class DBHelper extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase)
     {
-        final int NUM_TABLES = 5;
+        final int NUM_TABLES = 6;
         String[] queries = new String[NUM_TABLES];
 
         // Holds all constant information on a given medication
@@ -87,6 +87,7 @@ public class DBHelper extends SQLiteOpenHelper
                 + START_DATE + " DATETIME,"
                 + MED_FREQUENCY + " INT,"
                 + ALIAS + " TEXT"
+                + ACTIVE + " BOOLEAN DEFAULT " + 1
                 + ")";
 
         // Holds data on past doses, as well as doses for current week
@@ -127,21 +128,17 @@ public class DBHelper extends SQLiteOpenHelper
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +") ON DELETE CASCADE"
                 + ")";
 
+        queries[5] = "CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
+                + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
+                + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1, "
+                + THEME + " TEXT DEFAULT '" + DEFAULT + "')";
+
         for (int i = 0; i < NUM_TABLES; i++)
             sqLiteDatabase.execSQL(queries[i]);
 
-        sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + ACTIVE + " BOOLEAN DEFAULT 1;");
-        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
-                + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
-                + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1)");
-
-        sqLiteDatabase.execSQL("INSERT INTO " + SETTINGS_TABLE + "(" + ENABLE_NOTIFICATIONS + "," + TIME_BEFORE_DOSE + ")"
-                + " VALUES (1, 2)");
-
-        sqLiteDatabase.execSQL(
-                "ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " +
-                        THEME + " TEXT DEFAULT '" + DEFAULT + "';"
-        );
+        sqLiteDatabase.execSQL("INSERT INTO " + SETTINGS_TABLE + "("
+                + ENABLE_NOTIFICATIONS + ", " + TIME_BEFORE_DOSE + ")"
+                + "VALUES (1, 2)");
     }
 
     /**
@@ -165,31 +162,6 @@ public class DBHelper extends SQLiteOpenHelper
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1)
     {
-        switch (i)
-        {
-            case 1:
-                sqLiteDatabase.execSQL(
-                        "ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN "
-                                + ACTIVE + " BOOLEAN DEFAULT 1;"
-                );
-                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
-                        + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
-                        + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1)");
-
-                sqLiteDatabase.execSQL("INSERT INTO " + SETTINGS_TABLE + "(" + ENABLE_NOTIFICATIONS
-                        + "," + TIME_BEFORE_DOSE + ")" + " VALUES (1, 2)"
-                );
-
-            case 2:
-                sqLiteDatabase.execSQL(
-                        "ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " +
-                                THEME + " TEXT DEFAULT '" + DEFAULT + "';"
-                );
-
-            default:
-                break;
-        }
-
         onCreate(sqLiteDatabase);
     }
 
