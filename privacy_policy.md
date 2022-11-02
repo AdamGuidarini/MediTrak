@@ -1,0 +1,1 @@
+No build of MediTrak by Adam Guidarini transmits or will ever transmit any form of user data. Doing so would be contrary to this application's purpose as an open source medication tracking app meant to ensure users have control over there data.
