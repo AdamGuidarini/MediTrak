@@ -62,6 +62,8 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
         TextView textView = getActivity().findViewById(textViewId);
 
+        textView.clearFocus();
+
         textView.setTag(LocalTime.of(hourOfDay, minute));
         textView.setText(chosenTime);
     }
