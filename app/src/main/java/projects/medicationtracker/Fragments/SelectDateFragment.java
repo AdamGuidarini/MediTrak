@@ -61,6 +61,8 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
         TextView textView = getActivity().findViewById(id);
         LocalDate localDate = LocalDate.of(year, month, day);
 
+        textView.clearFocus();
+
         String date = month + "/" + day + "/" + year;
         textView.setText(date);
         textView.setTag(localDate);
