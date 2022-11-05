@@ -26,6 +26,7 @@ import projects.medicationtracker.Receivers.EventReceiver;
 public class NotificationService extends IntentService
 {
     public static String MARK_AS_TAKEN_ACTION = "markAsTaken";
+    public static  String SNOOZE_ACTION = "snooze15";
 
     public NotificationService()
     {
@@ -62,6 +63,7 @@ public class NotificationService extends IntentService
             String message, String doseTime, long notificationId, long medId)
     {
         Intent markTakenIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
+        Intent snoozeIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
         String embeddedMedId = "_" + medId;
 
         markTakenIntent.setAction(MARK_AS_TAKEN_ACTION + embeddedMedId);
@@ -69,11 +71,25 @@ public class NotificationService extends IntentService
         markTakenIntent.putExtra(NOTIFICATION_ID + embeddedMedId, notificationId);
         markTakenIntent.putExtra(DOSE_TIME + embeddedMedId, doseTime);
 
+        snoozeIntent.setAction(SNOOZE_ACTION + embeddedMedId);
+        snoozeIntent.putExtra(MEDICATION_ID + embeddedMedId, medId);
+        snoozeIntent.putExtra(NOTIFICATION_ID + embeddedMedId, notificationId);
+        snoozeIntent.putExtra(DOSE_TIME + embeddedMedId, doseTime);
+
         PendingIntent markAsTakenPendingIntent =
                 PendingIntent.getBroadcast(
                         this.getApplicationContext(),
                         0,
                         markTakenIntent,
+                        SDK_INT >= Build.VERSION_CODES.S ?
+                                PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        PendingIntent snoozePendingIntent =
+                PendingIntent.getBroadcast(
+                        getApplicationContext(),
+                        0,
+                        snoozeIntent,
                         SDK_INT >= Build.VERSION_CODES.S ?
                                 PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT
                 );
@@ -87,9 +103,14 @@ public class NotificationService extends IntentService
                 .setGroup(GROUP_KEY)
                 .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
                 .addAction(
-                        R.drawable.mt_icon,
+                        0,
                         getString(R.string.mark_as_taken),
                         markAsTakenPendingIntent
+                )
+                .addAction(
+                        0,
+                        getString(R.string.snooze_message),
+                        snoozePendingIntent
                 );
 
         Intent resIntent =
@@ -102,7 +123,8 @@ public class NotificationService extends IntentService
         PendingIntent resPendingIntent =
                 stackBuilder.getPendingIntent(
                         0,
-                        SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT
+                        SDK_INT >= Build.VERSION_CODES.S ?
+                                PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT
                 );
         builder.setContentIntent(resPendingIntent);
 

@@ -51,5 +51,7 @@ public class NotificationReceiver extends BroadcastReceiver
         // Fire notification if enabled
         if (db.getNotificationEnabled())
             context.startService(service);
+
+        db.close();
     }
 }

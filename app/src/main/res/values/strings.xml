@@ -170,6 +170,7 @@
     <string name="taken_at">Taken at</string>
     <string name="unit_of_time">Unit of Time</string>
     <string name="mark_as_taken">Mark as taken</string>
+    <string name="snooze_message">Remind me in 15 minutes</string>
     <string name="options">Options</string>
     <string name="license">License</string>
     <string name="purpose">MediTrak is a free and open source (FOSS) application designed to help you keep track of your medications, so you can more easily answer the question \"did I take my medication yesterday?\"</string>

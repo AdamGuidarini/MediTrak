@@ -578,7 +578,7 @@ public class DBHelper extends SQLiteOpenHelper
         String dateTime = TimeFormatting.localDateTimeToString(time);
 
         String query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE + " WHERE " + MED_ID + " = " +
-                medication.getMedId() + " AND " + DOSE_TIME + " = \"" + dateTime + "\"";
+                medication.getMedId() + " AND " + DOSE_TIME + " = ''" + dateTime + "'";
 
         int count = 0;
 
