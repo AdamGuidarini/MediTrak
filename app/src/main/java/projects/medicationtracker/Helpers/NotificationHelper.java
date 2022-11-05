@@ -3,7 +3,6 @@ package projects.medicationtracker.Helpers;
 import static android.content.Context.ALARM_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
 
-import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -35,12 +34,11 @@ public class NotificationHelper
      * @param time Time the notification will be set.
      * @param notificationId ID for the PendingIntent that stores data for the notification.
      */
-    @SuppressLint("UnspecifiedImmutableFlag")
     public static void scheduleNotification(Context notificationContext, Medication medication,
                                             LocalDateTime time, long notificationId)
     {
         // Loops to increase time, prevents notification bombardment when editing time.
-        while (time.isBefore(LocalDateTime.now().minusSeconds(1)))
+        while (time.isBefore(LocalDateTime.now()))
         {
             time = time.plusMinutes(medication.getMedFrequency());
         }
@@ -58,9 +56,47 @@ public class NotificationHelper
         notificationIntent.putExtra(DOSE_TIME, time);
         notificationIntent.putExtra(MEDICATION_ID, medication.getMedId());
 
-        alarmIntent = PendingIntent.getBroadcast(notificationContext, (int) notificationId,
+        alarmIntent = PendingIntent.getBroadcast(
+                notificationContext,
+                (int) notificationId,
                 notificationIntent,
-                SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT
+                SDK_INT >= Build.VERSION_CODES.S ?
+                        PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+        alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTimeMillis, alarmIntent);
+    }
+
+    /**
+     * Sets an alarm to create a notification in 15 minutes.
+     * @param notificationContext Context for the alarm.
+     * @param medication Medication form which the user will be notified.
+     * @param time Time the notification will be set.
+     * @param notificationId ID for the PendingIntent that stores data for the notification.
+     */
+    public static void scheduleIn15Minutes(Context notificationContext, Medication medication,
+                                           LocalDateTime time, long notificationId)
+    {
+        PendingIntent alarmIntent;
+        AlarmManager alarmManager;
+
+        ZonedDateTime zdt = LocalDateTime.now().plusMinutes(1).atZone(ZoneId.systemDefault());
+        long alarmTimeMillis = zdt.toInstant().toEpochMilli();
+
+        Intent notificationIntent = new Intent(notificationContext, NotificationReceiver.class);
+
+        notificationIntent.putExtra(NOTIFICATION_ID, notificationId);
+        notificationIntent.putExtra(MESSAGE, createMedicationReminderMessage(medication));
+        notificationIntent.putExtra(DOSE_TIME, time);
+        notificationIntent.putExtra(MEDICATION_ID, medication.getMedId());
+
+        alarmIntent = PendingIntent.getBroadcast(
+                notificationContext,
+                (int) notificationId,
+                notificationIntent,
+                SDK_INT >= Build.VERSION_CODES.S ?
+                        PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT
         );
 
         alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
@@ -114,7 +150,6 @@ public class NotificationHelper
      * @param notificationId ID of the notification to be deleted
      * @param context Pending intent's context
      */
-    @SuppressLint("UnspecifiedImmutableFlag")
     public static void deletePendingNotification(long notificationId, Context context)
     {
         Intent intent = new Intent(context, NotificationReceiver.class);

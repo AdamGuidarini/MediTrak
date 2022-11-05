@@ -239,8 +239,6 @@ public class MedicationScheduleFragment extends Fragment
                 CheckBox child1 = (CheckBox) parentLayout.getChildAt(j);
                 CheckBox child2 = (CheckBox) parentLayout.getChildAt(j + 1);
 
-                System.out.println(child1.getText().toString());
-
                 Pair<Long, LocalDateTime> child1Pair = (Pair<Long, LocalDateTime>) child1.getTag();
                 Pair<Long, LocalDateTime> child2Pair = (Pair<Long, LocalDateTime>) child2.getTag();
 
@@ -252,12 +250,15 @@ public class MedicationScheduleFragment extends Fragment
                     CheckBox temp = new CheckBox(parentLayout.getContext());
                     temp.setText(child1.getText());
                     temp.setTag(child1.getTag());
+                    temp.setChecked(child1.isChecked());
 
                     child1.setText(child2.getText());
                     child1.setTag(child2.getTag());
+                    child1.setChecked(child2.isChecked());
 
                     child2.setText(temp.getText());
                     child2.setTag(temp.getTag());
+                    child2.setChecked(temp.isChecked());
                 }
             }
         }
