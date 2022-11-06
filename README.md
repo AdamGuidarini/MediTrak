@@ -4,7 +4,7 @@ An Android app that helps users keep track of their medications.
 ### Requirements:
 
   + Android 8.0 Oreo or newer
-  + 10 MB storage
+  + 15 MB storage
 
 ### Getting Started:
 
