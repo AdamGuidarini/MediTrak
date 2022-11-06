@@ -81,7 +81,7 @@ public class NotificationHelper
         PendingIntent alarmIntent;
         AlarmManager alarmManager;
 
-        ZonedDateTime zdt = LocalDateTime.now().plusMinutes(1).atZone(ZoneId.systemDefault());
+        ZonedDateTime zdt = LocalDateTime.now().plusMinutes(15).atZone(ZoneId.systemDefault());
         long alarmTimeMillis = zdt.toInstant().toEpochMilli();
 
         Intent notificationIntent = new Intent(notificationContext, NotificationReceiver.class);
