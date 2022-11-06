@@ -20,6 +20,8 @@ import projects.medicationtracker.Receivers.NotificationReceiver;
 
 public class NotificationHelper
 {
+    private final static int SNOOZE_TIME_MINUTES = 15;
+
     public final static String GROUP_KEY = "medicationTrackerNotificationGroup";
     public final static String CHANNEL_ID = "med_reminder";
     public final static String MESSAGE = "message";
@@ -43,34 +45,15 @@ public class NotificationHelper
             time = time.plusMinutes(medication.getMedFrequency());
         }
 
-        PendingIntent alarmIntent;
-        AlarmManager alarmManager;
-
         ZonedDateTime zdt = time.atZone(ZoneId.systemDefault());
         long alarmTimeMillis = zdt.toInstant().toEpochMilli();
 
-        Intent notificationIntent = new Intent(notificationContext, NotificationReceiver.class);
-
-        notificationIntent.putExtra(NOTIFICATION_ID, notificationId);
-        notificationIntent.putExtra(MESSAGE, createMedicationReminderMessage(medication));
-        notificationIntent.putExtra(DOSE_TIME, time);
-        notificationIntent.putExtra(MEDICATION_ID, medication.getMedId());
-
-        alarmIntent = PendingIntent.getBroadcast(
-                notificationContext,
-                (int) notificationId,
-                notificationIntent,
-                SDK_INT >= Build.VERSION_CODES.S ?
-                        PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT
-        );
-
-        alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTimeMillis, alarmIntent);
+        createNotificationAlarm(notificationContext, alarmTimeMillis, medication, time, notificationId);
     }
 
     /**
      * Sets an alarm to create a notification in 15 minutes.
-     * @param notificationContext Context for the alarm.
+     * @param notificationContext Context of notification.
      * @param medication Medication form which the user will be notified.
      * @param time Time the notification will be set.
      * @param notificationId ID for the PendingIntent that stores data for the notification.
@@ -78,12 +61,25 @@ public class NotificationHelper
     public static void scheduleIn15Minutes(Context notificationContext, Medication medication,
                                            LocalDateTime time, long notificationId)
     {
-        PendingIntent alarmIntent;
-        AlarmManager alarmManager;
-
-        ZonedDateTime zdt = LocalDateTime.now().plusMinutes(15).atZone(ZoneId.systemDefault());
+        ZonedDateTime zdt = LocalDateTime.now().plusMinutes(SNOOZE_TIME_MINUTES).atZone(ZoneId.systemDefault());
         long alarmTimeMillis = zdt.toInstant().toEpochMilli();
 
+        createNotificationAlarm(notificationContext, alarmTimeMillis, medication, time, notificationId);
+    }
+
+    /**
+     * Creates an alarm with a pending intent for a notification
+     * @param notificationContext Context of notification.
+     * @param alarmTime Time in millis when alarm should fire.
+     * @param medication Medication form which the user will be notified.
+     * @param time Time the notification will be set.
+     * @param notificationId ID for the PendingIntent that stores data for the notification.
+     */
+    private static void createNotificationAlarm(Context notificationContext, long alarmTime, Medication medication,
+                                                LocalDateTime time, long notificationId)
+    {
+        PendingIntent alarmIntent;
+        AlarmManager alarmManager;
         Intent notificationIntent = new Intent(notificationContext, NotificationReceiver.class);
 
         notificationIntent.putExtra(NOTIFICATION_ID, notificationId);
@@ -100,7 +96,7 @@ public class NotificationHelper
         );
 
         alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTimeMillis, alarmIntent);
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent);
     }
 
     /**
