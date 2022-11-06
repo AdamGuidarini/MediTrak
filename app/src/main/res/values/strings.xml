@@ -176,6 +176,20 @@
     <string name="purpose">MediTrak is a free and open source (FOSS) application designed to help you keep track of your medications, so you can more easily answer the question \"did I take my medication yesterday?\"</string>
     <string name="copyright">Copyright © 2022 Adam Guidarini</string>
     <string name="licenseInfo">MediTrak is free software and may be redistributed and/or modified under the terms of the GNU General Public License as published by the Free software foundation, either version 2 or (at your option) later.</string>
-    <string name="warranty">MediTrak is distributed WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</string>
-    <string name="copyOfGPL2">A copy of the GNU General Public License should have been included along with this application. If it was not, see https://www.gnu.org/licenses.</string>
+    <string name="warranty">
+        This program is free software; you can redistribute it and/or
+        modify it under the terms of the GNU General Public License
+        as published by the Free Software Foundation; either version 2
+        of the License, or (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details
+    </string>
+    <string name="copyOfGPL2">
+        You should have received a copy of the GNU General Public License
+        along with this program; if not, write to the Free Software
+        Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+    </string>
 </resources>
