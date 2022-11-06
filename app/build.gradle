@@ -9,8 +9,8 @@ android {
         applicationId "projects.medicationtracker"
         minSdkVersion 26
         targetSdkVersion 33
-        versionCode 4
-        versionName "0.7.14"
+        versionCode 5
+        versionName "0.7.15"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
