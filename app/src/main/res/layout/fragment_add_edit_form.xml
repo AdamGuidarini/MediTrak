@@ -150,7 +150,7 @@
                                 android:id="@+id/dosageAmount"
                                 android:layout_width="170dp"
                                 android:layout_height="match_parent"
-                                android:inputType="number"
+                                android:inputType="numberDecimal"
                                 android:hint="@string/medication_dosage"/>
                         </com.google.android.material.textfield.TextInputLayout>
 

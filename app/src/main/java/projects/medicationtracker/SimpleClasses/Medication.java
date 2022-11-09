@@ -18,7 +18,7 @@ public class Medication implements Cloneable, Parcelable
     private LocalDateTime[] times;
     private long medId;
     private long medFrequency;
-    private int medDosage;
+    private float medDosage;
 
     /**
      * Creates a new object of type Medication
@@ -34,7 +34,7 @@ public class Medication implements Cloneable, Parcelable
      * @param medAlias An alias for the Medication to appear in notifications
      *************************************************************************/
     public Medication(String thisMed, String patient, String units, LocalDateTime[] time,
-                      LocalDateTime firstDate, long id, long frequency, int dosage, String medAlias)
+                      LocalDateTime firstDate, long id, long frequency, float dosage, String medAlias)
     {
         medName = thisMed;
         patientName = patient;
@@ -104,7 +104,7 @@ public class Medication implements Cloneable, Parcelable
      * Returns Medication dosage
      * @return Medication dosage
      *************************************************************************/
-    public int getMedDosage() { return medDosage; }
+    public float getMedDosage() { return medDosage; }
 
     /**
      * Returns the Medication's dosage
@@ -159,7 +159,7 @@ public class Medication implements Cloneable, Parcelable
      * Set dosage of the medication
      * @param medDosage dosage of Medication
      *************************************************************************/
-    public void setMedDosage(int medDosage) { this.medDosage = medDosage; }
+    public void setMedDosage(float medDosage) { this.medDosage = medDosage; }
 
     /**
      * Set dosage of Medication
@@ -225,6 +225,6 @@ public class Medication implements Cloneable, Parcelable
         parcel.writeString(alias);
         parcel.writeLong(medId);
         parcel.writeLong(medFrequency);
-        parcel.writeInt(medDosage);
+        parcel.writeFloat(medDosage);
     }
 }

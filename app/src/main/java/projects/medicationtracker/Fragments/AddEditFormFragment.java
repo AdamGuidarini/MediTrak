@@ -245,7 +245,7 @@ public class AddEditFormFragment extends Fragment
             {
                 try
                 {
-                    Integer.parseInt(dosageAmountInput.getText().toString());
+                    Float.parseFloat(dosageAmountInput.getText().toString());
 
                     dosageAmountInputLayout.setErrorEnabled(false);
                 }
@@ -818,9 +818,9 @@ public class AddEditFormFragment extends Fragment
             medication.setAlias(aliasInput.getText().toString());
         }
 
-        if ((dosageAmountInputLayout.getError() == null || intIsParsable(dosageAmountInput.getText().toString())) && !dosageAmountInput.getText().toString().isEmpty())
+        if ((dosageAmountInputLayout.getError() == null || floatIsParsable(dosageAmountInput.getText().toString())) && !dosageAmountInput.getText().toString().isEmpty())
         {
-            medication.setMedDosage(Integer.parseInt(dosageAmountInput.getText().toString()));
+            medication.setMedDosage(Float.parseFloat(dosageAmountInput.getText().toString()));
 
             dosageAmountInputLayout.setErrorEnabled(false);
         }
@@ -1062,6 +1062,25 @@ public class AddEditFormFragment extends Fragment
         try
         {
             Integer.parseInt(intToParse);
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Determines if a string can be parsed to float
+     * @param floatToParse String to try to convert
+     * @return True if the string can be converted, else false
+     */
+    private boolean floatIsParsable(String floatToParse)
+    {
+        try
+        {
+            Float.parseFloat(floatToParse);
 
             return true;
         }

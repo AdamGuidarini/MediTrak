@@ -352,7 +352,7 @@ public class DBHelper extends SQLiteOpenHelper
         while (!meds.isAfterLast())
         {
             int medId = Integer.parseInt(meds.getString(meds.getColumnIndex(MED_ID)));
-            int dosage = Integer.parseInt(meds.getString(meds.getColumnIndex(MED_DOSAGE)));
+            float dosage = Float.parseFloat(meds.getString(meds.getColumnIndex(MED_DOSAGE)));
             int frequency = Integer.parseInt(meds.getString(meds.getColumnIndex(MED_FREQUENCY)));
             String medName = meds.getString(meds.getColumnIndex(MED_NAME));
             String patient = meds.getString(meds.getColumnIndex(PATIENT_NAME));
