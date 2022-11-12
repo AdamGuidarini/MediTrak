@@ -31,8 +31,6 @@ import projects.medicationtracker.SimpleClasses.Medication;
  */
 public class MedicationScheduleFragment extends Fragment
 {
-
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String MEDICATIONS = "medications";
     public static final String DAY_OF_WEEK = "dayOfWeek";
     public static final String DAY_IN_CURRENT_WEEK = "dayInCurrentWeek";
@@ -44,10 +42,10 @@ public class MedicationScheduleFragment extends Fragment
     private static LocalDate dayInCurrentWeek;
     private static int dayNumber;
 
-    public MedicationScheduleFragment()
-    {
-        // Required empty public constructor
-    }
+    /**
+     * Required empty constructor
+     */
+    public MedicationScheduleFragment() {}
 
     /**
      * Use this factory method to create a new instance of
@@ -140,6 +138,11 @@ public class MedicationScheduleFragment extends Fragment
                     CheckBox thisMedication = new CheckBox(rootView.getContext());
                     long medId = medication.getMedId();
                     Pair<Long, LocalDateTime> tag;
+                    boolean isTaken =db.isInMedicationTracker(medication, time) &&
+                            db.getTaken(db.getDoseId(medId, TimeFormatting.localDateTimeToString(time)));
+
+                    String takenAt = getString(R.string.taken_at) + ": "
+                        + (isTaken ? db.getTimeTaken(medId, TimeFormatting.localDateTimeToString(time)) : getString(R.string.not_taken_yet));
 
                     // Set Checkbox label
                     String medName = medication.getMedName();
@@ -148,7 +151,8 @@ public class MedicationScheduleFragment extends Fragment
                     String dosageTime =
                             TimeFormatting.formatTimeForUser(time.getHour(), time.getMinute());
 
-                    String thisMedicationLabel = medName + " - " + dosage + " - " + dosageTime;
+                    String thisMedicationLabel = medName + " - " + dosage + " - " + dosageTime + '\n'
+                            + takenAt;
                     thisMedication.setText(thisMedicationLabel);
 
                     // Check database for this dosage, if not add it
@@ -177,8 +181,9 @@ public class MedicationScheduleFragment extends Fragment
                             thisMedication.setChecked(false);
                             Toast.makeText(
                                     rootView.getContext(),
-                                    "Cannot take medications more than "
-                                            + timeBeforeDose + " hours in advance",
+                                    getString(R.string.cannot_take_medication_more_than)
+                                            + " " + timeBeforeDose + " "
+                                            + getString(R.string.hours_in_advance),
                                     Toast.LENGTH_SHORT
                             ).show();
                             return;

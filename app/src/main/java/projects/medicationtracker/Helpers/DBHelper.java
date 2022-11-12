@@ -684,6 +684,24 @@ public class DBHelper extends SQLiteOpenHelper
         return taken == 1;
     }
 
+    @SuppressLint("Range")
+    public String getTimeTaken(long medId, String doesTime)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " + TIME_TAKEN + " FROM " + MEDICATION_TRACKER_TABLE
+                + " WHERE " + medId + " = " + medId + " AND " + DOSE_TIME + " = " + doesTime;
+        String timeTaken;
+        Cursor cursor = db.rawQuery(query, null);
+
+        cursor.moveToFirst();
+
+        timeTaken = cursor.getString(cursor.getColumnIndex(TIME_TAKEN));
+
+        cursor.close();
+
+        return timeTaken;
+    }
+
     /**
      * Updates status of dose
      * @param doseId ID of dose
