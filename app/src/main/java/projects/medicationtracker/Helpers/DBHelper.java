@@ -438,7 +438,7 @@ public class DBHelper extends SQLiteOpenHelper
                 cursor.getColumnIndex(START_DATE)));
         long medId = Long.parseLong(cursor.getString(cursor.getColumnIndex(MED_ID)));
         long frequency = Long.parseLong(cursor.getString(cursor.getColumnIndex(MED_FREQUENCY)));
-        int dosage = Integer.parseInt(cursor.getString(cursor.getColumnIndex(MED_DOSAGE)));
+        float dosage = Float.parseFloat(cursor.getString(cursor.getColumnIndex(MED_DOSAGE)));
         String alias = cursor.getString(cursor.getColumnIndex(ALIAS));
 
         LocalDateTime[] times = new LocalDateTime[0];

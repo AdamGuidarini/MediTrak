@@ -17,6 +17,7 @@ import android.widget.Toast;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TextViewUtils;
@@ -143,8 +144,18 @@ public class MedicationScheduleFragment extends Fragment
 
                     // Set Checkbox label
                     String medName = medication.getMedName();
-                    String dosage =
-                            medication.getMedDosage() + " " + medication.getMedDosageUnits();
+                    String dosage = "";
+                    if (medication.getMedDosage() == (int) medication.getMedDosage())
+                    {
+                        dosage += String.format(Locale.getDefault(), "%d", (int) medication.getMedDosage());
+                    }
+                    else
+                    {
+                        dosage += medication.getMedDosage();
+                    }
+
+                    dosage += " " + medication.getMedDosageUnits();
+
                     String dosageTime =
                             TimeFormatting.formatTimeForUser(time.getHour(), time.getMinute());
 

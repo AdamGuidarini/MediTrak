@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Objects;
 
 import projects.medicationtracker.Helpers.DBHelper;
@@ -273,7 +274,15 @@ public class AddEditFormFragment extends Fragment
                 aliasInput.setText(medication.getAlias());
             }
 
-            dosageAmountInput.setText(String.valueOf(medication.getMedDosage()));
+            if (medication.getMedDosage() == (int) medication.getMedDosage())
+            {
+                dosageAmountInput.setText(String.format(Locale.getDefault(), "%d", (int) medication.getMedDosage()));
+            }
+            else
+            {
+                dosageAmountInput.setText(String.valueOf(medication.getMedDosage()));
+            }
+
             dosageUnitsInput.setText(medication.getMedDosageUnits());
         }
     }
