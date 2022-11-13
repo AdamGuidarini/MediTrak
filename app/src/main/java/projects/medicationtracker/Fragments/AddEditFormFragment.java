@@ -290,7 +290,7 @@ public class AddEditFormFragment extends Fragment
      */
     private void setFrequencyCard()
     {
-        RelativeLayout dailyLayout = rootView.findViewById(R.id.dailyMedFrequency);
+        LinearLayout dailyLayout = rootView.findViewById(R.id.dailyMedFrequency);
         LinearLayout multiplePerDay = rootView.findViewById(R.id.multiplePerDayFrequency);
         LinearLayout custom = rootView.findViewById(R.id.customFrequencyLayout);
         ArrayAdapter<String> frequencyOptions;
@@ -693,10 +693,7 @@ public class AddEditFormFragment extends Fragment
     {
         saveButton = rootView.findViewById(R.id.saveButton);
 
-        saveButton.setOnClickListener((view ->
-        {
-            saveMedication();
-        }));
+        saveButton.setOnClickListener((view -> saveMedication()));
     }
 
     /**
