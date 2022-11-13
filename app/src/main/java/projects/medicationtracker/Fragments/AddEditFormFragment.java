@@ -19,8 +19,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -58,9 +56,7 @@ public class AddEditFormFragment extends Fragment
     private Medication medication;
     private View rootView;
 
-    private RadioGroup patientGroup;
     private RadioButton meButton;
-    private RadioButton otherButton;
     private TextInputLayout patientNameInputLayout;
     private MaterialAutoCompleteTextView patientNameInput;
 
@@ -75,7 +71,6 @@ public class AddEditFormFragment extends Fragment
     private EditText dosageUnitsInput;
 
     private TextInputLayout frequencyDropdownLayout;
-    private MaterialAutoCompleteTextView frequencyDropDown;
     private TextInputLayout numberOfTimersPerDayLayout;
     private EditText dailyMedTime;
     private EditText dailyMedStartDate;
@@ -91,8 +86,6 @@ public class AddEditFormFragment extends Fragment
     private EditText numberOfTimersPerDay;
     private int selectedFrequencyTypeIndex = -1;
     private ArrayList<String> timeUnits;
-
-    private MaterialButton saveButton;
 
     public AddEditFormFragment() { }
 
@@ -171,9 +164,9 @@ public class AddEditFormFragment extends Fragment
     {
         ArrayAdapter<String> patientNamesAdapter;
         ArrayList<String> patientNames;
-        patientGroup = rootView.findViewById(R.id.patientRadioGroup);
+        RadioGroup patientGroup = rootView.findViewById(R.id.patientRadioGroup);
         meButton = rootView.findViewById(R.id.patientIsMe);
-        otherButton = rootView.findViewById(R.id.patientIsNotMe);
+        RadioButton otherButton = rootView.findViewById(R.id.patientIsNotMe);
         patientNameInput = rootView.findViewById(R.id.patientNameInput);
         patientNameInputLayout = rootView.findViewById(R.id.patientNameInputLayout);
 
@@ -297,7 +290,7 @@ public class AddEditFormFragment extends Fragment
         ArrayList<String> options = new ArrayList<>();
 
         frequencyDropdownLayout = rootView.findViewById(R.id.frequencyDropdownLayout);
-        frequencyDropDown = rootView.findViewById(R.id.frequencyOptionsDropdown);
+        MaterialAutoCompleteTextView frequencyDropDown = rootView.findViewById(R.id.frequencyOptionsDropdown);
 
         frequencyDropDown.setShowSoftInputOnFocus(false);
 
@@ -691,7 +684,7 @@ public class AddEditFormFragment extends Fragment
      */
     private void setSaveButton()
     {
-        saveButton = rootView.findViewById(R.id.saveButton);
+        MaterialButton saveButton = rootView.findViewById(R.id.saveButton);
 
         saveButton.setOnClickListener((view -> saveMedication()));
     }
