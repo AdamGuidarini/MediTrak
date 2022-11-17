@@ -17,7 +17,9 @@ import android.widget.Toast;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Locale;
 
+import kotlin.Triple;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TextViewUtils;
 import projects.medicationtracker.Helpers.TimeFormatting;
@@ -31,7 +33,6 @@ import projects.medicationtracker.SimpleClasses.Medication;
  */
 public class MedicationScheduleFragment extends Fragment
 {
-
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String MEDICATIONS = "medications";
     public static final String DAY_OF_WEEK = "dayOfWeek";
@@ -139,12 +140,23 @@ public class MedicationScheduleFragment extends Fragment
                 {
                     CheckBox thisMedication = new CheckBox(rootView.getContext());
                     long medId = medication.getMedId();
-                    Pair<Long, LocalDateTime> tag;
+//                    Pair<Long, LocalDateTime> tag;
+                    Triple<Medication, Long, LocalDateTime> tag;
 
                     // Set Checkbox label
                     String medName = medication.getMedName();
-                    String dosage =
-                            medication.getMedDosage() + " " + medication.getMedDosageUnits();
+                    String dosage;
+                    if (medication.getMedDosage() == (int) medication.getMedDosage())
+                    {
+                        dosage = String.format(Locale.getDefault(), "%d", (int) medication.getMedDosage());
+                    }
+                    else
+                    {
+                        dosage = String.valueOf(medication.getMedDosage());
+                    }
+
+                    dosage += " " + medication.getMedDosageUnits();
+
                     String dosageTime =
                             TimeFormatting.formatTimeForUser(time.getHour(), time.getMinute());
 
@@ -155,7 +167,8 @@ public class MedicationScheduleFragment extends Fragment
                     // if it is, get the DoseId
                     long rowid = db.getDoseId(medId, TimeFormatting.localDateTimeToString(time));
 
-                    tag = Pair.create(rowid, time);
+//                    tag = Pair.create(rowid, time);
+                    tag = new Triple<>(medication, rowid, time);
 
                     thisMedication.setTag(tag);
 
@@ -164,9 +177,9 @@ public class MedicationScheduleFragment extends Fragment
 
                     thisMedication.setOnCheckedChangeListener((compoundButton, b) ->
                     {
-                        Pair<Long, LocalDateTime> tvTag =
-                                (Pair<Long, LocalDateTime>) thisMedication.getTag();
-                        final Long doseId = tvTag.first;
+                        Triple<Medication, Long, LocalDateTime> tvTag =
+                                (Triple<Medication, Long, LocalDateTime>) thisMedication.getTag();
+                        final Long doseId = tvTag.getSecond();
                         int timeBeforeDose = db.getTimeBeforeDose();
 
                         if (
@@ -194,8 +207,8 @@ public class MedicationScheduleFragment extends Fragment
                         else
                         {
                             long id = db.addToMedicationTracker(
-                                    medication,
-                                    tvTag.second
+                                    tvTag.getFirst(),
+                                    tvTag.getThird()
                             );
 
                             db.updateDoseStatus(
@@ -239,25 +252,24 @@ public class MedicationScheduleFragment extends Fragment
                 CheckBox child1 = (CheckBox) parentLayout.getChildAt(j);
                 CheckBox child2 = (CheckBox) parentLayout.getChildAt(j + 1);
 
-                Pair<Long, LocalDateTime> child1Pair = (Pair<Long, LocalDateTime>) child1.getTag();
-                Pair<Long, LocalDateTime> child2Pair = (Pair<Long, LocalDateTime>) child2.getTag();
+                Triple<Medication, Long, LocalDateTime> child1Pair = (Triple<Medication, Long, LocalDateTime>) child1.getTag();
+                Triple<Medication, Long, LocalDateTime> child2Pair = (Triple<Medication, Long, LocalDateTime>) child2.getTag();
 
-                LocalDateTime child1Time = child1Pair.second;
-                LocalDateTime child2Time = child2Pair.second;
+                LocalDateTime child1Time = child1Pair.getThird();
+                LocalDateTime child2Time = child2Pair.getThird();
 
                 if (child1Time != null && child1Time.isAfter(child2Time))
                 {
                     CheckBox temp = new CheckBox(parentLayout.getContext());
                     temp.setText(child1.getText());
-                    temp.setTag(child1.getTag());
                     temp.setChecked(child1.isChecked());
 
                     child1.setText(child2.getText());
-                    child1.setTag(child2.getTag());
+                    child1.setTag(child1.getTag());
                     child1.setChecked(child2.isChecked());
 
                     child2.setText(temp.getText());
-                    child2.setTag(temp.getTag());
+                    child2.setTag(child2.getTag());
                     child2.setChecked(temp.isChecked());
                 }
             }

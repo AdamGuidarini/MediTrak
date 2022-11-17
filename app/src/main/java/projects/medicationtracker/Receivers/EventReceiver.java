@@ -118,8 +118,6 @@ public class EventReceiver extends BroadcastReceiver
 
         med =  db.getMedication(medId);
 
-        System.out.println(med.getMedName());
-
         long doseId = db.isInMedicationTracker(med, doseTime) ?
                 db.getDoseId(med.getMedId(), TimeFormatting.localDateTimeToString(doseTime)) :
                 db.addToMedicationTracker(med, doseTime);

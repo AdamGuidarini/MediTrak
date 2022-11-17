@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Locale;
 
 import projects.medicationtracker.EditMedication;
 import projects.medicationtracker.Helpers.DBHelper;
@@ -79,6 +80,7 @@ public class MyMedicationsFragment extends Fragment
         Medication medication = db.getMedication(medId);
         LocalTime[] times = db.getMedicationTimes(medId);
         LocalDateTime[] dateTimes = new LocalDateTime[times.length];
+        String dosageVal;
 
         name = v.findViewById(R.id.myMedCardMedicationName);
         dosage = v.findViewById(R.id.myMedCardDosage);
@@ -95,8 +97,17 @@ public class MyMedicationsFragment extends Fragment
 
         medication.setTimes(dateTimes);
 
+        if (medication.getMedDosage() == (int) medication.getMedDosage())
+        {
+            dosageVal = String.format(Locale.getDefault(), "%d", (int) medication.getMedDosage());
+        }
+        else
+        {
+            dosageVal = String.valueOf(medication.getMedDosage());
+        }
+
         name.setText("Medication name: " + medication.getMedName());
-        dosage.setText("Dosage: " + medication.getMedDosage() + " " + medication.getMedDosageUnits());
+        dosage.setText("Dosage: " + dosageVal + " " + medication.getMedDosageUnits());
 
         StringBuilder freqLabel;
 
