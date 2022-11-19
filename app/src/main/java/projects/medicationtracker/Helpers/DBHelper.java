@@ -219,7 +219,6 @@ public class DBHelper extends SQLiteOpenHelper
      * Creates an ArrayList of all patients
      * @return ArrayList of all patients, except
      **************************************************************************/
-    @SuppressLint("Range")
     public ArrayList<String> getPatients()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -233,7 +232,7 @@ public class DBHelper extends SQLiteOpenHelper
 
         while (!result.isAfterLast())
         {
-            patients.add(result.getString(result.getColumnIndex(PATIENT_NAME)));
+            patients.add(result.getString(result.getColumnIndexOrThrow(PATIENT_NAME)));
             result.moveToNext();
         }
 
@@ -247,7 +246,6 @@ public class DBHelper extends SQLiteOpenHelper
      * @param patient The name of the patient whose Medications are sought
      * @return An ArrayList of all Medications for given patient
      */
-    @SuppressLint("Range")
     public ArrayList<Medication> getMedicationsForPatient(String patient)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -260,13 +258,13 @@ public class DBHelper extends SQLiteOpenHelper
 
         while (!cursor.isAfterLast())
         {
-            int medId = Integer.parseInt(cursor.getString(cursor.getColumnIndex(MED_ID)));
-            int dosage = Integer.parseInt(cursor.getString(cursor.getColumnIndex(MED_DOSAGE)));
-            int freq = Integer.parseInt(cursor.getString(cursor.getColumnIndex(MED_FREQUENCY)));
-            String medName = cursor.getString(cursor.getColumnIndex(MED_NAME));
-            String units = cursor.getString(cursor.getColumnIndex(MED_UNITS));
-            String startDateStr = cursor.getString(cursor.getColumnIndex(START_DATE));
-            String alias = cursor.getString(cursor.getColumnIndex(ALIAS));
+            int medId = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(MED_ID)));
+            int dosage = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(MED_DOSAGE)));
+            int freq = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(MED_FREQUENCY)));
+            String medName = cursor.getString(cursor.getColumnIndexOrThrow(MED_NAME));
+            String units = cursor.getString(cursor.getColumnIndexOrThrow(MED_UNITS));
+            String startDateStr = cursor.getString(cursor.getColumnIndexOrThrow(START_DATE));
+            String alias = cursor.getString(cursor.getColumnIndexOrThrow(ALIAS));
 
             LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(startDateStr);
 
@@ -290,7 +288,7 @@ public class DBHelper extends SQLiteOpenHelper
 
                 for (int i = 0; i < count; i++)
                 {
-                    LocalTime lt = LocalTime.parse(cursor1.getString(cursor1.getColumnIndex(DRUG_TIME)));
+                    LocalTime lt = LocalTime.parse(cursor1.getString(cursor1.getColumnIndexOrThrow(DRUG_TIME)));
 
                     timesArr.add(LocalDateTime.of(LocalDate.MIN, lt));
 
@@ -337,7 +335,6 @@ public class DBHelper extends SQLiteOpenHelper
      * Create ArrayList of all Medications in MedicationTable
      * @return All Medications in MedicationTable
      **************************************************************************/
-    @SuppressLint("Range")
     public ArrayList<Medication> getMedications()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -351,14 +348,14 @@ public class DBHelper extends SQLiteOpenHelper
         // Iterates through cursors to create instances of Medication object
         while (!meds.isAfterLast())
         {
-            int medId = Integer.parseInt(meds.getString(meds.getColumnIndex(MED_ID)));
-            float dosage = Float.parseFloat(meds.getString(meds.getColumnIndex(MED_DOSAGE)));
-            int frequency = Integer.parseInt(meds.getString(meds.getColumnIndex(MED_FREQUENCY)));
-            String medName = meds.getString(meds.getColumnIndex(MED_NAME));
-            String patient = meds.getString(meds.getColumnIndex(PATIENT_NAME));
-            String units = meds.getString(meds.getColumnIndex(MED_UNITS));
-            String date1 = meds.getString(meds.getColumnIndex(START_DATE));
-            String alias = meds.getString(meds.getColumnIndex(ALIAS));
+            int medId = Integer.parseInt(meds.getString(meds.getColumnIndexOrThrow(MED_ID)));
+            float dosage = Float.parseFloat(meds.getString(meds.getColumnIndexOrThrow(MED_DOSAGE)));
+            int frequency = Integer.parseInt(meds.getString(meds.getColumnIndexOrThrow(MED_FREQUENCY)));
+            String medName = meds.getString(meds.getColumnIndexOrThrow(MED_NAME));
+            String patient = meds.getString(meds.getColumnIndexOrThrow(PATIENT_NAME));
+            String units = meds.getString(meds.getColumnIndexOrThrow(MED_UNITS));
+            String date1 = meds.getString(meds.getColumnIndexOrThrow(START_DATE));
+            String alias = meds.getString(meds.getColumnIndexOrThrow(ALIAS));
 
             LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(date1);
 
@@ -381,7 +378,7 @@ public class DBHelper extends SQLiteOpenHelper
 
                 for (int i = 0; i < count; i++)
                 {
-                    @SuppressLint("Range") LocalTime lt = LocalTime.parse(cursor.getString(cursor.getColumnIndex(DRUG_TIME)));
+                    LocalTime lt = LocalTime.parse(cursor.getString(cursor.getColumnIndexOrThrow(DRUG_TIME)));
 
                     timesArr.add(LocalDateTime.of(LocalDate.MIN, lt));
 
@@ -420,7 +417,6 @@ public class DBHelper extends SQLiteOpenHelper
      * @param id The ID of the Medication
      * @return Medication retrieved from database
      **************************************************************************/
-    @SuppressLint("Range")
     public Medication getMedication(long id)
     {
         SQLiteDatabase db =this.getReadableDatabase();
@@ -431,15 +427,15 @@ public class DBHelper extends SQLiteOpenHelper
 
         cursor.moveToFirst();
 
-        String medName = cursor.getString(cursor.getColumnIndex(MED_NAME));
-        String patient = cursor.getString(cursor.getColumnIndex(PATIENT_NAME));
-        String units = cursor.getString(cursor.getColumnIndex(MED_UNITS));
+        String medName = cursor.getString(cursor.getColumnIndexOrThrow(MED_NAME));
+        String patient = cursor.getString(cursor.getColumnIndexOrThrow(PATIENT_NAME));
+        String units = cursor.getString(cursor.getColumnIndexOrThrow(MED_UNITS));
         LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(cursor.getString(
-                cursor.getColumnIndex(START_DATE)));
-        long medId = Long.parseLong(cursor.getString(cursor.getColumnIndex(MED_ID)));
-        long frequency = Long.parseLong(cursor.getString(cursor.getColumnIndex(MED_FREQUENCY)));
-        float dosage = Float.parseFloat(cursor.getString(cursor.getColumnIndex(MED_DOSAGE)));
-        String alias = cursor.getString(cursor.getColumnIndex(ALIAS));
+                cursor.getColumnIndexOrThrow(START_DATE)));
+        long medId = Long.parseLong(cursor.getString(cursor.getColumnIndexOrThrow(MED_ID)));
+        long frequency = Long.parseLong(cursor.getString(cursor.getColumnIndexOrThrow(MED_FREQUENCY)));
+        float dosage = Float.parseFloat(cursor.getString(cursor.getColumnIndexOrThrow(MED_DOSAGE)));
+        String alias = cursor.getString(cursor.getColumnIndexOrThrow(ALIAS));
 
         LocalDateTime[] times = new LocalDateTime[0];
 
@@ -469,7 +465,7 @@ public class DBHelper extends SQLiteOpenHelper
 
         for (int i = 0; i < cursor.getCount(); i++)
         {
-            final String time = cursor.getString(cursor.getColumnIndex(DRUG_TIME));
+            final String time = cursor.getString(cursor.getColumnIndexOrThrow(DRUG_TIME));
             times[i] = LocalTime.parse(time);
             cursor.moveToNext();
         }
@@ -545,7 +541,7 @@ public class DBHelper extends SQLiteOpenHelper
                 for (int i = maxIndex; i < oldTimes.length; i++)
                 {
                     String oldTimeAsString = oldTimes[i].toString();
-                    String whereClause = DRUG_TIME + "=\"" + oldTimeAsString + "\" AND " + MED_ID
+                    String whereClause = DRUG_TIME + "='" + oldTimeAsString + "' AND " + MED_ID
                             + "=" + medication.getMedId();
 
                     db.delete(MEDICATION_TIMES, whereClause, null);
@@ -621,9 +617,9 @@ public class DBHelper extends SQLiteOpenHelper
      * Get ID of dose
      * @param medId ID of Medication
      * @param doseTime Time of dose
+     * @param doseTime Time of dose
      * @return Dose ID of match found in MedicationTracker table
      **************************************************************************/
-    @SuppressLint("Range")
     public long getDoseId(long medId, String doseTime)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -636,14 +632,13 @@ public class DBHelper extends SQLiteOpenHelper
         cursor.moveToFirst();
 
         rowId = cursor.getCount() > 0 ?
-                Integer.parseInt(cursor.getString(cursor.getColumnIndex(DOSE_ID))) : -1;
+                Long.parseLong(cursor.getString(cursor.getColumnIndexOrThrow(DOSE_ID))) : -1;
 
         cursor.close();
 
         return rowId;
     }
 
-    @SuppressLint("Range")
     public long getMedicationIdFromTimeId(long timeId)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -656,7 +651,7 @@ public class DBHelper extends SQLiteOpenHelper
 
         cursor.moveToFirst();
 
-        rowId = Integer.parseInt(cursor.getString(cursor.getColumnIndex(DOSE_ID)));
+        rowId = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(DOSE_ID)));
         cursor.close();
 
         return rowId;
@@ -667,7 +662,6 @@ public class DBHelper extends SQLiteOpenHelper
      * @param doseId ID of dose in table
      * @return Status of dose
      **************************************************************************/
-    @SuppressLint("Range")
     public boolean getTaken(long doseId)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -677,29 +671,11 @@ public class DBHelper extends SQLiteOpenHelper
         Cursor cursor = db.rawQuery(query, null);
 
         cursor.moveToFirst();
-        int taken = Integer.parseInt(cursor.getString(cursor.getColumnIndex(TAKEN)));
+        int taken = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(TAKEN)));
 
         cursor.close();
 
         return taken == 1;
-    }
-
-    @SuppressLint("Range")
-    public String getTimeTaken(long medId, String doesTime)
-    {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT " + TIME_TAKEN + " FROM " + MEDICATION_TRACKER_TABLE
-                + " WHERE " + medId + " = " + medId + " AND " + DOSE_TIME + " = " + doesTime;
-        String timeTaken;
-        Cursor cursor = db.rawQuery(query, null);
-
-        cursor.moveToFirst();
-
-        timeTaken = cursor.getString(cursor.getColumnIndex(TIME_TAKEN));
-
-        cursor.close();
-
-        return timeTaken;
     }
 
     /**
@@ -753,7 +729,7 @@ public class DBHelper extends SQLiteOpenHelper
         SQLiteDatabase db = this.getWritableDatabase();
 
         String query = NOTE + " = \"" + note.getNote() + "\" AND " + ENTRY_TIME
-                + " = \"" + TimeFormatting.localDateTimeToString(note.getNoteTime()) + "\"";
+                + " = '" + TimeFormatting.localDateTimeToString(note.getNoteTime()) + "'";
 
         db.delete(NOTES_TABLE, query, null);
     }
@@ -778,7 +754,6 @@ public class DBHelper extends SQLiteOpenHelper
      * @param medId ID of Medication pertaining to Note
      * @return An ArrayList of all notes about given Medication
      **************************************************************************/
-    @SuppressLint("Range")
     public ArrayList<Note> getNotes(long medId)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -793,10 +768,10 @@ public class DBHelper extends SQLiteOpenHelper
 
         while (!cursor.isAfterLast())
         {
-            long noteId = Long.parseLong(cursor.getString(cursor.getColumnIndex(NOTE_ID)));
-            String note = cursor.getString(cursor.getColumnIndex(NOTE));
+            long noteId = Long.parseLong(cursor.getString(cursor.getColumnIndexOrThrow(NOTE_ID)));
+            String note = cursor.getString(cursor.getColumnIndexOrThrow(NOTE));
             LocalDateTime entryTime = TimeFormatting.stringToLocalDateTime(cursor.getString(
-                    cursor.getColumnIndex(ENTRY_TIME)));
+                    cursor.getColumnIndexOrThrow(ENTRY_TIME)));
 
             notes.add(new Note(noteId, medId, note, entryTime));
 
@@ -808,7 +783,6 @@ public class DBHelper extends SQLiteOpenHelper
         return notes;
     }
 
-    @SuppressLint("Range")
     public long[] getMedicationTimeIds(Medication medication)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -823,7 +797,7 @@ public class DBHelper extends SQLiteOpenHelper
 
         for (int i = 0; i < cursor.getCount(); i++)
         {
-            timeIds[i] = Long.parseLong(cursor.getString(cursor.getColumnIndex(TIME_ID)));
+            timeIds[i] = Long.parseLong(cursor.getString(cursor.getColumnIndexOrThrow(TIME_ID)));
             cursor.moveToNext();
         }
 
@@ -842,7 +816,6 @@ public class DBHelper extends SQLiteOpenHelper
         db.update(SETTINGS_TABLE, cv, null, null);
     }
 
-    @SuppressLint("Range")
     public int getTimeBeforeDose()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -852,7 +825,7 @@ public class DBHelper extends SQLiteOpenHelper
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
 
-        int timeBefore = Integer.parseInt(cursor.getString(cursor.getColumnIndex(TIME_BEFORE_DOSE)));
+        int timeBefore = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(TIME_BEFORE_DOSE)));
 
         cursor.close();
 
@@ -869,7 +842,6 @@ public class DBHelper extends SQLiteOpenHelper
         db.update(SETTINGS_TABLE, cv, null, null);
     }
 
-    @SuppressLint("Range")
     public boolean getNotificationEnabled()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -880,14 +852,13 @@ public class DBHelper extends SQLiteOpenHelper
         cursor.moveToFirst();
 
         boolean enabled
-                = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ENABLE_NOTIFICATIONS))) == 1;
+                = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(ENABLE_NOTIFICATIONS))) == 1;
 
         cursor.close();
 
         return enabled;
     }
 
-    @SuppressLint("Range")
     public String getSavedTheme()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -897,7 +868,7 @@ public class DBHelper extends SQLiteOpenHelper
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
 
-        theme = cursor.getString(cursor.getColumnIndex(THEME));
+        theme = cursor.getString(cursor.getColumnIndexOrThrow(THEME));
 
         cursor.close();
 

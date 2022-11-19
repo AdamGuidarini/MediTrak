@@ -65,11 +65,11 @@
     <string name="start_date">Start Date</string>
     <string name="taken_at">Taken at</string>
     <string name="unit_of_time">Unit of Time</string>
-    <string name="mark_as_taken">Mark as taken</string>
-    <string name="snooze_message">Remind me in 15 minutes</string>
+    <string name="mark_as_taken">Taken</string>
+    <string name="snooze_message">Snooze</string>
     <string name="options">Options</string>
     <string name="license">License</string>
-    <string name="purpose">MediTrak is a free and open source (FOSS) application designed to help you keep track of your medications, so you can more easily answer the question \"did I take my medication yesterday?\"</string>
+    <string name="purpose">MediTrak is a free and open source application designed to help you keep track of your medications, so you can more easily answer the question \"did I take my medication yesterday?\"</string>
     <string name="copyright">Copyright © 2022 Adam Guidarini</string>
     <string name="licenseInfo">MediTrak is free software and may be redistributed and/or modified under the terms of the GNU General Public License as published by the Free software foundation, either version 2 or (at your option) later.</string>
     <string name="warranty">
