@@ -93,4 +93,6 @@
     <string name="hours_in_advance">hours in advance</string>
     <string name="not_taken_yet">Not yet taken</string>
     <string name="not_taken">Not taken</string>
+    <string name="marked_taken_at">Marked taken at: </string>
+    <string name="dose_information">Dose information</string>
 </resources>

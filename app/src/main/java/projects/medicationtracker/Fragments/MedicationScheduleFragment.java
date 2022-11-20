@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,14 +40,16 @@ public class MedicationScheduleFragment extends Fragment
     private View rootView;
 
     private static ArrayList<Medication> meds;
+    private static LinearLayoutCompat checkBoxHolder;
+    private static DBHelper db;
     private static String dayOfWeek;
     private static LocalDate dayInCurrentWeek;
     private static int dayNumber;
 
-    public MedicationScheduleFragment()
-    {
-        // Required empty public constructor
-    }
+    /**
+     * Required empty constructor
+     */
+    public MedicationScheduleFragment() {}
 
     /**
      * Use this factory method to create a new instance of
@@ -119,10 +122,10 @@ public class MedicationScheduleFragment extends Fragment
      */
     private void createSchedule(View rootView)
     {
-        LinearLayoutCompat checkBoxHolder = rootView.findViewById(R.id.medicationSchedule);
+        checkBoxHolder = rootView.findViewById(R.id.medicationSchedule);
         TextView dayLabel = rootView.findViewById(R.id.dateLabel);
         LocalDate thisSunday = TimeFormatting.whenIsSunday(dayInCurrentWeek);
-        DBHelper db = new DBHelper(rootView.getContext());
+        db = new DBHelper(rootView.getContext());
 
         checkBoxHolder.setOrientation(LinearLayoutCompat.VERTICAL);
 
@@ -136,92 +139,7 @@ public class MedicationScheduleFragment extends Fragment
             {
                 if (time.toLocalDate().isEqual(thisSunday.plusDays(dayNumber)) && !time.isBefore(medication.getStartDate()))
                 {
-                    CheckBox thisMedication = new CheckBox(rootView.getContext());
-                    long medId = medication.getMedId();
-                    Triple<Medication, Long, LocalDateTime> tag;
-                    String timeTaken = getString(R.string.not_taken_yet);
-                    long doseRowId = db.getDoseId(medId, TimeFormatting.localDateTimeToString(time));
-
-                    // Set Checkbox label
-                    String medName = medication.getMedName();
-                    String dosage;
-                    if (medication.getMedDosage() == (int) medication.getMedDosage())
-                    {
-                        dosage = String.format(Locale.getDefault(), "%d", (int) medication.getMedDosage());
-                    }
-                    else
-                    {
-                        dosage = String.valueOf(medication.getMedDosage());
-                    }
-
-                    if (doseRowId != -1 && db.getTaken(doseRowId))
-                    {
-                        LocalDateTime ldt = db.getTimeTaken(doseRowId);
-
-                        timeTaken = TimeFormatting.localDateToString(ldt.toLocalDate()) + " "
-                            + TimeFormatting.localTimeToString(ldt.toLocalTime());
-
-                        thisMedication.setChecked(true);
-                    }
-
-                    dosage += " " + medication.getMedDosageUnits();
-
-                    String dosageTime =
-                            TimeFormatting.formatTimeForUser(time.getHour(), time.getMinute());
-
-                    String thisMedicationLabel = medName + " - " + dosage + " - " + dosageTime + "\n"
-                            + getString(R.string.taken_at) + ": " + timeTaken;
-                    thisMedication.setText(thisMedicationLabel);
-
-                    tag = new Triple<>(medication, doseRowId, time);
-
-                    thisMedication.setTag(tag);
-
-                    thisMedication.setOnCheckedChangeListener((compoundButton, b) ->
-                    {
-                        Triple<Medication, Long, LocalDateTime> tvTag =
-                                (Triple<Medication, Long, LocalDateTime>) thisMedication.getTag();
-                        final Long doseId = tvTag.getSecond();
-                        int timeBeforeDose = db.getTimeBeforeDose();
-
-                        if (
-                                LocalDateTime.now().isBefore(time.minusHours(timeBeforeDose))
-                                && timeBeforeDose != -1
-                        )
-                        {
-                            thisMedication.setChecked(false);
-                            Toast.makeText(
-                                    rootView.getContext(),
-                                    "Cannot take medications more than "
-                                            + timeBeforeDose + " hours in advance",
-                                    Toast.LENGTH_SHORT
-                            ).show();
-                            return;
-                        }
-
-
-                        String now = TimeFormatting.localDateTimeToString(LocalDateTime.now());
-
-                        if (doseId != -1)
-                        {
-                            db.updateDoseStatus(doseId, now, thisMedication.isChecked());
-                        }
-                        else
-                        {
-                            long id = db.addToMedicationTracker(
-                                    tvTag.getFirst(),
-                                    tvTag.getThird()
-                            );
-
-                            db.updateDoseStatus(
-                                    id,
-                                    TimeFormatting.localDateTimeToString(LocalDateTime.now()),
-                                    true
-                            );
-                        }
-                    });
-
-                    checkBoxHolder.addView(thisMedication);
+                    buildCheckbox(medication, time);
                 }
             }
         }
@@ -235,15 +153,99 @@ public class MedicationScheduleFragment extends Fragment
         }
         else
         {
-            sortMedicationCheckBoxes(checkBoxHolder);
+            sortMedicationCheckBoxes((RelativeLayout) checkBoxHolder.getChildAt(1));
         }
+    }
+
+    private void buildCheckbox(Medication medication, LocalDateTime time)
+    {
+        RelativeLayout rl = new RelativeLayout(rootView.getContext());
+        CheckBox thisMedication = new CheckBox(rootView.getContext());
+        long medId = medication.getMedId();
+        Triple<Medication, Long, LocalDateTime> tag;
+        long doseRowId = db.getDoseId(medId, TimeFormatting.localDateTimeToString(time));
+
+        rl.addView(thisMedication);
+
+        // Set Checkbox label
+        String medName = medication.getMedName();
+        String dosage;
+        if (medication.getMedDosage() == (int) medication.getMedDosage())
+        {
+            dosage = String.format(Locale.getDefault(), "%d", (int) medication.getMedDosage());
+        }
+        else
+        {
+            dosage = String.valueOf(medication.getMedDosage());
+        }
+
+        if (doseRowId != -1 && db.getTaken(doseRowId)) thisMedication.setChecked(true);
+
+        dosage += " " + medication.getMedDosageUnits();
+
+        String dosageTime =
+                TimeFormatting.formatTimeForUser(time.getHour(), time.getMinute());
+
+        String thisMedicationLabel = medName + " - " + dosage + " - " + dosageTime;
+
+        thisMedication.setText(thisMedicationLabel);
+
+        tag = new Triple<>(medication, doseRowId, time);
+
+        thisMedication.setTag(tag);
+
+        thisMedication.setOnCheckedChangeListener((compoundButton, b) ->
+        {
+            Triple<Medication, Long, LocalDateTime> tvTag =
+                    (Triple<Medication, Long, LocalDateTime>) thisMedication.getTag();
+            final Long doseId = tvTag.getSecond();
+            int timeBeforeDose = db.getTimeBeforeDose();
+
+            if (
+                    LocalDateTime.now().isBefore(time.minusHours(timeBeforeDose))
+                            && timeBeforeDose != -1
+            )
+            {
+                thisMedication.setChecked(false);
+                Toast.makeText(
+                        rootView.getContext(),
+                        "Cannot take medications more than "
+                                + timeBeforeDose + " hours in advance",
+                        Toast.LENGTH_SHORT
+                ).show();
+                return;
+            }
+
+
+            String now = TimeFormatting.localDateTimeToString(LocalDateTime.now());
+
+            if (doseId != -1)
+            {
+                db.updateDoseStatus(doseId, now, thisMedication.isChecked());
+            }
+            else
+            {
+                long id = db.addToMedicationTracker(
+                        tvTag.getFirst(),
+                        tvTag.getThird()
+                );
+
+                db.updateDoseStatus(
+                        id,
+                        TimeFormatting.localDateTimeToString(LocalDateTime.now()),
+                        true
+                );
+            }
+        });
+
+        checkBoxHolder.addView(rl);
     }
 
     /**
      * Sorts CheckBoxes in medication schedule.
      * @param parentLayout Layout containing CheckBoxes to sort.
      */
-    private void sortMedicationCheckBoxes(LinearLayoutCompat parentLayout)
+    private void sortMedicationCheckBoxes(RelativeLayout parentLayout)
     {
         int count = parentLayout.getChildCount();
 
