@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,10 +84,7 @@ public class MedicationScheduleFragment extends Fragment
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
+    public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
 
     /**
      * Builds an instance of the fragment
@@ -125,6 +123,7 @@ public class MedicationScheduleFragment extends Fragment
         checkBoxHolder = rootView.findViewById(R.id.medicationSchedule);
         TextView dayLabel = rootView.findViewById(R.id.dateLabel);
         LocalDate thisSunday = TimeFormatting.whenIsSunday(dayInCurrentWeek);
+        ArrayList<RelativeLayout> layouts = new ArrayList<>();
         db = new DBHelper(rootView.getContext());
 
         checkBoxHolder.setOrientation(LinearLayoutCompat.VERTICAL);
@@ -139,12 +138,12 @@ public class MedicationScheduleFragment extends Fragment
             {
                 if (time.toLocalDate().isEqual(thisSunday.plusDays(dayNumber)) && !time.isBefore(medication.getStartDate()))
                 {
-                    buildCheckbox(medication, time);
+                    layouts.add(buildCheckbox(medication, time));
                 }
             }
         }
 
-        if (checkBoxHolder.getChildCount() == 0)
+        if (layouts.size() == 0)
         {
             TextView textView = new TextView(rootView.getContext());
             String noMed = "No medications for " + dayOfWeek;
@@ -153,19 +152,40 @@ public class MedicationScheduleFragment extends Fragment
         }
         else
         {
-            sortMedicationCheckBoxes((RelativeLayout) checkBoxHolder.getChildAt(1));
+            sortSchedule(layouts);
+
+            for (RelativeLayout layout : layouts)
+            {
+                checkBoxHolder.addView(layout);
+            }
         }
     }
 
-    private void buildCheckbox(Medication medication, LocalDateTime time)
+    private RelativeLayout buildCheckbox(Medication medication, LocalDateTime time)
     {
         RelativeLayout rl = new RelativeLayout(rootView.getContext());
         CheckBox thisMedication = new CheckBox(rootView.getContext());
         long medId = medication.getMedId();
         Triple<Medication, Long, LocalDateTime> tag;
         long doseRowId = db.getDoseId(medId, TimeFormatting.localDateTimeToString(time));
+        ImageButton button = new ImageButton(rootView.getContext());
+
+        button.setBackgroundResource(android.R.drawable.ic_menu_info_details);
 
         rl.addView(thisMedication);
+        rl.addView(button);
+
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        button.setLayoutParams(layoutParams);
+
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) button.getLayoutParams();
+        params.addRule(RelativeLayout.ALIGN_PARENT_END);
+        params.addRule(RelativeLayout.CENTER_VERTICAL);
+//        params.addRule(RelativeLayout.LEFT_OF, R.id.id_to_be_left_of);
+
 
         // Set Checkbox label
         String medName = medication.getMedName();
@@ -238,44 +258,38 @@ public class MedicationScheduleFragment extends Fragment
             }
         });
 
-        checkBoxHolder.addView(rl);
+        return rl;
     }
 
     /**
      * Sorts CheckBoxes in medication schedule.
-     * @param parentLayout Layout containing CheckBoxes to sort.
+     * @param layouts ArrayList of all relative layout in the schedule.
      */
-    private void sortMedicationCheckBoxes(RelativeLayout parentLayout)
+    private void sortSchedule(ArrayList<RelativeLayout> layouts)
     {
-        int count = parentLayout.getChildCount();
+        int count = layouts.size();
 
         for (int i = 1; i < count; i++)
         {
             for (int j = 0; j < (count - i); j++)
             {
-                CheckBox child1 = (CheckBox) parentLayout.getChildAt(j);
-                CheckBox child2 = (CheckBox) parentLayout.getChildAt(j + 1);
+                CheckBox child1 = (CheckBox) layouts.get(j).getChildAt(0);
+                CheckBox child2 = (CheckBox) layouts.get(j + 1).getChildAt(0);
 
-                Triple<Medication, Long, LocalDateTime> child1Pair = (Triple<Medication, Long, LocalDateTime>) child1.getTag();
-                Triple<Medication, Long, LocalDateTime> child2Pair = (Triple<Medication, Long, LocalDateTime>) child2.getTag();
+                Triple<Medication, Long, LocalDateTime> child1Pair =
+                        (Triple<Medication, Long, LocalDateTime>) child1.getTag();
+                Triple<Medication, Long, LocalDateTime> child2Pair =
+                        (Triple<Medication, Long, LocalDateTime>) child2.getTag();
 
                 LocalDateTime child1Time = child1Pair.getThird();
                 LocalDateTime child2Time = child2Pair.getThird();
 
                 if (child1Time != null && child1Time.isAfter(child2Time))
                 {
-                    CheckBox temp = new CheckBox(parentLayout.getContext());
-                    temp.setText(child1.getText());
-                    temp.setTag(child1.getTag());
-                    temp.setChecked(child1.isChecked());
+                    RelativeLayout temp = layouts.get(j);
 
-                    child1.setText(child2.getText());
-                    child1.setTag(child2.getTag());
-                    child1.setChecked(child2.isChecked());
-
-                    child2.setText(temp.getText());
-                    child2.setTag(temp.getTag());
-                    child2.setChecked(temp.isChecked());
+                    layouts.set(j, layouts.get(j + 1));
+                    layouts.set(j + 1, temp);
                 }
             }
         }
