@@ -184,8 +184,6 @@ public class MedicationScheduleFragment extends Fragment
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) button.getLayoutParams();
         params.addRule(RelativeLayout.ALIGN_PARENT_END);
         params.addRule(RelativeLayout.CENTER_VERTICAL);
-//        params.addRule(RelativeLayout.LEFT_OF, R.id.id_to_be_left_of);
-
 
         // Set Checkbox label
         String medName = medication.getMedName();
