@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import kotlin.Triple;
+import projects.medicationtracker.Dialogs.DoseInfoDialog;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TextViewUtils;
 import projects.medicationtracker.Helpers.TimeFormatting;
@@ -184,6 +185,12 @@ public class MedicationScheduleFragment extends Fragment
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) button.getLayoutParams();
         params.addRule(RelativeLayout.ALIGN_PARENT_END);
         params.addRule(RelativeLayout.CENTER_VERTICAL);
+
+        button.setOnClickListener(v ->
+        {
+            DoseInfoDialog doseInfo = new DoseInfoDialog(doseRowId, db);
+            doseInfo.show(getChildFragmentManager(), null);
+        });
 
         // Set Checkbox label
         String medName = medication.getMedName();
