@@ -3,7 +3,6 @@ package projects.medicationtracker.Fragments;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.LinearLayoutCompat;
-import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import android.os.Parcelable;
@@ -33,7 +32,6 @@ import projects.medicationtracker.SimpleClasses.Medication;
  */
 public class MedicationScheduleFragment extends Fragment
 {
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String MEDICATIONS = "medications";
     public static final String DAY_OF_WEEK = "dayOfWeek";
     public static final String DAY_IN_CURRENT_WEEK = "dayInCurrentWeek";
@@ -140,8 +138,9 @@ public class MedicationScheduleFragment extends Fragment
                 {
                     CheckBox thisMedication = new CheckBox(rootView.getContext());
                     long medId = medication.getMedId();
-//                    Pair<Long, LocalDateTime> tag;
                     Triple<Medication, Long, LocalDateTime> tag;
+                    String timeTaken = getString(R.string.not_taken_yet);
+                    long doseRowId = db.getDoseId(medId, TimeFormatting.localDateTimeToString(time));
 
                     // Set Checkbox label
                     String medName = medication.getMedName();
@@ -155,25 +154,28 @@ public class MedicationScheduleFragment extends Fragment
                         dosage = String.valueOf(medication.getMedDosage());
                     }
 
+                    if (doseRowId != -1 && db.getTaken(doseRowId))
+                    {
+                        LocalDateTime ldt = db.getTimeTaken(doseRowId);
+
+                        timeTaken = TimeFormatting.localDateToString(ldt.toLocalDate()) + " "
+                            + TimeFormatting.localTimeToString(ldt.toLocalTime());
+
+                        thisMedication.setChecked(true);
+                    }
+
                     dosage += " " + medication.getMedDosageUnits();
 
                     String dosageTime =
                             TimeFormatting.formatTimeForUser(time.getHour(), time.getMinute());
 
-                    String thisMedicationLabel = medName + " - " + dosage + " - " + dosageTime;
+                    String thisMedicationLabel = medName + " - " + dosage + " - " + dosageTime + "\n"
+                            + getString(R.string.taken_at) + ": " + timeTaken;
                     thisMedication.setText(thisMedicationLabel);
 
-                    // Check database for this dosage, if not add it
-                    // if it is, get the DoseId
-                    long rowid = db.getDoseId(medId, TimeFormatting.localDateTimeToString(time));
-
-//                    tag = Pair.create(rowid, time);
-                    tag = new Triple<>(medication, rowid, time);
+                    tag = new Triple<>(medication, doseRowId, time);
 
                     thisMedication.setTag(tag);
-
-                    if (rowid != -1 && db.getTaken(rowid))
-                        thisMedication.setChecked(true);
 
                     thisMedication.setOnCheckedChangeListener((compoundButton, b) ->
                     {
@@ -262,14 +264,15 @@ public class MedicationScheduleFragment extends Fragment
                 {
                     CheckBox temp = new CheckBox(parentLayout.getContext());
                     temp.setText(child1.getText());
+                    temp.setTag(child1.getTag());
                     temp.setChecked(child1.isChecked());
 
                     child1.setText(child2.getText());
-                    child1.setTag(child1.getTag());
+                    child1.setTag(child2.getTag());
                     child1.setChecked(child2.isChecked());
 
                     child2.setText(temp.getText());
-                    child2.setTag(child2.getTag());
+                    child2.setTag(temp.getTag());
                     child2.setChecked(temp.isChecked());
                 }
             }

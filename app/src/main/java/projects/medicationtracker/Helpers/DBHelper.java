@@ -724,6 +724,10 @@ public class DBHelper extends SQLiteOpenHelper
         db.insert(NOTES_TABLE, null, cv);
     }
 
+    /**
+     * Removes a note from the database
+     * @param note Note to remove
+     */
     public void deleteNote(Note note)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -783,6 +787,11 @@ public class DBHelper extends SQLiteOpenHelper
         return notes;
     }
 
+    /**
+     * Gets IDs in database for times for the provided medication
+     * @param medication Medication whose time IDs must be retrieved
+     * @return An array of time ids
+     */
     public long[] getMedicationTimeIds(Medication medication)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -806,6 +815,10 @@ public class DBHelper extends SQLiteOpenHelper
         return timeIds;
     }
 
+    /**
+     * Stores the maximum amount of time before which a dose cannot be marked taken
+     * @param hoursBeforeDose Number of hours before which a medication can be marked taken
+     */
     public void setTimeBeforeDose(int hoursBeforeDose)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -816,6 +829,10 @@ public class DBHelper extends SQLiteOpenHelper
         db.update(SETTINGS_TABLE, cv, null, null);
     }
 
+    /**
+     * Retrieves the amount of time before a dose can be marked as taken
+     * @return the number of hours before which a dose cannot be marked taken
+     */
     public int getTimeBeforeDose()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -842,6 +859,10 @@ public class DBHelper extends SQLiteOpenHelper
         db.update(SETTINGS_TABLE, cv, null, null);
     }
 
+    /**
+     * Retrieves user's notification preference
+     * @return true of notifications are enabled in Settings
+     */
     public boolean getNotificationEnabled()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -875,6 +896,10 @@ public class DBHelper extends SQLiteOpenHelper
         return theme;
     }
 
+    /**
+     * Saves user's chosen theme (light, dark, default)
+     * @param theme User's preferred theme
+     */
     public void saveTheme(String theme)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -883,5 +908,31 @@ public class DBHelper extends SQLiteOpenHelper
         cv.put(THEME, theme);
 
         db.update(SETTINGS_TABLE, cv, null, null);
+    }
+
+    /**
+     * Retrieves the time when a dose was taken
+     * @param doseId ID of dose whose time is sought
+     * @return The time the dose was marked taken or null
+     */
+    public LocalDateTime getTimeTaken(long doseId)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        LocalDateTime time;
+        String query = "SELECT " + DOSE_TIME + " FROM " + MEDICATION_TRACKER_TABLE + " WHERE "
+                + DOSE_ID + " = " + doseId;
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        cursor.moveToFirst();
+
+        time = cursor.getCount() > 0 ?
+                TimeFormatting.stringToLocalDateTime(
+                    cursor.getString(cursor.getColumnIndexOrThrow(DOSE_TIME))
+                ) : null;
+
+        cursor.close();
+
+        return time;
     }
 }
