@@ -98,17 +98,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Instructions for restarting activity once returned to from other activity
-     * Clears all elements and reprints new ones.
-     */
-    @Override
-    protected void onRestart()
-    {
-        super.onRestart();
-        super.recreate();
-    }
-
-    /**
     *  Launches MyMedications.java when "My Medications" option is selected
     *
     *  @param item the "My Medications" menu option
