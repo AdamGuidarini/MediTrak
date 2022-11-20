@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class ConfirmDeleteAllFragment extends DialogFragment
         db = database;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstances)
     {

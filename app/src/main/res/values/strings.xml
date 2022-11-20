@@ -80,6 +80,7 @@
 
         This program is distributed in the hope that it will be useful,
         but WITHOUT ANY WARRANTY; without even the implied warranty of
+            createChangeNote();
         MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
         GNU General Public License for more details
     </string>
@@ -88,4 +89,14 @@
         along with this program; if not, write to the Free Software
         Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
     </string>
+    <string name="cannot_take_medication_more_than">Cannot take medication more than</string>
+    <string name="hours_in_advance">hours in advance</string>
+    <string name="not_taken_yet">Not yet taken</string>
+    <string name="not_taken">Not taken</string>
+    <string name="marked_taken_at">Marked Taken At</string>
+    <string name="dose_information">Dose information</string>
+    <string name="time_taken">Time Taken: </string>
+    <string name="date_taken">Date Taken: </string>
+    <string name="close">Close</string>
+    <string name="this_dose">This Dose</string>
 </resources>
