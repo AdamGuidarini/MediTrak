@@ -13,9 +13,12 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.time.LocalDateTime;
 
+import projects.medicationtracker.Fragments.SelectDateFragment;
+import projects.medicationtracker.Fragments.TimePickerFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.R;
@@ -58,7 +61,7 @@ public class DoseInfoDialog extends DialogFragment
     {
         super.onStart();
 
-        if (doseId == -1)
+        if (!db.getTaken(doseId))
         {
             getDialog().findViewById(R.id.notTakenMessage).setVisibility(View.VISIBLE);
         }
@@ -69,6 +72,24 @@ public class DoseInfoDialog extends DialogFragment
 
             timeTaken.setShowSoftInputOnFocus(false);
             dateTaken.setShowSoftInputOnFocus(false);
+
+            timeTaken.setOnFocusChangeListener((view, b) ->
+            {
+                if (b)
+                {
+                    DialogFragment timePicker = new TimePickerFragment(timeTaken.getId());
+                    timePicker.show(getParentFragmentManager(), null);
+                }
+            });
+
+            dateTaken.setOnFocusChangeListener((view, b) ->
+            {
+                if (b)
+                {
+                    DialogFragment datePicker = new SelectDateFragment(dateTaken.getId());
+                    datePicker.show(getParentFragmentManager(), null);
+                }
+            });
 
             LocalDateTime doseDate = db.getTimeTaken(doseId);
 
