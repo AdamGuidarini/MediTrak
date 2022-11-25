@@ -188,7 +188,9 @@ public class MedicationScheduleFragment extends Fragment
 
         button.setOnClickListener(v ->
         {
-            DoseInfoDialog doseInfo = new DoseInfoDialog(doseRowId, db);
+            DoseInfoDialog doseInfo = new DoseInfoDialog(
+                    db.getDoseId(medId, TimeFormatting.localDateTimeToString(time)), db
+            );
             doseInfo.show(getChildFragmentManager(), null);
         });
 

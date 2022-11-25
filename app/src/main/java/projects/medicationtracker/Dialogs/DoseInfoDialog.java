@@ -5,10 +5,14 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.time.LocalDateTime;
 
@@ -54,16 +58,24 @@ public class DoseInfoDialog extends DialogFragment
     {
         super.onStart();
 
-        TextView timeTaken = getDialog().findViewById(R.id.dose_time_taken);
-        TextView dateTaken = getDialog().findViewById(R.id.dose_date_taken);
-        LocalDateTime doseDate = db.getTimeTaken(doseId);
+        if (doseId == -1)
+        {
+            getDialog().findViewById(R.id.notTakenMessage).setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            TextInputEditText timeTaken = getDialog().findViewById(R.id.dose_time_taken);
+            TextInputEditText dateTaken = getDialog().findViewById(R.id.dose_date_taken);
 
-        timeTaken.setText(
-                doseDate != null ? TimeFormatting.localTimeToString(doseDate.toLocalTime()) : getString(R.string.not_taken_yet)
-        );
+            timeTaken.setShowSoftInputOnFocus(false);
+            dateTaken.setShowSoftInputOnFocus(false);
 
-        dateTaken.setText(
-                doseDate != null ? TimeFormatting.localDateToString(doseDate.toLocalDate()) : getString(R.string.not_taken_yet)
-        );
+            LocalDateTime doseDate = db.getTimeTaken(doseId);
+
+            timeTaken.setText(TimeFormatting.localTimeToString(doseDate.toLocalTime()));
+            dateTaken.setText(TimeFormatting.localDateToString(doseDate.toLocalDate()));
+
+            getDialog().findViewById(R.id.dose_time_details).setVisibility(View.VISIBLE);
+        }
     }
 }
