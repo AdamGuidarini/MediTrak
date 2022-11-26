@@ -77,7 +77,7 @@ public class DoseInfoDialog extends DialogFragment
             {
                 if (b)
                 {
-                    DialogFragment timePicker = new TimePickerFragment(timeTaken.getId());
+                    DialogFragment timePicker = new TimePickerFragment(timeTaken);
                     timePicker.show(getParentFragmentManager(), null);
                 }
             });
@@ -86,7 +86,7 @@ public class DoseInfoDialog extends DialogFragment
             {
                 if (b)
                 {
-                    DialogFragment datePicker = new SelectDateFragment(dateTaken.getId());
+                    DialogFragment datePicker = new SelectDateFragment(dateTaken);
                     datePicker.show(getParentFragmentManager(), null);
                 }
             });

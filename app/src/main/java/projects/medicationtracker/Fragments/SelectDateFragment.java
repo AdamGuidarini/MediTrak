@@ -15,13 +15,13 @@ import java.time.LocalDate;
 
 public class SelectDateFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener
 {
-    private final int id;
+    private final TextView tv;
 
     /**
      * Creates a new SelectDateFragment
-     * @param viewId The id of the View, ideally a Text View, to write the selected date to
+     * @param textView The TextView to write the selected date to
      *************************************************************************/
-    public SelectDateFragment(int viewId) { id = viewId; }
+    public SelectDateFragment(TextView textView) { tv = textView; }
 
     /**
      * Instructions for how to create fragment
@@ -59,13 +59,12 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
      *************************************************************************/
     public void populateSetDate(int year, int month, int day)
     {
-        TextView textView = getActivity().findViewById(id);
         LocalDate localDate = LocalDate.of(year, month, day);
 
-        textView.clearFocus();
+        tv.clearFocus();
 
         String date = month + "/" + day + "/" + year;
-        textView.setText(date);
-        textView.setTag(localDate);
+        tv.setText(date);
+        tv.setTag(localDate);
     }
 }

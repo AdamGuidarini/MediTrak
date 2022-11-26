@@ -402,7 +402,7 @@ public class AddEditFormFragment extends Fragment
         {
             if (b)
             {
-                DialogFragment datePicker = new SelectDateFragment(startDateMultiplePerDay.getId());
+                DialogFragment datePicker = new SelectDateFragment(startDateMultiplePerDay);
                 datePicker.show(getParentFragmentManager(), null);
             }
         });
@@ -486,7 +486,7 @@ public class AddEditFormFragment extends Fragment
                     {
                         if (b)
                         {
-                            DialogFragment dialogFragment = new TimePickerFragment(timeEntry.getId());
+                            DialogFragment dialogFragment = new TimePickerFragment(timeEntry);
                             dialogFragment.show(getParentFragmentManager(), null);
                         }
                     });
@@ -534,7 +534,7 @@ public class AddEditFormFragment extends Fragment
         {
             if (b)
             {
-                DialogFragment dialogFragment = new TimePickerFragment(dailyMedTime.getId());
+                DialogFragment dialogFragment = new TimePickerFragment(dailyMedTime);
                 dialogFragment.show(getParentFragmentManager(), null);
             }
         });
@@ -543,7 +543,7 @@ public class AddEditFormFragment extends Fragment
         {
             if (b)
             {
-                DialogFragment df = new SelectDateFragment(dailyMedStartDate.getId());
+                DialogFragment df = new SelectDateFragment(dailyMedStartDate);
                 df.show(getParentFragmentManager(), null);
             }
         });
@@ -587,7 +587,7 @@ public class AddEditFormFragment extends Fragment
         {
             if (b)
             {
-                DialogFragment dialogFragment = new TimePickerFragment(customFreqMedTime.getId());
+                DialogFragment dialogFragment = new TimePickerFragment(customFreqMedTime);
                 dialogFragment.show(getParentFragmentManager(), null);
             }
         });
@@ -596,7 +596,7 @@ public class AddEditFormFragment extends Fragment
         {
             if (b)
             {
-                DialogFragment df = new SelectDateFragment(customFreqStartDate.getId());
+                DialogFragment df = new SelectDateFragment(customFreqStartDate);
                 df.show(getParentFragmentManager(), null);
             }
         });
