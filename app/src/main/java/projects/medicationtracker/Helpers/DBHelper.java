@@ -919,7 +919,7 @@ public class DBHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = this.getReadableDatabase();
         LocalDateTime time;
-        String query = "SELECT " + DOSE_TIME + " FROM " + MEDICATION_TRACKER_TABLE + " WHERE "
+        String query = "SELECT " + TIME_TAKEN + " FROM " + MEDICATION_TRACKER_TABLE + " WHERE "
                 + DOSE_ID + " = " + doseId;
 
         Cursor cursor = db.rawQuery(query, null);
@@ -928,7 +928,7 @@ public class DBHelper extends SQLiteOpenHelper
 
         time = cursor.getCount() > 0 ?
                 TimeFormatting.stringToLocalDateTime(
-                    cursor.getString(cursor.getColumnIndexOrThrow(DOSE_TIME))
+                    cursor.getString(cursor.getColumnIndexOrThrow(TIME_TAKEN))
                 ) : null;
 
         cursor.close();
