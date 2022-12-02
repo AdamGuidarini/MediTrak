@@ -24,7 +24,7 @@ import projects.medicationtracker.SimpleClasses.Note;
 public class DBHelper extends SQLiteOpenHelper
 {
     private static final String DATABASE_NAME = "Medications.db";
-    private final static int DATABASE_VERSION = 1;
+    private final static int DATABASE_VERSION = 2;
 
     private static final String MEDICATION_TABLE = "Medication";
     private static final String MED_ID = "MedicationID";
@@ -86,7 +86,7 @@ public class DBHelper extends SQLiteOpenHelper
                 + MED_UNITS + " TEXT,"
                 + START_DATE + " DATETIME,"
                 + MED_FREQUENCY + " INT,"
-                + ALIAS + " TEXT"
+                + ALIAS + " TEXT,"
                 + ACTIVE + " BOOLEAN DEFAULT " + 1
                 + ")";
 
@@ -163,15 +163,14 @@ public class DBHelper extends SQLiteOpenHelper
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1)
     {
         onCreate(sqLiteDatabase);
-    }
 
-    /**        if (i < 2)
+        if (i < 2)
         {
             sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + ACTIVE + " BOOLEAN DEFAULT 1;");
-            sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
-                    + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
-                    + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1)");
         }
+    }
+
+    /**
      * Adds new Medication to database
      * @param medName Name of Medication
      * @param patientName Name of patient

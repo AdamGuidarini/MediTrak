@@ -99,4 +99,6 @@
     <string name="date_taken">Date Taken</string>
     <string name="close">Close</string>
     <string name="this_dose">This Dose</string>
+    <string name="pause_medication">Pause Medication</string>
+    <string name="resume_medication">Resume Medication</string>
 </resources>

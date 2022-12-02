@@ -3,6 +3,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:icon="@android:drawable/ic_media_pause"
+        android:title="@string/pause_medication"
+        android:visible="false"
+        app:showAsAction="ifRoom"
+        android:onClick="onPauseClick"/>
+
+    <item
+        android:icon="@android:drawable/ic_media_play"
+        android:title="@string/resume_medication"
+        android:visible="false"
+        app:showAsAction="ifRoom"
+        android:onClick="onResumeClick"/>
+
+    <item
         android:icon="@android:drawable/ic_menu_delete"
         android:title="@string/delete_medication"
         android:visible="true"

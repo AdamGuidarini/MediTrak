@@ -109,6 +109,22 @@ public class EditMedication extends AppCompatActivity
     }
 
     /**
+     * Resumes a medication
+     */
+    public void onResumeClick(MenuItem item)
+    {
+
+    }
+
+    /**
+     * Pauses a medication
+     */
+    public void onPauseClick(MenuItem item)
+    {
+
+    }
+
+    /**
      * Deletes medication
      * @param item Menu item represented by a garbage can icon.
      */
