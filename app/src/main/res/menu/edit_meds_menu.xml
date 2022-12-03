@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/pause_button"
         android:icon="@android:drawable/ic_media_pause"
         android:title="@string/pause_medication"
         android:visible="false"
@@ -10,6 +11,7 @@
         android:onClick="onPauseClick"/>
 
     <item
+        android:id="@+id/resume_button"
         android:icon="@android:drawable/ic_media_play"
         android:title="@string/resume_medication"
         android:visible="false"

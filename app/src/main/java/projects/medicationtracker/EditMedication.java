@@ -76,6 +76,13 @@ public class EditMedication extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         getMenuInflater().inflate(R.menu.edit_meds_menu, menu);
+
+        MenuItem menuItem = db.isMedicationActive(medication) ?
+                menu.findItem(R.id.pause_button) :
+                menu.findItem(R.id.resume_button);
+
+        menuItem.setVisible(true);
+
         return super.onCreateOptionsMenu(menu);
     }
 

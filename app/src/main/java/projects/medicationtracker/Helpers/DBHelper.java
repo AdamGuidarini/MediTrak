@@ -966,4 +966,26 @@ public class DBHelper extends SQLiteOpenHelper
 
         db.update(MEDICATION_TABLE, cv, where, new String[] {String.valueOf(medication.getMedId())});
     }
+
+    /**
+     * Retrieves active status of medication
+     * @param medication Medication to check if is active.
+     * @return true if active, false if paused.
+     */
+    public boolean isMedicationActive(Medication medication)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " + ACTIVE + " FROM " + MEDICATION_TABLE
+                + " WHERE " + MED_ID + "=" + medication.getMedId();
+        boolean active;
+
+        Cursor cursor =  db.rawQuery(query, null);
+        cursor.moveToFirst();
+
+        active = cursor.getString(cursor.getColumnIndexOrThrow(ACTIVE)).equals("1");
+
+        cursor.close();
+
+        return active;
+    }
 }
