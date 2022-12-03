@@ -746,9 +746,9 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Allows for a note to be updated
-     * @param note The new note
-     **************************************************************************/
+     * Allows for a note to be updated.
+     * @param note The new note.
+     */
     public void updateNote(Note note, String newNote)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -761,10 +761,10 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Retrieve all notes pertaining to given Medication
-     * @param medId ID of Medication pertaining to Note
-     * @return An ArrayList of all notes about given Medication
-     **************************************************************************/
+     * Retrieve all notes pertaining to given Medication.
+     * @param medId ID of Medication pertaining to Note.
+     * @return An ArrayList of all notes about given Medication.
+     */
     public ArrayList<Note> getNotes(long medId)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -795,9 +795,9 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Gets IDs in database for times for the provided medication
-     * @param medication Medication whose time IDs must be retrieved
-     * @return An array of time ids
+     * Gets IDs in database for times for the provided medication.
+     * @param medication Medication whose time IDs must be retrieved.
+     * @return An array of time ids.
      */
     public long[] getMedicationTimeIds(Medication medication)
     {
@@ -823,8 +823,8 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Stores the maximum amount of time before which a dose cannot be marked taken
-     * @param hoursBeforeDose Number of hours before which a medication can be marked taken
+     * Stores the maximum amount of time before which a dose cannot be marked taken.
+     * @param hoursBeforeDose Number of hours before which a medication can be marked taken.
      */
     public void setTimeBeforeDose(int hoursBeforeDose)
     {
@@ -837,8 +837,8 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Retrieves the amount of time before a dose can be marked as taken
-     * @return the number of hours before which a dose cannot be marked taken
+     * Retrieves the amount of time before a dose can be marked as taken.
+     * @return the number of hours before which a dose cannot be marked taken.
      */
     public int getTimeBeforeDose()
     {
@@ -856,6 +856,10 @@ public class DBHelper extends SQLiteOpenHelper
         return timeBefore;
     }
 
+    /**
+     * Saves user's choice to allow notifications or not.
+     * @param status true if allowed, else false.
+     */
     public void setNotificationEnabled(boolean status)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -867,8 +871,8 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Retrieves user's notification preference
-     * @return true of notifications are enabled in Settings
+     * Retrieves user's notification preference.
+     * @return true of notifications are enabled in Settings.
      */
     public boolean getNotificationEnabled()
     {
@@ -887,6 +891,10 @@ public class DBHelper extends SQLiteOpenHelper
         return enabled;
     }
 
+    /**
+     * Retrieves theme saved by user.
+     * @return User's preferred theme.
+     */
     public String getSavedTheme()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -904,8 +912,8 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Saves user's chosen theme (light, dark, default)
-     * @param theme User's preferred theme
+     * Saves user's chosen theme (light, dark, default).
+     * @param theme User's preferred theme.
      */
     public void saveTheme(String theme)
     {
@@ -918,9 +926,9 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Retrieves the time when a dose was taken
-     * @param doseId ID of dose whose time is sought
-     * @return The time the dose was marked taken or null
+     * Retrieves the time when a dose was taken.
+     * @param doseId ID of dose whose time is sought.
+     * @return The time the dose was marked taken or null.
      */
     public LocalDateTime getTimeTaken(long doseId)
     {
@@ -941,5 +949,21 @@ public class DBHelper extends SQLiteOpenHelper
         cursor.close();
 
         return time;
+    }
+
+    /**
+     * Pauses or resumes a chosen medication.
+     * @param medication medication to pause or resume.
+     * @param pause true if pausing, false if resuming
+     */
+    public void pauseResumeMedication(Medication medication, boolean pause)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        String where = " WHERE " + MED_ID + " = ?";
+
+        cv.put(ACTIVE, pause ? 1 : 0);
+
+        db.update(MEDICATION_TABLE, cv, where, new String[] {String.valueOf(medication.getMedId())});
     }
 }
