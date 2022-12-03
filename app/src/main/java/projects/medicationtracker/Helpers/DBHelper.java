@@ -669,7 +669,15 @@ public class DBHelper extends SQLiteOpenHelper
 
         Cursor cursor = db.rawQuery(query, null);
 
+        if (cursor.getCount() == 0)
+        {
+            cursor.close();
+
+            return false;
+        }
+
         cursor.moveToFirst();
+
         int taken = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(TAKEN)));
 
         cursor.close();
