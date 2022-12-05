@@ -68,7 +68,7 @@ public class MyMedications extends AppCompatActivity
         {
             if (patientNames.size() == 1)
             {
-                ArrayList<Medication> patientMeds = db.getMedications();
+                ArrayList<Medication> patientMeds = db.getMedicationsForPatient(patientNames.get(0));
 
                 for (Medication medication : patientMeds)
                     createMyMedCards(medication, myMedsLayout);

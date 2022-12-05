@@ -28,6 +28,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
+import projects.medicationtracker.Dialogs.PauseResumeDialog;
 import projects.medicationtracker.Fragments.AddEditFormFragment;
 import projects.medicationtracker.Fragments.ConfirmMedicationDeleteFragment;
 import projects.medicationtracker.Fragments.SelectDateFragment;
@@ -118,17 +119,10 @@ public class EditMedication extends AppCompatActivity
     /**
      * Resumes a medication
      */
-    public void onResumeClick(MenuItem item)
+    public void onPauseResumeClick(MenuItem item)
     {
-
-    }
-
-    /**
-     * Pauses a medication
-     */
-    public void onPauseClick(MenuItem item)
-    {
-
+        PauseResumeDialog dialog = new PauseResumeDialog(medication);
+        dialog.show(getSupportFragmentManager(), null);
     }
 
     /**

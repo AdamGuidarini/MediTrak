@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">MediTrak</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string name="my_medications">My Medications</string>
     <string name="add_medication">Add Medication</string>
     <string name="medication_name">Medication Name</string>
@@ -101,4 +103,6 @@
     <string name="this_dose">This Dose</string>
     <string name="pause_medication">Pause Medication</string>
     <string name="resume_medication">Resume Medication</string>
+    <string name="pause_message">Are you sure you want to pause %1$s? It will no longer appear in your schedule, but may be resumed at any time.</string>
+    <string name="resume_message">Resuming %1$s will restore it to your schedule. Are you sure you want to proceed?</string>
 </resources>

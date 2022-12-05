@@ -8,7 +8,7 @@
         android:title="@string/pause_medication"
         android:visible="false"
         app:showAsAction="ifRoom"
-        android:onClick="onPauseClick"/>
+        android:onClick="onPauseResumeClick"/>
 
     <item
         android:id="@+id/resume_button"
@@ -16,7 +16,7 @@
         android:title="@string/resume_medication"
         android:visible="false"
         app:showAsAction="ifRoom"
-        android:onClick="onResumeClick"/>
+        android:onClick="onPauseResumeClick"/>
 
     <item
         android:icon="@android:drawable/ic_menu_delete"

@@ -339,10 +339,18 @@ public class DBHelper extends SQLiteOpenHelper
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<Medication> allMeds = new ArrayList<>();
 
-        String query = "SELECT * FROM " + MEDICATION_TABLE + " ORDER BY " + PATIENT_NAME;
+        String query = "SELECT * FROM " + MEDICATION_TABLE
+                + " WHERE " + ACTIVE + " =1"
+                + " ORDER BY " + PATIENT_NAME;
 
         Cursor meds = db.rawQuery(query, null);
         meds.moveToFirst();
+
+        if (meds.getCount() == 0)
+        {
+            meds.close();
+            return allMeds;
+        }
 
         // Iterates through cursors to create instances of Medication object
         while (!meds.isAfterLast())
@@ -960,7 +968,7 @@ public class DBHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        String where = " WHERE " + MED_ID + " = ?";
+        String where = MED_ID + " = ?";
 
         cv.put(ACTIVE, pause ? 1 : 0);
 
