@@ -11,7 +11,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
@@ -154,5 +156,60 @@ public class NotificationHelper
                 SDK_INT >= Build.VERSION_CODES.S ?
                         PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT
         ).cancel();
+    }
+
+    public static void clearPendingNotifications(Medication medication, Context context)
+    {
+        DBHelper db = new DBHelper(context);
+
+        long[] medIds = db.getMedicationTimeIds(medication);
+
+        if (medIds.length == 0)
+        {
+            NotificationHelper.deletePendingNotification(medication.getMedId(), context);
+        }
+        else
+        {
+            for (long id : medIds)
+            {
+                NotificationHelper.deletePendingNotification(id * -1, context);
+            }
+        }
+
+        db.close();
+    }
+
+    public static void createNotifications(Medication medication, Context context)
+    {
+        DBHelper db = new DBHelper(context);
+        long[] medicationTimeIds = db.getMedicationTimeIds(medication);
+        LocalTime[] medTimes = db.getMedicationTimes(medication.getMedId());
+
+        if (medication.getMedFrequency() == 1440)
+        {
+            NotificationHelper.scheduleNotification(
+                    context,
+                    medication,
+                    LocalDateTime.of(LocalDate.now(), medTimes[0]),
+                    medication.getMedId()
+            );
+        }
+        else
+        {
+            for (int i = 0; i < medicationTimeIds.length; i++)
+            {
+                NotificationHelper.scheduleNotification(
+                        context,
+                        medication,
+                        LocalDateTime.of(
+                                medication.getStartDate().toLocalDate(),
+                                medTimes[i]
+                        ),
+                        medicationTimeIds[i] * -1
+                );
+            }
+        }
+
+        db.close();
     }
 }
