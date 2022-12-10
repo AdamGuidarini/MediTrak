@@ -1,10 +1,7 @@
 package projects.medicationtracker.Fragments;
 
+import android.os.Build;
 import android.os.Bundle;
-
-import androidx.appcompat.widget.LinearLayoutCompat;
-import androidx.fragment.app.Fragment;
-
 import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +11,9 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.fragment.app.Fragment;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -92,14 +92,18 @@ public class MedicationScheduleFragment extends Fragment
      * @return The fragment inflated
      */
     @Override
-    public View onCreateView(
-            LayoutInflater inflater,
-            ViewGroup container,
-            Bundle savedInstanceState
-    )
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         assert getArguments() != null;
-        meds = getArguments().getParcelableArrayList(MEDICATIONS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+        {
+            meds = getArguments().getParcelableArrayList(MEDICATIONS, Medication.class);
+        }
+        else
+        {
+            meds = getArguments().getParcelableArrayList(MEDICATIONS);
+        }
+
         dayOfWeek = getArguments().getString(DAY_OF_WEEK);
         dayInCurrentWeek = LocalDate.ofEpochDay(getArguments().getLong(DAY_IN_CURRENT_WEEK));
         dayNumber = getArguments().getInt(DAY_NUMBER);
@@ -135,6 +139,11 @@ public class MedicationScheduleFragment extends Fragment
 
         for (Medication medication : meds)
         {
+            if (medication.getTimes() == null)
+            {
+                continue;
+            }
+
             for (LocalDateTime time : medication.getTimes())
             {
                 if (time.toLocalDate().isEqual(thisSunday.plusDays(dayNumber)) && !time.isBefore(medication.getStartDate()))
@@ -188,7 +197,9 @@ public class MedicationScheduleFragment extends Fragment
 
         button.setOnClickListener(v ->
         {
-            DoseInfoDialog doseInfo = new DoseInfoDialog(doseRowId, db);
+            DoseInfoDialog doseInfo = new DoseInfoDialog(
+                    db.getDoseId(medId, TimeFormatting.localDateTimeToString(time)), db
+            );
             doseInfo.show(getChildFragmentManager(), null);
         });
 

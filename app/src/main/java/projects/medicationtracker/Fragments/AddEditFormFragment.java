@@ -2,11 +2,6 @@ package projects.medicationtracker.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -19,6 +14,10 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -402,7 +401,7 @@ public class AddEditFormFragment extends Fragment
         {
             if (b)
             {
-                DialogFragment datePicker = new SelectDateFragment(startDateMultiplePerDay.getId());
+                DialogFragment datePicker = new SelectDateFragment(startDateMultiplePerDay);
                 datePicker.show(getParentFragmentManager(), null);
             }
         });
@@ -486,7 +485,7 @@ public class AddEditFormFragment extends Fragment
                     {
                         if (b)
                         {
-                            DialogFragment dialogFragment = new TimePickerFragment(timeEntry.getId());
+                            DialogFragment dialogFragment = new TimePickerFragment(timeEntry);
                             dialogFragment.show(getParentFragmentManager(), null);
                         }
                     });
@@ -534,7 +533,7 @@ public class AddEditFormFragment extends Fragment
         {
             if (b)
             {
-                DialogFragment dialogFragment = new TimePickerFragment(dailyMedTime.getId());
+                DialogFragment dialogFragment = new TimePickerFragment(dailyMedTime);
                 dialogFragment.show(getParentFragmentManager(), null);
             }
         });
@@ -543,7 +542,7 @@ public class AddEditFormFragment extends Fragment
         {
             if (b)
             {
-                DialogFragment df = new SelectDateFragment(dailyMedStartDate.getId());
+                DialogFragment df = new SelectDateFragment(dailyMedStartDate);
                 df.show(getParentFragmentManager(), null);
             }
         });
@@ -587,7 +586,7 @@ public class AddEditFormFragment extends Fragment
         {
             if (b)
             {
-                DialogFragment dialogFragment = new TimePickerFragment(customFreqMedTime.getId());
+                DialogFragment dialogFragment = new TimePickerFragment(customFreqMedTime);
                 dialogFragment.show(getParentFragmentManager(), null);
             }
         });
@@ -596,7 +595,7 @@ public class AddEditFormFragment extends Fragment
         {
             if (b)
             {
-                DialogFragment df = new SelectDateFragment(customFreqStartDate.getId());
+                DialogFragment df = new SelectDateFragment(customFreqStartDate);
                 df.show(getParentFragmentManager(), null);
             }
         });
@@ -744,11 +743,10 @@ public class AddEditFormFragment extends Fragment
 
             db.updateMedication(medication);
 
-            clearExistingNotifications();
-
+            NotificationHelper.clearPendingNotifications(medication, rootView.getContext());
         }
 
-        scheduleNotifications();
+        NotificationHelper.createNotifications(medication, rootView.getContext());
         getActivity().finish();
         startActivity(intent);
     }
@@ -1086,56 +1084,6 @@ public class AddEditFormFragment extends Fragment
         catch (Exception e)
         {
             return false;
-        }
-    }
-
-    /**
-     * Schedules a notification for medication/dose time
-     */
-    private void scheduleNotifications()
-    {
-        long[] medicationTimeIds = db.getMedicationTimeIds(medication);
-
-        if (medication.getMedFrequency() == 1440)
-        {
-            NotificationHelper.scheduleNotification(
-                    rootView.getContext(),
-                    medication,
-                    LocalDateTime.of(LocalDate.now(), medication.getTimes()[0].toLocalTime()),
-                    medication.getMedId()
-            );
-        }
-        else
-        {
-            for (int i = 0; i < medicationTimeIds.length; i++)
-            {
-                NotificationHelper.scheduleNotification(
-                        rootView.getContext(),
-                        medication,
-                        LocalDateTime.of(
-                                medication.getStartDate().toLocalDate(),
-                                medication.getTimes()[i].toLocalTime()
-                        ),
-                        medicationTimeIds[i] * -1
-                );
-            }
-        }
-    }
-
-    private void clearExistingNotifications()
-    {
-        long[] medIds = db.getMedicationTimeIds(medication);
-
-        if (medIds.length == 0)
-        {
-            NotificationHelper.deletePendingNotification(medication.getMedId(), rootView.getContext());
-        }
-        else
-        {
-            for (long id : medIds)
-            {
-                NotificationHelper.deletePendingNotification(id * -1, rootView.getContext());
-            }
         }
     }
 }

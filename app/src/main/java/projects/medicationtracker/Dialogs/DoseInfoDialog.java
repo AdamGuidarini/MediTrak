@@ -5,13 +5,22 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
-import java.time.LocalDateTime;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import projects.medicationtracker.Fragments.SelectDateFragment;
+import projects.medicationtracker.Fragments.TimePickerFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.R;
@@ -20,6 +29,9 @@ public class DoseInfoDialog extends DialogFragment
 {
     private final long doseId;
     private DBHelper db;
+    private boolean changed = false;
+    private TextInputEditText timeTaken;
+    private TextInputEditText dateTaken;
 
     public DoseInfoDialog(long doseId, DBHelper database)
     {
@@ -37,7 +49,8 @@ public class DoseInfoDialog extends DialogFragment
         builder.setView(inflater.inflate(R.layout.dialog_dose_info, null));
         builder.setTitle(R.string.this_dose);
 
-        builder.setPositiveButton(R.string.close, ((dialogInterface, i) -> dismiss()));
+        builder.setPositiveButton(getString(R.string.save), ((dialogInterface, i) -> save()));
+        builder.setNegativeButton(R.string.close, ((dialogInterface, i) -> dismiss()));
 
         return builder.create();
     }
@@ -54,16 +67,67 @@ public class DoseInfoDialog extends DialogFragment
     {
         super.onStart();
 
-        TextView timeTaken = getDialog().findViewById(R.id.dose_time_taken);
-        TextView dateTaken = getDialog().findViewById(R.id.dose_date_taken);
-        LocalDateTime doseDate = db.getTimeTaken(doseId);
+        if (!db.getTaken(doseId))
+        {
+            getDialog().findViewById(R.id.notTakenMessage).setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            LocalDateTime doseDate = db.getTimeTaken(doseId);
 
-        timeTaken.setText(
-                doseDate != null ? TimeFormatting.localTimeToString(doseDate.toLocalTime()) : getString(R.string.not_taken_yet)
-        );
+            timeTaken = getDialog().findViewById(R.id.dose_time_taken);
+            dateTaken = getDialog().findViewById(R.id.dose_date_taken);
 
-        dateTaken.setText(
-                doseDate != null ? TimeFormatting.localDateToString(doseDate.toLocalDate()) : getString(R.string.not_taken_yet)
-        );
+            timeTaken.setShowSoftInputOnFocus(false);
+            dateTaken.setShowSoftInputOnFocus(false);
+
+            timeTaken.setText(TimeFormatting.localTimeToString(doseDate.toLocalTime()));
+            timeTaken.setTag(doseDate.toLocalTime());
+
+            dateTaken.setText(TimeFormatting.localDateToString(doseDate.toLocalDate()));
+            dateTaken.setTag(doseDate.toLocalDate());
+
+            timeTaken.setOnFocusChangeListener((view, b) ->
+            {
+                if (b)
+                {
+                    DialogFragment timePicker = new TimePickerFragment(timeTaken);
+                    timePicker.show(getParentFragmentManager(), null);
+
+                    changed = true;
+                }
+            });
+
+            dateTaken.setOnFocusChangeListener((view, b) ->
+            {
+                if (b)
+                {
+                    DialogFragment datePicker = new SelectDateFragment(dateTaken);
+                    datePicker.show(getParentFragmentManager(), null);
+
+                    changed = true;
+                }
+            });
+
+            getDialog().findViewById(R.id.dose_time_details).setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void save()
+    {
+        if(changed)
+        {
+            LocalDate date = (LocalDate) dateTaken.getTag();
+            LocalTime time = (LocalTime) timeTaken.getTag();
+            LocalDateTime dateTime = LocalDateTime.of(date, time);
+
+            db.updateDoseStatus(
+                    doseId,
+                    TimeFormatting.localDateTimeToString(dateTime),
+                    true
+            );
+        }
+
+        dismiss();
     }
 }

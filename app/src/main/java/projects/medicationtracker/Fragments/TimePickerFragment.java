@@ -19,15 +19,15 @@ import projects.medicationtracker.Helpers.TimeFormatting;
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener
 {
-    private final int textViewId;
+    private final TextView tv;
 
     /**
      * Constructor
-     * @param id Id of text view that will store selected time
+     * @param textView TextView that will store the selected time.
      **************************************************************************/
-    public TimePickerFragment(int id)
+    public TimePickerFragment(TextView textView)
     {
-        textViewId = id;
+        tv = textView;
     }
 
     /**
@@ -60,11 +60,9 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
         chosenTime = formatTimeForUser(hourOfDay, minute);
 
-        TextView textView = getActivity().findViewById(textViewId);
+        tv.clearFocus();
 
-        textView.clearFocus();
-
-        textView.setTag(LocalTime.of(hourOfDay, minute));
-        textView.setText(chosenTime);
+        tv.setTag(LocalTime.of(hourOfDay, minute));
+        tv.setText(chosenTime);
     }
 }

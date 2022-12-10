@@ -24,7 +24,7 @@ import projects.medicationtracker.SimpleClasses.Note;
 public class DBHelper extends SQLiteOpenHelper
 {
     private static final String DATABASE_NAME = "Medications.db";
-    private final static int DATABASE_VERSION = 1;
+    private final static int DATABASE_VERSION = 2;
 
     private static final String MEDICATION_TABLE = "Medication";
     private static final String MED_ID = "MedicationID";
@@ -86,7 +86,7 @@ public class DBHelper extends SQLiteOpenHelper
                 + MED_UNITS + " TEXT,"
                 + START_DATE + " DATETIME,"
                 + MED_FREQUENCY + " INT,"
-                + ALIAS + " TEXT"
+                + ALIAS + " TEXT,"
                 + ACTIVE + " BOOLEAN DEFAULT " + 1
                 + ")";
 
@@ -163,15 +163,14 @@ public class DBHelper extends SQLiteOpenHelper
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1)
     {
         onCreate(sqLiteDatabase);
-    }
 
-    /**        if (i < 2)
+        if (i < 2)
         {
             sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + ACTIVE + " BOOLEAN DEFAULT 1;");
-            sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
-                    + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
-                    + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1)");
         }
+    }
+
+    /**
      * Adds new Medication to database
      * @param medName Name of Medication
      * @param patientName Name of patient
@@ -340,10 +339,18 @@ public class DBHelper extends SQLiteOpenHelper
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<Medication> allMeds = new ArrayList<>();
 
-        String query = "SELECT * FROM " + MEDICATION_TABLE + " ORDER BY " + PATIENT_NAME;
+        String query = "SELECT * FROM " + MEDICATION_TABLE
+                + " WHERE " + ACTIVE + " =1"
+                + " ORDER BY " + PATIENT_NAME;
 
         Cursor meds = db.rawQuery(query, null);
         meds.moveToFirst();
+
+        if (meds.getCount() == 0)
+        {
+            meds.close();
+            return allMeds;
+        }
 
         // Iterates through cursors to create instances of Medication object
         while (!meds.isAfterLast())
@@ -670,7 +677,15 @@ public class DBHelper extends SQLiteOpenHelper
 
         Cursor cursor = db.rawQuery(query, null);
 
+        if (cursor.getCount() == 0)
+        {
+            cursor.close();
+
+            return false;
+        }
+
         cursor.moveToFirst();
+
         int taken = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(TAKEN)));
 
         cursor.close();
@@ -739,9 +754,9 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Allows for a note to be updated
-     * @param note The new note
-     **************************************************************************/
+     * Allows for a note to be updated.
+     * @param note The new note.
+     */
     public void updateNote(Note note, String newNote)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -754,10 +769,10 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Retrieve all notes pertaining to given Medication
-     * @param medId ID of Medication pertaining to Note
-     * @return An ArrayList of all notes about given Medication
-     **************************************************************************/
+     * Retrieve all notes pertaining to given Medication.
+     * @param medId ID of Medication pertaining to Note.
+     * @return An ArrayList of all notes about given Medication.
+     */
     public ArrayList<Note> getNotes(long medId)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -788,9 +803,9 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Gets IDs in database for times for the provided medication
-     * @param medication Medication whose time IDs must be retrieved
-     * @return An array of time ids
+     * Gets IDs in database for times for the provided medication.
+     * @param medication Medication whose time IDs must be retrieved.
+     * @return An array of time ids.
      */
     public long[] getMedicationTimeIds(Medication medication)
     {
@@ -816,8 +831,8 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Stores the maximum amount of time before which a dose cannot be marked taken
-     * @param hoursBeforeDose Number of hours before which a medication can be marked taken
+     * Stores the maximum amount of time before which a dose cannot be marked taken.
+     * @param hoursBeforeDose Number of hours before which a medication can be marked taken.
      */
     public void setTimeBeforeDose(int hoursBeforeDose)
     {
@@ -830,8 +845,8 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Retrieves the amount of time before a dose can be marked as taken
-     * @return the number of hours before which a dose cannot be marked taken
+     * Retrieves the amount of time before a dose can be marked as taken.
+     * @return the number of hours before which a dose cannot be marked taken.
      */
     public int getTimeBeforeDose()
     {
@@ -849,6 +864,10 @@ public class DBHelper extends SQLiteOpenHelper
         return timeBefore;
     }
 
+    /**
+     * Saves user's choice to allow notifications or not.
+     * @param status true if allowed, else false.
+     */
     public void setNotificationEnabled(boolean status)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -860,8 +879,8 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Retrieves user's notification preference
-     * @return true of notifications are enabled in Settings
+     * Retrieves user's notification preference.
+     * @return true of notifications are enabled in Settings.
      */
     public boolean getNotificationEnabled()
     {
@@ -880,6 +899,10 @@ public class DBHelper extends SQLiteOpenHelper
         return enabled;
     }
 
+    /**
+     * Retrieves theme saved by user.
+     * @return User's preferred theme.
+     */
     public String getSavedTheme()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -897,8 +920,8 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Saves user's chosen theme (light, dark, default)
-     * @param theme User's preferred theme
+     * Saves user's chosen theme (light, dark, default).
+     * @param theme User's preferred theme.
      */
     public void saveTheme(String theme)
     {
@@ -911,15 +934,15 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Retrieves the time when a dose was taken
-     * @param doseId ID of dose whose time is sought
-     * @return The time the dose was marked taken or null
+     * Retrieves the time when a dose was taken.
+     * @param doseId ID of dose whose time is sought.
+     * @return The time the dose was marked taken or null.
      */
     public LocalDateTime getTimeTaken(long doseId)
     {
         SQLiteDatabase db = this.getReadableDatabase();
         LocalDateTime time;
-        String query = "SELECT " + DOSE_TIME + " FROM " + MEDICATION_TRACKER_TABLE + " WHERE "
+        String query = "SELECT " + TIME_TAKEN + " FROM " + MEDICATION_TRACKER_TABLE + " WHERE "
                 + DOSE_ID + " = " + doseId;
 
         Cursor cursor = db.rawQuery(query, null);
@@ -928,11 +951,49 @@ public class DBHelper extends SQLiteOpenHelper
 
         time = cursor.getCount() > 0 ?
                 TimeFormatting.stringToLocalDateTime(
-                    cursor.getString(cursor.getColumnIndexOrThrow(DOSE_TIME))
+                    cursor.getString(cursor.getColumnIndexOrThrow(TIME_TAKEN))
                 ) : null;
 
         cursor.close();
 
         return time;
+    }
+
+    /**
+     * Pauses or resumes a chosen medication.
+     * @param medication medication to pause or resume.
+     * @param pause true if pausing, false if resuming
+     */
+    public void pauseResumeMedication(Medication medication, boolean pause)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        String where = MED_ID + " = ?";
+
+        cv.put(ACTIVE, pause ? 1 : 0);
+
+        db.update(MEDICATION_TABLE, cv, where, new String[] {String.valueOf(medication.getMedId())});
+    }
+
+    /**
+     * Retrieves active status of medication
+     * @param medication Medication to check if is active.
+     * @return true if active, false if paused.
+     */
+    public boolean isMedicationActive(Medication medication)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " + ACTIVE + " FROM " + MEDICATION_TABLE
+                + " WHERE " + MED_ID + "=" + medication.getMedId();
+        boolean active;
+
+        Cursor cursor =  db.rawQuery(query, null);
+        cursor.moveToFirst();
+
+        active = cursor.getString(cursor.getColumnIndexOrThrow(ACTIVE)).equals("1");
+
+        cursor.close();
+
+        return active;
     }
 }
