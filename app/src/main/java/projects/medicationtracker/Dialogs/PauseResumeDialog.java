@@ -3,6 +3,7 @@ package projects.medicationtracker.Dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
@@ -15,10 +16,14 @@ public class PauseResumeDialog extends DialogFragment
 {
     private final Medication medication;
     private DBHelper db;
+    private MenuItem pauseButton;
+    private MenuItem resumeButton;
 
-    public PauseResumeDialog(Medication medication)
+    public PauseResumeDialog(Medication medication, MenuItem pause_button, MenuItem resume_button)
     {
         this.medication = medication;
+        pauseButton = pause_button;
+        resumeButton = resume_button;
     }
 
     @NonNull
@@ -44,6 +49,18 @@ public class PauseResumeDialog extends DialogFragment
         {
             db.pauseResumeMedication(medication, !isActive);
             db.close();
+
+            if (isActive)
+            {
+                resumeButton.setVisible(true);
+                pauseButton.setVisible(false);
+            }
+            else
+            {
+                resumeButton.setVisible(false);
+                pauseButton.setVisible(true);
+            }
+
             dismiss();
         });
         builder.setNegativeButton(R.string.no, (dialog, which) ->

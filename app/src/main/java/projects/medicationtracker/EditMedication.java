@@ -4,46 +4,26 @@ import static projects.medicationtracker.Fragments.AddEditFormFragment.MED_ID;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Objects;
 
 import projects.medicationtracker.Dialogs.PauseResumeDialog;
 import projects.medicationtracker.Fragments.AddEditFormFragment;
 import projects.medicationtracker.Fragments.ConfirmMedicationDeleteFragment;
-import projects.medicationtracker.Fragments.SelectDateFragment;
-import projects.medicationtracker.Fragments.TimePickerFragment;
 import projects.medicationtracker.Helpers.DBHelper;
-import projects.medicationtracker.Helpers.InputValidation;
-import projects.medicationtracker.Helpers.NotificationHelper;
-import projects.medicationtracker.Helpers.TextViewUtils;
-import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.SimpleClasses.Medication;
 
 public class EditMedication extends AppCompatActivity
 {
     private final DBHelper db = new DBHelper(this);
     private Medication medication;
+    private MenuItem pauseButton;
+    private MenuItem resumeButton;
 
     /**
      * Instructions on how to build the EditMedications activity
@@ -78,11 +58,14 @@ public class EditMedication extends AppCompatActivity
     {
         getMenuInflater().inflate(R.menu.edit_meds_menu, menu);
 
-        MenuItem menuItem = db.isMedicationActive(medication) ?
-                menu.findItem(R.id.pause_button) :
-                menu.findItem(R.id.resume_button);
+        pauseButton = menu.findItem(R.id.pause_button);
+        resumeButton = menu.findItem(R.id.resume_button);
 
-        menuItem.setVisible(true);
+        if (db.isMedicationActive(medication)) {
+            pauseButton.setVisible(true);
+        } else {
+            resumeButton.setVisible(true);
+        }
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -117,11 +100,11 @@ public class EditMedication extends AppCompatActivity
     }
 
     /**
-     * Resumes a medication
+     * Resumes or pauses a medication
      */
     public void onPauseResumeClick(MenuItem item)
     {
-        PauseResumeDialog dialog = new PauseResumeDialog(medication);
+        PauseResumeDialog dialog = new PauseResumeDialog(medication, pauseButton, resumeButton);
         dialog.show(getSupportFragmentManager(), null);
     }
 
