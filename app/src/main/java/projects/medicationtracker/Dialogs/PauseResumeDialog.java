@@ -16,8 +16,8 @@ public class PauseResumeDialog extends DialogFragment
 {
     private final Medication medication;
     private DBHelper db;
-    private MenuItem pauseButton;
-    private MenuItem resumeButton;
+    private final MenuItem pauseButton;
+    private final MenuItem resumeButton;
 
     public PauseResumeDialog(Medication medication, MenuItem pause_button, MenuItem resume_button)
     {
