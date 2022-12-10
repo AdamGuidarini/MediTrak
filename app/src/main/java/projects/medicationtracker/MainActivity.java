@@ -382,50 +382,12 @@ public class MainActivity extends AppCompatActivity
 
         for (Medication medication : medications)
         {
-            long[] medicationTimeIds = db.getMedicationTimeIds(medication);
-
-            if (medication.getMedFrequency() == 1440)
-            {
-                NotificationHelper.deletePendingNotification(medication.getMedId(), this);
-
-            }
-            else
-            {
-                for (long medicationTimeId : medicationTimeIds)
-                {
-                    NotificationHelper.deletePendingNotification(medicationTimeId, this);
-                }
-            }
+            NotificationHelper.clearPendingNotifications(medication, this);
         }
 
         for (Medication medication : medications)
         {
-            long[] medicationTimeIds = db.getMedicationTimeIds(medication);
-
-            if (medication.getMedFrequency() == 1440)
-            {
-                NotificationHelper.scheduleNotification(
-                        getApplicationContext(),
-                        medication,
-                        LocalDateTime.of(LocalDate.now(), medication.getTimes()[0].toLocalTime()),
-                        medication.getMedId()
-                );
-            }
-            else
-            {
-                for (int i = 0; i < medicationTimeIds.length; i++)
-                {
-                    NotificationHelper.scheduleNotification(
-                            getApplicationContext(),
-                            medication,
-                            LocalDateTime.of(
-                                    medication.getStartDate().toLocalDate(),
-                                    medication.getTimes()[i].toLocalTime()
-                            ),
-                            medicationTimeIds[i] * -1
-                    );
-                }
-            }
+            NotificationHelper.createNotifications(medication, this);
         }
     }
 

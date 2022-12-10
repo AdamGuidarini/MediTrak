@@ -17,8 +17,8 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import projects.medicationtracker.SimpleClasses.Medication;
 import projects.medicationtracker.Receivers.NotificationReceiver;
+import projects.medicationtracker.SimpleClasses.Medication;
 
 public class NotificationHelper
 {
@@ -158,6 +158,11 @@ public class NotificationHelper
         ).cancel();
     }
 
+    /**
+     * Clears any and all pending notifications for a medication.
+     * @param medication Medication whose notifications should be cleared.
+     * @param context Application context.
+     */
     public static void clearPendingNotifications(Medication medication, Context context)
     {
         DBHelper db = new DBHelper(context);
@@ -179,15 +184,25 @@ public class NotificationHelper
         db.close();
     }
 
+    /**
+     * Creates any and all medications for a medication.
+     * @param medication Medication in need of notifications.
+     * @param context Application context.
+     */
     public static void createNotifications(Medication medication, Context context)
     {
         DBHelper db = new DBHelper(context);
         long[] medicationTimeIds = db.getMedicationTimeIds(medication);
         LocalTime[] medTimes = db.getMedicationTimes(medication.getMedId());
 
+        if (!db.isMedicationActive(medication))
+        {
+            return;
+        }
+
         if (medication.getMedFrequency() == 1440)
         {
-            NotificationHelper.scheduleNotification(
+            scheduleNotification(
                     context,
                     medication,
                     LocalDateTime.of(LocalDate.now(), medTimes[0]),
@@ -198,7 +213,7 @@ public class NotificationHelper
         {
             for (int i = 0; i < medicationTimeIds.length; i++)
             {
-                NotificationHelper.scheduleNotification(
+                scheduleNotification(
                         context,
                         medication,
                         LocalDateTime.of(
