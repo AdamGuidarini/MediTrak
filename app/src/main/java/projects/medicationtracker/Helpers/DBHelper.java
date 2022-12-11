@@ -985,17 +985,24 @@ public class DBHelper extends SQLiteOpenHelper
     /**
      * Pauses or resumes a chosen medication.
      * @param medication medication to pause or resume.
-     * @param pause true if pausing, false if resuming
+     * @param active true if making active, false if pausing
      */
-    public void pauseResumeMedication(Medication medication, boolean pause)
+    public void pauseResumeMedication(Medication medication, boolean active)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
+        ContentValues updateActivityStatusCv = new ContentValues();
+        ContentValues addStatusChangeCv = new ContentValues();
         String where = MED_ID + " = ?";
 
-        cv.put(ACTIVE, pause ? 1 : 0);
+        updateActivityStatusCv.put(ACTIVE, active ? 1 : 0);
 
-        db.update(MEDICATION_TABLE, cv, where, new String[] {String.valueOf(medication.getMedId())});
+        db.update(MEDICATION_TABLE, updateActivityStatusCv, where, new String[] {String.valueOf(medication.getMedId())});
+
+        addStatusChangeCv.put(PAUSED, active ? 0 : 1);
+        addStatusChangeCv.put(CHANGE_DATE, TimeFormatting.localDateTimeToString(LocalDateTime.now()));
+        addStatusChangeCv.put(MED_ID, medication.getMedId());
+
+        db.insert(ACTIVITY_CHANGE_TABLE, "", addStatusChangeCv);
     }
 
     /**
