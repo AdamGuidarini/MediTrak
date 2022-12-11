@@ -24,7 +24,7 @@ import projects.medicationtracker.SimpleClasses.Note;
 public class DBHelper extends SQLiteOpenHelper
 {
     private static final String DATABASE_NAME = "Medications.db";
-    private final static int DATABASE_VERSION = 2;
+    private final static int DATABASE_VERSION = 3;
 
     private static final String MEDICATION_TABLE = "Medication";
     private static final String MED_ID = "MedicationID";
@@ -74,7 +74,7 @@ public class DBHelper extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase)
     {
-        final int NUM_TABLES = 6;
+        final int NUM_TABLES = 5;
         String[] queries = new String[NUM_TABLES];
 
         // Holds all constant information on a given medication
@@ -108,19 +108,9 @@ public class DBHelper extends SQLiteOpenHelper
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
                 + ")";
 
-        // Holds statistics for a given medication
-        queries[3] = "CREATE TABLE IF NOT EXISTS " + MEDICATION_STATS_TABLE + "("
-                + MED_ID + " INT PRIMARY KEY ,"
-                + START_DATE + " DATETIME, "
-                + END_DATE + " DATETIME, "
-                + DOSES_TAKEN + " INT, "
-                + DOSES_MISSED + " INT,"
-                + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                + ")";
-
         // Stores a users notes for a medication, designed to help track how a medication is
         // affecting the patient. Facilitates tracking possible issues to bring up with prescriber
-        queries[4] = "CREATE TABLE IF NOT EXISTS " + NOTES_TABLE + "("
+        queries[3] = "CREATE TABLE IF NOT EXISTS " + NOTES_TABLE + "("
                 + NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + MED_ID + " INT, "
                 + NOTE + " TEXT, "
@@ -128,13 +118,13 @@ public class DBHelper extends SQLiteOpenHelper
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +") ON DELETE CASCADE"
                 + ")";
 
-        queries[5] = "CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
+        queries[4] = "CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
                 + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
                 + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1, "
                 + THEME + " TEXT DEFAULT '" + DEFAULT + "')";
 
-        for (int i = 0; i < NUM_TABLES; i++)
-            sqLiteDatabase.execSQL(queries[i]);
+        for (String query : queries)
+            sqLiteDatabase.execSQL(query);
 
         sqLiteDatabase.execSQL("INSERT INTO " + SETTINGS_TABLE + "("
                 + ENABLE_NOTIFICATIONS + ", " + TIME_BEFORE_DOSE + ")"
@@ -167,6 +157,11 @@ public class DBHelper extends SQLiteOpenHelper
         if (i < 2)
         {
             sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + ACTIVE + " BOOLEAN DEFAULT 1;");
+        }
+
+        if (i < 3)
+        {
+            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MEDICATION_STATS_TABLE);
         }
     }
 
