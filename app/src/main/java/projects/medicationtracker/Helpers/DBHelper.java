@@ -8,6 +8,7 @@ import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Pair;
 
 import androidx.annotation.Nullable;
 
@@ -1025,5 +1026,28 @@ public class DBHelper extends SQLiteOpenHelper
         cursor.close();
 
         return active;
+    }
+
+    public ArrayList<Pair<LocalDateTime, LocalDateTime>> getPauseResumePeriods(Medication medication)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor;
+        ArrayList<Pair<LocalDateTime, LocalDateTime>> interval = new ArrayList<>();
+
+        cursor = db.rawQuery(
+                "SELECT * FROM " + ACTIVITY_CHANGE_TABLE
+                        + " WHERE " + MED_ID + "=" + medication.getMedId(),
+                null
+        );
+        cursor.moveToFirst();
+
+        while(!cursor.isAfterLast())
+        {
+            cursor.moveToNext();
+        }
+
+        cursor.close();
+
+        return null;
     }
 }
