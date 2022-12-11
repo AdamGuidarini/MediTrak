@@ -24,7 +24,7 @@ import projects.medicationtracker.SimpleClasses.Note;
 public class DBHelper extends SQLiteOpenHelper
 {
     private static final String DATABASE_NAME = "Medications.db";
-    private final static int DATABASE_VERSION = 3;
+    private final static int DATABASE_VERSION = 4;
 
     private static final String MEDICATION_TABLE = "Medication";
     private static final String MED_ID = "MedicationID";
@@ -48,9 +48,6 @@ public class DBHelper extends SQLiteOpenHelper
 
     private static final String MEDICATION_STATS_TABLE = "MedicationStats";
     private static final String START_DATE = "StartDate";
-    private static final String END_DATE = "EndDate";
-    private static final String DOSES_TAKEN = "DosesTaken";
-    private static final String DOSES_MISSED = "DosesMissed";
 
     private static final String NOTES_TABLE = "Notes";
     private static final String NOTE_ID = "NoteID";
@@ -65,6 +62,11 @@ public class DBHelper extends SQLiteOpenHelper
     public static final String LIGHT = "light";
     public static final String DARK = "dark";
 
+    private static final String ACTIVITY_CHANGE_TABLE = "ActivityChanges";
+    private static final String CHANGE_EVENT_ID = "ChangeId";
+    private static final String CHANGE_DATE = "ChangeDate";
+    private static final String PAUSED = "Paused";
+
     public DBHelper(@Nullable Context context) { super(context, DATABASE_NAME, null, DATABASE_VERSION);}
 
     /**
@@ -74,11 +76,9 @@ public class DBHelper extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase)
     {
-        final int NUM_TABLES = 5;
-        String[] queries = new String[NUM_TABLES];
-
         // Holds all constant information on a given medication
-        queries[0] = "CREATE TABLE IF NOT EXISTS " + MEDICATION_TABLE + "("
+        sqLiteDatabase.execSQL(
+                "CREATE TABLE IF NOT EXISTS " + MEDICATION_TABLE + "("
                 + MED_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + MED_NAME + " TEXT,"
                 + PATIENT_NAME + " Text,"
@@ -88,47 +88,63 @@ public class DBHelper extends SQLiteOpenHelper
                 + MED_FREQUENCY + " INT,"
                 + ALIAS + " TEXT,"
                 + ACTIVE + " BOOLEAN DEFAULT " + 1
-                + ")";
+                + ")"
+        );
 
         // Holds data on past doses, as well as doses for current week
-        queries[1] = "CREATE TABLE IF NOT EXISTS " + MEDICATION_TRACKER_TABLE + "("
+        sqLiteDatabase.execSQL(
+                "CREATE TABLE IF NOT EXISTS " + MEDICATION_TRACKER_TABLE + "("
                 + DOSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + MED_ID + " INT,"
                 + DOSE_TIME + " DATETIME,"
                 + TAKEN + " BOOLEAN,"
                 + TIME_TAKEN + " DATETIME,"
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                + ")";
+                + ")"
+        );
 
         // Holds information on doses with a custom frequency so times for upcoming doses can be calculated
-        queries[2] = "CREATE TABLE IF NOT EXISTS " + MEDICATION_TIMES + "("
+        sqLiteDatabase.execSQL(
+                "CREATE TABLE IF NOT EXISTS " + MEDICATION_TIMES + "("
                 + TIME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + MED_ID + " INT,"
                 + DRUG_TIME + " TEXT,"
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                + ")";
+                + ")"
+        );
 
         // Stores a users notes for a medication, designed to help track how a medication is
         // affecting the patient. Facilitates tracking possible issues to bring up with prescriber
-        queries[3] = "CREATE TABLE IF NOT EXISTS " + NOTES_TABLE + "("
+        sqLiteDatabase.execSQL(
+                "CREATE TABLE IF NOT EXISTS " + NOTES_TABLE + "("
                 + NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + MED_ID + " INT, "
                 + NOTE + " TEXT, "
                 + ENTRY_TIME + " DATETIME,"
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +") ON DELETE CASCADE"
-                + ")";
+                + ")"
+        );
 
-        queries[4] = "CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
+        sqLiteDatabase.execSQL(
+                "CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
                 + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
                 + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1, "
-                + THEME + " TEXT DEFAULT '" + DEFAULT + "')";
-
-        for (String query : queries)
-            sqLiteDatabase.execSQL(query);
+                + THEME + " TEXT DEFAULT '" + DEFAULT + "')"
+        );
 
         sqLiteDatabase.execSQL("INSERT INTO " + SETTINGS_TABLE + "("
                 + ENABLE_NOTIFICATIONS + ", " + TIME_BEFORE_DOSE + ")"
                 + "VALUES (1, 2)");
+
+        sqLiteDatabase.execSQL(
+                "CREATE TABLE IF NOT EXISTS " + ACTIVITY_CHANGE_TABLE + "("
+                + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + MED_ID + " INT,"
+                + CHANGE_DATE + " DATETIME,"
+                + PAUSED + " BOOLEAN,"
+                + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +") ON DELETE CASCADE"
+                + ")"
+        );
     }
 
     /**
@@ -162,6 +178,19 @@ public class DBHelper extends SQLiteOpenHelper
         if (i < 3)
         {
             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MEDICATION_STATS_TABLE);
+        }
+
+        if (i < 4)
+        {
+            sqLiteDatabase.execSQL(
+                "CREATE TABLE IF NOT EXISTS " + ACTIVITY_CHANGE_TABLE + "("
+                + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + MED_ID + " INT,"
+                + CHANGE_DATE + " DATETIME,"
+                + PAUSED + " BOOLEAN,"
+                + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +") ON DELETE CASCADE"
+                + ")"
+            );
         }
     }
 
@@ -618,7 +647,6 @@ public class DBHelper extends SQLiteOpenHelper
     /**
      * Get ID of dose
      * @param medId ID of Medication
-     * @param doseTime Time of dose
      * @param doseTime Time of dose
      * @return Dose ID of match found in MedicationTracker table
      **************************************************************************/
