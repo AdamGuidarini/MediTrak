@@ -299,19 +299,21 @@ public class MainActivity extends AppCompatActivity
                             {
                                 if (time.isBefore(pausedInterval.second))
                                 {
+                                    System.out.println("Returned first null");
+
                                     return true;
                                 }
                             }
                             else if (time.isAfter(pausedInterval.first) && pausedInterval.second == null)
                             {
+                                System.out.println("Returned second null");
+
                                 return true;
                             }
                             else if (time.isAfter(pausedInterval.first) && time.isBefore(pausedInterval.second))
                             {
-                                return true;
-                            }
-                            else if (time.isAfter(pausedInterval.first) && pausedInterval.second == null)
-                            {
+                                System.out.println("Returned within paused interval");
+
                                 return true;
                             }
                         }

@@ -1034,6 +1034,7 @@ public class DBHelper extends SQLiteOpenHelper
         ArrayList<Pair<LocalDateTime, LocalDateTime>> intervals = new ArrayList<>();
         ArrayList<LocalDateTime> timesPaused = new ArrayList<>();
         ArrayList<LocalDateTime> timesResumed = new ArrayList<>();
+        boolean prevWasPaused = true;
 
         Cursor cursor;
 
@@ -1052,14 +1053,33 @@ public class DBHelper extends SQLiteOpenHelper
                     cursor.getString(cursor.getColumnIndexOrThrow(CHANGE_DATE))
             );
 
-            if (Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(PAUSED))) == 1 && cursor.isFirst())
+            if (cursor.isFirst())
             {
-                timesPaused.add(time);
+                if (Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(PAUSED))) == 1)
+                {
+                    timesPaused.add(time);
+                    prevWasPaused = true;
+                }
+                else if (Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(PAUSED))) == 0)
+                {
+                    timesResumed.add(time);
+                    prevWasPaused = false;
+                }
             }
             else
             {
-                timesResumed.add(time);
+                if (prevWasPaused)
+                {
+                    timesResumed.add(time);
+                }
+                else
+                {
+                    timesPaused.add(time);
+                }
+
+                prevWasPaused = !prevWasPaused;
             }
+
 
             cursor.moveToNext();
         }
@@ -1072,28 +1092,22 @@ public class DBHelper extends SQLiteOpenHelper
 
             return intervals;
         }
-        else if (timesPaused.size() == 0 && timesResumed.size() == 0)
+        else if (timesPaused.size() == 1 && timesResumed.size() == 0)
         {
             intervals.add(new Pair<>(timesPaused.get(0), null));
 
+            return intervals;
         }
 
         for (int i = 0; i < timesPaused.size(); i++)
         {
-            for (LocalDateTime timeResumed : timesResumed)
+            if (timesResumed.size() - 1 >= i)
             {
-//                if (timesPaused.get(i).isBefore(timeResumed) && timesPaused.size() >= i + 1)
-//                {
-//                    intervals.add(new Pair<>(timesPaused.get(i), null));
-//                }
-                if (timesPaused.get(i).isBefore(timeResumed) && (timesPaused.get(i + 1) == null || timesPaused.get(i + 1).isAfter(timeResumed)))
-                {
-                    intervals.add(new Pair<>(timesPaused.get(i), timeResumed));
-                }
-                else
-                {
-                    intervals.add(new Pair<>(null, timeResumed));
-                }
+                intervals.add(new Pair<>(timesPaused.get(i), timesResumed.get(i)));
+            }
+            else
+            {
+                intervals.add(new Pair<>(timesPaused.get(i), null));
             }
         }
 
