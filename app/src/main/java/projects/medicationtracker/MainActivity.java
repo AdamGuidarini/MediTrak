@@ -5,14 +5,13 @@ import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DA
 import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DAY_OF_WEEK;
 import static projects.medicationtracker.Fragments.MedicationScheduleFragment.MEDICATIONS;
 import static projects.medicationtracker.Helpers.DBHelper.DARK;
-import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
-
 
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -32,7 +30,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.Vector;
+import java.util.stream.Stream;
 
 import projects.medicationtracker.Fragments.MedicationScheduleFragment;
 import projects.medicationtracker.Helpers.DBHelper;
@@ -211,7 +212,7 @@ public class MainActivity extends AppCompatActivity
     public ArrayList<Medication> medicationsForThisWeek()
     {
         ArrayList<Medication> medications = db.getMedications();
-
+        ArrayList<LocalDateTime> validTimes;
         // Add times to custom frequency
         LocalDate thisSunday = TimeFormatting.whenIsSunday(aDayThisWeek);
 
@@ -219,6 +220,8 @@ public class MainActivity extends AppCompatActivity
         for (int i = 0; i < medications.size(); i++)
         {
             LocalDateTime[] timeArr;
+            ArrayList<Pair<LocalDateTime, LocalDateTime>> pausedIntervals =
+                    db.getPauseResumePeriods(medications.get(i));
 
             // If a medication is taken once per day
             if (
@@ -233,8 +236,6 @@ public class MainActivity extends AppCompatActivity
                 for (int j = 0; j < 7; j++)
                     timeArr[j] =
                             LocalDateTime.of(LocalDate.from(thisSunday.plusDays(j)), localtime);
-
-                medications.get(i).setTimes(timeArr);
             }
             // If a medication is taken multiple times per day
             else if (
@@ -262,8 +263,6 @@ public class MainActivity extends AppCompatActivity
                         index++;
                     }
                 }
-
-                medications.get(i).setTimes(timeArr);
             }
             // If a medication has a custom frequency, take its start date and calculate times for
             // for this week
@@ -287,8 +286,46 @@ public class MainActivity extends AppCompatActivity
                 for (int j = 0; j < times.size(); j++)
                     timeArr[j] = times.get(j);
 
-                medications.get(i).setTimes(timeArr);
             }
+
+            validTimes = new ArrayList<>(Arrays.asList(timeArr));
+
+            validTimes.removeIf(
+                    (time) ->
+                    {
+                        for (Pair<LocalDateTime, LocalDateTime> pausedInterval : pausedIntervals)
+                        {
+                            if (pausedInterval.first == null)
+                            {
+                                if (time.isBefore(pausedInterval.second))
+                                {
+                                    System.out.println("Returned first null");
+
+                                    return true;
+                                }
+                            }
+                            else if (time.isAfter(pausedInterval.first) && pausedInterval.second == null)
+                            {
+                                System.out.println("Returned second null");
+
+                                return true;
+                            }
+                            else if (time.isAfter(pausedInterval.first) && time.isBefore(pausedInterval.second))
+                            {
+                                System.out.println("Returned within paused interval");
+
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    }
+            );
+
+            timeArr = new LocalDateTime[validTimes.size()];
+            timeArr = validTimes.toArray(timeArr);
+
+            medications.get(i).setTimes(timeArr);
         }
 
         return medications;
