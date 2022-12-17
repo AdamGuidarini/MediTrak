@@ -86,6 +86,14 @@ public class MainActivity extends AppCompatActivity
         createMainActivityViews();
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        scheduleLayout.removeAllViews();
+        createMainActivityViews();
+    }
+
     /**
      * Creates option menu
      *
