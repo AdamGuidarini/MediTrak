@@ -28,7 +28,7 @@ import projects.medicationtracker.R;
 public class DoseInfoDialog extends DialogFragment
 {
     private final long doseId;
-    private DBHelper db;
+    private final DBHelper db;
     private boolean changed = false;
     private TextInputEditText timeTaken;
     private TextInputEditText dateTaken;
