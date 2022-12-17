@@ -38,7 +38,7 @@ public class NotificationHelper
      * @param time Time the notification will be set.
      * @param notificationId ID for the PendingIntent that stores data for the notification.
      */
-    public static void scheduleNotification(Context notificationContext, Medication medication,
+    private static void scheduleNotification(Context notificationContext, Medication medication,
                                             LocalDateTime time, long notificationId)
     {
         // Loops to increase time, prevents notification bombardment when editing time.
@@ -200,7 +200,7 @@ public class NotificationHelper
             return;
         }
 
-        if (medication.getMedFrequency() == 1440)
+        if (medicationTimeIds.length < 2)
         {
             scheduleNotification(
                     context,

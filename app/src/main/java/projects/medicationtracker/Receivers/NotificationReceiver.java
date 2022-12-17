@@ -41,12 +41,14 @@ public class NotificationReceiver extends BroadcastReceiver
         service.putExtra(MEDICATION_ID, medicationId);
 
         // Set new Intent for a new notification
-        NotificationHelper.scheduleNotification(
-                context,
-                medication,
-                medication.getStartDate(),
-                extras.getLong(NOTIFICATION_ID, 0)
-        );
+//        NotificationHelper.scheduleNotification(
+//                context,
+//                medication,
+//                medication.getStartDate(),
+//                extras.getLong(NOTIFICATION_ID, 0)
+//        );
+
+        NotificationHelper.createNotifications(medication, context);
 
         // Fire notification if enabled
         if (db.getNotificationEnabled())

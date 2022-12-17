@@ -74,21 +74,24 @@ public class EventReceiver extends BroadcastReceiver
      */
     private void prepareNotification(Context context, DBHelper db, Medication medication)
     {
-        LocalTime[] times = db.getMedicationTimes(medication.getMedId());
-        LocalDate startDate = medication.getStartDate().toLocalDate();
-        long[] timeIds = db.getMedicationTimeIds(medication);
+//        LocalTime[] times = db.getMedicationTimes(medication.getMedId());
+//        LocalDate startDate = medication.getStartDate().toLocalDate();
+//        long[] timeIds = db.getMedicationTimeIds(medication);
 
-        for (int i = 0; i < times.length; i++)
-        {
-            long notificationId = times.length > 1 ? timeIds[i] * -1 : medication.getMedId();
+//        for (int i = 0; i < times.length; i++)
+//        {
+//            long notificationId = times.length > 1 ? timeIds[i] * -1 : medication.getMedId();
+//
+//            NotificationHelper.scheduleNotification(
+//                    context,
+//                    medication,
+//                    LocalDateTime.of(startDate, times[i]),
+//                    notificationId
+//            );
+//        }
 
-            NotificationHelper.scheduleNotification(
-                    context,
-                    medication,
-                    LocalDateTime.of(startDate, times[i]),
-                    notificationId
-            );
-        }
+        NotificationHelper.clearPendingNotifications(medication, context);
+        NotificationHelper.createNotifications(medication, context);
     }
 
     /**
