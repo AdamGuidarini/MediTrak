@@ -1,6 +1,5 @@
 package projects.medicationtracker.Helpers;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -483,7 +482,6 @@ public class DBHelper extends SQLiteOpenHelper
      * @param id The id of the medication whose times should be retrieved.
      * @return An array of all of a medications times.
      */
-    @SuppressLint("Range")
     public LocalTime[] getMedicationTimes(long id)
     {
         final SQLiteDatabase db = this.getReadableDatabase();

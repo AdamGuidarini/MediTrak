@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -38,7 +37,7 @@ public class NotificationHelper
      * @param time Time the notification will be set.
      * @param notificationId ID for the PendingIntent that stores data for the notification.
      */
-    private static void scheduleNotification(Context notificationContext, Medication medication,
+    public static void scheduleNotification(Context notificationContext, Medication medication,
                                             LocalDateTime time, long notificationId)
     {
         // Loops to increase time, prevents notification bombardment when editing time.
@@ -200,12 +199,15 @@ public class NotificationHelper
             return;
         }
 
-        if (medicationTimeIds.length < 2)
+        if (medicationTimeIds.length == 1)
         {
             scheduleNotification(
                     context,
                     medication,
-                    LocalDateTime.of(LocalDate.now(), medTimes[0]),
+                    LocalDateTime.of(
+                            medication.getStartDate().toLocalDate(),
+                            medTimes[0]
+                    ),
                     medication.getMedId()
             );
         }

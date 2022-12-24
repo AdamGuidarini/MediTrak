@@ -7,6 +7,7 @@ import static projects.medicationtracker.Helpers.NotificationHelper.GROUP_KEY;
 import static projects.medicationtracker.Helpers.NotificationHelper.MEDICATION_ID;
 import static projects.medicationtracker.Helpers.NotificationHelper.MESSAGE;
 import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION_ID;
+
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;

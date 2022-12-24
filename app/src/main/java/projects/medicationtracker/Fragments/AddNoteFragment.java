@@ -19,8 +19,8 @@ import java.util.ArrayList;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.MedicationNotes;
-import projects.medicationtracker.SimpleClasses.Note;
 import projects.medicationtracker.R;
+import projects.medicationtracker.SimpleClasses.Note;
 
 
 public class AddNoteFragment extends DialogFragment
