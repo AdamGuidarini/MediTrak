@@ -1,6 +1,5 @@
 package projects.medicationtracker.Helpers;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -483,7 +482,6 @@ public class DBHelper extends SQLiteOpenHelper
      * @param id The id of the medication whose times should be retrieved.
      * @return An array of all of a medications times.
      */
-    @SuppressLint("Range")
     public LocalTime[] getMedicationTimes(long id)
     {
         final SQLiteDatabase db = this.getReadableDatabase();
@@ -515,6 +513,13 @@ public class DBHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
+        LocalTime[] prevTimes = getMedicationTimes(medication.getMedId());
+        LocalTime[] newTimes = new LocalTime[medication.getTimes().length];
+
+        for (int i = 0; i < newTimes.length; i++)
+        {
+            newTimes[i] = medication.getTimes()[i].toLocalTime();
+        }
 
         // Update data in Medication table
         cv.put(MED_NAME, medication.getMedName());
@@ -580,6 +585,12 @@ public class DBHelper extends SQLiteOpenHelper
                 }
             }
         }
+
+        // Remove old times if times changed - may no longer line up with schedule
+        if (prevTimes != newTimes)
+        {
+            db.execSQL("DELETE FROM " + MEDICATION_TRACKER_TABLE + " WHERE " + MED_ID + " = " + medication.getMedId());
+        }
     }
 
     /**
@@ -606,7 +617,7 @@ public class DBHelper extends SQLiteOpenHelper
         String dateTime = TimeFormatting.localDateTimeToString(time);
 
         String query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE + " WHERE " + MED_ID + " = " +
-                medication.getMedId() + " AND " + DOSE_TIME + " = ''" + dateTime + "'";
+                medication.getMedId() + " AND " + DOSE_TIME + " = '" + dateTime + "'";
 
         int count = 0;
 
@@ -656,7 +667,7 @@ public class DBHelper extends SQLiteOpenHelper
         SQLiteDatabase db = this.getReadableDatabase();
         long rowId;
         String query = "SELECT " + DOSE_ID + " FROM " + MEDICATION_TRACKER_TABLE + " WHERE "
-                + MED_ID + "=" + medId + " AND " + DOSE_TIME + "=\"" + doseTime + "\"";
+                + MED_ID + "=" + medId + " AND " + DOSE_TIME + "= '" + doseTime + "'";
 
         Cursor cursor = db.rawQuery(query, null);
 

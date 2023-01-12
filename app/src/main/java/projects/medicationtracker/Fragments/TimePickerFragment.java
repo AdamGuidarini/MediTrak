@@ -15,8 +15,6 @@ import androidx.fragment.app.DialogFragment;
 
 import java.time.LocalTime;
 
-import projects.medicationtracker.Helpers.TimeFormatting;
-
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener
 {
     private final TextView tv;

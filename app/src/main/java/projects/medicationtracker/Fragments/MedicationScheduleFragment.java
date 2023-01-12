@@ -219,8 +219,7 @@ public class MedicationScheduleFragment extends Fragment
 
         dosage += " " + medication.getMedDosageUnits();
 
-        String dosageTime =
-                TimeFormatting.formatTimeForUser(time.getHour(), time.getMinute());
+        String dosageTime = TimeFormatting.formatTimeForUser(time.getHour(), time.getMinute());
 
         String thisMedicationLabel = medName + " - " + dosage + " - " + dosageTime;
 
@@ -237,10 +236,7 @@ public class MedicationScheduleFragment extends Fragment
             final Long doseId = tvTag.getSecond();
             int timeBeforeDose = db.getTimeBeforeDose();
 
-            if (
-                    LocalDateTime.now().isBefore(time.minusHours(timeBeforeDose))
-                            && timeBeforeDose != -1
-            )
+            if (LocalDateTime.now().isBefore(time.minusHours(timeBeforeDose)) && timeBeforeDose != -1)
             {
                 thisMedication.setChecked(false);
                 Toast.makeText(

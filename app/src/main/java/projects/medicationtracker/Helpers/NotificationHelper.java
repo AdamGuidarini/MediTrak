@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -200,12 +199,15 @@ public class NotificationHelper
             return;
         }
 
-        if (medication.getMedFrequency() == 1440)
+        if (medicationTimeIds.length == 1)
         {
             scheduleNotification(
                     context,
                     medication,
-                    LocalDateTime.of(LocalDate.now(), medTimes[0]),
+                    LocalDateTime.of(
+                            medication.getStartDate().toLocalDate(),
+                            medTimes[0]
+                    ),
                     medication.getMedId()
             );
         }

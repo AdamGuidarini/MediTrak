@@ -32,8 +32,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Vector;
-import java.util.stream.Stream;
 
 import projects.medicationtracker.Fragments.MedicationScheduleFragment;
 import projects.medicationtracker.Helpers.DBHelper;
@@ -83,6 +81,14 @@ public class MainActivity extends AppCompatActivity
         NotificationHelper.createNotificationChannel(this);
         prepareNotifications();
 
+        createMainActivityViews();
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        scheduleLayout.removeAllViews();
         createMainActivityViews();
     }
 
@@ -224,10 +230,7 @@ public class MainActivity extends AppCompatActivity
                     db.getPauseResumePeriods(medications.get(i));
 
             // If a medication is taken once per day
-            if (
-                    medications.get(i).getTimes().length == 1
-                    && medications.get(i).getMedFrequency() == 1440
-            )
+            if (medications.get(i).getTimes().length == 1 && medications.get(i).getMedFrequency() == 1440)
             {
                 // if the Medication is taken once per day just add the start of each date to
                 timeArr = new LocalDateTime[7];
@@ -238,10 +241,7 @@ public class MainActivity extends AppCompatActivity
                             LocalDateTime.of(LocalDate.from(thisSunday.plusDays(j)), localtime);
             }
             // If a medication is taken multiple times per day
-            else if (
-                    medications.get(i).getTimes().length > 1
-                    && medications.get(i).getMedFrequency() == 1440
-            )
+            else if (medications.get(i).getTimes().length > 1 && medications.get(i).getMedFrequency() == 1440)
             {
                 int numberOfTimes = medications.get(i).getTimes().length;
                 int index = 0;
@@ -299,21 +299,15 @@ public class MainActivity extends AppCompatActivity
                             {
                                 if (time.isBefore(pausedInterval.second))
                                 {
-                                    System.out.println("Returned first null");
-
                                     return true;
                                 }
                             }
                             else if (time.isAfter(pausedInterval.first) && pausedInterval.second == null)
                             {
-                                System.out.println("Returned second null");
-
                                 return true;
                             }
                             else if (time.isAfter(pausedInterval.first) && time.isBefore(pausedInterval.second))
                             {
-                                System.out.println("Returned within paused interval");
-
                                 return true;
                             }
                         }
