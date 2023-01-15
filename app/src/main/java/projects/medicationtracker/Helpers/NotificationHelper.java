@@ -93,7 +93,7 @@ public class NotificationHelper
                 (int) notificationId,
                 notificationIntent,
                 SDK_INT >= Build.VERSION_CODES.S ?
-                        PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT
+                        PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
         );
 
         alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
@@ -151,9 +151,11 @@ public class NotificationHelper
     {
         Intent intent = new Intent(context, NotificationReceiver.class);
 
-        PendingIntent.getBroadcast(context, (int) notificationId, intent,
+        PendingIntent.getBroadcast(context,
+                (int) notificationId,
+                intent,
                 SDK_INT >= Build.VERSION_CODES.S ?
-                        PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT
+                        PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
         ).cancel();
     }
 

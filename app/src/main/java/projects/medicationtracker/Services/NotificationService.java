@@ -67,6 +67,9 @@ public class NotificationService extends IntentService
         Intent snoozeIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
         String embeddedMedId = "_" + medId;
 
+        markTakenIntent.removeExtra(DOSE_TIME);
+        markTakenIntent.removeExtra(DOSE_TIME);
+
         markTakenIntent.setAction(MARK_AS_TAKEN_ACTION + embeddedMedId);
         markTakenIntent.putExtra(MEDICATION_ID + embeddedMedId, medId);
         markTakenIntent.putExtra(NOTIFICATION_ID + embeddedMedId, notificationId);
@@ -83,7 +86,7 @@ public class NotificationService extends IntentService
                         0,
                         markTakenIntent,
                         SDK_INT >= Build.VERSION_CODES.S ?
-                                PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT
+                                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
         PendingIntent snoozePendingIntent =
@@ -92,7 +95,7 @@ public class NotificationService extends IntentService
                         0,
                         snoozeIntent,
                         SDK_INT >= Build.VERSION_CODES.S ?
-                                PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT
+                                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
         NotificationCompat.Builder builder =
@@ -125,7 +128,7 @@ public class NotificationService extends IntentService
                 stackBuilder.getPendingIntent(
                         0,
                         SDK_INT >= Build.VERSION_CODES.S ?
-                                PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT
+                                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_CANCEL_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
                 );
         builder.setContentIntent(resPendingIntent);
 
