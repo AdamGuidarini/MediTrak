@@ -1,29 +1,42 @@
 <resources>
-    <string name="app_name">MediTrak</string>
+    <!-- Common -->
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="my_medications">My Medications</string>
-    <string name="add_medication">Add Medication</string>
-    <string name="medication_name">Medication Name</string>
-    <string name="medication_dosage">Dosage</string>
-    <string name="medication_frequency">Frequency</string>
-    <string name="taken_every">Taken Every</string>
-    <string name="edit_medication">Edit Medication</string>
-    <string name="settings">Settings</string>
-    <string name="units">Units</string>
-    <string name="taken">Taken</string>
+    <string name="close">Close</string>
+    <string name="app_name">MediTrak</string>
+
+    <!-- MainActivity -->
+
+    <!-- AddEditMedicationFragment -->
     <string name="times_per">Times per</string>
     <string name="patientIsMe">Me</string>
     <string name="patient">Patient</string>
     <string name="other">Other</string>
     <string name="name">Name</string>
-    <string name="submit">Submit</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_medication">Add Medication</string>
+    <string name="medication_name">Medication Name</string>
+    <string name="medication_dosage">Dosage</string>
+    <string name="medication_frequency">Frequency</string>
+    <string name="taken_every">Taken Every</string>
+    <string name="units">Units</string>
+    <string name="taken">Taken</string>
     <string name="frequency">Frequency</string>
     <string name="multiple_times_per_day">Multiple Times Per Day</string>
     <string name="daily">Daily</string>
     <string name="weekly">Weekly</string>
     <string name="monthly">Monthly</string>
+
+    <!-- AddMedication -->
+    <string name="my_medications">My Medications</string>
+
+    <!-- MyMedications -->
+
+    <!-- EditMedication -->
+    <string name="edit_medication">Edit Medication</string>
+
+    <!-- Notes -->
+
+    <string name="submit">Submit</string>
     <string name="custom_frequency">Custom Frequency</string>
     <string name="at_n_n_tap_to_set_time">At: \n\n Tap to set time</string>
     <string name="times_per_day">Times per day</string>
@@ -35,8 +48,6 @@
     <string name="medication_alias_displays_in_notification">Medication alias displays in notification</string>
     <string name="place_holder_tap_again_then_hit_cancel">Place holder, tap again then hit cancel</string>
     <string name="yourMedications">Your Medications:</string>
-    <string name="title_activity_settings">Settings</string>
-    <string name="delete_all">Delete All</string>
     <string name="no_notes_for_this_medication">No notes for this medication</string>
     <string name="add_note">Add Note</string>
     <string name="unitExample">Ex. mg, g, drops</string>
@@ -69,6 +80,9 @@
     <string name="unit_of_time">Unit of Time</string>
     <string name="mark_as_taken">Taken</string>
     <string name="snooze_message">Snooze</string>
+
+    <!-- Settings Activity -->
+    <string name="settings">Settings</string>
     <string name="options">Options</string>
     <string name="license">License</string>
     <string name="purpose">MediTrak is a free and open source application designed to help you keep track of your medications, so you can more easily answer the question \"did I take my medication yesterday?\"</string>
@@ -93,16 +107,19 @@
     </string>
     <string name="cannot_take_medication_more_than">Cannot take medication more than</string>
     <string name="hours_in_advance">hours in advance</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="delete_all">Delete All</string>
+    <string name="pause_medication">Pause Medication</string>
+    <string name="resume_medication">Resume Medication</string>
+    <string name="pause_message">Are you sure you want to pause %1$s? It will no longer appear in your schedule, but may be resumed at any time.</string>
+    <string name="resume_message">Resuming %1$s will restore it to your schedule. Are you sure you want to proceed?</string>
+
+    <!-- Dose Info dialog -->
     <string name="not_taken_yet">Not yet taken</string>
     <string name="not_taken">Not taken</string>
     <string name="marked_taken_at">Marked taken at</string>
     <string name="dose_information">Dose information</string>
     <string name="time_taken">Time Taken</string>
     <string name="date_taken">Date Taken</string>
-    <string name="close">Close</string>
     <string name="this_dose">This Dose</string>
-    <string name="pause_medication">Pause Medication</string>
-    <string name="resume_medication">Resume Medication</string>
-    <string name="pause_message">Are you sure you want to pause %1$s? It will no longer appear in your schedule, but may be resumed at any time.</string>
-    <string name="resume_message">Resuming %1$s will restore it to your schedule. Are you sure you want to proceed?</string>
 </resources>
