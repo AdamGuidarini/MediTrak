@@ -16,7 +16,7 @@ public class AddMedication extends AppCompatActivity
     /**
      * Builds AddMedication Activity
      * @param savedInstanceState Previous state
-     **************************************************************************/
+     */
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -24,7 +24,7 @@ public class AddMedication extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_medication);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Add Medication");
+        getSupportActionBar().setTitle(getString(R.string.add_medication));
 
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)

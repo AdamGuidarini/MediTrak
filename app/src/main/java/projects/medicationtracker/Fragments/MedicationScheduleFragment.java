@@ -156,7 +156,7 @@ public class MedicationScheduleFragment extends Fragment
         if (layouts.size() == 0)
         {
             TextView textView = new TextView(rootView.getContext());
-            String noMed = "No medications for " + dayOfWeek;
+            String noMed = getString(R.string.no_meds_for_day, dayOfWeek);
 
             TextViewUtils.setTextViewParams(textView, noMed, checkBoxHolder);
         }
@@ -175,7 +175,7 @@ public class MedicationScheduleFragment extends Fragment
     {
         RelativeLayout rl = new RelativeLayout(rootView.getContext());
         CheckBox thisMedication = new CheckBox(rootView.getContext());
-        long medId = medication.getMedId();
+        long medId = medication.getId();
         Triple<Medication, Long, LocalDateTime> tag;
         long doseRowId = db.getDoseId(medId, TimeFormatting.localDateTimeToString(time));
         ImageButton button = new ImageButton(rootView.getContext());
@@ -204,20 +204,20 @@ public class MedicationScheduleFragment extends Fragment
         });
 
         // Set Checkbox label
-        String medName = medication.getMedName();
+        String medName = medication.getName();
         String dosage;
-        if (medication.getMedDosage() == (int) medication.getMedDosage())
+        if (medication.getDosage() == (int) medication.getDosage())
         {
-            dosage = String.format(Locale.getDefault(), "%d", (int) medication.getMedDosage());
+            dosage = String.format(Locale.getDefault(), "%d", (int) medication.getDosage());
         }
         else
         {
-            dosage = String.valueOf(medication.getMedDosage());
+            dosage = String.valueOf(medication.getDosage());
         }
 
         if (doseRowId != -1 && db.getTaken(doseRowId)) thisMedication.setChecked(true);
 
-        dosage += " " + medication.getMedDosageUnits();
+        dosage += " " + medication.getDosageUnits();
 
         String dosageTime = TimeFormatting.formatTimeForUser(time.getHour(), time.getMinute());
 
@@ -241,8 +241,7 @@ public class MedicationScheduleFragment extends Fragment
                 thisMedication.setChecked(false);
                 Toast.makeText(
                         rootView.getContext(),
-                        "Cannot take medications more than "
-                                + timeBeforeDose + " hours in advance",
+                        getString(R.string.cannot_take_more_than_hours, timeBeforeDose),
                         Toast.LENGTH_SHORT
                 ).show();
                 return;

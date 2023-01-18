@@ -513,7 +513,7 @@ public class DBHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        LocalTime[] prevTimes = getMedicationTimes(medication.getMedId());
+        LocalTime[] prevTimes = getMedicationTimes(medication.getId());
         LocalTime[] newTimes = new LocalTime[medication.getTimes().length];
 
         for (int i = 0; i < newTimes.length; i++)
@@ -522,24 +522,24 @@ public class DBHelper extends SQLiteOpenHelper
         }
 
         // Update data in Medication table
-        cv.put(MED_NAME, medication.getMedName());
-        cv.put(MED_DOSAGE, medication.getMedDosage());
-        cv.put(MED_FREQUENCY, medication.getMedFrequency());
-        cv.put(MED_UNITS, medication.getMedDosageUnits());
+        cv.put(MED_NAME, medication.getName());
+        cv.put(MED_DOSAGE, medication.getDosage());
+        cv.put(MED_FREQUENCY, medication.getFrequency());
+        cv.put(MED_UNITS, medication.getDosageUnits());
         cv.put(START_DATE, TimeFormatting.localDateTimeToString(medication.getStartDate()));
         cv.put(PATIENT_NAME, medication.getPatientName());
         cv.put(ALIAS, medication.getAlias());
 
-        db.update(MEDICATION_TABLE, cv, MED_ID + " = " + medication.getMedId(), null);
+        db.update(MEDICATION_TABLE, cv, MED_ID + " = " + medication.getId(), null);
 
         cv.clear();
 
-        cv.put(MED_ID, medication.getMedId());
+        cv.put(MED_ID, medication.getId());
 
         if (medication.getTimes().length > 0)
         {
             // Replace old times in DB
-            LocalTime[] oldTimes = getMedicationTimes(medication.getMedId());
+            LocalTime[] oldTimes = getMedicationTimes(medication.getId());
             int diff = medication.getTimes().length - oldTimes.length;
             int maxIndex = diff > 0 ? oldTimes.length : oldTimes.length + diff;
             long[] timeIds = this.getMedicationTimeIds(medication);
@@ -564,7 +564,7 @@ public class DBHelper extends SQLiteOpenHelper
                 {
                     String timeAsString = medication.getTimes()[i].toLocalTime().toString();
 
-                    cv.put(MED_ID, medication.getMedId());
+                    cv.put(MED_ID, medication.getId());
                     cv.put(DRUG_TIME, timeAsString);
 
                     db.insert(MEDICATION_TIMES,  null, cv);
@@ -579,7 +579,7 @@ public class DBHelper extends SQLiteOpenHelper
                 {
                     String oldTimeAsString = oldTimes[i].toString();
                     String whereClause = DRUG_TIME + "='" + oldTimeAsString + "' AND " + MED_ID
-                            + "=" + medication.getMedId();
+                            + "=" + medication.getId();
 
                     db.delete(MEDICATION_TIMES, whereClause, null);
                 }
@@ -589,7 +589,7 @@ public class DBHelper extends SQLiteOpenHelper
         // Remove old times if times changed - may no longer line up with schedule
         if (prevTimes != newTimes)
         {
-            db.execSQL("DELETE FROM " + MEDICATION_TRACKER_TABLE + " WHERE " + MED_ID + " = " + medication.getMedId());
+            db.execSQL("DELETE FROM " + MEDICATION_TRACKER_TABLE + " WHERE " + MED_ID + " = " + medication.getId());
         }
     }
 
@@ -600,7 +600,7 @@ public class DBHelper extends SQLiteOpenHelper
     public void deleteMedication(Medication medication)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = MED_ID + " = " + medication.getMedId();
+        String query = MED_ID + " = " + medication.getId();
 
         db.delete(MEDICATION_TABLE, query, null);
     }
@@ -617,7 +617,7 @@ public class DBHelper extends SQLiteOpenHelper
         String dateTime = TimeFormatting.localDateTimeToString(time);
 
         String query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE + " WHERE " + MED_ID + " = " +
-                medication.getMedId() + " AND " + DOSE_TIME + " = '" + dateTime + "'";
+                medication.getId() + " AND " + DOSE_TIME + " = '" + dateTime + "'";
 
         int count = 0;
 
@@ -649,7 +649,7 @@ public class DBHelper extends SQLiteOpenHelper
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String dateTime = time.format(formatter);
 
-        medTrackerValues.put(MED_ID, medication.getMedId());
+        medTrackerValues.put(MED_ID, medication.getId());
         medTrackerValues.put(DOSE_TIME, dateTime);
         medTrackerValues.put(TAKEN, false);
 
@@ -846,7 +846,7 @@ public class DBHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " + TIME_ID + " FROM " + MEDICATION_TIMES + " WHERE " + MED_ID
-                + " = " + medication.getMedId();
+                + " = " + medication.getId();
 
         Cursor cursor = db.rawQuery(query, null);
 
@@ -1008,11 +1008,11 @@ public class DBHelper extends SQLiteOpenHelper
 
         updateActivityStatusCv.put(ACTIVE, active ? 1 : 0);
 
-        db.update(MEDICATION_TABLE, updateActivityStatusCv, where, new String[] {String.valueOf(medication.getMedId())});
+        db.update(MEDICATION_TABLE, updateActivityStatusCv, where, new String[] {String.valueOf(medication.getId())});
 
         addStatusChangeCv.put(PAUSED, active ? 0 : 1);
         addStatusChangeCv.put(CHANGE_DATE, TimeFormatting.localDateTimeToString(LocalDateTime.now()));
-        addStatusChangeCv.put(MED_ID, medication.getMedId());
+        addStatusChangeCv.put(MED_ID, medication.getId());
 
         db.insert(ACTIVITY_CHANGE_TABLE, "", addStatusChangeCv);
     }
@@ -1026,7 +1026,7 @@ public class DBHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " + ACTIVE + " FROM " + MEDICATION_TABLE
-                + " WHERE " + MED_ID + "=" + medication.getMedId();
+                + " WHERE " + MED_ID + "=" + medication.getId();
         boolean active;
 
         Cursor cursor =  db.rawQuery(query, null);
@@ -1051,7 +1051,7 @@ public class DBHelper extends SQLiteOpenHelper
 
         cursor = db.rawQuery(
                 "SELECT * FROM " + ACTIVITY_CHANGE_TABLE
-                        + " WHERE " + MED_ID + "=" + medication.getMedId(),
+                        + " WHERE " + MED_ID + "=" + medication.getId(),
                 null
         );
         cursor.moveToFirst();

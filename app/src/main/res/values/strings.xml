@@ -1,64 +1,78 @@
 <resources>
-    <string name="app_name">MediTrak</string>
+    <!-- Common -->
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="my_medications">My Medications</string>
-    <string name="add_medication">Add Medication</string>
-    <string name="medication_name">Medication Name</string>
-    <string name="medication_dosage">Dosage</string>
-    <string name="medication_frequency">Frequency</string>
-    <string name="taken_every">Taken Every</string>
-    <string name="edit_medication">Edit Medication</string>
-    <string name="settings">Settings</string>
-    <string name="units">Units</string>
-    <string name="taken">Taken</string>
+    <string name="close">Close</string>
+    <string name="cancel">Cancel</string>
+    <string name="app_name">MediTrak</string>
+    <string name="edit">Edit</string>
+    <string name="submit">Submit</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="save">Save</string>
+    <string name="you">You</string>
+    <string name="your">Your</string>
+    <string name="ok">OK</string>
+    <string name="delete">Delete</string>
+
+    <!-- Errors -->
+    <string name="invalid_value">Invalid value entered</string>
+    <string name="must_be_positive_int">Value must be a positive integer</string>
+    <string name="val_too_big">Provided value is too big</string>
+    <string name="cannot_exceed_50">Provided value cannot exceed 50</string>
+    <string name="must_be_greater_than_0">Provided value must be greater than 0</string>
+    <string name="provided_name_invalid">Provided name is invalid</string>
+    <string name="err_provide_name">Please provide a name</string>
+    <string name="err_enter_dosage">Please enter a dosage</string>
+    <string name="err_units_for_med">Please enter the units for this medication</string>
+    <string name="err_select_frequency">Please select a frequency type</string>
+    <string name="err_select_time">Please select a time</string>
+    <string name="err_select_start_date">Please select a start date.</string>
+    <string name="err_enter_num_timers_per_day">Please enter the number of times this medication is taken in a day</string>
+    <string name="err_enter_med_freq">Please enter how often the medication is taken.</string>
+    <string name="err_enter_time_unit">Please select a time unit.</string>
+    <string name="err_name_for_med">Please enter a name for this medication</string>
+
+    <!-- Time formats -->
+    <string name="date_format">Mmm dd, yyyy</string>
+    <string name="time_format">hh:mm aa</string>
+
+    <!-- Time -->
+    <string name="sunday">Sunday</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="minutes">Minutes</string>
+    <string name="hours">Hours</string>
+    <string name="days">Days</string>
+    <string name="weeks">Weeks</string>
+
+    <!-- MainActivity -->
+    <string name="no_medications_found">No medications found</string>
+    <string name="med_schedule">Medication Schedule</string>
+    <string name="no_meds_for_day">No medications for %1$s</string>
+    <string name="cannot_take_more_than_hours">Cannot take medications more than %1$d hours in advance</string>
+
+    <!-- AddEditMedicationFragment -->
     <string name="times_per">Times per</string>
     <string name="patientIsMe">Me</string>
     <string name="patient">Patient</string>
     <string name="other">Other</string>
     <string name="name">Name</string>
-    <string name="submit">Submit</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="medication_name">Medication Name</string>
+    <string name="medication_dosage">Dosage</string>
+    <string name="medication_frequency">Frequency</string>
+    <string name="taken_every">Taken Every</string>
+    <string name="units">Units</string>
+    <string name="taken">Taken</string>
     <string name="frequency">Frequency</string>
     <string name="multiple_times_per_day">Multiple Times Per Day</string>
     <string name="daily">Daily</string>
     <string name="weekly">Weekly</string>
     <string name="monthly">Monthly</string>
-    <string name="custom_frequency">Custom Frequency</string>
-    <string name="at_n_n_tap_to_set_time">At: \n\n Tap to set time</string>
-    <string name="times_per_day">Times per day</string>
-    <string name="atThisTime">At: Tap to set time</string>
-    <string name="starting">Starting:</string>
-    <string name="no_medications_found">No medications found</string>
-    <string name="alias_for_medication">Alias for medication</string>
-    <string name="alias_for_medication_displays_notification">Alias for medication displays notification</string>
-    <string name="medication_alias_displays_in_notification">Medication alias displays in notification</string>
-    <string name="place_holder_tap_again_then_hit_cancel">Place holder, tap again then hit cancel</string>
-    <string name="yourMedications">Your Medications:</string>
-    <string name="title_activity_settings">Settings</string>
-    <string name="delete_all">Delete All</string>
-    <string name="no_notes_for_this_medication">No notes for this medication</string>
-    <string name="add_note">Add Note</string>
-    <string name="unitExample">Ex. mg, g, drops</string>
-    <string name="delete_medication">Delete Medication</string>
-    <string name="patient_name">Patient Name:</string>
-    <string name="save_changes">Save Changes</string>
-    <string name="no_alias">No alias</string>
-    <string name="tap_to_set_date">Tap to set date</string>
-    <string name="at">At:</string>
-    <string name="tap_to_set_time">Tap to set Time</string>
-    <string name="number_of_hours_before_dose_can_be_taken">Limit before which medication cannot be taken:</string>
-    <string name="hours">Hours</string>
-    <string name="enable_notifications">Enable Notifications</string>
-    <string name="disable_time_before_dose_requirement">Disable time in advance limit</string>
-    <string name="theme">Theme</string>
-    <string name="light_mode">Light mode</string>
-    <string name="dark_mode">Dark mode</string>
-    <string name="match_system_theme">System default</string>
-    <string name="notes">Notes</string>
-    <string name="edit">Edit</string>
     <string name="medication_name_amp_dosage"><![CDATA[Medication Name & Dosage]]></string>
-    <string name="save">Save</string>
     <string name="who_takes_this_medication">Who takes this medication?</string>
     <string name="someone_else">Someone else</string>
     <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[What is the medication\'s name & how much is taken?]]></string>
@@ -67,8 +81,48 @@
     <string name="start_date">Start Date</string>
     <string name="taken_at">Taken at</string>
     <string name="unit_of_time">Unit of Time</string>
-    <string name="mark_as_taken">Taken</string>
-    <string name="snooze_message">Snooze</string>
+    <string name="custom_frequency">Custom Frequency</string>
+    <string name="at_n_n_tap_to_set_time">At: \n\n Tap to set time</string>
+    <string name="times_per_day">Times per day</string>
+    <string name="atThisTime">At: Tap to set time</string>
+    <string name="starting">Starting:</string>
+    <string name="alias_for_medication">Alias for medication</string>
+    <string name="alias_for_medication_displays_notification">Alias for medication displays notification</string>
+    <string name="medication_alias_displays_in_notification">Medication alias displays in notification</string>
+    <string name="place_holder_tap_again_then_hit_cancel">Place holder, tap again then hit cancel</string>
+    <string name="yourMedications">Your Medications:</string>
+    <string name="no_notes_for_this_medication">No notes for this medication</string>
+    <string name="unitExample">Ex. mg, g, drops</string>
+    <string name="patient_name">Patient Name:</string>
+    <string name="no_alias">No alias</string>
+    <string name="tap_to_set_date">Tap to set date</string>
+    <string name="at">At:</string>
+    <string name="tap_to_set_time">Tap to set Time</string>
+
+    <!-- AddMedication -->
+    <string name="add_medication">Add Medication</string>
+
+    <!-- MyMedications -->
+    <string name="my_medications">My Medications</string>
+    <string name="med_name">Medication name: %1$s</string>
+    <string name="dosage">Dosage: %1$s %2$s</string>
+    <string name="taken_daily_at">Taken daily at: </string>
+    <string name="taken_every_lbl">Taken every: </string>
+    <string name="alias_lbl">Alias: %1$s</string>
+    <string name="taken_since">Taken since: %1$s</string>
+
+    <!-- EditMedication -->
+    <string name="edit_medication">Edit Medication</string>
+    <string name="delete_medication">Delete Medication</string>
+    <string name="note_timestamp">Date: %1$s at: %2$s </string>
+
+    <!-- Notes -->
+    <string name="notes">Notes</string>
+    <string name="add_note">Add Note</string>
+    <string name="edit_note">Edit Note</string>
+
+    <!-- Settings Activity -->
+    <string name="settings">Settings</string>
     <string name="options">Options</string>
     <string name="license">License</string>
     <string name="purpose">MediTrak is a free and open source application designed to help you keep track of your medications, so you can more easily answer the question \"did I take my medication yesterday?\"</string>
@@ -93,16 +147,35 @@
     </string>
     <string name="cannot_take_medication_more_than">Cannot take medication more than</string>
     <string name="hours_in_advance">hours in advance</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="delete_all">Delete All</string>
+    <string name="pause_medication">Pause Medication</string>
+    <string name="resume_medication">Resume Medication</string>
+    <string name="pause_message">Are you sure you want to pause %1$s? It will no longer appear in your schedule, but may be resumed at any time.</string>
+    <string name="resume_message">Resuming %1$s will restore it to your schedule. Are you sure you want to proceed?</string>
+    <string name="enable_notifications">Enable Notifications</string>
+    <string name="disable_time_before_dose_requirement">Disable time in advance limit</string>
+    <string name="theme">Theme</string>
+    <string name="light_mode">Light mode</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="match_system_theme">System default</string>
+    <string name="number_of_hours_before_dose_can_be_taken">Limit before which medication cannot be taken:</string>
+
+    <!-- Dose Info dialog -->
     <string name="not_taken_yet">Not yet taken</string>
     <string name="not_taken">Not taken</string>
     <string name="marked_taken_at">Marked taken at</string>
     <string name="dose_information">Dose information</string>
     <string name="time_taken">Time Taken</string>
     <string name="date_taken">Date Taken</string>
-    <string name="close">Close</string>
     <string name="this_dose">This Dose</string>
-    <string name="pause_medication">Pause Medication</string>
-    <string name="resume_medication">Resume Medication</string>
-    <string name="pause_message">Are you sure you want to pause %1$s? It will no longer appear in your schedule, but may be resumed at any time.</string>
-    <string name="resume_message">Resuming %1$s will restore it to your schedule. Are you sure you want to proceed?</string>
+
+    <!-- Delete Everything -->
+    <string name="delete_all_data">Delete All Saved Data</string>
+    <string name="delete_all_data_cannot_be_undone">Delete all saved data? This action cannot be undone.</string>
+    <string name="all_data_deleted">All data has been deleted</string>
+
+    <!-- Notifications -->
+    <string name="mark_as_taken">Taken</string>
+    <string name="snooze_message">Snooze</string>
 </resources>

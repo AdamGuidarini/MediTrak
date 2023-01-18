@@ -22,7 +22,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     /**
      * Constructor
      * @param textView TextView that will store the selected time.
-     **************************************************************************/
+     */
     public TimePickerFragment(TextView textView)
     {
         tv = textView;
@@ -32,7 +32,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
      * Creates a TimePickerFragment allowing user to set time
      * @param savedInstanceState Saved instance from previous state
      * @return A TimePickerDialog
-     **************************************************************************/
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -51,7 +51,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
      * @param view The TimePicker created in onCreateDialog
      * @param hourOfDay Hour chosen by user
      * @param minute Minute chosen by user
-     **************************************************************************/
+     */
     public void onTimeSet(TimePicker view, int hourOfDay, int minute)
     {
         String chosenTime;

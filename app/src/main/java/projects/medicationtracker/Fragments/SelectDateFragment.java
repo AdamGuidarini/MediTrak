@@ -19,14 +19,14 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
     /**
      * Creates a new SelectDateFragment
      * @param textView The TextView to write the selected date to
-     *************************************************************************/
+     */
     public SelectDateFragment(TextView textView) { tv = textView; }
 
     /**
      * Instructions for how to create fragment
      * @param savedInstanceState
      * @return A date picker dialog
-     *************************************************************************/
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -44,7 +44,7 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
      * @param yy Year
      * @param mm Month
      * @param dd Day
-     *************************************************************************/
+     */
     public void onDateSet(DatePicker view, int yy, int mm, int dd)
     {
         populateSetDate(yy, mm+1, dd);
@@ -55,7 +55,7 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
      * @param year Year chosen by user
      * @param month Month chosen by user
      * @param day Day chosen by user
-     *************************************************************************/
+     */
     public void populateSetDate(int year, int month, int day)
     {
         LocalDate localDate = LocalDate.of(year, month, day);
