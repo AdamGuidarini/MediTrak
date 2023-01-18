@@ -112,7 +112,7 @@ public class MyMedicationsFragment extends Fragment
         if (medication.getFrequency() == MINUTES_IN_DAY && (medication.getTimes().length == 1))
         {
             String time = TimeFormatting.localTimeToString(medication.getTimes()[0].toLocalTime());
-            freqLabel = new StringBuilder(getString(R.string.taken_daily_at) + time);
+            freqLabel = new StringBuilder(getString(R.string.taken_daily_at) + " " + time);
         }
         else if (medication.getFrequency() == MINUTES_IN_DAY && (medication.getTimes().length > 1))
         {
