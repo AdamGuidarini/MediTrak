@@ -1,6 +1,5 @@
 package projects.medicationtracker.Receivers;
 
-import static android.os.Build.VERSION.SDK_INT;
 import static projects.medicationtracker.Helpers.NotificationHelper.DOSE_TIME;
 import static projects.medicationtracker.Helpers.NotificationHelper.MEDICATION_ID;
 import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION_ID;
@@ -10,11 +9,9 @@ import static projects.medicationtracker.Helpers.NotificationHelper.scheduleIn15
 import static projects.medicationtracker.Services.NotificationService.SNOOZE_ACTION;
 
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -98,7 +95,7 @@ public class EventReceiver extends BroadcastReceiver
         med = db.getMedication(medId);
 
         long doseId = db.isInMedicationTracker(med, doseTime) ?
-                db.getDoseId(med.getMedId(), TimeFormatting.localDateTimeToString(doseTime)) :
+                db.getDoseId(med.getId(), TimeFormatting.localDateTimeToString(doseTime)) :
                 db.addToMedicationTracker(med, doseTime);
 
         db.updateDoseStatus(

@@ -35,7 +35,7 @@ public class EditMedication extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_medication);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Edit Medication");
+        getSupportActionBar().setTitle(getString(R.string.edit_medication));
 
         medication = db.getMedication(getIntent().getLongExtra("medId", 0));
 

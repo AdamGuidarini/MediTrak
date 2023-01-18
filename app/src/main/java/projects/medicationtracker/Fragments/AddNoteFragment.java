@@ -52,8 +52,8 @@ public class AddNoteFragment extends DialogFragment
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
         builder.setView(inflater.inflate(R.layout.fragment_add_note, null))
-                .setTitle("Add Note")
-                .setPositiveButton("OK", (dialogInterface, i) ->
+                .setTitle(getString(R.string.add_note))
+                .setPositiveButton(getString(R.string.ok), (dialogInterface, i) ->
                 {
                     DBHelper db = new DBHelper(context);
                     EditText editText = getDialog().findViewById(R.id.editNote);
@@ -84,7 +84,7 @@ public class AddNoteFragment extends DialogFragment
                     }
 
                     dismiss();
-                }).setNegativeButton("Cancel", (dialogInterface, i) ->
+                }).setNegativeButton(getString(R.string.cancel), (dialogInterface, i) ->
                 {
                     dismiss();
                 });

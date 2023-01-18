@@ -11,7 +11,7 @@ public class TextViewUtils
      * @param textView The TextView to edit
      * @param text Text to display
      * @param parent The view to will hold the TextView
-     **************************************************************************/
+     */
     public static void setTextViewParams(TextView textView, String text, ViewGroup parent)
     {
         textView.setText(text);
@@ -25,7 +25,7 @@ public class TextViewUtils
     /**
      * Sets predetermined padding to TextView
      * @param textView The TextView whose padding to set
-     **************************************************************************/
+     */
     public static void setTextViewFontAndPadding(TextView textView)
     {
         textView.setPadding(20, 24, 0, 24);

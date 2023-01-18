@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
+import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Medication;
 
 public class ConfirmDeleteAllFragment extends DialogFragment
@@ -30,21 +31,21 @@ public class ConfirmDeleteAllFragment extends DialogFragment
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        builder.setTitle("Delete All Saved Data");
+        builder.setTitle(getString(R.string.delete_all_data));
 
-        builder.setMessage("Delete all saved data? This action cannot be undone.");
+        builder.setMessage(getString(R.string.delete_all_data_cannot_be_undone));
 
-        builder.setPositiveButton("Yes", ((DialogInterface, i) ->
+        builder.setPositiveButton(getString(R.string.yes), ((DialogInterface, i) ->
         {
             medications = db.getMedications();
             deletePendingNotifications();
 
             db.purge();
-            Toast.makeText(this.getContext(), "All data has been deleted", Toast.LENGTH_SHORT)
+            Toast.makeText(this.getContext(), getString(R.string.all_data_deleted), Toast.LENGTH_SHORT)
                     .show();
         }));
 
-        builder.setNegativeButton("No", ((DialogInterface, i) -> dismiss()));
+        builder.setNegativeButton(getString(R.string.no), ((DialogInterface, i) -> dismiss()));
 
         return builder.create();
     }
@@ -53,9 +54,9 @@ public class ConfirmDeleteAllFragment extends DialogFragment
     {
         for (Medication medication : medications)
         {
-            if (medication.getMedFrequency() == 1440)
+            if (medication.getFrequency() == 1440)
             {
-                NotificationHelper.deletePendingNotification(medication.getMedId(), getContext());
+                NotificationHelper.deletePendingNotification(medication.getId(), getContext());
             }
             else
             {

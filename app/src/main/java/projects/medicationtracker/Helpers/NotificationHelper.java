@@ -43,7 +43,7 @@ public class NotificationHelper
         // Loops to increase time, prevents notification bombardment when editing time.
         while (time.isBefore(LocalDateTime.now()))
         {
-            time = time.plusMinutes(medication.getMedFrequency());
+            time = time.plusMinutes(medication.getFrequency());
         }
 
         ZonedDateTime zdt = time.atZone(ZoneId.systemDefault());
@@ -86,7 +86,7 @@ public class NotificationHelper
         notificationIntent.putExtra(NOTIFICATION_ID, notificationId);
         notificationIntent.putExtra(MESSAGE, createMedicationReminderMessage(medication));
         notificationIntent.putExtra(DOSE_TIME, time);
-        notificationIntent.putExtra(MEDICATION_ID, medication.getMedId());
+        notificationIntent.putExtra(MEDICATION_ID, medication.getId());
 
         alarmIntent = PendingIntent.getBroadcast(
                 notificationContext,
@@ -109,7 +109,7 @@ public class NotificationHelper
     {
         String message;
         String patientName = medication.getPatientName();
-        String medicationName = medication.getMedName();
+        String medicationName = medication.getName();
 
         if (!medication.getAlias().isEmpty())
             medicationName = medication.getAlias();
@@ -172,7 +172,7 @@ public class NotificationHelper
 
         if (medIds.length == 0)
         {
-            NotificationHelper.deletePendingNotification(medication.getMedId(), context);
+            NotificationHelper.deletePendingNotification(medication.getId(), context);
         }
         else
         {
@@ -194,7 +194,7 @@ public class NotificationHelper
     {
         DBHelper db = new DBHelper(context);
         long[] medicationTimeIds = db.getMedicationTimeIds(medication);
-        LocalTime[] medTimes = db.getMedicationTimes(medication.getMedId());
+        LocalTime[] medTimes = db.getMedicationTimes(medication.getId());
 
         if (!db.isMedicationActive(medication))
         {
@@ -210,7 +210,7 @@ public class NotificationHelper
                             medication.getStartDate().toLocalDate(),
                             medTimes[0]
                     ),
-                    medication.getMedId()
+                    medication.getId()
             );
         }
         else

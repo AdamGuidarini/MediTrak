@@ -40,8 +40,8 @@ public class PauseResumeDialog extends DialogFragment
         String title = isActive ?
                 getString(R.string.pause_medication) : getString(R.string.resume_medication);
         String message = isActive ?
-                getString(R.string.pause_message, medication.getMedName()) :
-                getString(R.string.resume_message, medication.getMedName());
+                getString(R.string.pause_message, medication.getName()) :
+                getString(R.string.resume_message, medication.getName());
 
         builder.setTitle(title);
         builder.setMessage(message);
