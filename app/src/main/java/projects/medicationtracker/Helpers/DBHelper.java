@@ -72,7 +72,7 @@ public class DBHelper extends SQLiteOpenHelper
     /**
      * Creates DBHelper object, adds tables to DB if the don't exist
      * @param sqLiteDatabase Database instance
-     **************************************************************************/
+     */
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase)
     {
@@ -151,7 +151,7 @@ public class DBHelper extends SQLiteOpenHelper
      * Instructions for creation of new DBHelper object
      * Currently enables foreign keys
      * @param db A database instance
-     **************************************************************************/
+     */
     @Override
     public void onOpen(SQLiteDatabase db)
     {
@@ -164,7 +164,7 @@ public class DBHelper extends SQLiteOpenHelper
      * @param sqLiteDatabase Database instance
      * @param i Old version of database
      * @param i1 New Version of database
-     **************************************************************************/
+     */
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1)
     {
@@ -204,7 +204,7 @@ public class DBHelper extends SQLiteOpenHelper
      * @param frequency How often to take Medication
      * @param alias Alias for Medication, appears in notifications
      * @return rowid on success, -1 on failure
-     **************************************************************************/
+     */
     public long addMedication(String medName, String patientName, String dosage, String units,
                               String startDate, int frequency, String alias)
     {
@@ -227,7 +227,7 @@ public class DBHelper extends SQLiteOpenHelper
      * @param medId ID of Medication
      * @param drugTime Time to take Medication
      * @return rowid on success, -1 on failure
-     **************************************************************************/
+     */
     public long addDoseTime(long medId, String drugTime)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -241,7 +241,7 @@ public class DBHelper extends SQLiteOpenHelper
     /**
      * Creates an ArrayList of all patients
      * @return ArrayList of all patients, except
-     **************************************************************************/
+     */
     public ArrayList<String> getPatients()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -346,7 +346,7 @@ public class DBHelper extends SQLiteOpenHelper
     /**
      * Get number of rows in MedicationTable
      * @return Number of rows in MedicationTable
-     **************************************************************************/
+     */
     public long numberOfRows()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -357,7 +357,7 @@ public class DBHelper extends SQLiteOpenHelper
     /**
      * Create ArrayList of all Medications in MedicationTable
      * @return All Medications in MedicationTable
-     **************************************************************************/
+     */
     public ArrayList<Medication> getMedications()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -447,7 +447,7 @@ public class DBHelper extends SQLiteOpenHelper
      * Retrieves a Medication object based on ID passed to it
      * @param id The ID of the Medication
      * @return Medication retrieved from database
-     **************************************************************************/
+     */
     public Medication getMedication(long id)
     {
         SQLiteDatabase db =this.getReadableDatabase();
@@ -596,7 +596,7 @@ public class DBHelper extends SQLiteOpenHelper
     /**
      * Deletes Medication passed to it from database
      * @param medication Medication to delete
-     **************************************************************************/
+     */
     public void deleteMedication(Medication medication)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -610,7 +610,7 @@ public class DBHelper extends SQLiteOpenHelper
      * @param medication Medication to check
      * @param time Time of dose
      * @return True if present, false if not present
-     **************************************************************************/
+     */
     public boolean isInMedicationTracker(Medication medication, LocalDateTime time)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -640,7 +640,7 @@ public class DBHelper extends SQLiteOpenHelper
      * @param medication Medication whose dose will be added
      * @param time Time of dose
      * @return rowid of added dose on success, -1 on failure
-     **************************************************************************/
+     */
     public long addToMedicationTracker(Medication medication, LocalDateTime time)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -661,7 +661,7 @@ public class DBHelper extends SQLiteOpenHelper
      * @param medId ID of Medication
      * @param doseTime Time of dose
      * @return Dose ID of match found in MedicationTracker table
-     **************************************************************************/
+     */
     public long getDoseId(long medId, String doseTime)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -703,7 +703,7 @@ public class DBHelper extends SQLiteOpenHelper
      * Status of entry in MedicationTracker
      * @param doseId ID of dose in table
      * @return Status of dose
-     **************************************************************************/
+     */
     public boolean getTaken(long doseId)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -733,7 +733,7 @@ public class DBHelper extends SQLiteOpenHelper
      * @param doseId ID of dose
      * @param timeTaken Time of dose
      * @param status Status of whether dose has been taken or not
-     **************************************************************************/
+     */
     public void updateDoseStatus(long doseId, String timeTaken, boolean status)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -748,7 +748,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Deletes all entries from database
-     **************************************************************************/
+     */
     public void purge()
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -760,7 +760,7 @@ public class DBHelper extends SQLiteOpenHelper
      * Adds a new Note to the Notes table
      * @param note The note to add
      * @param medId ID of medication note is about
-     **************************************************************************/
+     */
     public void addNote(String note, long medId)
     {
         SQLiteDatabase db = this.getWritableDatabase();
