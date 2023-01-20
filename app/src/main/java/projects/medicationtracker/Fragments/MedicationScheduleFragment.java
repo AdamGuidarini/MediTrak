@@ -7,12 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.fragment.app.Fragment;
 
 import java.time.LocalDate;
@@ -42,7 +42,7 @@ public class MedicationScheduleFragment extends Fragment
     private View rootView;
 
     private static ArrayList<Medication> meds;
-    private static LinearLayoutCompat checkBoxHolder;
+    private static GridLayout checkBoxHolder;
     private static DBHelper db;
     private static String dayOfWeek;
     private static LocalDate dayInCurrentWeek;
@@ -131,7 +131,7 @@ public class MedicationScheduleFragment extends Fragment
         ArrayList<RelativeLayout> layouts = new ArrayList<>();
         db = new DBHelper(rootView.getContext());
 
-        checkBoxHolder.setOrientation(LinearLayoutCompat.VERTICAL);
+        checkBoxHolder.setOrientation(GridLayout.VERTICAL);
 
         String dayLabelString =
                 dayOfWeek + " " + TimeFormatting.localDateToString(thisSunday.plusDays(dayNumber));

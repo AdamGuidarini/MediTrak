@@ -17,7 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
+import android.widget.GridLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -43,7 +43,7 @@ import projects.medicationtracker.Views.StandardCardView;
 public class MainActivity extends AppCompatActivity
 {
     private final DBHelper db = new DBHelper(this);
-    private LinearLayout scheduleLayout;
+    private GridLayout scheduleLayout;
     private LocalDate aDayThisWeek;
 
     /**
@@ -378,13 +378,13 @@ public class MainActivity extends AppCompatActivity
      *            - Friday = 5
      *            - Saturday = 6
      * @param medications The list of medications to be taken on the given day
-     * @param layout The LinearLayout in which to place the CardView
+     * @param layout The GridLayout in which to place the CardView
      */
     public void createDayOfWeekCards(
             String dayOfWeek,
             int day,
             ArrayList<Medication> medications,
-            LinearLayout layout
+            GridLayout layout
     )
     {
         StandardCardView thisDayCard = new StandardCardView(this);

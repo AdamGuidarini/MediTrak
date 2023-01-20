@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -120,11 +121,11 @@ public class MedicationNotes extends AppCompatActivity
 
     /**
      * Sets listeners for the cards
-     **************************************************************************/
+     */
     public void setCardListeners()
     {
         ArrayList<CardView> cardViews = new ArrayList<>();
-        LinearLayout noteLayout = findViewById(R.id.notesLayout);
+        GridLayout noteLayout = findViewById(R.id.notesLayout);
 
         for (int i = 0; i < noteLayout.getChildCount(); i++)
         {
@@ -154,9 +155,9 @@ public class MedicationNotes extends AppCompatActivity
     /**
      * Creates a CardView with a note in it
      * @param note The Note in the CardView
-     * @param baseLayout The LinearLayout the holds the CardView
-     **************************************************************************/
-    private void createNoteCard(Note note, LinearLayout baseLayout)
+     * @param baseLayout The GridLayout the holds the CardView
+     */
+    private void createNoteCard(Note note, GridLayout baseLayout)
     {
         Context context = baseLayout.getContext();
         StandardCardView noteCard = new StandardCardView(context);
