@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * Creates an ArrayList of Medications to be taken this week
      * @return List of all Medications for this week
-     **************************************************************************/
+     */
     public ArrayList<Medication> medicationsForThisWeek()
     {
         ArrayList<Medication> medications = db.getMedications();
