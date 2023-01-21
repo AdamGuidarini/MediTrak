@@ -895,6 +895,8 @@ public class AddEditFormFragment extends Fragment
                 return isDailyValid();
             case 2:
                 return isCustomFrequencyValid();
+            case 3:
+                return isAsNeededValid();
             default:
                 frequencyDropdownLayout.setError(getString(R.string.err_select_frequency));
         }
@@ -1019,9 +1021,9 @@ public class AddEditFormFragment extends Fragment
             Objects.requireNonNull(customFreqStartDate.getText()).toString().isEmpty()
             && Objects.requireNonNull(customFreqMedTime.getText()).toString().isEmpty()
             && Objects.requireNonNull(customFreqMTakenEveryEnter.getText()).toString().isEmpty()
-            && customFreqTimeUnitEnter.getText().toString().isEmpty()
-            ) && intIsParsable(Objects.requireNonNull(customFreqMTakenEveryEnter.getText()).toString())
-        ;
+            && customFreqTimeUnitEnter.getText().toString().isEmpty())
+            && intIsParsable(Objects.requireNonNull(customFreqMTakenEveryEnter.getText()).toString()
+        );
 
         if (allInputsFilled)
         {
@@ -1077,6 +1079,24 @@ public class AddEditFormFragment extends Fragment
         {
             customFreqTimeUnitLayout.setError(getString(R.string.err_enter_time_unit));
         }
+
+        return false;
+    }
+
+    private boolean isAsNeededValid()
+    {
+        if (!Objects.requireNonNull(asNeededStartInput.getText()).toString().isEmpty())
+        {
+            asNeededStart.setErrorEnabled(false);
+
+            medication.setStartDate(LocalDateTime.of((LocalDate) asNeededStartInput.getTag(), LocalTime.of(0, 0)));
+            medication.setFrequency(0);
+            medication.setTimes(new LocalDateTime[0]);
+
+            return true;
+        }
+
+        asNeededStart.setError(getString(R.string.err_select_start_date));
 
         return false;
     }
