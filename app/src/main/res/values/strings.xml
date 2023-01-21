@@ -178,4 +178,5 @@
     <!-- Notifications -->
     <string name="mark_as_taken">Taken</string>
     <string name="snooze_message">Snooze</string>
+    <string name="as_needed">As needed</string>
 </resources>

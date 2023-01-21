@@ -637,6 +637,7 @@ public class AddEditFormFragment extends Fragment
         timeUnits.add(getString(R.string.hours));
         timeUnits.add(getString(R.string.days));
         timeUnits.add(getString(R.string.weeks));
+        timeUnits.add(getString(R.string.as_needed));
 
         timeUnitsAdapter = new ArrayAdapter<>(
                 rootView.getContext(), android.R.layout.simple_dropdown_item_1line, timeUnits
