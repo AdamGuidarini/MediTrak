@@ -35,13 +35,13 @@
             android:visibility="gone"
             tools:visibility="gone">
 
-            <GridLayout
+            <LinearLayout
                 android:id="@+id/medLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-            </GridLayout>
+            </LinearLayout>
         </ScrollView>
 
     </LinearLayout>

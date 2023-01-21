@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -393,7 +392,7 @@ public class AddEditFormFragment extends Fragment
     {
         numberOfTimersPerDay = rootView.findViewById(R.id.numberOfTimersPerDay);
         startDateMultiplePerDay = rootView.findViewById(R.id.startDateMultiplePerDay);
-        GridLayout timesPerDayHolder = rootView.findViewById(R.id.timesPerDayHolder);
+        LinearLayout timesPerDayHolder = rootView.findViewById(R.id.timesPerDayHolder);
         numberOfTimersPerDayLayout = rootView.findViewById(R.id.numberOfTimersPerDayLayout);
 
 
@@ -882,8 +881,8 @@ public class AddEditFormFragment extends Fragment
             && intIsParsable(numberOfTimersPerDay.getText().toString())
             && numberOfTimersPerDayLayout.getError() == null)
         {
-            GridLayout gl = rootView.findViewById(R.id.timesPerDayHolder);
-            LocalDateTime[] times = new LocalDateTime[gl.getChildCount()];
+            LinearLayout ll = rootView.findViewById(R.id.timesPerDayHolder);
+            LocalDateTime[] times = new LocalDateTime[ll.getChildCount()];
             LocalDateTime start = LocalDateTime.of((LocalDate) startDateMultiplePerDay.getTag(), LocalTime.now());
             int errorCount = 0;
 
@@ -893,9 +892,9 @@ public class AddEditFormFragment extends Fragment
             medication.setStartDate(start);
             medication.setFrequency(MINUTES_IN_DAY);
 
-            for (int i = 0; i < gl.getChildCount(); i++)
+            for (int i = 0; i < ll.getChildCount(); i++)
             {
-                TextInputLayout childLayout = (TextInputLayout) gl.getChildAt(i);
+                TextInputLayout childLayout = (TextInputLayout) ll.getChildAt(i);
                 EditText time = childLayout.getEditText();
 
                 childLayout.setErrorEnabled(false);

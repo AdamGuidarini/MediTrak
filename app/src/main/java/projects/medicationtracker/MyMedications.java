@@ -6,7 +6,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.GridLayout;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -53,7 +53,7 @@ public class MyMedications extends AppCompatActivity
         }
 
         final Spinner nameSpinner = findViewById(R.id.nameSpinner);
-        final GridLayout myMedsLayout = findViewById(R.id.medLayout);
+        final LinearLayout myMedsLayout = findViewById(R.id.medLayout);
 
         ArrayList<String> patientNames = db.getPatients();
 
@@ -138,7 +138,7 @@ public class MyMedications extends AppCompatActivity
      * @param medication The Medication whose details will be displayed.
      * @param baseLayout The LinearLayout in which to place the card
      */
-    private void createMyMedCards(Medication medication, GridLayout baseLayout)
+    private void createMyMedCards(Medication medication, LinearLayout baseLayout)
     {
         StandardCardView thisMedCard = new StandardCardView(this);
         FragmentContainerView thisMedLayout = new FragmentContainerView(this);

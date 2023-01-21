@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.MedicationScheduleFragment">
 
-    <GridLayout
+    <LinearLayout
         android:id="@+id/dailySchedule"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,10 +16,10 @@
             android:layout_height="match_parent"
             style="@style/standardTextView"/>
 
-        <GridLayout
+        <LinearLayout
             android:id="@+id/medicationSchedule"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"/>
-    </GridLayout>
+    </LinearLayout>
 </FrameLayout>
