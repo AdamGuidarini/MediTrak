@@ -225,6 +225,7 @@
                             android:inputType="none"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <!-- Daily Frequency -->
                     <LinearLayout
                         android:id="@+id/dailyMedFrequency"
                         android:layout_width="match_parent"
@@ -282,7 +283,7 @@
                         </RelativeLayout>
                     </LinearLayout>
 
-
+                    <!-- Multiple Per Day Frequency -->
                     <LinearLayout
                         android:id="@+id/multiplePerDayFrequency"
                         android:layout_width="match_parent"
@@ -350,6 +351,7 @@
                             android:orientation="vertical" />
                     </LinearLayout>
 
+                    <!-- Custom Frequency -->
                     <LinearLayout
                         android:id="@+id/customFrequencyLayout"
                         android:layout_width="match_parent"
@@ -466,6 +468,31 @@
                                 </com.google.android.material.textfield.TextInputLayout>
                             </RelativeLayout>
                         </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- As needed -->
+                    <LinearLayout
+                        android:id="@+id/asNeededLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/asNeededStart"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginBottom="15dp"
+                            android:hint="@string/start_date"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/asNeededStartInput"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:cursorVisible="false"
+                                android:inputType="date"/>
+                        </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

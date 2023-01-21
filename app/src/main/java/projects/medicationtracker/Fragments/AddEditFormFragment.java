@@ -294,6 +294,7 @@ public class AddEditFormFragment extends Fragment
         LinearLayout dailyLayout = rootView.findViewById(R.id.dailyMedFrequency);
         LinearLayout multiplePerDay = rootView.findViewById(R.id.multiplePerDayFrequency);
         LinearLayout custom = rootView.findViewById(R.id.customFrequencyLayout);
+        LinearLayout asNeeded = rootView.findViewById(R.id.asNeededLayout);
         ArrayAdapter<String> frequencyOptions;
         ArrayList<String> options = new ArrayList<>();
 
@@ -305,6 +306,7 @@ public class AddEditFormFragment extends Fragment
         options.add(getString(R.string.multiple_times_per_day));
         options.add(getString(R.string.daily));
         options.add(getString(R.string.custom_frequency));
+        options.add(getString(R.string.as_needed));
 
          frequencyOptions = new ArrayAdapter<>(
                  rootView.getContext(), android.R.layout.simple_dropdown_item_1line, options
@@ -355,6 +357,7 @@ public class AddEditFormFragment extends Fragment
                 case 0:
                     dailyLayout.setVisibility(View.GONE);
                     custom.setVisibility(View.GONE);
+                    asNeeded.setVisibility(View.GONE);
 
                     multiplePerDay.setVisibility(View.VISIBLE);
 
@@ -363,6 +366,7 @@ public class AddEditFormFragment extends Fragment
                 case 1:
                     custom.setVisibility(View.GONE);
                     multiplePerDay.setVisibility(View.GONE);
+                    asNeeded.setVisibility(View.GONE);
 
                     dailyLayout.setVisibility(View.VISIBLE);
 
@@ -371,10 +375,20 @@ public class AddEditFormFragment extends Fragment
                 case 2:
                     dailyLayout.setVisibility(View.GONE);
                     multiplePerDay.setVisibility(View.GONE);
+                    asNeeded.setVisibility(View.GONE);
 
                     custom.setVisibility(View.VISIBLE);
 
                     selectedFrequencyTypeIndex = 2;
+                    break;
+                case 3:
+                    dailyLayout.setVisibility(View.GONE);
+                    multiplePerDay.setVisibility(View.GONE);
+                    custom.setVisibility(View.GONE);
+
+                    asNeeded.setVisibility(View.VISIBLE);
+
+                    selectedFrequencyTypeIndex = 3;
                     break;
             }
         });
@@ -636,7 +650,6 @@ public class AddEditFormFragment extends Fragment
         timeUnits.add(getString(R.string.hours));
         timeUnits.add(getString(R.string.days));
         timeUnits.add(getString(R.string.weeks));
-        timeUnits.add(getString(R.string.as_needed));
 
         timeUnitsAdapter = new ArrayAdapter<>(
                 rootView.getContext(), android.R.layout.simple_dropdown_item_1line, timeUnits

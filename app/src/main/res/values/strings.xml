@@ -68,7 +68,8 @@
     <string name="units">Units</string>
     <string name="taken">Taken</string>
     <string name="frequency">Frequency</string>
-    <string name="multiple_times_per_day">Multiple Times Per Day</string>
+    <string name="multiple_times_per_day">Multiple Times per Day</string>
+    <string name="as_needed">As Needed</string>
     <string name="daily">Daily</string>
     <string name="weekly">Weekly</string>
     <string name="monthly">Monthly</string>
@@ -178,5 +179,4 @@
     <!-- Notifications -->
     <string name="mark_as_taken">Taken</string>
     <string name="snooze_message">Snooze</string>
-    <string name="as_needed">As needed</string>
 </resources>
