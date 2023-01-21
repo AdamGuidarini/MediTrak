@@ -84,6 +84,8 @@ public class AddEditFormFragment extends Fragment
     private MaterialAutoCompleteTextView customFreqTimeUnitEnter;
     private EditText startDateMultiplePerDay;
     private EditText numberOfTimersPerDay;
+    private TextInputLayout asNeededStart;
+    private TextInputEditText asNeededStartInput;
     private int selectedFrequencyTypeIndex = -1;
     private ArrayList<String> timeUnits;
 
@@ -396,6 +398,7 @@ public class AddEditFormFragment extends Fragment
         setMultiplePerDayFrequencyViews();
         setDailyFrequencyViews();
         setCustomFrequencyViews();
+        setAsNeededViews();
         setSaveButton();
     }
 
@@ -699,6 +702,25 @@ public class AddEditFormFragment extends Fragment
 
             customFreqMTakenEveryEnter.setText(String.valueOf(displayedFreq));
         }
+    }
+
+    /**
+     * Prepares Views needed for as needed medications
+     */
+    private void setAsNeededViews()
+    {
+        asNeededStart = rootView.findViewById(R.id.asNeededStart);
+        asNeededStartInput = rootView.findViewById(R.id.asNeededStartInput);
+
+        asNeededStartInput.setShowSoftInputOnFocus(false);
+        asNeededStartInput.setOnFocusChangeListener((view, b) ->
+        {
+            if (b)
+            {
+                DialogFragment datePicker = new SelectDateFragment(asNeededStartInput);
+                datePicker.show(getParentFragmentManager(), null);
+            }
+        });
     }
 
     /**
