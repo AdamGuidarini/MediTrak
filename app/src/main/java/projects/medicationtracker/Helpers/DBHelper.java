@@ -364,7 +364,6 @@ public class DBHelper extends SQLiteOpenHelper
         ArrayList<Medication> allMeds = new ArrayList<>();
 
         String query = "SELECT * FROM " + MEDICATION_TABLE
-//                + " WHERE " + ACTIVE + " =1"
                 + " ORDER BY " + PATIENT_NAME;
 
         Cursor meds = db.rawQuery(query, null);

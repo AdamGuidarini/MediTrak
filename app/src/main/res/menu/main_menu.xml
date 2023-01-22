@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/addAsNeededDose"
+        android:title="Add Dose"
+        android:onClick="onAddDoseClick"
+        android:icon="@android:drawable/ic_menu_add"
+        android:visible="false"
+        app:showAsAction="always"/>
+
     <item
         android:title="@string/my_medications"
-        android:onClick="onMyMedicationsClick"
-        />
+        android:onClick="onMyMedicationsClick"/>
 
     <item
         android:title="@string/add_medication"
-        android:onClick="onAddMedicationClick"
-        />
+        android:onClick="onAddMedicationClick"/>
 
     <item
         android:title="@string/settings"

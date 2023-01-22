@@ -111,6 +111,7 @@
     <string name="taken_every_lbl">Taken every: </string>
     <string name="alias_lbl">Alias: %1$s</string>
     <string name="taken_since">Taken since: %1$s</string>
+    <string name="taken_as_needed">Taken as needed.</string>
 
     <!-- EditMedication -->
     <string name="edit_medication">Edit Medication</string>

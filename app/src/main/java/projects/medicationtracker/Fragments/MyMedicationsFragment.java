@@ -47,7 +47,6 @@ public class MyMedicationsFragment extends Fragment
      * this fragment using the provided parameters.
      * @return A new instance of fragment MyMedicationsFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static MyMedicationsFragment newInstance()
     {
         return new MyMedicationsFragment();
@@ -127,8 +126,14 @@ public class MyMedicationsFragment extends Fragment
                     freqLabel.append(", ");
             }
         }
+        else if (medication.getFrequency() == 0)
+        {
+            freqLabel = new StringBuilder(getString(R.string.taken_as_needed));
+        }
         else
+        {
             freqLabel = new StringBuilder(getString(R.string.taken_every_lbl) + TimeFormatting.freqConversion(medication.getFrequency()));
+        }
 
         frequency.setText(freqLabel);
 

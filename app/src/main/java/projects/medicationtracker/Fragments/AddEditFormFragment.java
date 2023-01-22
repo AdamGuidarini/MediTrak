@@ -338,6 +338,16 @@ public class AddEditFormFragment extends Fragment
 
                 multiplePerDay.setVisibility(View.VISIBLE);
             }
+            else if (medication.getFrequency() == 0)
+            {
+                frequencyDropDown.setText(
+                        frequencyDropDown.getAdapter().getItem(3).toString(), false
+                );
+
+                selectedFrequencyTypeIndex = 0;
+
+                asNeeded.setVisibility(View.VISIBLE);
+            }
             else
             {
                 frequencyDropDown.setText(
@@ -721,6 +731,14 @@ public class AddEditFormFragment extends Fragment
                 datePicker.show(getParentFragmentManager(), null);
             }
         });
+
+        if (medId != -1)
+        {
+            asNeededStartInput.setText(
+                    TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
+            );
+            asNeededStartInput.setTag(medication.getStartDate().toLocalDate());
+        }
     }
 
     /**

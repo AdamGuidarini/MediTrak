@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         aDayThisWeek = LocalDate.now();
-
         scheduleLayout = findViewById(R.id.scheduleLayout);
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.med_schedule));
@@ -101,7 +100,17 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
+
+        for (Medication med : db.getMedications())
+        {
+            if (med.getFrequency() == 0)
+            {
+                MenuItem addDoseButton = menu.findItem(R.id.addAsNeededDose);
+                addDoseButton.setVisible(true);
+            }
+        }
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     /**
@@ -229,6 +238,13 @@ public class MainActivity extends AppCompatActivity
             LocalDateTime[] timeArr;
             ArrayList<Pair<LocalDateTime, LocalDateTime>> pausedIntervals =
                     db.getPauseResumePeriods(medications.get(i));
+
+            // break skip as needed meds
+            if (medications.get(i).getFrequency() == 0)
+            {
+
+                continue;
+            }
 
             // If a medication is taken once per day
             if (medications.get(i).getTimes().length == 1 && medications.get(i).getFrequency() == 1440)
@@ -385,11 +401,9 @@ public class MainActivity extends AppCompatActivity
             int day,
             ArrayList<Medication> medications,
             LinearLayout layout
-    )
-    {
+    ) {
         StandardCardView thisDayCard = new StandardCardView(this);
         FragmentContainerView fragmentContainer = new FragmentContainerView(this);
-
 
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(MEDICATIONS, medications);
@@ -465,5 +479,9 @@ public class MainActivity extends AppCompatActivity
         scheduleLayout.removeAllViews();
 
         createMainActivityViews();
+    }
+
+    public void onAddDoseClick(MenuItem item)
+    {
     }
 }
