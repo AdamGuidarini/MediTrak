@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
+import projects.medicationtracker.Dialogs.AddAsNeededDoseDialog;
+import projects.medicationtracker.Dialogs.DoseInfoDialog;
 import projects.medicationtracker.Fragments.MedicationScheduleFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity
     private final DBHelper db = new DBHelper(this);
     private LinearLayout scheduleLayout;
     private LocalDate aDayThisWeek;
+    private Spinner patientNames;
 
     /**
      * Runs at start of activity, builds MainActivity
@@ -153,7 +156,7 @@ public class MainActivity extends AppCompatActivity
     {
         TextView noMeds = findViewById(R.id.noMeds);
         ScrollView scheduleScrollView = findViewById(R.id.scheduleScrollView);
-        Spinner patientNames = findViewById(R.id.patientSpinner);
+        patientNames = findViewById(R.id.patientSpinner);
         final String you = getString(R.string.you);
 
         // Exit if there are no patients in DB
@@ -483,5 +486,9 @@ public class MainActivity extends AppCompatActivity
 
     public void onAddDoseClick(MenuItem item)
     {
+        AddAsNeededDoseDialog asNeededDoseDialog = new AddAsNeededDoseDialog(
+                (String) patientNames.getSelectedItem(), db
+        );
+        asNeededDoseDialog.show(getSupportFragmentManager(), null);
     }
 }
