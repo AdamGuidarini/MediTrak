@@ -104,15 +104,6 @@ public class MainActivity extends AppCompatActivity
     {
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
-        for (Medication med : db.getMedications())
-        {
-            if (med.getFrequency() == 0)
-            {
-                MenuItem addDoseButton = menu.findItem(R.id.addAsNeededDose);
-                addDoseButton.setVisible(true);
-            }
-        }
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -482,13 +473,5 @@ public class MainActivity extends AppCompatActivity
         scheduleLayout.removeAllViews();
 
         createMainActivityViews();
-    }
-
-    public void onAddDoseClick(MenuItem item)
-    {
-        AddAsNeededDoseDialog asNeededDoseDialog = new AddAsNeededDoseDialog(
-                (String) patientNames.getSelectedItem(), db
-        );
-        asNeededDoseDialog.show(getSupportFragmentManager(), null);
     }
 }
