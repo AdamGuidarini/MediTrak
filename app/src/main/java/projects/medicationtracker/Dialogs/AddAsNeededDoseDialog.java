@@ -7,23 +7,23 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import projects.medicationtracker.Fragments.TimePickerFragment;
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Medication;
 
@@ -131,5 +131,10 @@ public class AddAsNeededDoseDialog extends DialogFragment
         Medication med = medications.stream().filter(
                 m -> Objects.equals(m.getName(), selectedMedName)
         ).collect(Collectors.toCollection(ArrayList::new)).get(0);
+        LocalTime time = (LocalTime) timeTaken.getTag();
+        LocalDateTime dateTimeTaken = LocalDateTime.of(date, time);
+
+        long doseId = db.addToMedicationTracker(med, dateTimeTaken);
+        db.updateDoseStatus(doseId, TimeFormatting.localDateTimeToString(dateTimeTaken), true);
     }
 }
