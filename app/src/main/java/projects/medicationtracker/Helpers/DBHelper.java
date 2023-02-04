@@ -657,6 +657,23 @@ public class DBHelper extends SQLiteOpenHelper
         return db.insert(MEDICATION_TRACKER_TABLE, null, medTrackerValues);
     }
 
+    public ArrayList<LocalDateTime> getDoseFromMedicationTracker(Medication medication)
+    {
+        ArrayList<LocalDateTime> times = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " + DOSE_TIME + " FROM " + MEDICATION_TRACKER_TABLE
+                + " WHERE " + MED_ID + "=" + medication.getId();
+        Cursor cursor = db.rawQuery(query, null);
+
+        cursor.moveToFirst();
+
+        //TODO grab those times
+
+        cursor.close();
+
+        return times;
+    }
+
     /**
      * Get ID of dose
      * @param medId ID of Medication
