@@ -31,10 +31,16 @@ public class AddAsNeededDoseDialog extends DialogFragment
 {
     private final ArrayList<Medication> medications;
     private final DBHelper db;
+    private final LocalDate date;
     private TextInputEditText timeTaken;
     private AutoCompleteTextView yourMeds;
-    private LocalDate date;
 
+    /**
+     * Constructor
+     * @param medications Medications to display in dropdown. Non-as needed meds should be filtered out.
+     * @param dateTaken Date medication is take.
+     * @param database Database helper to store dose
+     */
     public AddAsNeededDoseDialog(ArrayList<Medication> medications, LocalDate dateTaken, DBHelper database)
     {
         db = database;
