@@ -55,8 +55,6 @@
     <string name="no_meds_for_day">No medications for %1$s</string>
     <string name="cannot_take_more_than_hours">Cannot take medications more than %1$d hours in advance</string>
     <string name="as_needed_dose">As Needed Dose</string>
-    <string name="please_select_a_medication">Please select a medication</string>
-    <string name="please_select_a_time">Please select a time</string>
 
     <!-- AddEditMedicationFragment -->
     <string name="times_per">Times per</string>
