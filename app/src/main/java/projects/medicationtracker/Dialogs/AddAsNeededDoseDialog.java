@@ -10,6 +10,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import projects.medicationtracker.Fragments.TimePickerFragment;
@@ -23,11 +24,13 @@ public class AddAsNeededDoseDialog extends DialogFragment
     private final DBHelper db;
     private AutoCompleteTextView medicationNames;
     private TextInputEditText timeTaken;
+    private LocalDate date;
 
-    public AddAsNeededDoseDialog(String patientName, DBHelper database)
+    public AddAsNeededDoseDialog(ArrayList<Medication> medications, LocalDate dateTaken, DBHelper database)
     {
         db = database;
-        medications = db.getMedicationsForPatient(patientName);
+        this.medications = medications;
+        date = dateTaken;
     }
 
     @Override

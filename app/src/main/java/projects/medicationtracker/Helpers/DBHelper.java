@@ -386,6 +386,7 @@ public class DBHelper extends SQLiteOpenHelper
             String units = meds.getString(meds.getColumnIndexOrThrow(MED_UNITS));
             String date1 = meds.getString(meds.getColumnIndexOrThrow(START_DATE));
             String alias = meds.getString(meds.getColumnIndexOrThrow(ALIAS));
+            boolean acitve = Integer.parseInt(meds.getString(meds.getColumnIndexOrThrow(ACTIVE))) == 1;
 
             LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(date1);
 
@@ -432,6 +433,7 @@ public class DBHelper extends SQLiteOpenHelper
 
             Medication medication = new Medication(medName, patient, units, times,
                     startDate, medId, frequency, dosage, alias);
+            medication.setActiveStatus(acitve);
 
             allMeds.add(medication);
             meds.moveToNext();

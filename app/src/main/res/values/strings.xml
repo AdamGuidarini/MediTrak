@@ -183,4 +183,5 @@
     <string name="its_time_your_med">It\'s time to take your %1$s</string>
     <string name="time_for_other_med">It\'s time for %1$s\'s %2$s</string>
     <string name="add_dose">Add Dose</string>
+    <string name="as_needed_dose">As Needed Dose</string>
 </resources>

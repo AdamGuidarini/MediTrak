@@ -19,6 +19,7 @@ public class Medication implements Cloneable, Parcelable
     private long medId;
     private long medFrequency;
     private float medDosage;
+    private boolean active;
 
     /**
      * Creates a new object of type Medication
@@ -136,6 +137,11 @@ public class Medication implements Cloneable, Parcelable
      */
     public String getAlias() { return alias; }
 
+    /**
+     * Returns active status of medication
+     */
+    public boolean isActive() { return active; }
+
     // Setters
     /**
      * Set Medication ID
@@ -190,6 +196,11 @@ public class Medication implements Cloneable, Parcelable
      * @param alias The Alias of the Medication
      */
     public void setAlias(String alias) { this.alias = alias; }
+
+    /**
+     * Sets a medication to active or inactive
+     */
+    public void setActiveStatus(boolean activeStatus) { active = activeStatus; }
 
     /**
      * Enables cloning of a Medication

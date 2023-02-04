@@ -22,10 +22,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"/>
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <LinearLayout
+            android:id="@+id/plusAsNeeded"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginTop="5dp"
             android:visibility="gone">
 
             <ImageView
@@ -36,7 +38,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="As Needed Dose"/>
-        </androidx.appcompat.widget.LinearLayoutCompat>
+                android:text="@string/as_needed_dose"
+                android:layout_gravity="center_vertical"/>
+        </LinearLayout>
     </LinearLayout>
 </FrameLayout>

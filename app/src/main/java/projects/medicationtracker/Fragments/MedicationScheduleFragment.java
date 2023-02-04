@@ -19,8 +19,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import kotlin.Triple;
+import projects.medicationtracker.Dialogs.AddAsNeededDoseDialog;
 import projects.medicationtracker.Dialogs.DoseInfoDialog;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TextViewUtils;
@@ -114,6 +116,27 @@ public class MedicationScheduleFragment extends Fragment
                 false
         );
 
+        for (Medication medication : meds)
+        {
+            if (medication.isActive() && medication.getFrequency() == 0)
+            {
+                LinearLayout plusAsNeeded = rootView.findViewById(R.id.plusAsNeeded);
+
+                plusAsNeeded.setVisibility(View.VISIBLE);
+                plusAsNeeded.setOnClickListener(v ->
+                {
+                    AddAsNeededDoseDialog asNeededDialog = new AddAsNeededDoseDialog(
+                            meds.stream().filter(m -> m.getFrequency() == 0 && m.isActive()).collect(Collectors.toCollection(ArrayList::new)),
+                            dayInCurrentWeek,
+                            db
+                    );
+                    asNeededDialog.show(getParentFragmentManager(), null);
+                });
+
+                break;
+            }
+        }
+
         createSchedule(rootView);
 
         return rootView;
@@ -169,6 +192,11 @@ public class MedicationScheduleFragment extends Fragment
                 checkBoxHolder.addView(layout);
             }
         }
+    }
+
+    private void setAddDose()
+    {
+
     }
 
     private RelativeLayout buildCheckbox(Medication medication, LocalDateTime time)
