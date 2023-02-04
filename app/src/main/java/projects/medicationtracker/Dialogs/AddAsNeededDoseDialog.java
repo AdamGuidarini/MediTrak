@@ -31,7 +31,6 @@ public class AddAsNeededDoseDialog extends DialogFragment
 {
     private final ArrayList<Medication> medications;
     private final DBHelper db;
-    private AutoCompleteTextView medicationNames;
     private TextInputEditText timeTaken;
     private AutoCompleteTextView yourMeds;
     private LocalDate date;
@@ -43,6 +42,13 @@ public class AddAsNeededDoseDialog extends DialogFragment
         date = dateTaken;
     }
 
+    /**
+     * Builds dialog upon creation
+     * @param savedInstances The last saved instance state of the Fragment,
+     * or null if this is a freshly created Fragment.
+     *
+     * @return Built dialog
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstances)
     {
@@ -97,6 +103,9 @@ public class AddAsNeededDoseDialog extends DialogFragment
         return dialog;
     }
 
+    /**
+     * Prepares Views and creates listeners after dialog is built
+     */
     @Override
     public void onStart()
     {
@@ -124,6 +133,9 @@ public class AddAsNeededDoseDialog extends DialogFragment
         });
     }
 
+    /**
+     * Creates new as needed dose
+     */
     private void save()
     {
         String selectedMedName = yourMeds.getText().toString();
