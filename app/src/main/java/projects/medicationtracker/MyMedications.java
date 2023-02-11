@@ -108,7 +108,7 @@ public class MyMedications extends AppCompatActivity
      * Determines which button was selected
      * @param item Selected menu option
      * @return Selected option
-     **************************************************************************/
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
@@ -123,7 +123,7 @@ public class MyMedications extends AppCompatActivity
 
     /**
      * Return to MainActivity if back arrow is pressed
-     **************************************************************************/
+     */
     @Override
     public void onBackPressed()
     {
@@ -137,7 +137,7 @@ public class MyMedications extends AppCompatActivity
      * Creates a CardView containing all information on a Medication
      * @param medication The Medication whose details will be displayed.
      * @param baseLayout The LinearLayout in which to place the card
-     **************************************************************************/
+     */
     private void createMyMedCards(Medication medication, LinearLayout baseLayout)
     {
         StandardCardView thisMedCard = new StandardCardView(this);

@@ -54,6 +54,7 @@
     <string name="med_schedule">Medication Schedule</string>
     <string name="no_meds_for_day">No medications for %1$s</string>
     <string name="cannot_take_more_than_hours">Cannot take medications more than %1$d hours in advance</string>
+    <string name="as_needed_dose">As Needed Dose</string>
 
     <!-- AddEditMedicationFragment -->
     <string name="times_per">Times per</string>
@@ -68,7 +69,8 @@
     <string name="units">Units</string>
     <string name="taken">Taken</string>
     <string name="frequency">Frequency</string>
-    <string name="multiple_times_per_day">Multiple Times Per Day</string>
+    <string name="multiple_times_per_day">Multiple Times per Day</string>
+    <string name="as_needed">As Needed</string>
     <string name="daily">Daily</string>
     <string name="weekly">Weekly</string>
     <string name="monthly">Monthly</string>
@@ -110,6 +112,7 @@
     <string name="taken_every_lbl">Taken every: </string>
     <string name="alias_lbl">Alias: %1$s</string>
     <string name="taken_since">Taken since: %1$s</string>
+    <string name="taken_as_needed">Taken as needed.</string>
 
     <!-- EditMedication -->
     <string name="edit_medication">Edit Medication</string>
@@ -178,4 +181,7 @@
     <!-- Notifications -->
     <string name="mark_as_taken">Taken</string>
     <string name="snooze_message">Snooze</string>
+    <string name="its_time_your_med">It\'s time to take your %1$s</string>
+    <string name="time_for_other_med">It\'s time for %1$s\'s %2$s</string>
+    <string name="add_dose">Add Dose</string>
 </resources>

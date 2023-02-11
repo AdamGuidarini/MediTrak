@@ -8,19 +8,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.fragment.app.Fragment;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import kotlin.Triple;
+import projects.medicationtracker.Dialogs.AddAsNeededDoseDialog;
 import projects.medicationtracker.Dialogs.DoseInfoDialog;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TextViewUtils;
@@ -42,7 +44,7 @@ public class MedicationScheduleFragment extends Fragment
     private View rootView;
 
     private static ArrayList<Medication> meds;
-    private static LinearLayoutCompat checkBoxHolder;
+    private static LinearLayout checkBoxHolder;
     private static DBHelper db;
     private static String dayOfWeek;
     private static LocalDate dayInCurrentWeek;
@@ -94,6 +96,7 @@ public class MedicationScheduleFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+
         assert getArguments() != null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
         {
@@ -104,15 +107,38 @@ public class MedicationScheduleFragment extends Fragment
             meds = getArguments().getParcelableArrayList(MEDICATIONS);
         }
 
-        dayOfWeek = getArguments().getString(DAY_OF_WEEK);
-        dayInCurrentWeek = LocalDate.ofEpochDay(getArguments().getLong(DAY_IN_CURRENT_WEEK));
-        dayNumber = getArguments().getInt(DAY_NUMBER);
+        dayOfWeek = getArguments().getString(DAY_OF_WEEK + "_" + container.getId());
+        dayInCurrentWeek = LocalDate.ofEpochDay(getArguments().getLong(DAY_IN_CURRENT_WEEK + "_" + container.getId()));
+        dayNumber = getArguments().getInt(DAY_NUMBER + "_" + container.getId());
 
         rootView = inflater.inflate(
                 R.layout.fragment_medication_schedule,
                 container,
                 false
         );
+
+        for (Medication medication : meds)
+        {
+            if (medication.isActive() && medication.getFrequency() == 0)
+            {
+                LinearLayout plusAsNeeded = rootView.findViewById(R.id.plusAsNeeded);
+
+                plusAsNeeded.setTag(TimeFormatting.whenIsSunday(dayInCurrentWeek).plusDays(dayNumber));
+
+                plusAsNeeded.setVisibility(View.VISIBLE);
+                plusAsNeeded.setOnClickListener(v ->
+                {
+                    AddAsNeededDoseDialog asNeededDialog = new AddAsNeededDoseDialog(
+                            meds.stream().filter(m -> m.getFrequency() == 0 && m.isActive()).collect(Collectors.toCollection(ArrayList::new)),
+                            (LocalDate) v.getTag(),
+                            db
+                    );
+                    asNeededDialog.show(getParentFragmentManager(), null);
+                });
+
+                break;
+            }
+        }
 
         createSchedule(rootView);
 
@@ -131,7 +157,7 @@ public class MedicationScheduleFragment extends Fragment
         ArrayList<RelativeLayout> layouts = new ArrayList<>();
         db = new DBHelper(rootView.getContext());
 
-        checkBoxHolder.setOrientation(LinearLayoutCompat.VERTICAL);
+        checkBoxHolder.setOrientation(LinearLayout.VERTICAL);
 
         String dayLabelString =
                 dayOfWeek + " " + TimeFormatting.localDateToString(thisSunday.plusDays(dayNumber));
@@ -139,11 +165,6 @@ public class MedicationScheduleFragment extends Fragment
 
         for (Medication medication : meds)
         {
-            if (medication.getTimes() == null)
-            {
-                continue;
-            }
-
             for (LocalDateTime time : medication.getTimes())
             {
                 if (time.toLocalDate().isEqual(thisSunday.plusDays(dayNumber)) && !time.isBefore(medication.getStartDate()))

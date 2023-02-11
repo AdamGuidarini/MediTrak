@@ -84,6 +84,8 @@ public class AddEditFormFragment extends Fragment
     private MaterialAutoCompleteTextView customFreqTimeUnitEnter;
     private EditText startDateMultiplePerDay;
     private EditText numberOfTimersPerDay;
+    private TextInputLayout asNeededStart;
+    private TextInputEditText asNeededStartInput;
     private int selectedFrequencyTypeIndex = -1;
     private ArrayList<String> timeUnits;
 
@@ -294,6 +296,7 @@ public class AddEditFormFragment extends Fragment
         LinearLayout dailyLayout = rootView.findViewById(R.id.dailyMedFrequency);
         LinearLayout multiplePerDay = rootView.findViewById(R.id.multiplePerDayFrequency);
         LinearLayout custom = rootView.findViewById(R.id.customFrequencyLayout);
+        LinearLayout asNeeded = rootView.findViewById(R.id.asNeededLayout);
         ArrayAdapter<String> frequencyOptions;
         ArrayList<String> options = new ArrayList<>();
 
@@ -305,6 +308,7 @@ public class AddEditFormFragment extends Fragment
         options.add(getString(R.string.multiple_times_per_day));
         options.add(getString(R.string.daily));
         options.add(getString(R.string.custom_frequency));
+        options.add(getString(R.string.as_needed));
 
          frequencyOptions = new ArrayAdapter<>(
                  rootView.getContext(), android.R.layout.simple_dropdown_item_1line, options
@@ -334,6 +338,16 @@ public class AddEditFormFragment extends Fragment
 
                 multiplePerDay.setVisibility(View.VISIBLE);
             }
+            else if (medication.getFrequency() == 0)
+            {
+                frequencyDropDown.setText(
+                        frequencyDropDown.getAdapter().getItem(3).toString(), false
+                );
+
+                selectedFrequencyTypeIndex = 0;
+
+                asNeeded.setVisibility(View.VISIBLE);
+            }
             else
             {
                 frequencyDropDown.setText(
@@ -355,6 +369,7 @@ public class AddEditFormFragment extends Fragment
                 case 0:
                     dailyLayout.setVisibility(View.GONE);
                     custom.setVisibility(View.GONE);
+                    asNeeded.setVisibility(View.GONE);
 
                     multiplePerDay.setVisibility(View.VISIBLE);
 
@@ -363,6 +378,7 @@ public class AddEditFormFragment extends Fragment
                 case 1:
                     custom.setVisibility(View.GONE);
                     multiplePerDay.setVisibility(View.GONE);
+                    asNeeded.setVisibility(View.GONE);
 
                     dailyLayout.setVisibility(View.VISIBLE);
 
@@ -371,10 +387,20 @@ public class AddEditFormFragment extends Fragment
                 case 2:
                     dailyLayout.setVisibility(View.GONE);
                     multiplePerDay.setVisibility(View.GONE);
+                    asNeeded.setVisibility(View.GONE);
 
                     custom.setVisibility(View.VISIBLE);
 
                     selectedFrequencyTypeIndex = 2;
+                    break;
+                case 3:
+                    dailyLayout.setVisibility(View.GONE);
+                    multiplePerDay.setVisibility(View.GONE);
+                    custom.setVisibility(View.GONE);
+
+                    asNeeded.setVisibility(View.VISIBLE);
+
+                    selectedFrequencyTypeIndex = 3;
                     break;
             }
         });
@@ -382,6 +408,7 @@ public class AddEditFormFragment extends Fragment
         setMultiplePerDayFrequencyViews();
         setDailyFrequencyViews();
         setCustomFrequencyViews();
+        setAsNeededViews();
         setSaveButton();
     }
 
@@ -688,6 +715,33 @@ public class AddEditFormFragment extends Fragment
     }
 
     /**
+     * Prepares Views needed for as needed medications
+     */
+    private void setAsNeededViews()
+    {
+        asNeededStart = rootView.findViewById(R.id.asNeededStart);
+        asNeededStartInput = rootView.findViewById(R.id.asNeededStartInput);
+
+        asNeededStartInput.setShowSoftInputOnFocus(false);
+        asNeededStartInput.setOnFocusChangeListener((view, b) ->
+        {
+            if (b)
+            {
+                DialogFragment datePicker = new SelectDateFragment(asNeededStartInput);
+                datePicker.show(getParentFragmentManager(), null);
+            }
+        });
+
+        if (medId != -1)
+        {
+            asNeededStartInput.setText(
+                    TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
+            );
+            asNeededStartInput.setTag(medication.getStartDate().toLocalDate());
+        }
+    }
+
+    /**
      * Creates an onClickListener for the save button
      */
     private void setSaveButton()
@@ -859,6 +913,8 @@ public class AddEditFormFragment extends Fragment
                 return isDailyValid();
             case 2:
                 return isCustomFrequencyValid();
+            case 3:
+                return isAsNeededValid();
             default:
                 frequencyDropdownLayout.setError(getString(R.string.err_select_frequency));
         }
@@ -983,9 +1039,9 @@ public class AddEditFormFragment extends Fragment
             Objects.requireNonNull(customFreqStartDate.getText()).toString().isEmpty()
             && Objects.requireNonNull(customFreqMedTime.getText()).toString().isEmpty()
             && Objects.requireNonNull(customFreqMTakenEveryEnter.getText()).toString().isEmpty()
-            && customFreqTimeUnitEnter.getText().toString().isEmpty()
-            ) && intIsParsable(Objects.requireNonNull(customFreqMTakenEveryEnter.getText()).toString())
-        ;
+            && customFreqTimeUnitEnter.getText().toString().isEmpty())
+            && intIsParsable(Objects.requireNonNull(customFreqMTakenEveryEnter.getText()).toString()
+        );
 
         if (allInputsFilled)
         {
@@ -1041,6 +1097,24 @@ public class AddEditFormFragment extends Fragment
         {
             customFreqTimeUnitLayout.setError(getString(R.string.err_enter_time_unit));
         }
+
+        return false;
+    }
+
+    private boolean isAsNeededValid()
+    {
+        if (!Objects.requireNonNull(asNeededStartInput.getText()).toString().isEmpty())
+        {
+            asNeededStart.setErrorEnabled(false);
+
+            medication.setStartDate(LocalDateTime.of((LocalDate) asNeededStartInput.getTag(), LocalTime.of(0, 0)));
+            medication.setFrequency(0);
+            medication.setTimes(new LocalDateTime[0]);
+
+            return true;
+        }
+
+        asNeededStart.setError(getString(R.string.err_select_start_date));
 
         return false;
     }

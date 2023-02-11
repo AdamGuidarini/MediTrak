@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         aDayThisWeek = LocalDate.now();
-
         scheduleLayout = findViewById(R.id.scheduleLayout);
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.med_schedule));
@@ -101,7 +100,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     /**
@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * Creates an ArrayList of Medications to be taken this week
      * @return List of all Medications for this week
-     **************************************************************************/
+     */
     public ArrayList<Medication> medicationsForThisWeek()
     {
         ArrayList<Medication> medications = db.getMedications();
@@ -229,6 +229,14 @@ public class MainActivity extends AppCompatActivity
             LocalDateTime[] timeArr;
             ArrayList<Pair<LocalDateTime, LocalDateTime>> pausedIntervals =
                     db.getPauseResumePeriods(medications.get(i));
+
+            // Skip as needed meds
+            if (medications.get(i).getFrequency() == 0)
+            {
+                medications.get(i).setTimes(db.getDoseFromMedicationTracker(medications.get(i)));
+
+                continue;
+            }
 
             // If a medication is taken once per day
             if (medications.get(i).getTimes().length == 1 && medications.get(i).getFrequency() == 1440)
@@ -385,16 +393,16 @@ public class MainActivity extends AppCompatActivity
             int day,
             ArrayList<Medication> medications,
             LinearLayout layout
-    )
-    {
+    ) {
         StandardCardView thisDayCard = new StandardCardView(this);
         FragmentContainerView fragmentContainer = new FragmentContainerView(this);
+        int viewId = day == 0 ? 7 : day;
 
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(MEDICATIONS, medications);
-        bundle.putString(DAY_OF_WEEK, dayOfWeek);
-        bundle.putLong(DAY_IN_CURRENT_WEEK, aDayThisWeek.toEpochDay());
-        bundle.putInt(DAY_NUMBER, day);
+        bundle.putString(DAY_OF_WEEK + "_" + viewId, dayOfWeek);
+        bundle.putLong(DAY_IN_CURRENT_WEEK + "_" + viewId, aDayThisWeek.toEpochDay());
+        bundle.putInt(DAY_NUMBER + "_" + viewId, day);
 
         thisDayCard.addView(fragmentContainer);
 
@@ -403,7 +411,7 @@ public class MainActivity extends AppCompatActivity
 
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .add(day == 0 ? 7 : day, MedicationScheduleFragment.class, bundle)
+                .add(viewId, MedicationScheduleFragment.class, bundle)
                 .commit();
     }
 

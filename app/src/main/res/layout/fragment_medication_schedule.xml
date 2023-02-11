@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.MedicationScheduleFragment">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <LinearLayout
         android:id="@+id/dailySchedule"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,10 +16,30 @@
             android:layout_height="match_parent"
             style="@style/standardTextView"/>
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <LinearLayout
             android:id="@+id/medicationSchedule"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"/>
-    </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <LinearLayout
+            android:id="@+id/plusAsNeeded"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/ic_menu_add"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/as_needed_dose"
+                android:layout_gravity="center_vertical"/>
+        </LinearLayout>
+    </LinearLayout>
 </FrameLayout>

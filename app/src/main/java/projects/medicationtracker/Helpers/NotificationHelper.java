@@ -16,6 +16,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import projects.medicationtracker.R;
 import projects.medicationtracker.Receivers.NotificationReceiver;
 import projects.medicationtracker.SimpleClasses.Medication;
 
@@ -84,7 +85,7 @@ public class NotificationHelper
         Intent notificationIntent = new Intent(notificationContext, NotificationReceiver.class);
 
         notificationIntent.putExtra(NOTIFICATION_ID, notificationId);
-        notificationIntent.putExtra(MESSAGE, createMedicationReminderMessage(medication));
+        notificationIntent.putExtra(MESSAGE, createMedicationReminderMessage(medication, notificationContext));
         notificationIntent.putExtra(DOSE_TIME, time);
         notificationIntent.putExtra(MEDICATION_ID, medication.getId());
 
@@ -103,9 +104,10 @@ public class NotificationHelper
     /**
      * Creates a message for a notification.
      * @param medication Medication corresponding to the notification.
+*    * @param context Application context, needed for getString call
      * @return The content text to display in the notification.
      */
-    private static String createMedicationReminderMessage(Medication medication)
+    private static String createMedicationReminderMessage(Medication medication, Context context)
     {
         String message;
         String patientName = medication.getPatientName();
@@ -115,8 +117,8 @@ public class NotificationHelper
             medicationName = medication.getAlias();
 
         message = patientName.equals("ME!") ?
-            "It's time to take your " + medicationName :
-            "It's time for " + patientName + "'s " + medicationName;
+            context.getString(R.string.its_time_your_med, medicationName) :
+            context.getString(R.string.time_for_other_med, patientName, medicationName);
 
         return message;
     }

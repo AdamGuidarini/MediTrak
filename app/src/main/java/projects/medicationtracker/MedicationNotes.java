@@ -120,7 +120,7 @@ public class MedicationNotes extends AppCompatActivity
 
     /**
      * Sets listeners for the cards
-     **************************************************************************/
+     */
     public void setCardListeners()
     {
         ArrayList<CardView> cardViews = new ArrayList<>();
@@ -155,7 +155,7 @@ public class MedicationNotes extends AppCompatActivity
      * Creates a CardView with a note in it
      * @param note The Note in the CardView
      * @param baseLayout The LinearLayout the holds the CardView
-     **************************************************************************/
+     */
     private void createNoteCard(Note note, LinearLayout baseLayout)
     {
         Context context = baseLayout.getContext();
