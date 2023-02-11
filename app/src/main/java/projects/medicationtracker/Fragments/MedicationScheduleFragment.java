@@ -120,7 +120,7 @@ public class MedicationScheduleFragment extends Fragment
                 false
         );
 
-        if (meds.stream().anyMatch(m -> m.isActive() && m.getFrequency() == 0 && (!m.getStartDate().toLocalDate().isAfter(thisDate))))
+        if (meds.stream().anyMatch(m -> m.isActive() && m.getFrequency() == 0 && !m.getStartDate().toLocalDate().isAfter(thisDate)))
         {
             LinearLayout plusAsNeeded = rootView.findViewById(R.id.plusAsNeeded);
 
@@ -130,7 +130,9 @@ public class MedicationScheduleFragment extends Fragment
             plusAsNeeded.setOnClickListener(v ->
             {
                 AddAsNeededDoseDialog asNeededDialog = new AddAsNeededDoseDialog(
-                        meds.stream().filter(m -> m.getFrequency() == 0 && m.isActive()).collect(Collectors.toCollection(ArrayList::new)),
+                        meds.stream().filter(
+                                m -> m.getFrequency() == 0 && m.isActive() && !m.getStartDate().toLocalDate().isAfter(thisDate)
+                        ).collect(Collectors.toCollection(ArrayList::new)),
                         (LocalDate) v.getTag(),
                         db
                 );
