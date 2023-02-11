@@ -162,9 +162,9 @@ public class MedicationScheduleFragment extends Fragment
 
         for (Medication medication : meds)
         {
-            if (medication.getTimes() == null)
+            if (medication.getTimes().length == 0)
             {
-                continue;
+                medication.setTimes(db.getDoseFromMedicationTracker(medication));
             }
 
             for (LocalDateTime time : medication.getTimes())

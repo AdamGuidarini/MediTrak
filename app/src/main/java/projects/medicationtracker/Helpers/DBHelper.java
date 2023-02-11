@@ -657,17 +657,25 @@ public class DBHelper extends SQLiteOpenHelper
         return db.insert(MEDICATION_TRACKER_TABLE, null, medTrackerValues);
     }
 
-    public ArrayList<LocalDateTime> getDoseFromMedicationTracker(Medication medication)
+    public LocalDateTime[] getDoseFromMedicationTracker(Medication medication)
     {
-        ArrayList<LocalDateTime> times = new ArrayList<>();
+        LocalDateTime[] times;
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " + DOSE_TIME + " FROM " + MEDICATION_TRACKER_TABLE
                 + " WHERE " + MED_ID + "=" + medication.getId();
         Cursor cursor = db.rawQuery(query, null);
 
         cursor.moveToFirst();
+        times = new LocalDateTime[cursor.getCount()];
 
-        //TODO grab those times
+        while (!cursor.isAfterLast())
+        {
+            times[cursor.getPosition()] = TimeFormatting.stringToLocalDateTime(
+                            cursor.getString(cursor.getColumnIndexOrThrow(DOSE_TIME))
+                    );
+
+            cursor.moveToNext();
+        }
 
         cursor.close();
 

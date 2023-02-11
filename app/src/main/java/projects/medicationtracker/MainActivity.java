@@ -233,6 +233,7 @@ public class MainActivity extends AppCompatActivity
             // Skip as needed meds
             if (medications.get(i).getFrequency() == 0)
             {
+                medications.get(i).setTimes(db.getDoseFromMedicationTracker(medications.get(i)));
 
                 continue;
             }
