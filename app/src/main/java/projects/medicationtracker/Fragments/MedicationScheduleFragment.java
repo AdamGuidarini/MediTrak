@@ -96,6 +96,7 @@ public class MedicationScheduleFragment extends Fragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        LocalDate thisDate;
 
         assert getArguments() != null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
@@ -111,17 +112,19 @@ public class MedicationScheduleFragment extends Fragment
         dayInCurrentWeek = LocalDate.ofEpochDay(getArguments().getLong(DAY_IN_CURRENT_WEEK + "_" + container.getId()));
         dayNumber = getArguments().getInt(DAY_NUMBER + "_" + container.getId());
 
+        thisDate = TimeFormatting.whenIsSunday(dayInCurrentWeek).plusDays(dayNumber);
+
         rootView = inflater.inflate(
                 R.layout.fragment_medication_schedule,
                 container,
                 false
         );
 
-        if (meds.stream().anyMatch(m -> m.isActive() && m.getFrequency() == 0))
+        if (meds.stream().anyMatch(m -> m.isActive() && m.getFrequency() == 0 && (!m.getStartDate().toLocalDate().isAfter(thisDate))))
         {
             LinearLayout plusAsNeeded = rootView.findViewById(R.id.plusAsNeeded);
 
-            plusAsNeeded.setTag(TimeFormatting.whenIsSunday(dayInCurrentWeek).plusDays(dayNumber));
+            plusAsNeeded.setTag(thisDate);
 
             plusAsNeeded.setVisibility(View.VISIBLE);
             plusAsNeeded.setOnClickListener(v ->
