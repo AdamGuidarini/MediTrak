@@ -396,12 +396,13 @@ public class MainActivity extends AppCompatActivity
     ) {
         StandardCardView thisDayCard = new StandardCardView(this);
         FragmentContainerView fragmentContainer = new FragmentContainerView(this);
+        int viewId = day == 0 ? 7 : day;
 
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(MEDICATIONS, medications);
-        bundle.putString(DAY_OF_WEEK, dayOfWeek);
-        bundle.putLong(DAY_IN_CURRENT_WEEK, aDayThisWeek.toEpochDay());
-        bundle.putInt(DAY_NUMBER, day);
+        bundle.putString(DAY_OF_WEEK + "_" + viewId, dayOfWeek);
+        bundle.putLong(DAY_IN_CURRENT_WEEK + "_" + viewId, aDayThisWeek.toEpochDay());
+        bundle.putInt(DAY_NUMBER + "_" + viewId, day);
 
         thisDayCard.addView(fragmentContainer);
 
@@ -410,7 +411,7 @@ public class MainActivity extends AppCompatActivity
 
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .add(day == 0 ? 7 : day, MedicationScheduleFragment.class, bundle)
+                .add(viewId, MedicationScheduleFragment.class, bundle)
                 .commit();
     }
 

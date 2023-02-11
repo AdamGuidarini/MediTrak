@@ -96,6 +96,7 @@ public class MedicationScheduleFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+
         assert getArguments() != null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
         {
@@ -106,9 +107,9 @@ public class MedicationScheduleFragment extends Fragment
             meds = getArguments().getParcelableArrayList(MEDICATIONS);
         }
 
-        dayOfWeek = getArguments().getString(DAY_OF_WEEK);
-        dayInCurrentWeek = LocalDate.ofEpochDay(getArguments().getLong(DAY_IN_CURRENT_WEEK));
-        dayNumber = getArguments().getInt(DAY_NUMBER);
+        dayOfWeek = getArguments().getString(DAY_OF_WEEK + "_" + container.getId());
+        dayInCurrentWeek = LocalDate.ofEpochDay(getArguments().getLong(DAY_IN_CURRENT_WEEK + "_" + container.getId()));
+        dayNumber = getArguments().getInt(DAY_NUMBER + "_" + container.getId());
 
         rootView = inflater.inflate(
                 R.layout.fragment_medication_schedule,
@@ -122,12 +123,14 @@ public class MedicationScheduleFragment extends Fragment
             {
                 LinearLayout plusAsNeeded = rootView.findViewById(R.id.plusAsNeeded);
 
+                plusAsNeeded.setTag(TimeFormatting.whenIsSunday(dayInCurrentWeek).plusDays(dayNumber));
+
                 plusAsNeeded.setVisibility(View.VISIBLE);
                 plusAsNeeded.setOnClickListener(v ->
                 {
                     AddAsNeededDoseDialog asNeededDialog = new AddAsNeededDoseDialog(
                             meds.stream().filter(m -> m.getFrequency() == 0 && m.isActive()).collect(Collectors.toCollection(ArrayList::new)),
-                            dayInCurrentWeek,
+                            (LocalDate) v.getTag(),
                             db
                     );
                     asNeededDialog.show(getParentFragmentManager(), null);
@@ -187,11 +190,6 @@ public class MedicationScheduleFragment extends Fragment
                 checkBoxHolder.addView(layout);
             }
         }
-    }
-
-    private void setAddDose()
-    {
-
     }
 
     private RelativeLayout buildCheckbox(Medication medication, LocalDateTime time)
