@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -23,23 +24,29 @@
             android:orientation="vertical"/>
 
         <LinearLayout
-            android:id="@+id/plusAsNeeded"
+            android:id="@+id/asNeededList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_marginTop="5dp"
             android:visibility="gone">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:drawable/ic_menu_add"/>
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                app:dividerColor="@color/gray_600"/>
 
             <TextView
+                android:id="@+id/plusAsNeeded"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/as_needed_dose"
-                android:layout_gravity="center_vertical"/>
+                android:textAlignment="gravity"
+                android:gravity="center_vertical"
+                app:drawableStartCompat="@android:drawable/ic_menu_add"/>
         </LinearLayout>
+
     </LinearLayout>
 </FrameLayout>
