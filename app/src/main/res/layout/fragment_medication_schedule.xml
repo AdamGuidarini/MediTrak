@@ -36,7 +36,15 @@
                 android:layout_height="1dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
                 app:dividerColor="@color/gray_600"/>
+
+            <LinearLayout
+                android:id="@+id/asNeededViews"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="5dp"/>
 
             <TextView
                 android:id="@+id/plusAsNeeded"
@@ -47,6 +55,5 @@
                 android:gravity="center_vertical"
                 app:drawableStartCompat="@android:drawable/ic_menu_add"/>
         </LinearLayout>
-
     </LinearLayout>
 </FrameLayout>

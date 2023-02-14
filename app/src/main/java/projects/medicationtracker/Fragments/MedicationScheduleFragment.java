@@ -143,21 +143,22 @@ public class MedicationScheduleFragment extends Fragment
             });
         }
 
-        createSchedule(rootView);
+        createSchedule();
 
         return rootView;
     }
 
     /**
      * Creates a list of the medications for the current given day in places them in the fragment
-     * @param rootView The main view of the fragment
      */
-    private void createSchedule(View rootView)
+    private void createSchedule()
     {
         LinearLayout checkBoxHolder = rootView.findViewById(R.id.medicationSchedule);
+        LinearLayout asNeededList = rootView.findViewById(R.id.asNeededViews);
         TextView dayLabel = rootView.findViewById(R.id.dateLabel);
         LocalDate thisSunday = TimeFormatting.whenIsSunday(dayInCurrentWeek);
-        ArrayList<RelativeLayout> layouts = new ArrayList<>();
+        ArrayList<RelativeLayout> scheduledMeds = new ArrayList<>();
+        ArrayList<RelativeLayout> asNeededMeds = new ArrayList<>();
         db = new DBHelper(rootView.getContext());
 
         checkBoxHolder.setOrientation(LinearLayout.VERTICAL);
@@ -172,12 +173,17 @@ public class MedicationScheduleFragment extends Fragment
             {
                 if (time.toLocalDate().isEqual(thisSunday.plusDays(dayNumber)) && !time.isBefore(medication.getStartDate()))
                 {
-                    layouts.add(buildCheckbox(medication, time));
+                    RelativeLayout rl = buildCheckbox(medication, time);
+
+                    if (medication.getFrequency() == 0)
+                        asNeededList.addView(rl);
+                    else
+                        scheduledMeds.add(rl);
                 }
             }
         }
 
-        if (layouts.size() == 0)
+        if (scheduledMeds.size() == 0)
         {
             TextView textView = new TextView(rootView.getContext());
             String noMed = getString(R.string.no_meds_for_day, dayOfWeek);
@@ -186,12 +192,11 @@ public class MedicationScheduleFragment extends Fragment
         }
         else
         {
-            sortSchedule(layouts);
+            sortSchedule(scheduledMeds);
+            sortSchedule(asNeededMeds);
 
-            for (RelativeLayout layout : layouts)
-            {
-                checkBoxHolder.addView(layout);
-            }
+            scheduledMeds.forEach(checkBoxHolder::addView);
+            asNeededMeds.forEach(asNeededList::addView);
         }
     }
 
@@ -245,7 +250,7 @@ public class MedicationScheduleFragment extends Fragment
 
         String dosageTime = TimeFormatting.formatTimeForUser(time.getHour(), time.getMinute());
 
-        String thisMedicationLabel = medName + " - " + dosage + " - " + (medication.getFrequency() > 0 ? dosageTime : getString(R.string.as_needed));
+        String thisMedicationLabel = medName + " - " + dosage + " - " + dosageTime;
 
         thisMedication.setText(thisMedicationLabel);
 
