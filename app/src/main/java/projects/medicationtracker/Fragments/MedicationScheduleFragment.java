@@ -1,5 +1,6 @@
 package projects.medicationtracker.Fragments;
 
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -71,8 +72,7 @@ public class MedicationScheduleFragment extends Fragment
             String day,
             LocalDate aDayThisWeek,
             int dayNum
-    )
-    {
+    ) {
         MedicationScheduleFragment fragment = new MedicationScheduleFragment();
 
         Bundle bundle = new Bundle();
@@ -203,7 +203,8 @@ public class MedicationScheduleFragment extends Fragment
     private RelativeLayout buildCheckbox(Medication medication, LocalDateTime time)
     {
         RelativeLayout rl = new RelativeLayout(rootView.getContext());
-        CheckBox thisMedication = new CheckBox(rootView.getContext());
+        TextView thisMedication = medication.getFrequency() > 0
+                ? new CheckBox(rootView.getContext()) : new TextView(rootView.getContext());
         long medId = medication.getId();
         Triple<Medication, Long, LocalDateTime> tag;
         long doseRowId = db.getDoseId(medId, TimeFormatting.localDateTimeToString(time));
@@ -227,7 +228,7 @@ public class MedicationScheduleFragment extends Fragment
         button.setOnClickListener(v ->
         {
             DoseInfoDialog doseInfo = new DoseInfoDialog(
-                    db.getDoseId(medId, TimeFormatting.localDateTimeToString(time)), db
+                    db.getDoseId(medId, TimeFormatting.localDateTimeToString(time)), db, thisMedication
             );
             doseInfo.show(getChildFragmentManager(), null);
         });
@@ -244,8 +245,6 @@ public class MedicationScheduleFragment extends Fragment
             dosage = String.valueOf(medication.getDosage());
         }
 
-        if (doseRowId != -1 && db.getTaken(doseRowId)) thisMedication.setChecked(true);
-
         dosage += " " + medication.getDosageUnits();
 
         String dosageTime = TimeFormatting.formatTimeForUser(time.getHour(), time.getMinute());
@@ -258,7 +257,16 @@ public class MedicationScheduleFragment extends Fragment
 
         thisMedication.setTag(tag);
 
-        thisMedication.setOnCheckedChangeListener((compoundButton, b) ->
+        if (medication.getFrequency() == 0)
+        {
+            thisMedication.setTextColor(Color.WHITE);
+
+            return rl;
+        }
+
+        if (doseRowId != -1 && db.getTaken(doseRowId)) ((CheckBox) thisMedication).setChecked(true);
+
+        ((CheckBox) thisMedication).setOnCheckedChangeListener((compoundButton, b) ->
         {
             Triple<Medication, Long, LocalDateTime> tvTag =
                     (Triple<Medication, Long, LocalDateTime>) thisMedication.getTag();
@@ -267,7 +275,7 @@ public class MedicationScheduleFragment extends Fragment
 
             if (LocalDateTime.now().isBefore(time.minusHours(timeBeforeDose)) && timeBeforeDose != -1)
             {
-                thisMedication.setChecked(false);
+                ((CheckBox) thisMedication).setChecked(false);
                 Toast.makeText(
                         rootView.getContext(),
                         getString(R.string.cannot_take_more_than_hours, timeBeforeDose),
@@ -281,7 +289,7 @@ public class MedicationScheduleFragment extends Fragment
 
             if (doseId != -1)
             {
-                db.updateDoseStatus(doseId, now, thisMedication.isChecked());
+                db.updateDoseStatus(doseId, now, ((CheckBox) thisMedication).isChecked());
             }
             else
             {
