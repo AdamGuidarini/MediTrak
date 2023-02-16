@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -22,6 +23,7 @@ import projects.medicationtracker.Fragments.SelectDateFragment;
 import projects.medicationtracker.Fragments.TimePickerFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Medication;
 
@@ -57,7 +59,7 @@ public class DoseInfoDialog extends DialogFragment
 
         if (med.getFrequency() == 0)
         {
-            builder.setNeutralButton(R.string.delete, ((dialogInterface, i) -> deleteAsNeededDose(med)));
+            builder.setNeutralButton(R.string.delete, ((dialogInterface, i) -> deleteAsNeededDose()));
         }
 
         return builder.create();
@@ -139,7 +141,17 @@ public class DoseInfoDialog extends DialogFragment
         dismiss();
     }
 
-    private void deleteAsNeededDose(Medication medication)
+    private void deleteAsNeededDose()
     {
+        db.deleteDose(doseId);
+
+        Fragment fragment = getParentFragment();
+
+        if (fragment instanceof IDialogCloseListener)
+        {
+            ((IDialogCloseListener) fragment).handleDialogClose(
+                    IDialogCloseListener.Action.DELETE, doseId
+            );
+        }
     }
 }

@@ -29,6 +29,7 @@ import projects.medicationtracker.Dialogs.DoseInfoDialog;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TextViewUtils;
 import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Medication;
 
@@ -37,7 +38,7 @@ import projects.medicationtracker.SimpleClasses.Medication;
  * Use the {@link MedicationScheduleFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MedicationScheduleFragment extends Fragment
+public class MedicationScheduleFragment extends Fragment implements IDialogCloseListener
 {
     public static final String MEDICATIONS = "medications";
     public static final String DAY_OF_WEEK = "dayOfWeek";
@@ -340,6 +341,30 @@ public class MedicationScheduleFragment extends Fragment
                     layouts.set(j + 1, temp);
                 }
             }
+        }
+    }
+
+    @Override
+    public void handleDialogClose(Action action, Long doseId)
+    {
+        switch (action)
+        {
+            case ADD:
+                break;
+            case DELETE:
+                LinearLayout ll = rootView.findViewById(R.id.asNeededViews);
+
+                for (int i = 0; i < ll.getChildCount(); i++)
+                {
+                    RelativeLayout layoutToDelete = (RelativeLayout) ll.getChildAt(i);
+
+                    if (((Triple<Medication, Long, LocalDateTime>) layoutToDelete.getChildAt(0).getTag()).getSecond().equals(doseId))
+                    {
+                        ll.removeViewAt(i);
+
+                        break;
+                    }
+                }
         }
     }
 }

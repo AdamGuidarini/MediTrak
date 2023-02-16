@@ -682,6 +682,14 @@ public class DBHelper extends SQLiteOpenHelper
         return times;
     }
 
+    public void deleteDose(long doseId)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String whereClause = DOSE_ID + " = " + doseId;
+
+        db.delete(MEDICATION_TRACKER_TABLE, whereClause, null);
+    }
+
     /**
      * Get ID of dose
      * @param medId ID of Medication
