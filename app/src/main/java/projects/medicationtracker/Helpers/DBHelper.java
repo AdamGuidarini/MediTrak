@@ -682,6 +682,14 @@ public class DBHelper extends SQLiteOpenHelper
         return times;
     }
 
+    public void deleteDose(long doseId)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String whereClause = DOSE_ID + " = " + doseId;
+
+        db.delete(MEDICATION_TRACKER_TABLE, whereClause, null);
+    }
+
     /**
      * Get ID of dose
      * @param medId ID of Medication
@@ -702,24 +710,6 @@ public class DBHelper extends SQLiteOpenHelper
         rowId = cursor.getCount() > 0 ?
                 Long.parseLong(cursor.getString(cursor.getColumnIndexOrThrow(DOSE_ID))) : -1;
 
-        cursor.close();
-
-        return rowId;
-    }
-
-    public long getMedicationIdFromTimeId(long timeId)
-    {
-        SQLiteDatabase db = this.getReadableDatabase();
-        long rowId;
-        String query =
-                "SELECT " + MED_ID + " FROM " + MEDICATION_TIMES
-                + " WHERE " + TIME_ID + " = " + timeId;
-
-        Cursor cursor = db.rawQuery(query, null);
-
-        cursor.moveToFirst();
-
-        rowId = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(DOSE_ID)));
         cursor.close();
 
         return rowId;

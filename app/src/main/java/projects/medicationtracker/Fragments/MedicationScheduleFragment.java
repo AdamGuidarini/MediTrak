@@ -1,5 +1,6 @@
 package projects.medicationtracker.Fragments;
 
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -13,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import java.time.LocalDate;
@@ -27,6 +29,7 @@ import projects.medicationtracker.Dialogs.DoseInfoDialog;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TextViewUtils;
 import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Medication;
 
@@ -35,7 +38,7 @@ import projects.medicationtracker.SimpleClasses.Medication;
  * Use the {@link MedicationScheduleFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MedicationScheduleFragment extends Fragment
+public class MedicationScheduleFragment extends Fragment implements IDialogCloseListener
 {
     public static final String MEDICATIONS = "medications";
     public static final String DAY_OF_WEEK = "dayOfWeek";
@@ -44,7 +47,6 @@ public class MedicationScheduleFragment extends Fragment
     private View rootView;
 
     private static ArrayList<Medication> meds;
-    private static LinearLayout checkBoxHolder;
     private static DBHelper db;
     private static String dayOfWeek;
     private static LocalDate dayInCurrentWeek;
@@ -71,8 +73,7 @@ public class MedicationScheduleFragment extends Fragment
             String day,
             LocalDate aDayThisWeek,
             int dayNum
-    )
-    {
+    ) {
         MedicationScheduleFragment fragment = new MedicationScheduleFragment();
 
         Bundle bundle = new Bundle();
@@ -94,8 +95,9 @@ public class MedicationScheduleFragment extends Fragment
      * @return The fragment inflated
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        LocalDate thisDate;
 
         assert getArguments() != null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
@@ -111,53 +113,54 @@ public class MedicationScheduleFragment extends Fragment
         dayInCurrentWeek = LocalDate.ofEpochDay(getArguments().getLong(DAY_IN_CURRENT_WEEK + "_" + container.getId()));
         dayNumber = getArguments().getInt(DAY_NUMBER + "_" + container.getId());
 
+        thisDate = TimeFormatting.whenIsSunday(dayInCurrentWeek).plusDays(dayNumber);
+
         rootView = inflater.inflate(
                 R.layout.fragment_medication_schedule,
                 container,
                 false
         );
 
-        for (Medication medication : meds)
+        if (meds.stream().anyMatch(m -> m.getFrequency() == 0 && !m.getStartDate().toLocalDate().isAfter(thisDate)))
         {
-            if (medication.isActive() && medication.getFrequency() == 0)
+            TextView plusAsNeeded = rootView.findViewById(R.id.plusAsNeeded);
+            LinearLayout asNeededList = rootView.findViewById(R.id.asNeededList);
+
+            asNeededList.setVisibility(View.VISIBLE);
+
+            plusAsNeeded.setTag(thisDate);
+
+            plusAsNeeded.setVisibility(View.VISIBLE);
+            plusAsNeeded.setOnClickListener(v ->
             {
-                LinearLayout plusAsNeeded = rootView.findViewById(R.id.plusAsNeeded);
-
-                plusAsNeeded.setTag(TimeFormatting.whenIsSunday(dayInCurrentWeek).plusDays(dayNumber));
-
-                plusAsNeeded.setVisibility(View.VISIBLE);
-                plusAsNeeded.setOnClickListener(v ->
-                {
-                    AddAsNeededDoseDialog asNeededDialog = new AddAsNeededDoseDialog(
-                            meds.stream().filter(m -> m.getFrequency() == 0 && m.isActive()).collect(Collectors.toCollection(ArrayList::new)),
-                            (LocalDate) v.getTag(),
-                            db
-                    );
-                    asNeededDialog.show(getParentFragmentManager(), null);
-                });
-
-                break;
-            }
+                AddAsNeededDoseDialog asNeededDialog = new AddAsNeededDoseDialog(
+                        meds.stream().filter(
+                                m -> m.getFrequency() == 0 && !m.getStartDate().toLocalDate().isAfter(thisDate)
+                        ).collect(Collectors.toCollection(ArrayList::new)),
+                        (LocalDate) v.getTag(),
+                        db
+                );
+                asNeededDialog.show(getChildFragmentManager(), null);
+            });
         }
 
-        createSchedule(rootView);
+        createSchedule();
 
         return rootView;
     }
 
     /**
      * Creates a list of the medications for the current given day in places them in the fragment
-     * @param rootView The main view of the fragment
      */
-    private void createSchedule(View rootView)
+    private void createSchedule()
     {
-        checkBoxHolder = rootView.findViewById(R.id.medicationSchedule);
+        LinearLayout checkBoxHolder = rootView.findViewById(R.id.medicationSchedule);
+        LinearLayout asNeededList = rootView.findViewById(R.id.asNeededViews);
         TextView dayLabel = rootView.findViewById(R.id.dateLabel);
         LocalDate thisSunday = TimeFormatting.whenIsSunday(dayInCurrentWeek);
-        ArrayList<RelativeLayout> layouts = new ArrayList<>();
+        ArrayList<RelativeLayout> scheduledMeds = new ArrayList<>();
+        ArrayList<RelativeLayout> asNeededMeds = new ArrayList<>();
         db = new DBHelper(rootView.getContext());
-
-        checkBoxHolder.setOrientation(LinearLayout.VERTICAL);
 
         String dayLabelString =
                 dayOfWeek + " " + TimeFormatting.localDateToString(thisSunday.plusDays(dayNumber));
@@ -169,12 +172,17 @@ public class MedicationScheduleFragment extends Fragment
             {
                 if (time.toLocalDate().isEqual(thisSunday.plusDays(dayNumber)) && !time.isBefore(medication.getStartDate()))
                 {
-                    layouts.add(buildCheckbox(medication, time));
+                    RelativeLayout rl = buildCheckbox(medication, time);
+
+                    if (medication.getFrequency() == 0)
+                        asNeededMeds.add(rl);
+                    else
+                        scheduledMeds.add(rl);
                 }
             }
         }
 
-        if (layouts.size() == 0)
+        if (scheduledMeds.size() == 0)
         {
             TextView textView = new TextView(rootView.getContext());
             String noMed = getString(R.string.no_meds_for_day, dayOfWeek);
@@ -183,19 +191,19 @@ public class MedicationScheduleFragment extends Fragment
         }
         else
         {
-            sortSchedule(layouts);
+            sortSchedule(scheduledMeds);
+            sortSchedule(asNeededMeds);
 
-            for (RelativeLayout layout : layouts)
-            {
-                checkBoxHolder.addView(layout);
-            }
+            scheduledMeds.forEach(checkBoxHolder::addView);
+            asNeededMeds.forEach(asNeededList::addView);
         }
     }
 
     private RelativeLayout buildCheckbox(Medication medication, LocalDateTime time)
     {
         RelativeLayout rl = new RelativeLayout(rootView.getContext());
-        CheckBox thisMedication = new CheckBox(rootView.getContext());
+        TextView thisMedication = medication.getFrequency() > 0
+                ? new CheckBox(rootView.getContext()) : new TextView(rootView.getContext());
         long medId = medication.getId();
         Triple<Medication, Long, LocalDateTime> tag;
         long doseRowId = db.getDoseId(medId, TimeFormatting.localDateTimeToString(time));
@@ -219,7 +227,7 @@ public class MedicationScheduleFragment extends Fragment
         button.setOnClickListener(v ->
         {
             DoseInfoDialog doseInfo = new DoseInfoDialog(
-                    db.getDoseId(medId, TimeFormatting.localDateTimeToString(time)), db
+                    db.getDoseId(medId, TimeFormatting.localDateTimeToString(time)), db, thisMedication
             );
             doseInfo.show(getChildFragmentManager(), null);
         });
@@ -236,8 +244,6 @@ public class MedicationScheduleFragment extends Fragment
             dosage = String.valueOf(medication.getDosage());
         }
 
-        if (doseRowId != -1 && db.getTaken(doseRowId)) thisMedication.setChecked(true);
-
         dosage += " " + medication.getDosageUnits();
 
         String dosageTime = TimeFormatting.formatTimeForUser(time.getHour(), time.getMinute());
@@ -250,7 +256,16 @@ public class MedicationScheduleFragment extends Fragment
 
         thisMedication.setTag(tag);
 
-        thisMedication.setOnCheckedChangeListener((compoundButton, b) ->
+        if (medication.getFrequency() == 0)
+        {
+            thisMedication.setTextColor(Color.WHITE);
+
+            return rl;
+        }
+
+        if (doseRowId != -1 && db.getTaken(doseRowId)) ((CheckBox) thisMedication).setChecked(true);
+
+        ((CheckBox) thisMedication).setOnCheckedChangeListener((compoundButton, b) ->
         {
             Triple<Medication, Long, LocalDateTime> tvTag =
                     (Triple<Medication, Long, LocalDateTime>) thisMedication.getTag();
@@ -259,7 +274,7 @@ public class MedicationScheduleFragment extends Fragment
 
             if (LocalDateTime.now().isBefore(time.minusHours(timeBeforeDose)) && timeBeforeDose != -1)
             {
-                thisMedication.setChecked(false);
+                ((CheckBox) thisMedication).setChecked(false);
                 Toast.makeText(
                         rootView.getContext(),
                         getString(R.string.cannot_take_more_than_hours, timeBeforeDose),
@@ -273,7 +288,7 @@ public class MedicationScheduleFragment extends Fragment
 
             if (doseId != -1)
             {
-                db.updateDoseStatus(doseId, now, thisMedication.isChecked());
+                db.updateDoseStatus(doseId, now, ((CheckBox) thisMedication).isChecked());
             }
             else
             {
@@ -305,8 +320,8 @@ public class MedicationScheduleFragment extends Fragment
         {
             for (int j = 0; j < (count - i); j++)
             {
-                CheckBox child1 = (CheckBox) layouts.get(j).getChildAt(0);
-                CheckBox child2 = (CheckBox) layouts.get(j + 1).getChildAt(0);
+                TextView child1 = (TextView) layouts.get(j).getChildAt(0);
+                TextView child2 = (TextView) layouts.get(j + 1).getChildAt(0);
 
                 Triple<Medication, Long, LocalDateTime> child1Pair =
                         (Triple<Medication, Long, LocalDateTime>) child1.getTag();
@@ -324,6 +339,42 @@ public class MedicationScheduleFragment extends Fragment
                     layouts.set(j + 1, temp);
                 }
             }
+        }
+    }
+
+    @Override
+    public void handleDialogClose(Action action, Long doseId)
+    {
+        LinearLayout ll = rootView.findViewById(R.id.asNeededViews);
+
+        switch (action)
+        {
+            case ADD:
+                LinearLayout checkBoxHolder = rootView.findViewById(R.id.medicationSchedule);
+
+                meds.forEach(m ->
+                {
+                    if (m.getFrequency() == 0) m.setTimes(db.getDoseFromMedicationTracker(m));
+                });
+
+                checkBoxHolder.removeAllViews();
+                ll.removeAllViews();
+
+                createSchedule();
+
+                break;
+            case DELETE:
+                for (int i = 0; i < ll.getChildCount(); i++)
+                {
+                    RelativeLayout layoutToDelete = (RelativeLayout) ll.getChildAt(i);
+
+                    if (((Triple<Medication, Long, LocalDateTime>) layoutToDelete.getChildAt(0).getTag()).getSecond().equals(doseId))
+                    {
+                        ll.removeViewAt(i);
+
+                        break;
+                    }
+                }
         }
     }
 }
