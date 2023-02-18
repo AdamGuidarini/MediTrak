@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 import projects.medicationtracker.Fragments.TimePickerFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Medication;
 
@@ -55,6 +58,7 @@ public class AddAsNeededDoseDialog extends DialogFragment
      *
      * @return Built dialog
      */
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstances)
     {
@@ -145,14 +149,21 @@ public class AddAsNeededDoseDialog extends DialogFragment
     private void save()
     {
         String selectedMedName = yourMeds.getText().toString();
-
         Medication med = medications.stream().filter(
                 m -> Objects.equals(m.getName(), selectedMedName)
         ).collect(Collectors.toCollection(ArrayList::new)).get(0);
         LocalTime time = (LocalTime) timeTaken.getTag();
         LocalDateTime dateTimeTaken = LocalDateTime.of(date, time);
-
+        Fragment fragment = getParentFragment();
         long doseId = db.addToMedicationTracker(med, dateTimeTaken);
+
         db.updateDoseStatus(doseId, TimeFormatting.localDateTimeToString(dateTimeTaken), true);
+
+        if (fragment instanceof IDialogCloseListener)
+        {
+            ((IDialogCloseListener) fragment).handleDialogClose(
+                    IDialogCloseListener.Action.ADD, doseId
+            );
+        }
     }
 }

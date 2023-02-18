@@ -29,13 +29,6 @@
             android:layout_width="match_parent"
             android:layout_height="60dp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/meds_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </androidx.recyclerview.widget.RecyclerView>
-
         <ScrollView
             android:id="@+id/scheduleScrollView"
             android:layout_width="match_parent"

@@ -140,7 +140,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
                         (LocalDate) v.getTag(),
                         db
                 );
-                asNeededDialog.show(getParentFragmentManager(), null);
+                asNeededDialog.show(getChildFragmentManager(), null);
             });
         }
 
@@ -347,13 +347,25 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     @Override
     public void handleDialogClose(Action action, Long doseId)
     {
+        LinearLayout ll = rootView.findViewById(R.id.asNeededViews);
+
         switch (action)
         {
             case ADD:
+                LinearLayout checkBoxHolder = rootView.findViewById(R.id.medicationSchedule);
+
+                meds.forEach(m ->
+                {
+                    if (m.getFrequency() == 0) m.setTimes(db.getDoseFromMedicationTracker(m));
+                });
+
+                checkBoxHolder.removeAllViews();
+                ll.removeAllViews();
+
+                createSchedule();
+
                 break;
             case DELETE:
-                LinearLayout ll = rootView.findViewById(R.id.asNeededViews);
-
                 for (int i = 0; i < ll.getChildCount(); i++)
                 {
                     RelativeLayout layoutToDelete = (RelativeLayout) ll.getChildAt(i);

@@ -715,24 +715,6 @@ public class DBHelper extends SQLiteOpenHelper
         return rowId;
     }
 
-    public long getMedicationIdFromTimeId(long timeId)
-    {
-        SQLiteDatabase db = this.getReadableDatabase();
-        long rowId;
-        String query =
-                "SELECT " + MED_ID + " FROM " + MEDICATION_TIMES
-                + " WHERE " + TIME_ID + " = " + timeId;
-
-        Cursor cursor = db.rawQuery(query, null);
-
-        cursor.moveToFirst();
-
-        rowId = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(DOSE_ID)));
-        cursor.close();
-
-        return rowId;
-    }
-
     /**
      * Status of entry in MedicationTracker
      * @param doseId ID of dose in table
