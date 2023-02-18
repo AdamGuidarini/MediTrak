@@ -16,6 +16,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import projects.medicationtracker.R;
 import projects.medicationtracker.Receivers.NotificationReceiver;
 import projects.medicationtracker.SimpleClasses.Medication;
 
@@ -43,7 +44,7 @@ public class NotificationHelper
         // Loops to increase time, prevents notification bombardment when editing time.
         while (time.isBefore(LocalDateTime.now()))
         {
-            time = time.plusMinutes(medication.getMedFrequency());
+            time = time.plusMinutes(medication.getFrequency());
         }
 
         ZonedDateTime zdt = time.atZone(ZoneId.systemDefault());
@@ -84,9 +85,9 @@ public class NotificationHelper
         Intent notificationIntent = new Intent(notificationContext, NotificationReceiver.class);
 
         notificationIntent.putExtra(NOTIFICATION_ID, notificationId);
-        notificationIntent.putExtra(MESSAGE, createMedicationReminderMessage(medication));
+        notificationIntent.putExtra(MESSAGE, createMedicationReminderMessage(medication, notificationContext));
         notificationIntent.putExtra(DOSE_TIME, time);
-        notificationIntent.putExtra(MEDICATION_ID, medication.getMedId());
+        notificationIntent.putExtra(MEDICATION_ID, medication.getId());
 
         alarmIntent = PendingIntent.getBroadcast(
                 notificationContext,
@@ -103,20 +104,21 @@ public class NotificationHelper
     /**
      * Creates a message for a notification.
      * @param medication Medication corresponding to the notification.
+*    * @param context Application context, needed for getString call
      * @return The content text to display in the notification.
      */
-    private static String createMedicationReminderMessage(Medication medication)
+    private static String createMedicationReminderMessage(Medication medication, Context context)
     {
         String message;
         String patientName = medication.getPatientName();
-        String medicationName = medication.getMedName();
+        String medicationName = medication.getName();
 
         if (!medication.getAlias().isEmpty())
             medicationName = medication.getAlias();
 
         message = patientName.equals("ME!") ?
-            "It's time to take your " + medicationName :
-            "It's time for " + patientName + "'s " + medicationName;
+            context.getString(R.string.its_time_your_med, medicationName) :
+            context.getString(R.string.time_for_other_med, patientName, medicationName);
 
         return message;
     }
@@ -172,7 +174,7 @@ public class NotificationHelper
 
         if (medIds.length == 0)
         {
-            NotificationHelper.deletePendingNotification(medication.getMedId(), context);
+            NotificationHelper.deletePendingNotification(medication.getId(), context);
         }
         else
         {
@@ -194,7 +196,7 @@ public class NotificationHelper
     {
         DBHelper db = new DBHelper(context);
         long[] medicationTimeIds = db.getMedicationTimeIds(medication);
-        LocalTime[] medTimes = db.getMedicationTimes(medication.getMedId());
+        LocalTime[] medTimes = db.getMedicationTimes(medication.getId());
 
         if (!db.isMedicationActive(medication))
         {
@@ -210,7 +212,7 @@ public class NotificationHelper
                             medication.getStartDate().toLocalDate(),
                             medTimes[0]
                     ),
-                    medication.getMedId()
+                    medication.getId()
             );
         }
         else

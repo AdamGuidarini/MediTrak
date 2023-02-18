@@ -16,7 +16,7 @@ public class AddMedication extends AppCompatActivity
     /**
      * Builds AddMedication Activity
      * @param savedInstanceState Previous state
-     **************************************************************************/
+     */
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -24,7 +24,7 @@ public class AddMedication extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_medication);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Add Medication");
+        getSupportActionBar().setTitle(getString(R.string.add_medication));
 
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
@@ -36,7 +36,7 @@ public class AddMedication extends AppCompatActivity
      * Determines which button was selected
      * @param item Selected menu option
      * @return Selected option
-     **************************************************************************/
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
@@ -48,7 +48,7 @@ public class AddMedication extends AppCompatActivity
 
     /**
      * Return to MainActivity if back arrow is pressed
-     **************************************************************************/
+     */
     @Override
     public void onBackPressed()
     {

@@ -30,7 +30,7 @@ public class MyMedications extends AppCompatActivity
     /**
      * Creates MyMedications
      * @param savedInstanceState Saved instances
-     **************************************************************************/
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -38,7 +38,9 @@ public class MyMedications extends AppCompatActivity
         setContentView(R.layout.activity_my_medications);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        Objects.requireNonNull(getSupportActionBar()).setTitle("My Medications");
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.my_medications));
+
+        String you = getString(R.string.you);
 
         if (db.numberOfRows() == 0)
             return;
@@ -67,15 +69,15 @@ public class MyMedications extends AppCompatActivity
             else
             {
                 if (patientNames.contains("ME!"))
-                        patientNames.set(patientNames.indexOf("ME!"), "You");
+                        patientNames.set(patientNames.indexOf("ME!"), you);
 
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, patientNames);
                 nameSpinner.setAdapter(adapter);
 
                 nameSpinner.setVisibility(View.VISIBLE);
 
-                if (patientNames.contains("You"))
-                        nameSpinner.setSelection(adapter.getPosition("You"));
+                if (patientNames.contains(you))
+                        nameSpinner.setSelection(adapter.getPosition(you));
 
                 nameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
                 {
@@ -86,7 +88,7 @@ public class MyMedications extends AppCompatActivity
 
                         String patient = adapterView.getSelectedItem().toString();
 
-                        if (patient.equals("You"))
+                        if (patient.equals(you))
                             patient = "ME!";
 
                         ArrayList<Medication> patientMeds = db.getMedicationsForPatient(patient);
@@ -106,7 +108,7 @@ public class MyMedications extends AppCompatActivity
      * Determines which button was selected
      * @param item Selected menu option
      * @return Selected option
-     **************************************************************************/
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
@@ -121,7 +123,7 @@ public class MyMedications extends AppCompatActivity
 
     /**
      * Return to MainActivity if back arrow is pressed
-     **************************************************************************/
+     */
     @Override
     public void onBackPressed()
     {
@@ -135,7 +137,7 @@ public class MyMedications extends AppCompatActivity
      * Creates a CardView containing all information on a Medication
      * @param medication The Medication whose details will be displayed.
      * @param baseLayout The LinearLayout in which to place the card
-     **************************************************************************/
+     */
     private void createMyMedCards(Medication medication, LinearLayout baseLayout)
     {
         StandardCardView thisMedCard = new StandardCardView(this);
@@ -145,13 +147,13 @@ public class MyMedications extends AppCompatActivity
         baseLayout.addView(thisMedCard);
         thisMedCard.addView(thisMedLayout);
 
-        thisMedLayout.setId((int) medication.getMedId());
+        thisMedLayout.setId((int) medication.getId());
 
-        bundle.putLong("MedId", medication.getMedId());
+        bundle.putLong("MedId", medication.getId());
 
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .add((int) medication.getMedId(), MyMedicationsFragment.class, bundle)
+                .add((int) medication.getId(), MyMedicationsFragment.class, bundle)
                 .commit();
     }
 }

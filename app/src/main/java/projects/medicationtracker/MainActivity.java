@@ -73,10 +73,9 @@ public class MainActivity extends AppCompatActivity
         }
 
         aDayThisWeek = LocalDate.now();
-
         scheduleLayout = findViewById(R.id.scheduleLayout);
 
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Medication Schedule");
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.med_schedule));
 
         NotificationHelper.createNotificationChannel(this);
         prepareNotifications();
@@ -101,7 +100,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     /**
@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity
         TextView noMeds = findViewById(R.id.noMeds);
         ScrollView scheduleScrollView = findViewById(R.id.scheduleScrollView);
         Spinner patientNames = findViewById(R.id.patientSpinner);
+        final String you = getString(R.string.you);
 
         // Exit if there are no patients in DB
         if (db.numberOfRows() == 0)
@@ -171,7 +172,7 @@ public class MainActivity extends AppCompatActivity
             patientNames.setVisibility(View.VISIBLE);
 
             if (names.contains("ME!"))
-                names.set(names.indexOf("ME!"), "You");
+                names.set(names.indexOf("ME!"), you);
 
             ArrayAdapter<String> patientAdapter = new ArrayAdapter<>(
                     this,
@@ -181,11 +182,11 @@ public class MainActivity extends AppCompatActivity
             patientNames.setAdapter(patientAdapter);
 
             // Select "You" by default
-            if (names.contains("You"))
+            if (names.contains(you))
             {
                 for (int i = 0; i < names.size(); i++)
                 {
-                    if (names.get(i).equals("You"))
+                    if (names.get(i).equals(you))
                         patientNames.setSelection(i);
                 }
             }
@@ -199,7 +200,7 @@ public class MainActivity extends AppCompatActivity
 
                     String name = adapterView.getSelectedItem().toString();
 
-                    if (name.equals("You"))
+                    if (name.equals(you))
                         name = "ME!";
 
                     createMedicationSchedule(medications, name);
@@ -214,7 +215,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * Creates an ArrayList of Medications to be taken this week
      * @return List of all Medications for this week
-     **************************************************************************/
+     */
     public ArrayList<Medication> medicationsForThisWeek()
     {
         ArrayList<Medication> medications = db.getMedications();
@@ -229,8 +230,16 @@ public class MainActivity extends AppCompatActivity
             ArrayList<Pair<LocalDateTime, LocalDateTime>> pausedIntervals =
                     db.getPauseResumePeriods(medications.get(i));
 
+            // Skip as needed meds
+            if (medications.get(i).getFrequency() == 0)
+            {
+                medications.get(i).setTimes(db.getDoseFromMedicationTracker(medications.get(i)));
+
+                continue;
+            }
+
             // If a medication is taken once per day
-            if (medications.get(i).getTimes().length == 1 && medications.get(i).getMedFrequency() == 1440)
+            if (medications.get(i).getTimes().length == 1 && medications.get(i).getFrequency() == 1440)
             {
                 // if the Medication is taken once per day just add the start of each date to
                 timeArr = new LocalDateTime[7];
@@ -241,7 +250,7 @@ public class MainActivity extends AppCompatActivity
                             LocalDateTime.of(LocalDate.from(thisSunday.plusDays(j)), localtime);
             }
             // If a medication is taken multiple times per day
-            else if (medications.get(i).getTimes().length > 1 && medications.get(i).getMedFrequency() == 1440)
+            else if (medications.get(i).getTimes().length > 1 && medications.get(i).getFrequency() == 1440)
             {
                 int numberOfTimes = medications.get(i).getTimes().length;
                 int index = 0;
@@ -270,7 +279,7 @@ public class MainActivity extends AppCompatActivity
             {
                 LocalDateTime timeToCheck = medications.get(i).getStartDate();
                 ArrayList<LocalDateTime> times = new ArrayList<>();
-                long frequency = medications.get(i).getMedFrequency();
+                long frequency = medications.get(i).getFrequency();
 
                 while (timeToCheck.toLocalDate().isBefore(thisSunday))
                     timeToCheck = timeToCheck.plusMinutes(frequency);
@@ -342,8 +351,15 @@ public class MainActivity extends AppCompatActivity
                 medicationsForThisPatient.add(medications.get(i));
         }
 
-        String[] days =
-                {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+        String[] days = {
+            getString(R.string.sunday),
+            getString(R.string.monday),
+            getString(R.string.tuesday),
+            getString(R.string.wednesday),
+            getString(R.string.thursday),
+            getString(R.string.friday),
+            getString(R.string.saturday)
+        };
 
         for (int ii = 0; ii < 7; ii++)
         {
@@ -377,16 +393,16 @@ public class MainActivity extends AppCompatActivity
             int day,
             ArrayList<Medication> medications,
             LinearLayout layout
-    )
-    {
+    ) {
         StandardCardView thisDayCard = new StandardCardView(this);
         FragmentContainerView fragmentContainer = new FragmentContainerView(this);
+        int viewId = day == 0 ? 7 : day;
 
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(MEDICATIONS, medications);
-        bundle.putString(DAY_OF_WEEK, dayOfWeek);
-        bundle.putLong(DAY_IN_CURRENT_WEEK, aDayThisWeek.toEpochDay());
-        bundle.putInt(DAY_NUMBER, day);
+        bundle.putString(DAY_OF_WEEK + "_" + viewId, dayOfWeek);
+        bundle.putLong(DAY_IN_CURRENT_WEEK + "_" + viewId, aDayThisWeek.toEpochDay());
+        bundle.putInt(DAY_NUMBER + "_" + viewId, day);
 
         thisDayCard.addView(fragmentContainer);
 
@@ -395,7 +411,7 @@ public class MainActivity extends AppCompatActivity
 
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .add(day == 0 ? 7 : day, MedicationScheduleFragment.class, bundle)
+                .add(viewId, MedicationScheduleFragment.class, bundle)
                 .commit();
     }
 

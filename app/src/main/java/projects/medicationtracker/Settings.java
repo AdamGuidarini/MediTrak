@@ -27,7 +27,6 @@ import java.util.Objects;
 
 import projects.medicationtracker.Fragments.ConfirmDeleteAllFragment;
 import projects.medicationtracker.Helpers.DBHelper;
-import projects.medicationtracker.Helpers.InputValidation;
 
 public class Settings extends AppCompatActivity
 {
@@ -44,7 +43,7 @@ public class Settings extends AppCompatActivity
         setContentView(R.layout.activity_settings);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Settings");
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.settings));
 
         Button purgeButton = findViewById(R.id.purgeButton);
         purgeButton.setBackgroundColor(Color.RED);
@@ -137,9 +136,9 @@ public class Settings extends AppCompatActivity
 
                 if (!text.isEmpty())
                 {
-                    if (!InputValidation.isValidInt(text))
+                    if (!isValidInt(text))
                     {
-                        enterTimeBeforeDose.setError("Invalid value entered");
+                        enterTimeBeforeDose.setError(getString(R.string.invalid_value));
                         return;
                     }
 
@@ -148,7 +147,7 @@ public class Settings extends AppCompatActivity
                     if (timeBefore > 0)
                         db.setTimeBeforeDose(timeBefore);
                     else
-                        enterTimeBeforeDose.setError("Value must be a positive integer");
+                        enterTimeBeforeDose.setError(getString(R.string.must_be_positive_int));
                 }
             }
         });
@@ -253,5 +252,24 @@ public class Settings extends AppCompatActivity
     {
         ConfirmDeleteAllFragment deleteAllFragment = new ConfirmDeleteAllFragment(db);
         deleteAllFragment.show(getSupportFragmentManager(), null);
+    }
+
+    /**
+     * Checks if a String can be parsed to int
+     * @param stringToParse The String to convert to an int
+     * @return True if can be parsed, else false
+     */
+    public static boolean isValidInt(String stringToParse)
+    {
+        try
+        {
+            Integer.parseInt(stringToParse);
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+
+        return true;
     }
 }

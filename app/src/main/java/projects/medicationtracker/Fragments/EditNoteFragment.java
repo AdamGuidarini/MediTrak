@@ -31,7 +31,7 @@ public class EditNoteFragment extends DialogFragment
      * Creates a DialogFragment allowing the user to change a note
      * @param savedInstanceState Saved instances
      * @return The Created Dialog
-     **************************************************************************/
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -40,18 +40,18 @@ public class EditNoteFragment extends DialogFragment
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
         builder.setView(inflater.inflate(R.layout.fragment_edit_note, null));
-        builder.setTitle("Edit Note");
+        builder.setTitle(getString(R.string.edit_note));
 
-        builder.setPositiveButton("OK", ((dialogInterface, i) ->
+        builder.setPositiveButton(getString(R.string.ok), ((dialogInterface, i) ->
         {
             EditText alterNote = getDialog().findViewById(R.id.alterNote);
             db.updateNote(note, alterNote.getText().toString());
             restartActivity();
         }));
 
-        builder.setNegativeButton("Cancel", ((dialogInterface, i) -> dismiss()));
+        builder.setNegativeButton(getString(R.string.cancel), ((dialogInterface, i) -> dismiss()));
 
-        builder.setNeutralButton("Delete", ((dialogInterface, i) ->
+        builder.setNeutralButton(getString(R.string.delete), ((dialogInterface, i) ->
         {
             db.deleteNote(note);
             restartActivity();

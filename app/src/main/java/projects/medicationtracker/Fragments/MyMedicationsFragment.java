@@ -47,7 +47,6 @@ public class MyMedicationsFragment extends Fragment
      * this fragment using the provided parameters.
      * @return A new instance of fragment MyMedicationsFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static MyMedicationsFragment newInstance()
     {
         return new MyMedicationsFragment();
@@ -72,7 +71,6 @@ public class MyMedicationsFragment extends Fragment
         return rootView;
     }
 
-    @SuppressLint("SetTextI18n")
     private void insertMedicationData(long medId, View v)
     {
         DBHelper db = new DBHelper(getContext());
@@ -96,28 +94,28 @@ public class MyMedicationsFragment extends Fragment
 
         medication.setTimes(dateTimes);
 
-        if (medication.getMedDosage() == (int) medication.getMedDosage())
+        if (medication.getDosage() == (int) medication.getDosage())
         {
-            dosageVal = String.format(Locale.getDefault(), "%d", (int) medication.getMedDosage());
+            dosageVal = String.format(Locale.getDefault(), "%d", (int) medication.getDosage());
         }
         else
         {
-            dosageVal = String.valueOf(medication.getMedDosage());
+            dosageVal = String.valueOf(medication.getDosage());
         }
 
-        name.setText("Medication name: " + medication.getMedName());
-        dosage.setText("Dosage: " + dosageVal + " " + medication.getMedDosageUnits());
+        name.setText(getString(R.string.med_name, medication.getName()));
+        dosage.setText(getString(R.string.dosage, dosageVal, medication.getDosageUnits()));
 
         StringBuilder freqLabel;
 
-        if (medication.getMedFrequency() == MINUTES_IN_DAY && (medication.getTimes().length == 1))
+        if (medication.getFrequency() == MINUTES_IN_DAY && (medication.getTimes().length == 1))
         {
             String time = TimeFormatting.localTimeToString(medication.getTimes()[0].toLocalTime());
-            freqLabel = new StringBuilder("Taken daily at: " + time);
+            freqLabel = new StringBuilder(getString(R.string.taken_daily_at) + " " + time);
         }
-        else if (medication.getMedFrequency() == MINUTES_IN_DAY && (medication.getTimes().length > 1))
+        else if (medication.getFrequency() == MINUTES_IN_DAY && (medication.getTimes().length > 1))
         {
-            freqLabel = new StringBuilder("Taken daily at: ");
+            freqLabel = new StringBuilder(getString(R.string.taken_daily_at));
 
             for (int i = 0; i < medication.getTimes().length; i++)
             {
@@ -128,21 +126,27 @@ public class MyMedicationsFragment extends Fragment
                     freqLabel.append(", ");
             }
         }
+        else if (medication.getFrequency() == 0)
+        {
+            freqLabel = new StringBuilder(getString(R.string.taken_as_needed));
+        }
         else
-            freqLabel = new StringBuilder("Taken every: " + TimeFormatting.freqConversion(medication.getMedFrequency()));
+        {
+            freqLabel = new StringBuilder(getString(R.string.taken_every_lbl) + TimeFormatting.freqConversion(medication.getFrequency()));
+        }
 
         frequency.setText(freqLabel);
 
         if (!medication.getAlias().equals(""))
         {
             alias.setVisibility(View.VISIBLE);
-            alias.setText("Alias: " + medication.getAlias());
+            alias.setText(getString(R.string.alias_lbl, medication.getAlias()));
         }
 
-        takenSince.setText("Taken Since: " + TimeFormatting.localDateToString(medication.getStartDate().toLocalDate()));
+        takenSince.setText(getString(R.string.taken_since,TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())));
 
         Intent notesIntent = new Intent(getActivity(), MedicationNotes.class);
-        notesIntent.putExtra("medId", medication.getMedId());
+        notesIntent.putExtra("medId", medication.getId());
 
         notesButton.setOnClickListener(view ->
         {
@@ -151,7 +155,7 @@ public class MyMedicationsFragment extends Fragment
         });
 
         Intent editMedIntent = new Intent(getActivity(), EditMedication.class);
-        editMedIntent.putExtra("medId", medication.getMedId());
+        editMedIntent.putExtra("medId", medication.getId());
 
         editButton.setOnClickListener(view ->
         {
