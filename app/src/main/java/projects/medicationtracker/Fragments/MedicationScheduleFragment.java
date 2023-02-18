@@ -162,8 +162,6 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         ArrayList<RelativeLayout> asNeededMeds = new ArrayList<>();
         db = new DBHelper(rootView.getContext());
 
-        checkBoxHolder.setOrientation(LinearLayout.VERTICAL);
-
         String dayLabelString =
                 dayOfWeek + " " + TimeFormatting.localDateToString(thisSunday.plusDays(dayNumber));
         dayLabel.setText(dayLabelString);
@@ -177,7 +175,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
                     RelativeLayout rl = buildCheckbox(medication, time);
 
                     if (medication.getFrequency() == 0)
-                        asNeededList.addView(rl);
+                        asNeededMeds.add(rl);
                     else
                         scheduledMeds.add(rl);
                 }
@@ -322,8 +320,8 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         {
             for (int j = 0; j < (count - i); j++)
             {
-                CheckBox child1 = (CheckBox) layouts.get(j).getChildAt(0);
-                CheckBox child2 = (CheckBox) layouts.get(j + 1).getChildAt(0);
+                TextView child1 = (TextView) layouts.get(j).getChildAt(0);
+                TextView child2 = (TextView) layouts.get(j + 1).getChildAt(0);
 
                 Triple<Medication, Long, LocalDateTime> child1Pair =
                         (Triple<Medication, Long, LocalDateTime>) child1.getTag();
