@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
+import projects.medicationtracker.Dialogs.WelcomeDialog;
 import projects.medicationtracker.Fragments.MedicationScheduleFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
@@ -79,6 +80,13 @@ public class MainActivity extends AppCompatActivity
 
         NotificationHelper.createNotificationChannel(this);
         prepareNotifications();
+
+        if (true)
+        {
+            WelcomeDialog welcomeDialog = new WelcomeDialog(db);
+            welcomeDialog.setCancelable(false);
+            welcomeDialog.show(getSupportFragmentManager(), null);
+        }
 
         createMainActivityViews();
     }
