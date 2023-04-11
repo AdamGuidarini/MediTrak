@@ -16,10 +16,7 @@ public class WelcomeDialog extends DialogFragment
 {
     private DBHelper db;
 
-    public WelcomeDialog(DBHelper database)
-    {
-        db = database;
-    }
+    public WelcomeDialog() {}
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstances)
@@ -32,6 +29,7 @@ public class WelcomeDialog extends DialogFragment
         builder.setView(R.layout.dialog_welcome);
 
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
+            db.close();
             dismiss();
         });
 
@@ -45,6 +43,8 @@ public class WelcomeDialog extends DialogFragment
         agreeBox.setOnCheckedChangeListener((compoundButton, b) -> {
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(b);
         });
+
+        db = new DBHelper(dialog.getContext());
 
         return dialog;
     }

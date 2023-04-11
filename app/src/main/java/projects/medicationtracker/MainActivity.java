@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity
 
         if (true)
         {
-            WelcomeDialog welcomeDialog = new WelcomeDialog(db);
+            WelcomeDialog welcomeDialog = new WelcomeDialog();
             welcomeDialog.setCancelable(false);
             welcomeDialog.show(getSupportFragmentManager(), null);
         }
