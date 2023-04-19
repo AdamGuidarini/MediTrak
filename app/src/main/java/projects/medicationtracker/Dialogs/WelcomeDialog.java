@@ -41,6 +41,7 @@ public class WelcomeDialog extends DialogFragment
         agreeBox = dialog.findViewById(R.id.termsAgreementBox);
 
         agreeBox.setOnCheckedChangeListener((compoundButton, b) -> {
+            db.saveTermsAcceptance();
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(b);
         });
 

@@ -1146,4 +1146,17 @@ public class DBHelper extends SQLiteOpenHelper
 
         return intervals;
     }
+
+    /**
+     * Saves terms acceptance
+     */
+    public void saveTermsAcceptance()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(AGREED_TO_TERMS, true);
+
+        db.update(SETTINGS_TABLE, cv, null, null);
+    }
 }
