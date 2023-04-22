@@ -13,6 +13,7 @@
     <string name="your">Your</string>
     <string name="ok">OK</string>
     <string name="delete">Delete</string>
+    <string name="i_agree">I agree</string>
 
     <!-- Errors -->
     <string name="invalid_value">Invalid value entered</string>
@@ -55,6 +56,17 @@
     <string name="no_meds_for_day">No medications for %1$s</string>
     <string name="cannot_take_more_than_hours">Cannot take medications more than %1$d hours in advance</string>
     <string name="as_needed_dose">As Needed Dose</string>
+    <string name="welcome">Welcome to MediTrak!</string>
+    <string name="warranty_info">
+        This application is meant to assist in keeping track of your medications. It is not intended
+        to provide medical advice and no information provided by this application should be misconstrued
+        as such. The creators of this application are not responsible are not responsible for any missed
+        doses of your medications for any reason. If you require medical assistance, please contact a medical professional.
+        By using this application, you are agreeing to the aforementioned terms as well as those of the GPL2 license under
+        which it is released. \n\n
+
+        This application is released under the GNU Public License Version 2, see below for more details:
+    </string>
 
     <!-- AddEditMedicationFragment -->
     <string name="times_per">Times per</string>
@@ -184,4 +196,5 @@
     <string name="its_time_your_med">It\'s time to take your %1$s</string>
     <string name="time_for_other_med">It\'s time for %1$s\'s %2$s</string>
     <string name="add_dose">Add Dose</string>
+
 </resources>

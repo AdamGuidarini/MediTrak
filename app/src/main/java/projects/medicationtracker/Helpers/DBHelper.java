@@ -7,6 +7,7 @@ import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Bundle;
 import android.util.Pair;
 
 import androidx.annotation.Nullable;
@@ -24,7 +25,7 @@ import projects.medicationtracker.SimpleClasses.Note;
 public class DBHelper extends SQLiteOpenHelper
 {
     private static final String DATABASE_NAME = "Medications.db";
-    private final static int DATABASE_VERSION = 4;
+    private final static int DATABASE_VERSION = 5;
 
     private static final String MEDICATION_TABLE = "Medication";
     private static final String MED_ID = "MedicationID";
@@ -57,11 +58,11 @@ public class DBHelper extends SQLiteOpenHelper
     private static final String SETTINGS_TABLE = "Settings";
     private static final String TIME_BEFORE_DOSE = "TimeBeforeDose";
     private static final String ENABLE_NOTIFICATIONS = "EnableNotifications";
-    private static final String THEME = "Theme";
+    public static final String THEME = "Theme";
     public static final String DEFAULT = "default";
     public static final String LIGHT = "light";
     public static final String DARK = "dark";
-
+    public static final String AGREED_TO_TERMS = "AgreedToTerms";
     private static final String ACTIVITY_CHANGE_TABLE = "ActivityChanges";
     private static final String CHANGE_EVENT_ID = "ChangeId";
     private static final String CHANGE_DATE = "ChangeDate";
@@ -129,7 +130,8 @@ public class DBHelper extends SQLiteOpenHelper
                 "CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
                 + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
                 + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1, "
-                + THEME + " TEXT DEFAULT '" + DEFAULT + "')"
+                + THEME + " TEXT DEFAULT '" + DEFAULT + "',"
+                + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0)"
         );
 
         sqLiteDatabase.execSQL("INSERT INTO " + SETTINGS_TABLE + "("
@@ -191,6 +193,11 @@ public class DBHelper extends SQLiteOpenHelper
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +") ON DELETE CASCADE"
                 + ")"
             );
+        }
+
+        if (i < 5)
+        {
+            sqLiteDatabase.execSQL("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0;");
         }
     }
 
@@ -951,23 +958,27 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Retrieves theme saved by user.
-     * @return User's preferred theme.
+     * Retrieves preferences saved by user.
+     * @return User's preferred theme & terms of service agreement status.
      */
-    public String getSavedTheme()
+    public Bundle getPreferences()
     {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT " + THEME + " FROM " + SETTINGS_TABLE;
-        String theme;
+        String query = "SELECT " + THEME + "," + AGREED_TO_TERMS + " FROM " + SETTINGS_TABLE;
+        Bundle retVal = new Bundle();
 
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
 
-        theme = cursor.getString(cursor.getColumnIndexOrThrow(THEME));
+        retVal.putString(THEME, cursor.getString(cursor.getColumnIndexOrThrow(THEME)));
+        retVal.putBoolean(
+                AGREED_TO_TERMS,
+                Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(AGREED_TO_TERMS))) == 1
+        );
 
         cursor.close();
 
-        return theme;
+        return retVal;
     }
 
     /**
@@ -1139,5 +1150,18 @@ public class DBHelper extends SQLiteOpenHelper
         }
 
         return intervals;
+    }
+
+    /**
+     * Saves terms acceptance
+     */
+    public void saveTermsAcceptance()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(AGREED_TO_TERMS, true);
+
+        db.update(SETTINGS_TABLE, cv, null, null);
     }
 }
