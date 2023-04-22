@@ -3,6 +3,7 @@ package projects.medicationtracker;
 import static projects.medicationtracker.Helpers.DBHelper.DARK;
 import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
+import static projects.medicationtracker.Helpers.DBHelper.THEME;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -172,7 +173,7 @@ public class Settings extends AppCompatActivity
     private void setThemeMenu()
     {
         MaterialAutoCompleteTextView themeSelector = findViewById(R.id.themeSelector);
-        String savedTheme = db.getSavedTheme();
+        String savedTheme = db.getPreferences().getString(THEME);
 
         themeSelector.setAdapter(createThemeMenuAdapter());
 

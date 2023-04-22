@@ -4,8 +4,10 @@ import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DA
 import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DAY_NUMBER;
 import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DAY_OF_WEEK;
 import static projects.medicationtracker.Fragments.MedicationScheduleFragment.MEDICATIONS;
+import static projects.medicationtracker.Helpers.DBHelper.AGREED_TO_TERMS;
 import static projects.medicationtracker.Helpers.DBHelper.DARK;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
+import static projects.medicationtracker.Helpers.DBHelper.THEME;
 
 import android.app.NotificationManager;
 import android.content.Context;
@@ -57,8 +59,9 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Bundle preferences = db.getPreferences();
 
-        String theme = db.getSavedTheme();
+        String theme = preferences.getString(THEME);
 
         if (theme.equals(DARK))
         {
@@ -81,7 +84,7 @@ public class MainActivity extends AppCompatActivity
         NotificationHelper.createNotificationChannel(this);
         prepareNotifications();
 
-        if (true)
+        if (!preferences.getBoolean(AGREED_TO_TERMS))
         {
             WelcomeDialog welcomeDialog = new WelcomeDialog();
             welcomeDialog.setCancelable(false);
