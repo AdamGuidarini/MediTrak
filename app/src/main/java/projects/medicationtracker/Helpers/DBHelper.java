@@ -68,6 +68,9 @@ public class DBHelper extends SQLiteOpenHelper
     private static final String CHANGE_DATE = "ChangeDate";
     private static final String PAUSED = "Paused";
 
+    private static final String PARENT_CHILD_MED_TABLE = "ParentChildMedicationRelation";
+    private static final String PARENT_ID = "ParentId";
+
     public DBHelper(@Nullable Context context) { super(context, DATABASE_NAME, null, DATABASE_VERSION);}
 
     /**
@@ -145,6 +148,15 @@ public class DBHelper extends SQLiteOpenHelper
                 + CHANGE_DATE + " DATETIME,"
                 + PAUSED + " BOOLEAN,"
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +") ON DELETE CASCADE"
+                + ")"
+        );
+
+        sqLiteDatabase.execSQL(
+                "CREATE TABLE IF NOT EXISTS " + PARENT_CHILD_MED_TABLE +"("
+                + MED_ID + " INTEGER PRIMARY KEY,"
+                + PARENT_ID + " Integer,"
+                + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +") ON DELETE CASCADE,"
+                + "FOREIGN KEY (" + PARENT_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +") ON DELETE CASCADE"
                 + ")"
         );
     }
