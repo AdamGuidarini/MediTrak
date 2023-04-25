@@ -1,8 +1,7 @@
 package projects.medicationtracker.Fragments;
 
-import static projects.medicationtracker.Fragments.AddEditFormFragment.MINUTES_IN_DAY;
+import static projects.medicationtracker.AddMedication.MINUTES_IN_DAY;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,7 +16,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Locale;
 
-import projects.medicationtracker.EditMedication;
+import projects.medicationtracker.AddMedication;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.MedicationNotes;
@@ -154,7 +153,7 @@ public class MyMedicationsFragment extends Fragment
             getActivity().startActivity(notesIntent);
         });
 
-        Intent editMedIntent = new Intent(getActivity(), EditMedication.class);
+        Intent editMedIntent = new Intent(getActivity(), AddMedication.class);
         editMedIntent.putExtra("medId", medication.getId());
 
         editButton.setOnClickListener(view ->

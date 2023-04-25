@@ -14,9 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MedicationTracker">
 
-        <activity android:name=".EditMedication"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
         <activity android:name=".MedicationNotes"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"  />
