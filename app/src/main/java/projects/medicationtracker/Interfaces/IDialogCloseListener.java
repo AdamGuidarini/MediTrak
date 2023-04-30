@@ -2,7 +2,8 @@ package projects.medicationtracker.Interfaces;
 
 public interface IDialogCloseListener
 {
-    enum Action {
+    enum Action
+    {
         DELETE,
         ADD
     }

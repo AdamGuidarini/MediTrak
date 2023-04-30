@@ -27,7 +27,7 @@ import projects.medicationtracker.Receivers.EventReceiver;
 public class NotificationService extends IntentService
 {
     public static String MARK_AS_TAKEN_ACTION = "markAsTaken";
-    public static  String SNOOZE_ACTION = "snooze15";
+    public static String SNOOZE_ACTION = "snooze15";
 
     public NotificationService()
     {
@@ -36,6 +36,7 @@ public class NotificationService extends IntentService
 
     /**
      * Handles intent sent from NotificationReceiver and issues notification.
+     *
      * @param intent Intent sent from NotificationReceiver.
      */
     @Override
@@ -57,6 +58,7 @@ public class NotificationService extends IntentService
 
     /**
      * Creates a notification
+     *
      * @param message Message to display in the notification.
      * @return A built notification.
      */
@@ -100,22 +102,22 @@ public class NotificationService extends IntentService
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText(message)
-                .setSmallIcon(R.drawable.mt_icon)
-                .setAutoCancel(true)
-                .setGroup(GROUP_KEY)
-                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
-                .addAction(
-                        0,
-                        getString(R.string.mark_as_taken),
-                        markAsTakenPendingIntent
-                )
-                .addAction(
-                        0,
-                        getString(R.string.snooze_message),
-                        snoozePendingIntent
-                );
+                        .setContentTitle(getString(R.string.app_name))
+                        .setContentText(message)
+                        .setSmallIcon(R.drawable.mt_icon)
+                        .setAutoCancel(true)
+                        .setGroup(GROUP_KEY)
+                        .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
+                        .addAction(
+                                0,
+                                getString(R.string.mark_as_taken),
+                                markAsTakenPendingIntent
+                        )
+                        .addAction(
+                                0,
+                                getString(R.string.snooze_message),
+                                snoozePendingIntent
+                        );
 
         Intent resIntent =
                 new Intent(this.getApplicationContext(), MainActivity.class);

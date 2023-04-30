@@ -40,9 +40,10 @@ public class AddAsNeededDoseDialog extends DialogFragment
 
     /**
      * Constructor
+     *
      * @param medications Medications to display in dropdown. Non-as needed meds should be filtered out.
-     * @param dateTaken Date medication is take.
-     * @param database Database helper to store dose
+     * @param dateTaken   Date medication is take.
+     * @param database    Database helper to store dose
      */
     public AddAsNeededDoseDialog(ArrayList<Medication> medications, LocalDate dateTaken, DBHelper database)
     {
@@ -53,9 +54,9 @@ public class AddAsNeededDoseDialog extends DialogFragment
 
     /**
      * Builds dialog upon creation
-     * @param savedInstances The last saved instance state of the Fragment,
-     * or null if this is a freshly created Fragment.
      *
+     * @param savedInstances The last saved instance state of the Fragment,
+     *                       or null if this is a freshly created Fragment.
      * @return Built dialog
      */
     @NonNull
@@ -83,9 +84,14 @@ public class AddAsNeededDoseDialog extends DialogFragment
         yourMeds.addTextChangedListener(new TextWatcher()
         {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+            }
+
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+            }
 
             @Override
             public void afterTextChanged(Editable s)
@@ -98,9 +104,14 @@ public class AddAsNeededDoseDialog extends DialogFragment
         timeTaken.addTextChangedListener(new TextWatcher()
         {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+            }
+
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+            }
 
             @Override
             public void afterTextChanged(Editable s)

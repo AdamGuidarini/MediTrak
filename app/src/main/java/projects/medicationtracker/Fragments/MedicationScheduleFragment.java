@@ -55,17 +55,18 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     /**
      * Required empty constructor
      */
-    public MedicationScheduleFragment() {}
+    public MedicationScheduleFragment()
+    {
+    }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param medications Medications to display in schedule.
-     * @param day The name of the day this fragment will display
+     * @param medications  Medications to display in schedule.
+     * @param day          The name of the day this fragment will display
      * @param aDayThisWeek A LocalDate in the week the user is viewing
-     * @param dayNum the number of the day in the week being viewed (0 Sunday - 6 Saturday)
-     *
+     * @param dayNum       the number of the day in the week being viewed (0 Sunday - 6 Saturday)
      * @return A new instance of fragment MedicationScheduleFragment.
      */
     public static MedicationScheduleFragment newInstance(
@@ -73,7 +74,8 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
             String day,
             LocalDate aDayThisWeek,
             int dayNum
-    ) {
+    )
+    {
         MedicationScheduleFragment fragment = new MedicationScheduleFragment();
 
         Bundle bundle = new Bundle();
@@ -88,10 +90,14 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+    }
 
     /**
      * Builds an instance of the fragment
+     *
      * @return The fragment inflated
      */
     @Override
@@ -103,8 +109,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
         {
             meds = getArguments().getParcelableArrayList(MEDICATIONS, Medication.class);
-        }
-        else
+        } else
         {
             meds = getArguments().getParcelableArrayList(MEDICATIONS);
         }
@@ -188,8 +193,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
             String noMed = getString(R.string.no_meds_for_day, dayOfWeek);
 
             TextViewUtils.setTextViewParams(textView, noMed, checkBoxHolder);
-        }
-        else
+        } else
         {
             sortSchedule(scheduledMeds);
             sortSchedule(asNeededMeds);
@@ -238,8 +242,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         if (medication.getDosage() == (int) medication.getDosage())
         {
             dosage = String.format(Locale.getDefault(), "%d", (int) medication.getDosage());
-        }
-        else
+        } else
         {
             dosage = String.valueOf(medication.getDosage());
         }
@@ -289,8 +292,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
             if (doseId != -1)
             {
                 db.updateDoseStatus(doseId, now, ((CheckBox) thisMedication).isChecked());
-            }
-            else
+            } else
             {
                 long id = db.addToMedicationTracker(
                         tvTag.getFirst(),
@@ -310,6 +312,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
 
     /**
      * Sorts CheckBoxes in medication schedule.
+     *
      * @param layouts ArrayList of all relative layout in the schedule.
      */
     private void sortSchedule(ArrayList<RelativeLayout> layouts)

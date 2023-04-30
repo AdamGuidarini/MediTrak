@@ -16,7 +16,8 @@ public class TimeFormatting
 {
     /**
      * Formats time for presentation to user
-     * @param hour Hour to be displayed
+     *
+     * @param hour   Hour to be displayed
      * @param minute The minute to display
      * @return A string containing the time to display to the user
      */
@@ -33,7 +34,8 @@ public class TimeFormatting
 
     /**
      * Formats time to store in database
-     * @param hour Hour to store
+     *
+     * @param hour   Hour to store
      * @param minute minute to store
      * @return A containing the date and time to be stored in database
      */
@@ -63,6 +65,7 @@ public class TimeFormatting
     /**
      * Sets chosen current date and time to 2 TextViews and stores datetime for
      * database in the tag of TextView that will display the date.
+     *
      * @param date Current date
      * @param time Current time
      */
@@ -85,10 +88,11 @@ public class TimeFormatting
 
     /**
      * Converts a String to LocalDateTime
+     *
      * @param date A string containing a date
      * @return LocalDateTime with date seen in String
      */
-    public static LocalDateTime stringToLocalDateTime (String date)
+    public static LocalDateTime stringToLocalDateTime(String date)
     {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss",
                 Locale.getDefault());
@@ -102,6 +106,7 @@ public class TimeFormatting
 
     /**
      * Converts a LocalDateTime to a String, this String can be stored the database
+     *
      * @param localDateTime The time to be converted to String
      * @return String containing value of the LocalDateTime
      */
@@ -113,6 +118,7 @@ public class TimeFormatting
 
     /**
      * Converts a LocalTime to a String in 12-hour format
+     *
      * @param time Time to convert
      * @return A String of the time passed to it in 12-hour format
      */
@@ -125,6 +131,7 @@ public class TimeFormatting
 
     /**
      * Converts time in minutes to weeks, days, and minutes
+     *
      * @param minutes Time in minutes
      * @return String showing time taken
      */
@@ -160,7 +167,7 @@ public class TimeFormatting
                 days++;
 
             conversion += days + " day";
-            if (days > 1)    conversion += "s";
+            if (days > 1) conversion += "s";
 
             containsDays = true;
         }
@@ -176,7 +183,7 @@ public class TimeFormatting
                 hours++;
 
             conversion += hours + " hour";
-            if (hours > 1)  conversion += "s";
+            if (hours > 1) conversion += "s";
 
             containsHours = true;
         }

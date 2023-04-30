@@ -39,11 +39,13 @@ public class MyMedicationsFragment extends Fragment
     Button editButton;
 
     public MyMedicationsFragment()
-    {}
+    {
+    }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
+     *
      * @return A new instance of fragment MyMedicationsFragment.
      */
     public static MyMedicationsFragment newInstance()
@@ -96,8 +98,7 @@ public class MyMedicationsFragment extends Fragment
         if (medication.getDosage() == (int) medication.getDosage())
         {
             dosageVal = String.format(Locale.getDefault(), "%d", (int) medication.getDosage());
-        }
-        else
+        } else
         {
             dosageVal = String.valueOf(medication.getDosage());
         }
@@ -111,8 +112,7 @@ public class MyMedicationsFragment extends Fragment
         {
             String time = TimeFormatting.localTimeToString(medication.getTimes()[0].toLocalTime());
             freqLabel = new StringBuilder(getString(R.string.taken_daily_at) + " " + time);
-        }
-        else if (medication.getFrequency() == MINUTES_IN_DAY && (medication.getTimes().length > 1))
+        } else if (medication.getFrequency() == MINUTES_IN_DAY && (medication.getTimes().length > 1))
         {
             freqLabel = new StringBuilder(getString(R.string.taken_daily_at));
 
@@ -124,12 +124,10 @@ public class MyMedicationsFragment extends Fragment
                 if (i != (medication.getTimes().length - 1))
                     freqLabel.append(", ");
             }
-        }
-        else if (medication.getFrequency() == 0)
+        } else if (medication.getFrequency() == 0)
         {
             freqLabel = new StringBuilder(getString(R.string.taken_as_needed));
-        }
-        else
+        } else
         {
             freqLabel = new StringBuilder(getString(R.string.taken_every_lbl) + TimeFormatting.freqConversion(medication.getFrequency()));
         }
@@ -142,7 +140,7 @@ public class MyMedicationsFragment extends Fragment
             alias.setText(getString(R.string.alias_lbl, medication.getAlias()));
         }
 
-        takenSince.setText(getString(R.string.taken_since,TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())));
+        takenSince.setText(getString(R.string.taken_since, TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())));
 
         Intent notesIntent = new Intent(getActivity(), MedicationNotes.class);
         notesIntent.putExtra("medId", medication.getId());

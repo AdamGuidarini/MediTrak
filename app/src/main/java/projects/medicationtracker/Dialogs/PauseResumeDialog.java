@@ -57,8 +57,7 @@ public class PauseResumeDialog extends DialogFragment
                 pauseButton.setVisible(false);
 
                 NotificationHelper.clearPendingNotifications(medication, getActivity());
-            }
-            else
+            } else
             {
                 resumeButton.setVisible(false);
                 pauseButton.setVisible(true);

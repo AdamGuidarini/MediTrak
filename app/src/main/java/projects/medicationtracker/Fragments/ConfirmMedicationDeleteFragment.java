@@ -20,7 +20,8 @@ public class ConfirmMedicationDeleteFragment extends DialogFragment
 
     /**
      * Creates a dialog fragment offering to delete the provided medication.
-     * @param database  The DBHelper connected to the database with the medication.
+     *
+     * @param database           The DBHelper connected to the database with the medication.
      * @param medicationToDelete The medication to delete from the database.
      */
     public ConfirmMedicationDeleteFragment(DBHelper database, Medication medicationToDelete)

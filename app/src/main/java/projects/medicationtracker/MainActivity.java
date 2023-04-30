@@ -66,12 +66,10 @@ public class MainActivity extends AppCompatActivity
         if (theme.equals(DARK))
         {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }
-        else if (theme.equals(LIGHT))
+        } else if (theme.equals(LIGHT))
         {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
-        else
+        } else
         {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         }
@@ -116,10 +114,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-    *  Launches MyMedications.java when "My Medications" option is selected
-    *
-    *  @param item the "My Medications" menu option
-    */
+     * Launches MyMedications.java when "My Medications" option is selected
+     *
+     * @param item the "My Medications" menu option
+     */
     public void onMyMedicationsClick(MenuItem item)
     {
         Intent intent = new Intent(this, MyMedications.class);
@@ -127,9 +125,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     *  Launches AddMedication.java when "Add Medication" option is selected
+     * Launches AddMedication.java when "Add Medication" option is selected
      *
-     *  @param item The "Add Medication" option
+     * @param item The "Add Medication" option
      */
     public void onAddMedicationClick(MenuItem item)
     {
@@ -138,9 +136,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     *  Launches Settings.java when "Settings" option is selected
+     * Launches Settings.java when "Settings" option is selected
      *
-     *  @param item The "Settings" menu option
+     * @param item The "Settings" menu option
      */
     public void onSettingsClick(MenuItem item)
     {
@@ -177,8 +175,7 @@ public class MainActivity extends AppCompatActivity
             patientNames.setVisibility(View.GONE);
 
             createMedicationSchedule(medications, names.get(0));
-        }
-        else
+        } else
         {
             patientNames.setVisibility(View.VISIBLE);
 
@@ -218,13 +215,16 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {}
+                public void onNothingSelected(AdapterView<?> adapterView)
+                {
+                }
             });
         }
     }
 
     /**
      * Creates an ArrayList of Medications to be taken this week
+     *
      * @return List of all Medications for this week
      */
     public ArrayList<Medication> medicationsForThisWeek()
@@ -321,12 +321,10 @@ public class MainActivity extends AppCompatActivity
                                 {
                                     return true;
                                 }
-                            }
-                            else if (time.isAfter(pausedInterval.first) && pausedInterval.second == null)
+                            } else if (time.isAfter(pausedInterval.first) && pausedInterval.second == null)
                             {
                                 return true;
-                            }
-                            else if (time.isAfter(pausedInterval.first) && time.isBefore(pausedInterval.second))
+                            } else if (time.isAfter(pausedInterval.first) && time.isBefore(pausedInterval.second))
                             {
                                 return true;
                             }
@@ -350,7 +348,7 @@ public class MainActivity extends AppCompatActivity
      *
      * @param medications An ArrayList of Medications. Will be searched for
      *                    Medications where patientName equals name passed to method.
-     * @param name The name of the patient whose Medications should be displayed
+     * @param name        The name of the patient whose Medications should be displayed
      */
     public void createMedicationSchedule(ArrayList<Medication> medications, String name)
     {
@@ -363,13 +361,13 @@ public class MainActivity extends AppCompatActivity
         }
 
         String[] days = {
-            getString(R.string.sunday),
-            getString(R.string.monday),
-            getString(R.string.tuesday),
-            getString(R.string.wednesday),
-            getString(R.string.thursday),
-            getString(R.string.friday),
-            getString(R.string.saturday)
+                getString(R.string.sunday),
+                getString(R.string.monday),
+                getString(R.string.tuesday),
+                getString(R.string.wednesday),
+                getString(R.string.thursday),
+                getString(R.string.friday),
+                getString(R.string.saturday)
         };
 
         for (int ii = 0; ii < 7; ii++)
@@ -387,24 +385,25 @@ public class MainActivity extends AppCompatActivity
      * Creates a CardView for each day of the week containing information
      * on the medications to be taken that day
      *
-     * @param dayOfWeek String for the name of the day
-     * @param day The number representing the day of the week
-     *            - Sunday = 0
-     *            - Monday = 1
-     *            - Tuesday = 2
-     *            - Wednesday = 3
-     *            - Thursday = 4
-     *            - Friday = 5
-     *            - Saturday = 6
+     * @param dayOfWeek   String for the name of the day
+     * @param day         The number representing the day of the week
+     *                    - Sunday = 0
+     *                    - Monday = 1
+     *                    - Tuesday = 2
+     *                    - Wednesday = 3
+     *                    - Thursday = 4
+     *                    - Friday = 5
+     *                    - Saturday = 6
      * @param medications The list of medications to be taken on the given day
-     * @param layout The LinearLayout in which to place the CardView
+     * @param layout      The LinearLayout in which to place the CardView
      */
     public void createDayOfWeekCards(
             String dayOfWeek,
             int day,
             ArrayList<Medication> medications,
             LinearLayout layout
-    ) {
+    )
+    {
         StandardCardView thisDayCard = new StandardCardView(this);
         FragmentContainerView fragmentContainer = new FragmentContainerView(this);
         int viewId = day == 0 ? 7 : day;

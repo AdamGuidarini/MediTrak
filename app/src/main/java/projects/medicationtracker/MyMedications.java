@@ -29,6 +29,7 @@ public class MyMedications extends AppCompatActivity
 
     /**
      * Creates MyMedications
+     *
      * @param savedInstanceState Saved instances
      */
     @Override
@@ -65,11 +66,10 @@ public class MyMedications extends AppCompatActivity
 
                 for (Medication medication : patientMeds)
                     createMyMedCards(medication, myMedsLayout);
-            }
-            else
+            } else
             {
                 if (patientNames.contains("ME!"))
-                        patientNames.set(patientNames.indexOf("ME!"), you);
+                    patientNames.set(patientNames.indexOf("ME!"), you);
 
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, patientNames);
                 nameSpinner.setAdapter(adapter);
@@ -77,7 +77,7 @@ public class MyMedications extends AppCompatActivity
                 nameSpinner.setVisibility(View.VISIBLE);
 
                 if (patientNames.contains(you))
-                        nameSpinner.setSelection(adapter.getPosition(you));
+                    nameSpinner.setSelection(adapter.getPosition(you));
 
                 nameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
                 {
@@ -98,7 +98,9 @@ public class MyMedications extends AppCompatActivity
                     }
 
                     @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {}
+                    public void onNothingSelected(AdapterView<?> adapterView)
+                    {
+                    }
                 });
             }
         }
@@ -106,6 +108,7 @@ public class MyMedications extends AppCompatActivity
 
     /**
      * Determines which button was selected
+     *
      * @param item Selected menu option
      * @return Selected option
      */
@@ -135,6 +138,7 @@ public class MyMedications extends AppCompatActivity
 
     /**
      * Creates a CardView containing all information on a Medication
+     *
      * @param medication The Medication whose details will be displayed.
      * @param baseLayout The LinearLayout in which to place the card
      */

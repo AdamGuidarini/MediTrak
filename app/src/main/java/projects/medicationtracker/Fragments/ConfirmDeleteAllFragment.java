@@ -57,8 +57,7 @@ public class ConfirmDeleteAllFragment extends DialogFragment
             if (medication.getFrequency() == 1440)
             {
                 NotificationHelper.deletePendingNotification(medication.getId(), getContext());
-            }
-            else
+            } else
             {
                 long[] timeIds = db.getMedicationTimeIds(medication);
 

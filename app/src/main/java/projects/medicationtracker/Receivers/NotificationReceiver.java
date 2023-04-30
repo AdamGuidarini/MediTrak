@@ -21,8 +21,9 @@ public class NotificationReceiver extends BroadcastReceiver
 {
     /**
      * Receiver for notification PendingIntent
+     *
      * @param context Context of caller.
-     * @param intent Intent to receive.
+     * @param intent  Intent to receive.
      */
     @Override
     public void onReceive(Context context, Intent intent)

@@ -42,8 +42,7 @@ public class EventReceiver extends BroadcastReceiver
             );
 
             return;
-        }
-        else if (intent.getAction().contains(SNOOZE_ACTION))
+        } else if (intent.getAction().contains(SNOOZE_ACTION))
         {
             String medId = "_" + intent.getAction().split("_")[1];
 
@@ -68,8 +67,9 @@ public class EventReceiver extends BroadcastReceiver
 
     /**
      * Prepares pending notifications on boot
-     * @param context Notification context
-     * @param db DBHelper containing medication data
+     *
+     * @param context    Notification context
+     * @param db         DBHelper containing medication data
      * @param medication Medication in need of a notification
      */
     private void prepareNotification(Context context, DBHelper db, Medication medication)
@@ -80,9 +80,10 @@ public class EventReceiver extends BroadcastReceiver
 
     /**
      * Marks a dose as taken from the notification
-     * @param context Application context
+     *
+     * @param context        Application context
      * @param notificationId Id of notification to cancel
-     * @param medId ID of medication taken
+     * @param medId          ID of medication taken
      * @param doseTimeString Dose time for DB.
      */
     private void markDoseTaken(Context context, long notificationId, long medId, String doseTimeString, DBHelper db)

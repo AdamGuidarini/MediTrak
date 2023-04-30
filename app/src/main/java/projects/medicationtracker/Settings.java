@@ -35,6 +35,7 @@ public class Settings extends AppCompatActivity
 
     /**
      * Create Settings
+     *
      * @param savedInstanceState Saved instance
      */
     @Override
@@ -56,6 +57,7 @@ public class Settings extends AppCompatActivity
 
     /**
      * Determines which button was selected
+     *
      * @param item Selected menu option
      * @return Selected option
      */
@@ -97,8 +99,7 @@ public class Settings extends AppCompatActivity
                 setHoursBeforeLayout.setVisibility(View.GONE);
 
                 db.setTimeBeforeDose(-1);
-            }
-            else
+            } else
             {
                 setHoursBeforeDoseEditText(2, timeBeforeDoseSwitch.isChecked());
                 db.setTimeBeforeDose(2);
@@ -123,12 +124,17 @@ public class Settings extends AppCompatActivity
 
         setHoursBeforeLayout.setVisibility(View.VISIBLE);
 
-        enterTimeBeforeDose.addTextChangedListener(new TextWatcher() {
+        enterTimeBeforeDose.addTextChangedListener(new TextWatcher()
+        {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2)
+            {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2)
+            {
+            }
 
             @Override
             public void afterTextChanged(Editable editable)
@@ -214,10 +220,14 @@ public class Settings extends AppCompatActivity
         themeSelector.addTextChangedListener(new TextWatcher()
         {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+            }
 
             @Override
             public void afterTextChanged(Editable s)
@@ -257,6 +267,7 @@ public class Settings extends AppCompatActivity
 
     /**
      * Checks if a String can be parsed to int
+     *
      * @param stringToParse The String to convert to an int
      * @return True if can be parsed, else false
      */
@@ -265,8 +276,7 @@ public class Settings extends AppCompatActivity
         try
         {
             Integer.parseInt(stringToParse);
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
             return false;
         }

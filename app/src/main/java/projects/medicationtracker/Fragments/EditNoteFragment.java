@@ -29,6 +29,7 @@ public class EditNoteFragment extends DialogFragment
 
     /**
      * Creates a DialogFragment allowing the user to change a note
+     *
      * @param savedInstanceState Saved instances
      * @return The Created Dialog
      */

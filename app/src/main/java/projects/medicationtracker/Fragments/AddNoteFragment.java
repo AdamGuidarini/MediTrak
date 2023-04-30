@@ -30,7 +30,8 @@ public class AddNoteFragment extends DialogFragment
 
     /**
      * Constructor for fragment
-     * @param context Context for DBHelper
+     *
+     * @param context      Context for DBHelper
      * @param medicationId ID of Medication not is about
      */
     public AddNoteFragment(Context context, long medicationId)
@@ -41,6 +42,7 @@ public class AddNoteFragment extends DialogFragment
 
     /**
      * Creates DialogFragment that allows a user to enter notes
+     *
      * @param savedInstanceState Saved instance state
      * @return The Dialog allowing user to take notes
      */
@@ -80,7 +82,8 @@ public class AddNoteFragment extends DialogFragment
                             Intent intent = new Intent(getContext(), MedicationNotes.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             intent.putExtra("medId", newNote.getMedId());
-                            startActivity(intent);                        }
+                            startActivity(intent);
+                        }
                     }
 
                     dismiss();
@@ -93,6 +96,7 @@ public class AddNoteFragment extends DialogFragment
 
     /**
      * Cancels Dialog
+     *
      * @param dialog The Dialog to cancel
      */
     @Override

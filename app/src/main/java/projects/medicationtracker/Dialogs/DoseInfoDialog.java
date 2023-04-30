@@ -80,8 +80,7 @@ public class DoseInfoDialog extends DialogFragment
         if (!db.getTaken(doseId))
         {
             getDialog().findViewById(R.id.notTakenMessage).setVisibility(View.VISIBLE);
-        }
-        else
+        } else
         {
             LocalDateTime doseDate = db.getTimeTaken(doseId);
 
@@ -125,7 +124,7 @@ public class DoseInfoDialog extends DialogFragment
 
     private void save()
     {
-        if(changed)
+        if (changed)
         {
             LocalDate date = (LocalDate) dateTaken.getTag();
             LocalTime time = (LocalTime) timeTaken.getTag();

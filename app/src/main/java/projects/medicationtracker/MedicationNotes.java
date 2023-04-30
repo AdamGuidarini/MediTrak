@@ -44,6 +44,7 @@ public class MedicationNotes extends AppCompatActivity
 
     /**
      * Creates options menu
+     *
      * @param menu The menu bar
      * @return Options menu
      */
@@ -56,6 +57,7 @@ public class MedicationNotes extends AppCompatActivity
 
     /**
      * Determines which button was selected
+     *
      * @param item Selected menu option
      * @return Selected option
      */
@@ -108,6 +110,7 @@ public class MedicationNotes extends AppCompatActivity
 
     /**
      * Allows the user to create a note
+     *
      * @param item The menu button
      */
     public void onAddNoteClick(MenuItem item)
@@ -133,7 +136,7 @@ public class MedicationNotes extends AppCompatActivity
             child.getClass().getName();
             CardView.class.getName();
             {
-                cardViews.add((CardView)child);
+                cardViews.add((CardView) child);
             }
         }
 
@@ -153,7 +156,8 @@ public class MedicationNotes extends AppCompatActivity
 
     /**
      * Creates a CardView with a note in it
-     * @param note The Note in the CardView
+     *
+     * @param note       The Note in the CardView
      * @param baseLayout The LinearLayout the holds the CardView
      */
     private void createNoteCard(Note note, LinearLayout baseLayout)
@@ -172,9 +176,9 @@ public class MedicationNotes extends AppCompatActivity
 
         TextView noteDate = new TextView(context);
         String noteDateLabel = getString(
-            R.string.note_timestamp,
-            TimeFormatting.localDateToString(note.getNoteTime().toLocalDate()),
-            TimeFormatting.localTimeToString(note.getNoteTime().toLocalTime())
+                R.string.note_timestamp,
+                TimeFormatting.localDateToString(note.getNoteTime().toLocalDate()),
+                TimeFormatting.localTimeToString(note.getNoteTime().toLocalTime())
         );
 
         TextViewUtils.setTextViewParams(noteDate, noteDateLabel, cardLayout);
