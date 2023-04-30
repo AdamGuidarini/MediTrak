@@ -69,10 +69,14 @@ public class DBHelper extends SQLiteOpenHelper
     private static final String CHANGE_DATE = "ChangeDate";
     private static final String PAUSED = "Paused";
 
-    public DBHelper(@Nullable Context context) { super(context, DATABASE_NAME, null, DATABASE_VERSION);}
+    public DBHelper(@Nullable Context context)
+    {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
 
     /**
      * Creates DBHelper object, adds tables to DB if the don't exist
+     *
      * @param sqLiteDatabase Database instance
      */
     @Override
@@ -81,59 +85,60 @@ public class DBHelper extends SQLiteOpenHelper
         // Holds all constant information on a given medication
         sqLiteDatabase.execSQL(
                 "CREATE TABLE IF NOT EXISTS " + MEDICATION_TABLE + "("
-                + MED_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + MED_NAME + " TEXT,"
-                + PATIENT_NAME + " Text,"
-                + MED_DOSAGE + " DECIMAL(3,2),"
-                + MED_UNITS + " TEXT,"
-                + START_DATE + " DATETIME,"
-                + MED_FREQUENCY + " INT,"
-                + ALIAS + " TEXT,"
-                + ACTIVE + " BOOLEAN DEFAULT 1,"
-                + PARENT_ID + " INTEGER "
-                + ")"
+                        + MED_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                        + MED_NAME + " TEXT,"
+                        + PATIENT_NAME + " Text,"
+                        + MED_DOSAGE + " DECIMAL(3,2),"
+                        + MED_UNITS + " TEXT,"
+                        + START_DATE + " DATETIME,"
+                        + MED_FREQUENCY + " INT,"
+                        + ALIAS + " TEXT,"
+                        + ACTIVE + " BOOLEAN DEFAULT 1,"
+                        + PARENT_ID + " INTEGER ,"
+                        + "FOREIGN KEY (" + PARENT_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
+                        + ")"
         );
 
         // Holds data on past doses, as well as doses for current week
         sqLiteDatabase.execSQL(
                 "CREATE TABLE IF NOT EXISTS " + MEDICATION_TRACKER_TABLE + "("
-                + DOSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + MED_ID + " INT,"
-                + DOSE_TIME + " DATETIME,"
-                + TAKEN + " BOOLEAN,"
-                + TIME_TAKEN + " DATETIME,"
-                + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                + ")"
+                        + DOSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                        + MED_ID + " INT,"
+                        + DOSE_TIME + " DATETIME,"
+                        + TAKEN + " BOOLEAN,"
+                        + TIME_TAKEN + " DATETIME,"
+                        + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
+                        + ")"
         );
 
         // Holds information on doses with a custom frequency so times for upcoming doses can be calculated
         sqLiteDatabase.execSQL(
                 "CREATE TABLE IF NOT EXISTS " + MEDICATION_TIMES + "("
-                + TIME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + MED_ID + " INT,"
-                + DRUG_TIME + " TEXT,"
-                + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                + ")"
+                        + TIME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                        + MED_ID + " INT,"
+                        + DRUG_TIME + " TEXT,"
+                        + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
+                        + ")"
         );
 
         // Stores a users notes for a medication, designed to help track how a medication is
         // affecting the patient. Facilitates tracking possible issues to bring up with prescriber
         sqLiteDatabase.execSQL(
                 "CREATE TABLE IF NOT EXISTS " + NOTES_TABLE + "("
-                + NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + MED_ID + " INT, "
-                + NOTE + " TEXT, "
-                + ENTRY_TIME + " DATETIME,"
-                + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +") ON DELETE CASCADE"
-                + ")"
+                        + NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                        + MED_ID + " INT, "
+                        + NOTE + " TEXT, "
+                        + ENTRY_TIME + " DATETIME,"
+                        + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
+                        + ")"
         );
 
         sqLiteDatabase.execSQL(
                 "CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
-                + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
-                + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1, "
-                + THEME + " TEXT DEFAULT '" + DEFAULT + "',"
-                + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0)"
+                        + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
+                        + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1, "
+                        + THEME + " TEXT DEFAULT '" + DEFAULT + "',"
+                        + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0)"
         );
 
         sqLiteDatabase.execSQL("INSERT INTO " + SETTINGS_TABLE + "("
@@ -142,18 +147,19 @@ public class DBHelper extends SQLiteOpenHelper
 
         sqLiteDatabase.execSQL(
                 "CREATE TABLE IF NOT EXISTS " + ACTIVITY_CHANGE_TABLE + "("
-                + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + MED_ID + " INT,"
-                + CHANGE_DATE + " DATETIME,"
-                + PAUSED + " BOOLEAN,"
-                + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +") ON DELETE CASCADE"
-                + ")"
+                        + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                        + MED_ID + " INT,"
+                        + CHANGE_DATE + " DATETIME,"
+                        + PAUSED + " BOOLEAN,"
+                        + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
+                        + ")"
         );
     }
 
     /**
      * Instructions for creation of new DBHelper object
      * Currently enables foreign keys
+     *
      * @param db A database instance
      */
     @Override
@@ -165,9 +171,10 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Instructions to perform on database upgrade
+     *
      * @param sqLiteDatabase Database instance
-     * @param i Old version of database
-     * @param i1 New Version of database
+     * @param i              Old version of database
+     * @param i1             New Version of database
      */
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1)
@@ -187,13 +194,13 @@ public class DBHelper extends SQLiteOpenHelper
         if (i < 4)
         {
             sqLiteDatabase.execSQL(
-                "CREATE TABLE IF NOT EXISTS " + ACTIVITY_CHANGE_TABLE + "("
-                + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + MED_ID + " INT,"
-                + CHANGE_DATE + " DATETIME,"
-                + PAUSED + " BOOLEAN,"
-                + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +") ON DELETE CASCADE"
-                + ")"
+                    "CREATE TABLE IF NOT EXISTS " + ACTIVITY_CHANGE_TABLE + "("
+                            + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                            + MED_ID + " INT,"
+                            + CHANGE_DATE + " DATETIME,"
+                            + PAUSED + " BOOLEAN,"
+                            + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
+                            + ")"
             );
         }
 
@@ -205,18 +212,20 @@ public class DBHelper extends SQLiteOpenHelper
         if (i < 6)
         {
             sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + PARENT_ID + " INTEGER;");
+            sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + PARENT_ID + " REFERENCES " + MEDICATION_TABLE + "(\" + MED_ID + \") ON DELETE CASCADE");
         }
     }
 
     /**
      * Adds new Medication to database
-     * @param medName Name of Medication
+     *
+     * @param medName     Name of Medication
      * @param patientName Name of patient
-     * @param dosage Number of units to take
-     * @param units Dosage unit
-     * @param startDate Date of first dose
-     * @param frequency How often to take Medication
-     * @param alias Alias for Medication, appears in notifications
+     * @param dosage      Number of units to take
+     * @param units       Dosage unit
+     * @param startDate   Date of first dose
+     * @param frequency   How often to take Medication
+     * @param alias       Alias for Medication, appears in notifications
      * @return rowid on success, -1 on failure
      */
     public long addMedication(String medName, String patientName, String dosage, String units,
@@ -238,22 +247,23 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Adds dose to MedicationTracker table
-     * @param medId ID of Medication
+     *
+     * @param medId    ID of Medication
      * @param drugTime Time to take Medication
-     * @return rowid on success, -1 on failure
      */
-    public long addDoseTime(long medId, String drugTime)
+    public void addDoseTime(long medId, String drugTime)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues doseValues = new ContentValues();
         doseValues.put(MED_ID, medId);
         doseValues.put(DRUG_TIME, drugTime);
 
-        return db.insert(MEDICATION_TIMES, null, doseValues);
+        db.insert(MEDICATION_TIMES, null, doseValues);
     }
 
     /**
      * Creates an ArrayList of all patients
+     *
      * @return ArrayList of all patients, except
      */
     public ArrayList<String> getPatients()
@@ -280,6 +290,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Returns an ArrayList of all Medications for given patient
+     *
      * @param patient The name of the patient whose Medications are sought
      * @return An ArrayList of all Medications for given patient
      */
@@ -337,8 +348,7 @@ public class DBHelper extends SQLiteOpenHelper
                 for (int i = 0; i < count; i++)
                     times[i] = timesArr.get(i);
 
-            }
-            else
+            } else
             {
                 times = new LocalDateTime[1];
 
@@ -359,6 +369,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Get number of rows in MedicationTable
+     *
      * @return Number of rows in MedicationTable
      */
     public long numberOfRows()
@@ -370,6 +381,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Create ArrayList of all Medications in MedicationTable
+     *
      * @return All Medications in MedicationTable
      */
     public ArrayList<Medication> getMedications()
@@ -400,7 +412,7 @@ public class DBHelper extends SQLiteOpenHelper
             String units = meds.getString(meds.getColumnIndexOrThrow(MED_UNITS));
             String date1 = meds.getString(meds.getColumnIndexOrThrow(START_DATE));
             String alias = meds.getString(meds.getColumnIndexOrThrow(ALIAS));
-            boolean acitve = Integer.parseInt(meds.getString(meds.getColumnIndexOrThrow(ACTIVE))) == 1;
+            boolean active = Integer.parseInt(meds.getString(meds.getColumnIndexOrThrow(ACTIVE))) == 1;
 
             LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(date1);
 
@@ -435,8 +447,7 @@ public class DBHelper extends SQLiteOpenHelper
                 for (int i = 0; i < count; i++)
                     times[i] = timesArr.get(i);
 
-            }
-            else
+            } else
             {
                 times = new LocalDateTime[1];
 
@@ -447,7 +458,7 @@ public class DBHelper extends SQLiteOpenHelper
 
             Medication medication = new Medication(medName, patient, units, times,
                     startDate, medId, frequency, dosage, alias);
-            medication.setActiveStatus(acitve);
+            medication.setActiveStatus(active);
 
             allMeds.add(medication);
             meds.moveToNext();
@@ -460,12 +471,13 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Retrieves a Medication object based on ID passed to it
+     *
      * @param id The ID of the Medication
      * @return Medication retrieved from database
      */
     public Medication getMedication(long id)
     {
-        SQLiteDatabase db =this.getReadableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + MEDICATION_TABLE + " WHERE "
                 + MED_ID + " = " + id;
 
@@ -494,6 +506,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Retrieves an array of all medication times for given medication from database.
+     *
      * @param id The id of the medication whose times should be retrieved.
      * @return An array of all of a medications times.
      */
@@ -522,6 +535,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Updates the given medication in the database.
+     *
      * @param medication The medication to update.
      */
     public void updateMedication(Medication medication)
@@ -582,7 +596,7 @@ public class DBHelper extends SQLiteOpenHelper
                     cv.put(MED_ID, medication.getId());
                     cv.put(DRUG_TIME, timeAsString);
 
-                    db.insert(MEDICATION_TIMES,  null, cv);
+                    db.insert(MEDICATION_TIMES, null, cv);
 
                     cv.clear();
                 }
@@ -600,16 +614,37 @@ public class DBHelper extends SQLiteOpenHelper
                 }
             }
         }
+    }
 
-        // Remove old times if times changed - may no longer line up with schedule
-        if (prevTimes != newTimes)
-        {
-            db.execSQL("DELETE FROM " + MEDICATION_TRACKER_TABLE + " WHERE " + MED_ID + " = " + medication.getId());
-        }
+    /**
+     * Adds a new medication when when an existing one is updated, the existing medication is updated
+     */
+    public void createChildMedication(Medication medication)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        long row;
+
+        pauseResumeMedication(medication.getParent(), false);
+
+        row = addMedication(
+                medication.getName(),
+                medication.getPatientName(),
+                String.valueOf(medication.getDosage()),
+                medication.getDosageUnits(),
+                TimeFormatting.localDateTimeToString(medication.getStartDate()),
+                (int) medication.getFrequency(),
+                medication.getAlias()
+        );
+
+        cv.put(PARENT_ID, medication.getParent().getId());
+
+        db.update(MEDICATION_TABLE, cv, MED_ID + " = " + row, null);
     }
 
     /**
      * Deletes Medication passed to it from database
+     *
      * @param medication Medication to delete
      */
     public void deleteMedication(Medication medication)
@@ -622,8 +657,9 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Determine of dose is in MedicationTracker
+     *
      * @param medication Medication to check
-     * @param time Time of dose
+     * @param time       Time of dose
      * @return True if present, false if not present
      */
     public boolean isInMedicationTracker(Medication medication, LocalDateTime time)
@@ -641,8 +677,7 @@ public class DBHelper extends SQLiteOpenHelper
             Cursor cursor = db.rawQuery(query, null);
             count = cursor.getCount();
             cursor.close();
-        }
-        catch (SQLException e)
+        } catch (SQLException e)
         {
             e.getCause();
         }
@@ -652,8 +687,9 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Add dose to MedicationTracker table
+     *
      * @param medication Medication whose dose will be added
-     * @param time Time of dose
+     * @param time       Time of dose
      * @return rowid of added dose on success, -1 on failure
      */
     public long addToMedicationTracker(Medication medication, LocalDateTime time)
@@ -685,8 +721,8 @@ public class DBHelper extends SQLiteOpenHelper
         while (!cursor.isAfterLast())
         {
             times[cursor.getPosition()] = TimeFormatting.stringToLocalDateTime(
-                            cursor.getString(cursor.getColumnIndexOrThrow(DOSE_TIME))
-                    );
+                    cursor.getString(cursor.getColumnIndexOrThrow(DOSE_TIME))
+            );
 
             cursor.moveToNext();
         }
@@ -706,7 +742,8 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Get ID of dose
-     * @param medId ID of Medication
+     *
+     * @param medId    ID of Medication
      * @param doseTime Time of dose
      * @return Dose ID of match found in MedicationTracker table
      */
@@ -731,6 +768,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Status of entry in MedicationTracker
+     *
      * @param doseId ID of dose in table
      * @return Status of dose
      */
@@ -760,9 +798,10 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Updates status of dose
-     * @param doseId ID of dose
+     *
+     * @param doseId    ID of dose
      * @param timeTaken Time of dose
-     * @param status Status of whether dose has been taken or not
+     * @param status    Status of whether dose has been taken or not
      */
     public void updateDoseStatus(long doseId, String timeTaken, boolean status)
     {
@@ -788,7 +827,8 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Adds a new Note to the Notes table
-     * @param note The note to add
+     *
+     * @param note  The note to add
      * @param medId ID of medication note is about
      */
     public void addNote(String note, long medId)
@@ -806,6 +846,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Removes a note from the database
+     *
      * @param note Note to remove
      */
     public void deleteNote(Note note)
@@ -820,6 +861,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Allows for a note to be updated.
+     *
      * @param note The new note.
      */
     public void updateNote(Note note, String newNote)
@@ -835,6 +877,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Retrieve all notes pertaining to given Medication.
+     *
      * @param medId ID of Medication pertaining to Note.
      * @return An ArrayList of all notes about given Medication.
      */
@@ -869,6 +912,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Gets IDs in database for times for the provided medication.
+     *
      * @param medication Medication whose time IDs must be retrieved.
      * @return An array of time ids.
      */
@@ -897,6 +941,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Stores the maximum amount of time before which a dose cannot be marked taken.
+     *
      * @param hoursBeforeDose Number of hours before which a medication can be marked taken.
      */
     public void setTimeBeforeDose(int hoursBeforeDose)
@@ -911,6 +956,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Retrieves the amount of time before a dose can be marked as taken.
+     *
      * @return the number of hours before which a dose cannot be marked taken.
      */
     public int getTimeBeforeDose()
@@ -931,6 +977,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Saves user's choice to allow notifications or not.
+     *
      * @param status true if allowed, else false.
      */
     public void setNotificationEnabled(boolean status)
@@ -945,6 +992,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Retrieves user's notification preference.
+     *
      * @return true of notifications are enabled in Settings.
      */
     public boolean getNotificationEnabled()
@@ -966,6 +1014,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Retrieves preferences saved by user.
+     *
      * @return User's preferred theme & terms of service agreement status.
      */
     public Bundle getPreferences()
@@ -990,6 +1039,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Saves user's chosen theme (light, dark, default).
+     *
      * @param theme User's preferred theme.
      */
     public void saveTheme(String theme)
@@ -1004,6 +1054,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Retrieves the time when a dose was taken.
+     *
      * @param doseId ID of dose whose time is sought.
      * @return The time the dose was marked taken or null.
      */
@@ -1020,7 +1071,7 @@ public class DBHelper extends SQLiteOpenHelper
 
         time = cursor.getCount() > 0 ?
                 TimeFormatting.stringToLocalDateTime(
-                    cursor.getString(cursor.getColumnIndexOrThrow(TIME_TAKEN))
+                        cursor.getString(cursor.getColumnIndexOrThrow(TIME_TAKEN))
                 ) : null;
 
         cursor.close();
@@ -1030,8 +1081,9 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Pauses or resumes a chosen medication.
+     *
      * @param medication medication to pause or resume.
-     * @param active true if making active, false if pausing
+     * @param active     true if making active, false if pausing
      */
     public void pauseResumeMedication(Medication medication, boolean active)
     {
@@ -1042,7 +1094,7 @@ public class DBHelper extends SQLiteOpenHelper
 
         updateActivityStatusCv.put(ACTIVE, active ? 1 : 0);
 
-        db.update(MEDICATION_TABLE, updateActivityStatusCv, where, new String[] {String.valueOf(medication.getId())});
+        db.update(MEDICATION_TABLE, updateActivityStatusCv, where, new String[]{String.valueOf(medication.getId())});
 
         addStatusChangeCv.put(PAUSED, active ? 0 : 1);
         addStatusChangeCv.put(CHANGE_DATE, TimeFormatting.localDateTimeToString(LocalDateTime.now()));
@@ -1053,6 +1105,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     /**
      * Retrieves active status of medication
+     *
      * @param medication Medication to check if is active.
      * @return true if active, false if paused.
      */
@@ -1063,7 +1116,7 @@ public class DBHelper extends SQLiteOpenHelper
                 + " WHERE " + MED_ID + "=" + medication.getId();
         boolean active;
 
-        Cursor cursor =  db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
 
         active = cursor.getString(cursor.getColumnIndexOrThrow(ACTIVE)).equals("1");
@@ -1090,7 +1143,7 @@ public class DBHelper extends SQLiteOpenHelper
         );
         cursor.moveToFirst();
 
-        while(!cursor.isAfterLast())
+        while (!cursor.isAfterLast())
         {
             LocalDateTime time;
 
@@ -1104,20 +1157,17 @@ public class DBHelper extends SQLiteOpenHelper
                 {
                     timesPaused.add(time);
                     prevWasPaused = true;
-                }
-                else if (Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(PAUSED))) == 0)
+                } else if (Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(PAUSED))) == 0)
                 {
                     timesResumed.add(time);
                     prevWasPaused = false;
                 }
-            }
-            else
+            } else
             {
                 if (prevWasPaused)
                 {
                     timesResumed.add(time);
-                }
-                else
+                } else
                 {
                     timesPaused.add(time);
                 }
@@ -1136,8 +1186,7 @@ public class DBHelper extends SQLiteOpenHelper
             intervals.add(new Pair<>(null, timesResumed.get(0)));
 
             return intervals;
-        }
-        else if (timesPaused.size() == 1 && timesResumed.size() == 0)
+        } else if (timesPaused.size() == 1 && timesResumed.size() == 0)
         {
             intervals.add(new Pair<>(timesPaused.get(0), null));
 
@@ -1149,8 +1198,7 @@ public class DBHelper extends SQLiteOpenHelper
             if (timesResumed.size() - 1 >= i)
             {
                 intervals.add(new Pair<>(timesPaused.get(i), timesResumed.get(i)));
-            }
-            else
+            } else
             {
                 intervals.add(new Pair<>(timesPaused.get(i), null));
             }
