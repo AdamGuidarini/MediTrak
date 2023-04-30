@@ -20,6 +20,7 @@ public class Medication implements Cloneable, Parcelable
     private long medFrequency;
     private float medDosage;
     private boolean active;
+    private Medication parent;
 
     /**
      * Creates a new object of type Medication
@@ -142,6 +143,12 @@ public class Medication implements Cloneable, Parcelable
      */
     public boolean isActive() { return active; }
 
+    /**
+     * Returns parent medication if exists, else NULL
+     * @return
+     */
+    public Medication getParent() { return parent; }
+
     // Setters
     /**
      * Set Medication ID
@@ -201,6 +208,11 @@ public class Medication implements Cloneable, Parcelable
      * Sets a medication to active or inactive
      */
     public void setActiveStatus(boolean activeStatus) { active = activeStatus; }
+
+    /**
+     * Set parent medication
+     */
+    public void setParent(Medication parentMed) { parent = parentMed; }
 
     /**
      * Enables cloning of a Medication

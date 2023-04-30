@@ -25,7 +25,7 @@ import projects.medicationtracker.SimpleClasses.Note;
 public class DBHelper extends SQLiteOpenHelper
 {
     private static final String DATABASE_NAME = "Medications.db";
-    private final static int DATABASE_VERSION = 5;
+    private final static int DATABASE_VERSION = 6;
 
     private static final String MEDICATION_TABLE = "Medication";
     private static final String MED_ID = "MedicationID";
@@ -35,6 +35,7 @@ public class DBHelper extends SQLiteOpenHelper
     private static final String MED_UNITS = "Units";
     private static final String ALIAS = "Alias";
     private static final String ACTIVE = "Active";
+    private static final String PARENT_ID = "ParentId";
 
     private static final String MEDICATION_TRACKER_TABLE = "MedicationTracker";
     private static final String DOSE_TIME = "DoseTime";
@@ -68,9 +69,6 @@ public class DBHelper extends SQLiteOpenHelper
     private static final String CHANGE_DATE = "ChangeDate";
     private static final String PAUSED = "Paused";
 
-    private static final String PARENT_CHILD_MED_TABLE = "ParentChildMedicationRelation";
-    private static final String PARENT_ID = "ParentId";
-
     public DBHelper(@Nullable Context context) { super(context, DATABASE_NAME, null, DATABASE_VERSION);}
 
     /**
@@ -91,7 +89,8 @@ public class DBHelper extends SQLiteOpenHelper
                 + START_DATE + " DATETIME,"
                 + MED_FREQUENCY + " INT,"
                 + ALIAS + " TEXT,"
-                + ACTIVE + " BOOLEAN DEFAULT " + 1
+                + ACTIVE + " BOOLEAN DEFAULT 1,"
+                + PARENT_ID + " INTEGER "
                 + ")"
         );
 
@@ -150,15 +149,6 @@ public class DBHelper extends SQLiteOpenHelper
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +") ON DELETE CASCADE"
                 + ")"
         );
-
-        sqLiteDatabase.execSQL(
-                "CREATE TABLE IF NOT EXISTS " + PARENT_CHILD_MED_TABLE +"("
-                + MED_ID + " INTEGER PRIMARY KEY,"
-                + PARENT_ID + " Integer,"
-                + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +") ON DELETE CASCADE,"
-                + "FOREIGN KEY (" + PARENT_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +") ON DELETE CASCADE"
-                + ")"
-        );
     }
 
     /**
@@ -210,6 +200,11 @@ public class DBHelper extends SQLiteOpenHelper
         if (i < 5)
         {
             sqLiteDatabase.execSQL("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0;");
+        }
+
+        if (i < 6)
+        {
+            sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + PARENT_ID + " INTEGER;");
         }
     }
 
