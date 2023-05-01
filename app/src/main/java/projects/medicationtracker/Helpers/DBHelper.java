@@ -212,7 +212,7 @@ public class DBHelper extends SQLiteOpenHelper
         if (i < 6)
         {
             sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + PARENT_ID + " INTEGER;");
-            sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + PARENT_ID + " REFERENCES " + MEDICATION_TABLE + "(\" + MED_ID + \") ON DELETE CASCADE");
+            sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + PARENT_ID + " REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE");
         }
     }
 
@@ -300,6 +300,54 @@ public class DBHelper extends SQLiteOpenHelper
         ArrayList<Medication> medications = new ArrayList<>();
 
         String query = "SELECT * FROM " + MEDICATION_TABLE + " WHERE " + PATIENT_NAME + " = \"" + patient + "\"";
+
+        /* -- TEST REPLACEMENT QUERY FOR CHILD MEDS--
+        SELECT
+            med.StartDate,
+            CASE
+               WHEN child.ParentId = med.MedicationID
+                   THEN child.MedName
+                   ELSE med.MedName
+            END MedName,
+            CASE
+               WHEN child.ParentId = med.MedicationID
+                   THEN child.PatientName
+                   ELSE med.PatientName
+            END PatientName,
+            CASE
+               WHEN child.ParentId = med.MedicationID
+                  THEN child.Dosage
+                  ELSE med.Dosage
+            END Dosage,
+            CASE
+               WHEN child.ParentId = med.MedicationID
+                 THEN child.Units
+                 ELSE med.Units
+            END Units,
+            CASE
+               WHEN child.ParentId = med.MedicationID
+                 THEN child.DrugFrequency
+                 ELSE med.DrugFrequency
+            END DrugFrequency,
+            CASE
+               WHEN child.ParentId = med.MedicationID
+                 THEN child.Alias
+                 ELSE med.Alias
+            END Alias,
+            CASE
+               WHEN child.ParentId = med.MedicationID
+                 THEN child.Active
+                 ELSE med.Active
+            END Active,
+            CASE
+               WHEN child.ParentId = med.MedicationID
+                 THEN child.ParentId
+                 ELSE med.ParentId
+            END ParentId
+        FROM Medication med
+            JOIN Medication child
+            ON med.MedicationID = child.ParentId
+         */
 
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
@@ -624,12 +672,17 @@ public class DBHelper extends SQLiteOpenHelper
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues pauseOldMedContent = new ContentValues();
         ContentValues updateChildMedContent = new ContentValues();
+        ContentValues updateActivityStatusCv = new ContentValues();
+        String where = MED_ID + " = ?";
         long row;
 
         pauseOldMedContent.put(PAUSED, 1);
         pauseOldMedContent.put(CHANGE_DATE, TimeFormatting.localDateTimeToString(medication.getStartDate()));
         pauseOldMedContent.put(MED_ID, medication.getId());
 
+        updateActivityStatusCv.put(ACTIVE, 0);
+
+        db.update(MEDICATION_TABLE, updateActivityStatusCv, where, new String[]{String.valueOf(medication.getId())});
         db.insert(ACTIVITY_CHANGE_TABLE, null, pauseOldMedContent);
 
         row = addMedication(
