@@ -622,10 +622,15 @@ public class DBHelper extends SQLiteOpenHelper
     public void createChildMedication(Medication medication)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
+        ContentValues pauseOldMedContent = new ContentValues();
+        ContentValues updateChildMedContent = new ContentValues();
         long row;
 
-        pauseResumeMedication(medication.getParent(), false);
+        pauseOldMedContent.put(PAUSED, 1);
+        pauseOldMedContent.put(CHANGE_DATE, TimeFormatting.localDateTimeToString(medication.getStartDate()));
+        pauseOldMedContent.put(MED_ID, medication.getId());
+
+        db.insert(ACTIVITY_CHANGE_TABLE, null, pauseOldMedContent);
 
         row = addMedication(
                 medication.getName(),
@@ -637,9 +642,18 @@ public class DBHelper extends SQLiteOpenHelper
                 medication.getAlias()
         );
 
-        cv.put(PARENT_ID, medication.getParent().getId());
+        updateChildMedContent.put(PARENT_ID, medication.getParent().getId());
 
-        db.update(MEDICATION_TABLE, cv, MED_ID + " = " + row, null);
+        db.update(MEDICATION_TABLE, updateChildMedContent, MED_ID + " = " + row, null);
+
+        medication.setId(row);
+
+        for (LocalDateTime time : medication.getTimes())
+        {
+            addDoseTime(
+                    row, TimeFormatting.formatTimeForDB(time.getHour(), time.getMinute())
+            );
+        }
     }
 
     /**
