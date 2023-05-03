@@ -7,8 +7,7 @@ import androidx.annotation.NonNull;
 
 import java.time.LocalDateTime;
 
-public class Medication implements Cloneable, Parcelable
-{
+public class Medication implements Cloneable, Parcelable {
 
     private String medName;
     private String medDosageUnits;
@@ -20,7 +19,8 @@ public class Medication implements Cloneable, Parcelable
     private long medFrequency;
     private float medDosage;
     private boolean active;
-    private Medication parent;
+    private Medication parent = null;
+    private Medication child = null;
 
     /**
      * Creates a new object of type Medication
@@ -36,8 +36,7 @@ public class Medication implements Cloneable, Parcelable
      * @param medAlias  An alias for the Medication to appear in notifications
      */
     public Medication(String thisMed, String patient, String units, LocalDateTime[] time,
-                      LocalDateTime firstDate, long id, long frequency, float dosage, String medAlias)
-    {
+                      LocalDateTime firstDate, long id, long frequency, float dosage, String medAlias) {
         medName = thisMed;
         patientName = patient;
         medDosageUnits = units;
@@ -49,8 +48,7 @@ public class Medication implements Cloneable, Parcelable
         alias = medAlias;
     }
 
-    public Medication()
-    {
+    public Medication() {
         medName = "";
         patientName = "";
         medDosageUnits = "";
@@ -62,8 +60,7 @@ public class Medication implements Cloneable, Parcelable
         alias = "";
     }
 
-    protected Medication(Parcel in)
-    {
+    protected Medication(Parcel in) {
         medName = in.readString();
         medDosageUnits = in.readString();
         patientName = in.readString();
@@ -73,17 +70,14 @@ public class Medication implements Cloneable, Parcelable
         medDosage = in.readInt();
     }
 
-    public static final Creator<Medication> CREATOR = new Creator<Medication>()
-    {
+    public static final Creator<Medication> CREATOR = new Creator<Medication>() {
         @Override
-        public Medication createFromParcel(Parcel in)
-        {
+        public Medication createFromParcel(Parcel in) {
             return new Medication(in);
         }
 
         @Override
-        public Medication[] newArray(int size)
-        {
+        public Medication[] newArray(int size) {
             return new Medication[size];
         }
     };
@@ -93,8 +87,7 @@ public class Medication implements Cloneable, Parcelable
      *
      * @return Medication ID
      */
-    public long getId()
-    {
+    public long getId() {
         return medId;
     }
 
@@ -103,8 +96,7 @@ public class Medication implements Cloneable, Parcelable
      *
      * @return Name of Medication
      */
-    public String getName()
-    {
+    public String getName() {
         return medName;
     }
 
@@ -113,8 +105,7 @@ public class Medication implements Cloneable, Parcelable
      *
      * @return Medication frequency
      */
-    public long getFrequency()
-    {
+    public long getFrequency() {
         return medFrequency;
     }
 
@@ -123,8 +114,7 @@ public class Medication implements Cloneable, Parcelable
      *
      * @return Medication dosage
      */
-    public float getDosage()
-    {
+    public float getDosage() {
         return medDosage;
     }
 
@@ -133,8 +123,7 @@ public class Medication implements Cloneable, Parcelable
      *
      * @return Medication dosage units
      */
-    public String getDosageUnits()
-    {
+    public String getDosageUnits() {
         return medDosageUnits;
     }
 
@@ -143,8 +132,7 @@ public class Medication implements Cloneable, Parcelable
      *
      * @return Medication's times
      */
-    public LocalDateTime[] getTimes()
-    {
+    public LocalDateTime[] getTimes() {
         return times;
     }
 
@@ -153,8 +141,7 @@ public class Medication implements Cloneable, Parcelable
      *
      * @return Name of the patient
      */
-    public String getPatientName()
-    {
+    public String getPatientName() {
         return patientName;
     }
 
@@ -163,8 +150,7 @@ public class Medication implements Cloneable, Parcelable
      *
      * @return Start date of medication
      */
-    public LocalDateTime getStartDate()
-    {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
@@ -173,27 +159,33 @@ public class Medication implements Cloneable, Parcelable
      *
      * @return Alias of medication
      */
-    public String getAlias()
-    {
+    public String getAlias() {
         return alias;
     }
 
     /**
      * Returns active status of medication
      */
-    public boolean isActive()
-    {
+    public boolean isActive() {
         return active;
     }
 
     /**
      * Returns parent medication if exists, else NULL
      *
-     * @return
+     * @return parent Medication
      */
-    public Medication getParent()
-    {
+    public Medication getParent() {
         return parent;
+    }
+
+    /**
+     * Returns child of provided medication
+     *
+     * @return Child medication or NULL if there is no child
+     */
+    public Medication getChild() {
+        return child;
     }
 
     // Setters
@@ -203,8 +195,7 @@ public class Medication implements Cloneable, Parcelable
      *
      * @param medId The Medication's ID
      */
-    public void setId(long medId)
-    {
+    public void setId(long medId) {
         this.medId = medId;
     }
 
@@ -213,8 +204,7 @@ public class Medication implements Cloneable, Parcelable
      *
      * @param medName The name of the Medication
      */
-    public void setName(String medName)
-    {
+    public void setName(String medName) {
         this.medName = medName;
     }
 
@@ -223,8 +213,7 @@ public class Medication implements Cloneable, Parcelable
      *
      * @param medFrequency Frequency of the medication
      */
-    public void setFrequency(long medFrequency)
-    {
+    public void setFrequency(long medFrequency) {
         this.medFrequency = medFrequency;
     }
 
@@ -233,8 +222,7 @@ public class Medication implements Cloneable, Parcelable
      *
      * @param medDosage dosage of Medication
      */
-    public void setDosage(float medDosage)
-    {
+    public void setDosage(float medDosage) {
         this.medDosage = medDosage;
     }
 
@@ -243,8 +231,7 @@ public class Medication implements Cloneable, Parcelable
      *
      * @param medDosageUnits Dosage of the Medication
      */
-    public void setDosageUnits(String medDosageUnits)
-    {
+    public void setDosageUnits(String medDosageUnits) {
         this.medDosageUnits = medDosageUnits;
     }
 
@@ -253,8 +240,7 @@ public class Medication implements Cloneable, Parcelable
      *
      * @param times The array of times for this medication
      */
-    public void setTimes(LocalDateTime[] times)
-    {
+    public void setTimes(LocalDateTime[] times) {
         this.times = times;
     }
 
@@ -263,8 +249,7 @@ public class Medication implements Cloneable, Parcelable
      *
      * @param patientName Patient's name
      */
-    public void setPatientName(String patientName)
-    {
+    public void setPatientName(String patientName) {
         this.patientName = patientName;
     }
 
@@ -273,8 +258,7 @@ public class Medication implements Cloneable, Parcelable
      *
      * @param startDate Date of first
      */
-    public void setStartDate(LocalDateTime startDate)
-    {
+    public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 
@@ -283,25 +267,33 @@ public class Medication implements Cloneable, Parcelable
      *
      * @param alias The Alias of the Medication
      */
-    public void setAlias(String alias)
-    {
+    public void setAlias(String alias) {
         this.alias = alias;
     }
 
     /**
      * Sets a medication to active or inactive
      */
-    public void setActiveStatus(boolean activeStatus)
-    {
+    public void setActiveStatus(boolean activeStatus) {
         active = activeStatus;
     }
 
     /**
      * Set parent medication
+     *
+     * @param parentMed Parent of current medication
      */
-    public void setParent(Medication parentMed)
-    {
+    public void setParent(Medication parentMed) {
         parent = parentMed;
+    }
+
+    /**
+     * Set related child medication
+     *
+     * @param childMed child of current medication
+     */
+    public void setChild(Medication childMed) {
+        child = childMed;
     }
 
     /**
@@ -312,28 +304,23 @@ public class Medication implements Cloneable, Parcelable
      */
     @NonNull
     @Override
-    protected Object clone() throws CloneNotSupportedException
-    {
+    protected Object clone() throws CloneNotSupportedException {
         Medication clone = null;
-        try
-        {
+        try {
             clone = (Medication) super.clone();
-        } catch (CloneNotSupportedException e)
-        {
+        } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
         return clone;
     }
 
     @Override
-    public int describeContents()
-    {
+    public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i)
-    {
+    public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(medName);
         parcel.writeString(medDosageUnits);
         parcel.writeString(patientName);

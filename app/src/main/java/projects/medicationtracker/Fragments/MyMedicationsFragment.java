@@ -28,8 +28,7 @@ import projects.medicationtracker.SimpleClasses.Medication;
  * Use the {@link MyMedicationsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyMedicationsFragment extends Fragment
-{
+public class MyMedicationsFragment extends Fragment {
     TextView name;
     TextView dosage;
     TextView alias;
@@ -38,8 +37,7 @@ public class MyMedicationsFragment extends Fragment
     Button notesButton;
     Button editButton;
 
-    public MyMedicationsFragment()
-    {
+    public MyMedicationsFragment() {
     }
 
     /**
@@ -48,21 +46,18 @@ public class MyMedicationsFragment extends Fragment
      *
      * @return A new instance of fragment MyMedicationsFragment.
      */
-    public static MyMedicationsFragment newInstance()
-    {
+    public static MyMedicationsFragment newInstance() {
         return new MyMedicationsFragment();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
         long medId = requireArguments().getLong("MedId");
 
         final View rootView = inflater.inflate(R.layout.fragment_my_medications, container, false);
@@ -72,8 +67,7 @@ public class MyMedicationsFragment extends Fragment
         return rootView;
     }
 
-    private void insertMedicationData(long medId, View v)
-    {
+    private void insertMedicationData(long medId, View v) {
         DBHelper db = new DBHelper(getContext());
         Medication medication = db.getMedication(medId);
         LocalTime[] times = db.getMedicationTimes(medId);
@@ -88,18 +82,15 @@ public class MyMedicationsFragment extends Fragment
         notesButton = v.findViewById(R.id.myMedsNotes);
         editButton = v.findViewById(R.id.myMedsEdit);
 
-        for (int i = 0; i < times.length; i++)
-        {
+        for (int i = 0; i < times.length; i++) {
             dateTimes[i] = LocalDateTime.of(medication.getStartDate().toLocalDate(), times[i]);
         }
 
         medication.setTimes(dateTimes);
 
-        if (medication.getDosage() == (int) medication.getDosage())
-        {
+        if (medication.getDosage() == (int) medication.getDosage()) {
             dosageVal = String.format(Locale.getDefault(), "%d", (int) medication.getDosage());
-        } else
-        {
+        } else {
             dosageVal = String.valueOf(medication.getDosage());
         }
 
@@ -108,34 +99,28 @@ public class MyMedicationsFragment extends Fragment
 
         StringBuilder freqLabel;
 
-        if (medication.getFrequency() == MINUTES_IN_DAY && (medication.getTimes().length == 1))
-        {
+        if (medication.getFrequency() == MINUTES_IN_DAY && (medication.getTimes().length == 1)) {
             String time = TimeFormatting.localTimeToString(medication.getTimes()[0].toLocalTime());
             freqLabel = new StringBuilder(getString(R.string.taken_daily_at) + " " + time);
-        } else if (medication.getFrequency() == MINUTES_IN_DAY && (medication.getTimes().length > 1))
-        {
+        } else if (medication.getFrequency() == MINUTES_IN_DAY && (medication.getTimes().length > 1)) {
             freqLabel = new StringBuilder(getString(R.string.taken_daily_at));
 
-            for (int i = 0; i < medication.getTimes().length; i++)
-            {
+            for (int i = 0; i < medication.getTimes().length; i++) {
                 LocalTime time = medication.getTimes()[i].toLocalTime();
                 freqLabel.append(TimeFormatting.localTimeToString(time));
 
                 if (i != (medication.getTimes().length - 1))
                     freqLabel.append(", ");
             }
-        } else if (medication.getFrequency() == 0)
-        {
+        } else if (medication.getFrequency() == 0) {
             freqLabel = new StringBuilder(getString(R.string.taken_as_needed));
-        } else
-        {
+        } else {
             freqLabel = new StringBuilder(getString(R.string.taken_every_lbl) + TimeFormatting.freqConversion(medication.getFrequency()));
         }
 
         frequency.setText(freqLabel);
 
-        if (!medication.getAlias().equals(""))
-        {
+        if (!medication.getAlias().equals("")) {
             alias.setVisibility(View.VISIBLE);
             alias.setText(getString(R.string.alias_lbl, medication.getAlias()));
         }

@@ -15,20 +15,17 @@ import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Medication;
 
-public class ConfirmDeleteAllFragment extends DialogFragment
-{
+public class ConfirmDeleteAllFragment extends DialogFragment {
     private final DBHelper db;
     private ArrayList<Medication> medications;
 
-    public ConfirmDeleteAllFragment(DBHelper database)
-    {
+    public ConfirmDeleteAllFragment(DBHelper database) {
         db = database;
     }
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstances)
-    {
+    public Dialog onCreateDialog(Bundle savedInstances) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle(getString(R.string.delete_all_data));
@@ -50,19 +47,14 @@ public class ConfirmDeleteAllFragment extends DialogFragment
         return builder.create();
     }
 
-    private void deletePendingNotifications()
-    {
-        for (Medication medication : medications)
-        {
-            if (medication.getFrequency() == 1440)
-            {
+    private void deletePendingNotifications() {
+        for (Medication medication : medications) {
+            if (medication.getFrequency() == 1440) {
                 NotificationHelper.deletePendingNotification(medication.getId(), getContext());
-            } else
-            {
+            } else {
                 long[] timeIds = db.getMedicationTimeIds(medication);
 
-                for (long timeId : timeIds)
-                {
+                for (long timeId : timeIds) {
                     NotificationHelper.deletePendingNotification(timeId * -1, getContext());
                 }
             }

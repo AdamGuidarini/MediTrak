@@ -38,8 +38,7 @@ import projects.medicationtracker.SimpleClasses.Medication;
  * Use the {@link MedicationScheduleFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MedicationScheduleFragment extends Fragment implements IDialogCloseListener
-{
+public class MedicationScheduleFragment extends Fragment implements IDialogCloseListener {
     public static final String MEDICATIONS = "medications";
     public static final String DAY_OF_WEEK = "dayOfWeek";
     public static final String DAY_IN_CURRENT_WEEK = "dayInCurrentWeek";
@@ -55,8 +54,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     /**
      * Required empty constructor
      */
-    public MedicationScheduleFragment()
-    {
+    public MedicationScheduleFragment() {
     }
 
     /**
@@ -74,8 +72,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
             String day,
             LocalDate aDayThisWeek,
             int dayNum
-    )
-    {
+    ) {
         MedicationScheduleFragment fragment = new MedicationScheduleFragment();
 
         Bundle bundle = new Bundle();
@@ -90,8 +87,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
@@ -101,16 +97,13 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
      * @return The fragment inflated
      */
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         LocalDate thisDate;
 
         assert getArguments() != null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             meds = getArguments().getParcelableArrayList(MEDICATIONS, Medication.class);
-        } else
-        {
+        } else {
             meds = getArguments().getParcelableArrayList(MEDICATIONS);
         }
 
@@ -126,8 +119,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
                 false
         );
 
-        if (meds.stream().anyMatch(m -> m.getFrequency() == 0 && !m.getStartDate().toLocalDate().isAfter(thisDate)))
-        {
+        if (meds.stream().anyMatch(m -> m.getFrequency() == 0 && !m.getStartDate().toLocalDate().isAfter(thisDate))) {
             TextView plusAsNeeded = rootView.findViewById(R.id.plusAsNeeded);
             LinearLayout asNeededList = rootView.findViewById(R.id.asNeededList);
 
@@ -157,8 +149,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     /**
      * Creates a list of the medications for the current given day in places them in the fragment
      */
-    private void createSchedule()
-    {
+    private void createSchedule() {
         LinearLayout checkBoxHolder = rootView.findViewById(R.id.medicationSchedule);
         LinearLayout asNeededList = rootView.findViewById(R.id.asNeededViews);
         TextView dayLabel = rootView.findViewById(R.id.dateLabel);
@@ -171,12 +162,9 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
                 dayOfWeek + " " + TimeFormatting.localDateToString(thisSunday.plusDays(dayNumber));
         dayLabel.setText(dayLabelString);
 
-        for (Medication medication : meds)
-        {
-            for (LocalDateTime time : medication.getTimes())
-            {
-                if (time.toLocalDate().isEqual(thisSunday.plusDays(dayNumber)) && !time.isBefore(medication.getStartDate()))
-                {
+        for (Medication medication : meds) {
+            for (LocalDateTime time : medication.getTimes()) {
+                if (time.toLocalDate().isEqual(thisSunday.plusDays(dayNumber)) && !time.isBefore(medication.getStartDate())) {
                     RelativeLayout rl = buildCheckbox(medication, time);
 
                     if (medication.getFrequency() == 0)
@@ -187,14 +175,12 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
             }
         }
 
-        if (scheduledMeds.size() == 0)
-        {
+        if (scheduledMeds.size() == 0) {
             TextView textView = new TextView(rootView.getContext());
             String noMed = getString(R.string.no_meds_for_day, dayOfWeek);
 
             TextViewUtils.setTextViewParams(textView, noMed, checkBoxHolder);
-        } else
-        {
+        } else {
             sortSchedule(scheduledMeds);
             sortSchedule(asNeededMeds);
 
@@ -203,8 +189,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         }
     }
 
-    private RelativeLayout buildCheckbox(Medication medication, LocalDateTime time)
-    {
+    private RelativeLayout buildCheckbox(Medication medication, LocalDateTime time) {
         RelativeLayout rl = new RelativeLayout(rootView.getContext());
         TextView thisMedication = medication.getFrequency() > 0
                 ? new CheckBox(rootView.getContext()) : new TextView(rootView.getContext());
@@ -239,11 +224,9 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         // Set Checkbox label
         String medName = medication.getName();
         String dosage;
-        if (medication.getDosage() == (int) medication.getDosage())
-        {
+        if (medication.getDosage() == (int) medication.getDosage()) {
             dosage = String.format(Locale.getDefault(), "%d", (int) medication.getDosage());
-        } else
-        {
+        } else {
             dosage = String.valueOf(medication.getDosage());
         }
 
@@ -259,8 +242,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
 
         thisMedication.setTag(tag);
 
-        if (medication.getFrequency() == 0)
-        {
+        if (medication.getFrequency() == 0) {
             thisMedication.setTextColor(Color.WHITE);
 
             return rl;
@@ -275,8 +257,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
             final Long doseId = tvTag.getSecond();
             int timeBeforeDose = db.getTimeBeforeDose();
 
-            if (LocalDateTime.now().isBefore(time.minusHours(timeBeforeDose)) && timeBeforeDose != -1)
-            {
+            if (LocalDateTime.now().isBefore(time.minusHours(timeBeforeDose)) && timeBeforeDose != -1) {
                 ((CheckBox) thisMedication).setChecked(false);
                 Toast.makeText(
                         rootView.getContext(),
@@ -289,11 +270,9 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
 
             String now = TimeFormatting.localDateTimeToString(LocalDateTime.now());
 
-            if (doseId != -1)
-            {
+            if (doseId != -1) {
                 db.updateDoseStatus(doseId, now, ((CheckBox) thisMedication).isChecked());
-            } else
-            {
+            } else {
                 long id = db.addToMedicationTracker(
                         tvTag.getFirst(),
                         tvTag.getThird()
@@ -315,14 +294,11 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
      *
      * @param layouts ArrayList of all relative layout in the schedule.
      */
-    private void sortSchedule(ArrayList<RelativeLayout> layouts)
-    {
+    private void sortSchedule(ArrayList<RelativeLayout> layouts) {
         int count = layouts.size();
 
-        for (int i = 1; i < count; i++)
-        {
-            for (int j = 0; j < (count - i); j++)
-            {
+        for (int i = 1; i < count; i++) {
+            for (int j = 0; j < (count - i); j++) {
                 TextView child1 = (TextView) layouts.get(j).getChildAt(0);
                 TextView child2 = (TextView) layouts.get(j + 1).getChildAt(0);
 
@@ -334,8 +310,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
                 LocalDateTime child1Time = child1Pair.getThird();
                 LocalDateTime child2Time = child2Pair.getThird();
 
-                if (child1Time != null && child1Time.isAfter(child2Time))
-                {
+                if (child1Time != null && child1Time.isAfter(child2Time)) {
                     RelativeLayout temp = layouts.get(j);
 
                     layouts.set(j, layouts.get(j + 1));
@@ -346,12 +321,10 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     }
 
     @Override
-    public void handleDialogClose(Action action, Long doseId)
-    {
+    public void handleDialogClose(Action action, Long doseId) {
         LinearLayout ll = rootView.findViewById(R.id.asNeededViews);
 
-        switch (action)
-        {
+        switch (action) {
             case ADD:
                 LinearLayout checkBoxHolder = rootView.findViewById(R.id.medicationSchedule);
 
@@ -367,12 +340,10 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
 
                 break;
             case DELETE:
-                for (int i = 0; i < ll.getChildCount(); i++)
-                {
+                for (int i = 0; i < ll.getChildCount(); i++) {
                     RelativeLayout layoutToDelete = (RelativeLayout) ll.getChildAt(i);
 
-                    if (((Triple<Medication, Long, LocalDateTime>) layoutToDelete.getChildAt(0).getTag()).getSecond().equals(doseId))
-                    {
+                    if (((Triple<Medication, Long, LocalDateTime>) layoutToDelete.getChildAt(0).getTag()).getSecond().equals(doseId)) {
                         ll.removeViewAt(i);
 
                         break;

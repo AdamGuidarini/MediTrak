@@ -23,8 +23,7 @@ import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.SimpleClasses.Medication;
 import projects.medicationtracker.Views.StandardCardView;
 
-public class MyMedications extends AppCompatActivity
-{
+public class MyMedications extends AppCompatActivity {
     DBHelper db = new DBHelper(this);
 
     /**
@@ -33,8 +32,7 @@ public class MyMedications extends AppCompatActivity
      * @param savedInstanceState Saved instances
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_medications);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -45,8 +43,7 @@ public class MyMedications extends AppCompatActivity
 
         if (db.numberOfRows() == 0)
             return;
-        else
-        {
+        else {
             TextView noMeds = findViewById(R.id.noMyMeds);
             noMeds.setVisibility(View.GONE);
             ScrollView scrollMyMeds = findViewById(R.id.scrollMyMeds);
@@ -58,16 +55,13 @@ public class MyMedications extends AppCompatActivity
 
         ArrayList<String> patientNames = db.getPatients();
 
-        if (patientNames.size() >= 1)
-        {
-            if (patientNames.size() == 1)
-            {
+        if (patientNames.size() >= 1) {
+            if (patientNames.size() == 1) {
                 ArrayList<Medication> patientMeds = db.getMedicationsForPatient(patientNames.get(0));
 
                 for (Medication medication : patientMeds)
                     createMyMedCards(medication, myMedsLayout);
-            } else
-            {
+            } else {
                 if (patientNames.contains("ME!"))
                     patientNames.set(patientNames.indexOf("ME!"), you);
 
@@ -79,11 +73,9 @@ public class MyMedications extends AppCompatActivity
                 if (patientNames.contains(you))
                     nameSpinner.setSelection(adapter.getPosition(you));
 
-                nameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-                {
+                nameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
-                    {
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                         myMedsLayout.removeAllViews();
 
                         String patient = adapterView.getSelectedItem().toString();
@@ -98,8 +90,7 @@ public class MyMedications extends AppCompatActivity
                     }
 
                     @Override
-                    public void onNothingSelected(AdapterView<?> adapterView)
-                    {
+                    public void onNothingSelected(AdapterView<?> adapterView) {
                     }
                 });
             }
@@ -113,10 +104,8 @@ public class MyMedications extends AppCompatActivity
      * @return Selected option
      */
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item)
-    {
-        if (item.getItemId() == android.R.id.home)
-        {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
             Intent intent = new Intent(this, MainActivity.class);
             finish();
             startActivity(intent);
@@ -128,8 +117,7 @@ public class MyMedications extends AppCompatActivity
      * Return to MainActivity if back arrow is pressed
      */
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         super.onBackPressed();
         Intent intent = new Intent(this, MainActivity.class);
         finish();
@@ -142,8 +130,7 @@ public class MyMedications extends AppCompatActivity
      * @param medication The Medication whose details will be displayed.
      * @param baseLayout The LinearLayout in which to place the card
      */
-    private void createMyMedCards(Medication medication, LinearLayout baseLayout)
-    {
+    private void createMyMedCards(Medication medication, LinearLayout baseLayout) {
         StandardCardView thisMedCard = new StandardCardView(this);
         FragmentContainerView thisMedLayout = new FragmentContainerView(this);
         Bundle bundle = new Bundle();

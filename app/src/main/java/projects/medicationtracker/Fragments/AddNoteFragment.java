@@ -23,8 +23,7 @@ import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Note;
 
 
-public class AddNoteFragment extends DialogFragment
-{
+public class AddNoteFragment extends DialogFragment {
     final Context context;
     final long medId;
 
@@ -34,8 +33,7 @@ public class AddNoteFragment extends DialogFragment
      * @param context      Context for DBHelper
      * @param medicationId ID of Medication not is about
      */
-    public AddNoteFragment(Context context, long medicationId)
-    {
+    public AddNoteFragment(Context context, long medicationId) {
         this.context = context;
         medId = medicationId;
     }
@@ -48,8 +46,7 @@ public class AddNoteFragment extends DialogFragment
      */
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState)
-    {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
@@ -60,19 +57,16 @@ public class AddNoteFragment extends DialogFragment
                     DBHelper db = new DBHelper(context);
                     EditText editText = getDialog().findViewById(R.id.editNote);
 
-                    if (editText != null)
-                    {
+                    if (editText != null) {
                         String note = editText.getText().toString();
 
-                        if (!note.isEmpty())
-                        {
+                        if (!note.isEmpty()) {
                             db.addNote(note, medId);
                             ArrayList<Note> notes = db.getNotes(medId);
                             int size = notes.size();
                             Note newNote = notes.get(size - 1);
 
-                            if (size == 1)
-                            {
+                            if (size == 1) {
                                 TextView tv = getActivity().findViewById(R.id.noNotes);
                                 tv.setVisibility(View.GONE);
                                 ScrollView scrollNotes = getActivity().findViewById(R.id.scrollNotes);
@@ -100,8 +94,7 @@ public class AddNoteFragment extends DialogFragment
      * @param dialog The Dialog to cancel
      */
     @Override
-    public void onCancel(@NonNull DialogInterface dialog)
-    {
+    public void onCancel(@NonNull DialogInterface dialog) {
         super.onCancel(dialog);
     }
 }

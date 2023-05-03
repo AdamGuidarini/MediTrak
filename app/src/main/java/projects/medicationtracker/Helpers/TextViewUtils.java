@@ -3,8 +3,7 @@ package projects.medicationtracker.Helpers;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class TextViewUtils
-{
+public class TextViewUtils {
     /**
      * Sets predetermined parameters for a given TextView
      * enabling a consistent style across the app
@@ -13,8 +12,7 @@ public class TextViewUtils
      * @param text     Text to display
      * @param parent   The view to will hold the TextView
      */
-    public static void setTextViewParams(TextView textView, String text, ViewGroup parent)
-    {
+    public static void setTextViewParams(TextView textView, String text, ViewGroup parent) {
         textView.setText(text);
 
         setTextViewFontAndPadding(textView);
@@ -28,8 +26,7 @@ public class TextViewUtils
      *
      * @param textView The TextView whose padding to set
      */
-    public static void setTextViewFontAndPadding(TextView textView)
-    {
+    public static void setTextViewFontAndPadding(TextView textView) {
         textView.setPadding(20, 24, 0, 24);
         textView.setTextSize(15);
     }

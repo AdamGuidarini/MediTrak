@@ -30,8 +30,7 @@ import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Medication;
 
-public class AddAsNeededDoseDialog extends DialogFragment
-{
+public class AddAsNeededDoseDialog extends DialogFragment {
     private final ArrayList<Medication> medications;
     private final DBHelper db;
     private final LocalDate date;
@@ -45,8 +44,7 @@ public class AddAsNeededDoseDialog extends DialogFragment
      * @param dateTaken   Date medication is take.
      * @param database    Database helper to store dose
      */
-    public AddAsNeededDoseDialog(ArrayList<Medication> medications, LocalDate dateTaken, DBHelper database)
-    {
+    public AddAsNeededDoseDialog(ArrayList<Medication> medications, LocalDate dateTaken, DBHelper database) {
         db = database;
         this.medications = medications;
         date = dateTaken;
@@ -61,8 +59,7 @@ public class AddAsNeededDoseDialog extends DialogFragment
      */
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstances)
-    {
+    public Dialog onCreateDialog(Bundle savedInstances) {
         AlertDialog dialog;
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
@@ -81,41 +78,33 @@ public class AddAsNeededDoseDialog extends DialogFragment
         yourMeds = dialog.findViewById(R.id.medicationNames);
         timeTaken = dialog.findViewById(R.id.doseTimeTaken);
 
-        yourMeds.addTextChangedListener(new TextWatcher()
-        {
+        yourMeds.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after)
-            {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count)
-            {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
 
             @Override
-            public void afterTextChanged(Editable s)
-            {
+            public void afterTextChanged(Editable s) {
                 if (!timeTaken.getText().toString().isEmpty())
                     dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
             }
         });
 
-        timeTaken.addTextChangedListener(new TextWatcher()
-        {
+        timeTaken.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after)
-            {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count)
-            {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
 
             @Override
-            public void afterTextChanged(Editable s)
-            {
+            public void afterTextChanged(Editable s) {
                 if (!yourMeds.getText().toString().isEmpty())
                     dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
             }
@@ -128,8 +117,7 @@ public class AddAsNeededDoseDialog extends DialogFragment
      * Prepares Views and creates listeners after dialog is built
      */
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
         ArrayList<String> medNames = new ArrayList<>();
         ArrayAdapter<String> medNamesAdapter;
@@ -146,8 +134,7 @@ public class AddAsNeededDoseDialog extends DialogFragment
 
         timeTaken.setOnFocusChangeListener((view, b) ->
         {
-            if (b)
-            {
+            if (b) {
                 DialogFragment dialogFragment = new TimePickerFragment(timeTaken);
                 dialogFragment.show(getParentFragmentManager(), null);
             }
@@ -157,8 +144,7 @@ public class AddAsNeededDoseDialog extends DialogFragment
     /**
      * Creates new as needed dose
      */
-    private void save()
-    {
+    private void save() {
         String selectedMedName = yourMeds.getText().toString();
         Medication med = medications.stream().filter(
                 m -> Objects.equals(m.getName(), selectedMedName)
@@ -170,8 +156,7 @@ public class AddAsNeededDoseDialog extends DialogFragment
 
         db.updateDoseStatus(doseId, TimeFormatting.localDateTimeToString(dateTimeTaken), true);
 
-        if (fragment instanceof IDialogCloseListener)
-        {
+        if (fragment instanceof IDialogCloseListener) {
             ((IDialogCloseListener) fragment).handleDialogClose(
                     IDialogCloseListener.Action.ADD, doseId
             );

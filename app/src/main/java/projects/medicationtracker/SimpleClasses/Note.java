@@ -2,15 +2,13 @@ package projects.medicationtracker.SimpleClasses;
 
 import java.time.LocalDateTime;
 
-public class Note
-{
+public class Note {
     private final long noteId;
     private final long medId;
     private String note;
     private final LocalDateTime noteTime;
 
-    public Note(long note_Id, long med_Id, String nt, LocalDateTime time)
-    {
+    public Note(long note_Id, long med_Id, String nt, LocalDateTime time) {
         noteId = note_Id;
         medId = med_Id;
         note = nt;
@@ -18,28 +16,23 @@ public class Note
     }
 
     // Getters and setters
-    public long getNoteId()
-    {
+    public long getNoteId() {
         return noteId;
     }
 
-    public long getMedId()
-    {
+    public long getMedId() {
         return medId;
     }
 
-    public String getNote()
-    {
+    public String getNote() {
         return note;
     }
 
-    public void setNote(String note)
-    {
+    public void setNote(String note) {
         this.note = note;
     }
 
-    public LocalDateTime getNoteTime()
-    {
+    public LocalDateTime getNoteTime() {
         return noteTime;
     }
 

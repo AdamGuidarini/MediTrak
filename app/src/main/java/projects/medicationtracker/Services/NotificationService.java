@@ -24,13 +24,11 @@ import projects.medicationtracker.MainActivity;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Receivers.EventReceiver;
 
-public class NotificationService extends IntentService
-{
+public class NotificationService extends IntentService {
     public static String MARK_AS_TAKEN_ACTION = "markAsTaken";
     public static String SNOOZE_ACTION = "snooze15";
 
-    public NotificationService()
-    {
+    public NotificationService() {
         super("NotificationService");
     }
 
@@ -40,8 +38,7 @@ public class NotificationService extends IntentService
      * @param intent Intent sent from NotificationReceiver.
      */
     @Override
-    protected void onHandleIntent(@Nullable Intent intent)
-    {
+    protected void onHandleIntent(@Nullable Intent intent) {
         NotificationManager notificationManager =
                 (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -63,8 +60,7 @@ public class NotificationService extends IntentService
      * @return A built notification.
      */
     private Notification createNotification(
-            String message, String doseTime, long notificationId, long medId)
-    {
+            String message, String doseTime, long notificationId, long medId) {
         Intent markTakenIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
         Intent snoozeIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
         String embeddedMedId = "_" + medId;

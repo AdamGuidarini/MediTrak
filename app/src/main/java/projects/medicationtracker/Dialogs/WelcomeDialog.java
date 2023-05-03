@@ -11,17 +11,14 @@ import androidx.fragment.app.DialogFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.R;
 
-public class WelcomeDialog extends DialogFragment
-{
+public class WelcomeDialog extends DialogFragment {
     private DBHelper db;
 
-    public WelcomeDialog()
-    {
+    public WelcomeDialog() {
     }
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstances)
-    {
+    public Dialog onCreateDialog(Bundle savedInstances) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         AlertDialog dialog;
         CheckBox agreeBox;

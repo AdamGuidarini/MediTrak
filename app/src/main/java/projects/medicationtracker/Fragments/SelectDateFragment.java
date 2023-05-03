@@ -12,8 +12,7 @@ import androidx.fragment.app.DialogFragment;
 
 import java.time.LocalDate;
 
-public class SelectDateFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener
-{
+public class SelectDateFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
     private final TextView tv;
 
     /**
@@ -21,8 +20,7 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
      *
      * @param textView The TextView to write the selected date to
      */
-    public SelectDateFragment(TextView textView)
-    {
+    public SelectDateFragment(TextView textView) {
         tv = textView;
     }
 
@@ -34,8 +32,7 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
      */
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState)
-    {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Calendar calendar = Calendar.getInstance();
         int yy = calendar.get(Calendar.YEAR);
         int mm = calendar.get(Calendar.MONTH);
@@ -51,8 +48,7 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
      * @param mm   Month
      * @param dd   Day
      */
-    public void onDateSet(DatePicker view, int yy, int mm, int dd)
-    {
+    public void onDateSet(DatePicker view, int yy, int mm, int dd) {
         populateSetDate(yy, mm + 1, dd);
     }
 
@@ -63,8 +59,7 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
      * @param month Month chosen by user
      * @param day   Day chosen by user
      */
-    public void populateSetDate(int year, int month, int day)
-    {
+    public void populateSetDate(int year, int month, int day) {
         LocalDate localDate = LocalDate.of(year, month, day);
 
         tv.clearFocus();

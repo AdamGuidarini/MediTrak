@@ -16,13 +16,11 @@ import projects.medicationtracker.MedicationNotes;
 import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Note;
 
-public class EditNoteFragment extends DialogFragment
-{
+public class EditNoteFragment extends DialogFragment {
     final DBHelper db;
     final Note note;
 
-    public EditNoteFragment(Note note, DBHelper db)
-    {
+    public EditNoteFragment(Note note, DBHelper db) {
         this.note = note;
         this.db = db;
     }
@@ -35,8 +33,7 @@ public class EditNoteFragment extends DialogFragment
      */
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState)
-    {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
@@ -62,21 +59,18 @@ public class EditNoteFragment extends DialogFragment
     }
 
     @Override
-    public void onCancel(@NonNull DialogInterface dialog)
-    {
+    public void onCancel(@NonNull DialogInterface dialog) {
         super.onCancel(dialog);
     }
 
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
         EditText alterNote = getDialog().findViewById(R.id.alterNote);
         alterNote.setText(note.getNote());
     }
 
-    public void restartActivity()
-    {
+    public void restartActivity() {
         Intent intent = new Intent(getContext(), MedicationNotes.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra("medId", note.getMedId());

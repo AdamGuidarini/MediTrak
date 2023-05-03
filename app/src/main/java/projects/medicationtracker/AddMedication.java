@@ -44,8 +44,7 @@ import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.SimpleClasses.Medication;
 
-public class AddMedication extends AppCompatActivity
-{
+public class AddMedication extends AppCompatActivity {
     final public static String MED_ID = "medId";
     final public static int MINUTES_IN_DAY = 1440;
     private final DBHelper db = new DBHelper(this);
@@ -94,8 +93,7 @@ public class AddMedication extends AppCompatActivity
      */
     @SuppressLint("NonConstantResourceId")
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         String title;
 
         super.onCreate(savedInstanceState);
@@ -105,15 +103,13 @@ public class AddMedication extends AppCompatActivity
 
         medId = getIntent().getLongExtra(MED_ID, -1);
 
-        if (medId != -1)
-        {
+        if (medId != -1) {
             LocalTime[] times = db.getMedicationTimes(medId);
             LocalDateTime[] dateTimes = new LocalDateTime[times.length];
 
             medication = db.getMedication(medId);
 
-            for (int i = 0; i < times.length; i++)
-            {
+            for (int i = 0; i < times.length; i++) {
                 dateTimes[i] = LocalDateTime.of(medication.getStartDate().toLocalDate(), times[i]);
             }
 
@@ -121,8 +117,7 @@ public class AddMedication extends AppCompatActivity
             title = getString(R.string.edit_medication);
 
             medication.setParent(db.getMedication(medId));
-        } else
-        {
+        } else {
             medication = new Medication();
             title = getString(R.string.add_medication);
         }
@@ -139,20 +134,16 @@ public class AddMedication extends AppCompatActivity
      * @return True if can be created, else false
      */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        if (medId != -1)
-        {
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (medId != -1) {
             getMenuInflater().inflate(R.menu.edit_meds_menu, menu);
 
             pauseButton = menu.findItem(R.id.pause_button);
             resumeButton = menu.findItem(R.id.resume_button);
 
-            if (db.isMedicationActive(medication))
-            {
+            if (db.isMedicationActive(medication)) {
                 pauseButton.setVisible(true);
-            } else
-            {
+            } else {
                 resumeButton.setVisible(true);
             }
         }
@@ -167,8 +158,7 @@ public class AddMedication extends AppCompatActivity
      * @return Selected option
      */
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item)
-    {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home)
             finish();
 
@@ -179,10 +169,8 @@ public class AddMedication extends AppCompatActivity
      * Return to MainActivity if back arrow is pressed
      */
     @Override
-    public void onBackPressed()
-    {
-        if (medId != -1)
-        {
+    public void onBackPressed() {
+        if (medId != -1) {
             Intent intent = new Intent(this, MyMedications.class);
             finish();
             startActivity(intent);
@@ -195,8 +183,7 @@ public class AddMedication extends AppCompatActivity
     /**
      * Resumes or pauses a medication
      */
-    public void onPauseResumeClick(MenuItem item)
-    {
+    public void onPauseResumeClick(MenuItem item) {
         PauseResumeDialog dialog = new PauseResumeDialog(medication, pauseButton, resumeButton);
         dialog.show(getSupportFragmentManager(), null);
     }
@@ -206,8 +193,7 @@ public class AddMedication extends AppCompatActivity
      *
      * @param item Menu item represented by a garbage can icon.
      */
-    public void onDeleteMedClick(MenuItem item)
-    {
+    public void onDeleteMedClick(MenuItem item) {
         ConfirmMedicationDeleteFragment confirmMedicationDeleteFragment =
                 new ConfirmMedicationDeleteFragment(db, medication);
         confirmMedicationDeleteFragment.show(getSupportFragmentManager(), null);
@@ -217,8 +203,7 @@ public class AddMedication extends AppCompatActivity
     /**
      * Builds all views in activity
      */
-    private void buildViews()
-    {
+    private void buildViews() {
         setPatientCard();
         setMedNameAndDosageCard();
         setFrequencyCard();
@@ -227,8 +212,7 @@ public class AddMedication extends AppCompatActivity
     /**
      * Prepares medication card
      */
-    private void setPatientCard()
-    {
+    private void setPatientCard() {
         ArrayAdapter<String> patientNamesAdapter;
         ArrayList<String> patientNames;
         RadioGroup patientGroup = this.findViewById(R.id.patientRadioGroup);
@@ -248,11 +232,9 @@ public class AddMedication extends AppCompatActivity
 
         patientNameInput.setAdapter(patientNamesAdapter);
 
-        if (medId == -1 || (medication != null && medication.getPatientName().equals("ME!")))
-        {
+        if (medId == -1 || (medication != null && medication.getPatientName().equals("ME!"))) {
             meButton.setChecked(true);
-        } else
-        {
+        } else {
             otherButton.setChecked(true);
             patientNameInputLayout.setVisibility(View.VISIBLE);
             patientNameInput.setText(medication.getPatientName());
@@ -260,14 +242,11 @@ public class AddMedication extends AppCompatActivity
 
         patientGroup.setOnCheckedChangeListener((radioGroup, i) ->
         {
-            if (meButton.isChecked())
-            {
-                if (patientNameInputLayout.getVisibility() == View.VISIBLE)
-                {
+            if (meButton.isChecked()) {
+                if (patientNameInputLayout.getVisibility() == View.VISIBLE) {
                     patientNameInputLayout.setVisibility(View.GONE);
                 }
-            } else
-            {
+            } else {
                 patientNameInputLayout.setVisibility(View.VISIBLE);
             }
         });
@@ -276,8 +255,7 @@ public class AddMedication extends AppCompatActivity
     /**
      * Prepares input for medication dosage & name card
      */
-    private void setMedNameAndDosageCard()
-    {
+    private void setMedNameAndDosageCard() {
         medicationNameInputLayout = this.findViewById(R.id.medicationNameInputLayout);
         medNameInput = this.findViewById(R.id.medicationName);
         aliasSwitch = this.findViewById(R.id.aliasSwitch);
@@ -290,30 +268,23 @@ public class AddMedication extends AppCompatActivity
 
         aliasSwitch.setChecked(medId != -1 && !medication.getAlias().isEmpty());
 
-        dosageAmountInput.addTextChangedListener(new TextWatcher()
-        {
+        dosageAmountInput.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2)
-            {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2)
-            {
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
 
             @Override
-            public void afterTextChanged(Editable editable)
-            {
-                try
-                {
+            public void afterTextChanged(Editable editable) {
+                try {
                     Float.parseFloat(dosageAmountInput.getText().toString());
 
                     dosageAmountInputLayout.setErrorEnabled(false);
-                } catch (Exception e)
-                {
-                    if (!dosageAmountInput.getText().toString().isEmpty())
-                    {
+                } catch (Exception e) {
+                    if (!dosageAmountInput.getText().toString().isEmpty()) {
                         dosageAmountInputLayout.setError(getString(R.string.val_too_big));
                     }
                 }
@@ -322,29 +293,23 @@ public class AddMedication extends AppCompatActivity
 
         aliasSwitch.setOnCheckedChangeListener((compoundButton, b) ->
         {
-            if (aliasInputLayout.getVisibility() == View.GONE)
-            {
+            if (aliasInputLayout.getVisibility() == View.GONE) {
                 aliasInputLayout.setVisibility(View.VISIBLE);
-            } else
-            {
+            } else {
                 aliasInputLayout.setVisibility(View.GONE);
                 aliasInput.setText("");
             }
         });
 
-        if (medId != -1)
-        {
+        if (medId != -1) {
             medNameInput.setText(medication.getName());
-            if (!medication.getAlias().isEmpty())
-            {
+            if (!medication.getAlias().isEmpty()) {
                 aliasInput.setText(medication.getAlias());
             }
 
-            if (medication.getDosage() == (int) medication.getDosage())
-            {
+            if (medication.getDosage() == (int) medication.getDosage()) {
                 dosageAmountInput.setText(String.format(Locale.getDefault(), "%d", (int) medication.getDosage()));
-            } else
-            {
+            } else {
                 dosageAmountInput.setText(String.valueOf(medication.getDosage()));
             }
 
@@ -355,8 +320,7 @@ public class AddMedication extends AppCompatActivity
     /**
      * Prepares frequency card
      */
-    private void setFrequencyCard()
-    {
+    private void setFrequencyCard() {
         LinearLayout dailyLayout = this.findViewById(R.id.dailyMedFrequency);
         LinearLayout multiplePerDay = this.findViewById(R.id.multiplePerDayFrequency);
         LinearLayout custom = this.findViewById(R.id.customFrequencyLayout);
@@ -380,10 +344,8 @@ public class AddMedication extends AppCompatActivity
 
         frequencyDropDown.setAdapter(frequencyOptions);
 
-        if (medId != -1)
-        {
-            if (medication.getFrequency() == MINUTES_IN_DAY && medication.getTimes().length == 1)
-            {
+        if (medId != -1) {
+            if (medication.getFrequency() == MINUTES_IN_DAY && medication.getTimes().length == 1) {
                 frequencyDropDown.setText(
                         frequencyDropDown.getAdapter().getItem(1).toString(), false
                 );
@@ -391,8 +353,7 @@ public class AddMedication extends AppCompatActivity
                 selectedFrequencyTypeIndex = 1;
 
                 dailyLayout.setVisibility(View.VISIBLE);
-            } else if (medication.getTimes().length > 1)
-            {
+            } else if (medication.getTimes().length > 1) {
                 frequencyDropDown.setText(
                         frequencyDropDown.getAdapter().getItem(0).toString(), false
                 );
@@ -400,8 +361,7 @@ public class AddMedication extends AppCompatActivity
                 selectedFrequencyTypeIndex = 0;
 
                 multiplePerDay.setVisibility(View.VISIBLE);
-            } else if (medication.getFrequency() == 0)
-            {
+            } else if (medication.getFrequency() == 0) {
                 frequencyDropDown.setText(
                         frequencyDropDown.getAdapter().getItem(3).toString(), false
                 );
@@ -409,8 +369,7 @@ public class AddMedication extends AppCompatActivity
                 selectedFrequencyTypeIndex = 0;
 
                 asNeeded.setVisibility(View.VISIBLE);
-            } else
-            {
+            } else {
                 frequencyDropDown.setText(
                         frequencyDropDown.getAdapter().getItem(2).toString(), false
                 );
@@ -425,8 +384,7 @@ public class AddMedication extends AppCompatActivity
         {
             frequencyDropdownLayout.setErrorEnabled(false);
 
-            switch (i)
-            {
+            switch (i) {
                 case 0:
                     dailyLayout.setVisibility(View.GONE);
                     custom.setVisibility(View.GONE);
@@ -476,8 +434,7 @@ public class AddMedication extends AppCompatActivity
     /**
      * Sets UI for multiple per day input
      */
-    private void setMultiplePerDayFrequencyViews()
-    {
+    private void setMultiplePerDayFrequencyViews() {
         numberOfTimersPerDay = this.findViewById(R.id.numberOfTimersPerDay);
         startDateMultiplePerDay = this.findViewById(R.id.startDateMultiplePerDay);
         LinearLayout timesPerDayHolder = this.findViewById(R.id.timesPerDayHolder);
@@ -487,70 +444,56 @@ public class AddMedication extends AppCompatActivity
         startDateMultiplePerDay.setShowSoftInputOnFocus(false);
         startDateMultiplePerDay.setOnFocusChangeListener((view, b) ->
         {
-            if (b)
-            {
+            if (b) {
                 DialogFragment datePicker = new SelectDateFragment(startDateMultiplePerDay);
                 datePicker.show(getSupportFragmentManager(), null);
             }
         });
 
-        numberOfTimersPerDay.addTextChangedListener(new TextWatcher()
-        {
+        numberOfTimersPerDay.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2)
-            {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2)
-            {
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
 
             @Override
-            public void afterTextChanged(Editable editable)
-            {
+            public void afterTextChanged(Editable editable) {
                 int days;
 
-                try
-                {
+                try {
                     days = Integer.parseInt(numberOfTimersPerDay.getText().toString());
-                } catch (Exception e)
-                {
+                } catch (Exception e) {
                     numberOfTimersPerDayLayout.setError(getString(R.string.cannot_exceed_50));
 
                     return;
                 }
 
-                if (days > 50)
-                {
+                if (days > 50) {
                     numberOfTimersPerDayLayout.setError(getString(R.string.cannot_exceed_50));
 
                     return;
-                } else if (days == 0)
-                {
+                } else if (days == 0) {
                     numberOfTimersPerDayLayout.setError(getString(R.string.must_be_greater_than_0));
 
                     return;
-                } else
-                {
+                } else {
                     numberOfTimersPerDayLayout.setErrorEnabled(false);
                 }
 
-                if (timesPerDayHolder.getChildCount() > days)
-                {
-                    for (int i = timesPerDayHolder.getChildCount(); i > days; i--)
-                    {
+                if (timesPerDayHolder.getChildCount() > days) {
+                    for (int i = timesPerDayHolder.getChildCount(); i > days; i--) {
                         timesPerDayHolder.removeViewAt(i - 1);
                     }
 
                     return;
-                } else
-                {
+                } else {
                     days -= timesPerDayHolder.getChildCount();
                 }
 
-                for (int ind = 0; ind < days; ind++)
-                {
+                for (int ind = 0; ind < days; ind++) {
                     TextInputLayout textLayout = new TextInputLayout(new ContextThemeWrapper(getBaseContext(), R.style.Widget_MaterialComponents_TextInputLayout_OutlinedBox_Dense));
                     TextInputEditText timeEntry = new TextInputEditText(textLayout.getContext());
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -572,8 +515,7 @@ public class AddMedication extends AppCompatActivity
 
                     timeEntry.setOnFocusChangeListener((view, b) ->
                     {
-                        if (b)
-                        {
+                        if (b) {
                             DialogFragment dialogFragment = new TimePickerFragment(timeEntry);
                             dialogFragment.show(getSupportFragmentManager(), null);
                         }
@@ -584,8 +526,7 @@ public class AddMedication extends AppCompatActivity
             }
         });
 
-        if (medId != -1 && selectedFrequencyTypeIndex == 0)
-        {
+        if (medId != -1 && selectedFrequencyTypeIndex == 0) {
             LocalDateTime[] medTimes = medication.getTimes();
 
             numberOfTimersPerDay.setText(String.valueOf(medTimes.length));
@@ -594,8 +535,7 @@ public class AddMedication extends AppCompatActivity
             );
             startDateMultiplePerDay.setTag(medication.getStartDate().toLocalDate());
 
-            for (int i = 0; i < medTimes.length; i++)
-            {
+            for (int i = 0; i < medTimes.length; i++) {
                 LocalTime time = medTimes[i].toLocalTime();
                 TextInputLayout childLayout = (TextInputLayout) timesPerDayHolder.getChildAt(i);
                 EditText timeInput = childLayout.getEditText();
@@ -609,8 +549,7 @@ public class AddMedication extends AppCompatActivity
     /**
      * Sets UI for daily medication input
      */
-    private void setDailyFrequencyViews()
-    {
+    private void setDailyFrequencyViews() {
         dailyMedTime = this.findViewById(R.id.dailyMedTime);
         dailyMedStartDate = this.findViewById(R.id.dailyMedStart);
 
@@ -620,8 +559,7 @@ public class AddMedication extends AppCompatActivity
 
         dailyMedTime.setOnFocusChangeListener((view, b) ->
         {
-            if (b)
-            {
+            if (b) {
                 DialogFragment dialogFragment = new TimePickerFragment(dailyMedTime);
                 dialogFragment.show(getSupportFragmentManager(), null);
             }
@@ -629,15 +567,13 @@ public class AddMedication extends AppCompatActivity
 
         dailyMedStartDate.setOnFocusChangeListener((view, b) ->
         {
-            if (b)
-            {
+            if (b) {
                 DialogFragment df = new SelectDateFragment(dailyMedStartDate);
                 df.show(getSupportFragmentManager(), null);
             }
         });
 
-        if (medId != -1 && selectedFrequencyTypeIndex == 1)
-        {
+        if (medId != -1 && selectedFrequencyTypeIndex == 1) {
             dailyMedStartDate.setTag(medication.getStartDate().toLocalDate());
             dailyMedStartDate.setText(
                     TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
@@ -653,8 +589,7 @@ public class AddMedication extends AppCompatActivity
     /**
      * Builds UI for custom frequency
      */
-    private void setCustomFrequencyViews()
-    {
+    private void setCustomFrequencyViews() {
         ArrayAdapter<String> timeUnitsAdapter;
 
         customFreqStartDateLayout = this.findViewById(R.id.customFreqStartDate);
@@ -673,8 +608,7 @@ public class AddMedication extends AppCompatActivity
 
         customFreqMedTime.setOnFocusChangeListener((view, b) ->
         {
-            if (b)
-            {
+            if (b) {
                 DialogFragment dialogFragment = new TimePickerFragment(customFreqMedTime);
                 dialogFragment.show(getSupportFragmentManager(), null);
             }
@@ -682,42 +616,33 @@ public class AddMedication extends AppCompatActivity
 
         customFreqStartDate.setOnFocusChangeListener((view, b) ->
         {
-            if (b)
-            {
+            if (b) {
                 DialogFragment df = new SelectDateFragment(customFreqStartDate);
                 df.show(getSupportFragmentManager(), null);
             }
         });
 
-        customFreqMTakenEveryEnter.addTextChangedListener(new TextWatcher()
-        {
+        customFreqMTakenEveryEnter.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2)
-            {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2)
-            {
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
 
             @Override
-            public void afterTextChanged(Editable editable)
-            {
+            public void afterTextChanged(Editable editable) {
                 customFreqTakenEveryLayout.setErrorEnabled(false);
 
-                try
-                {
+                try {
                     Integer.parseInt(customFreqMTakenEveryEnter.getText().toString());
 
-                    if (Integer.parseInt(customFreqMTakenEveryEnter.getText().toString()) == 0)
-                    {
+                    if (Integer.parseInt(customFreqMTakenEveryEnter.getText().toString()) == 0) {
                         customFreqTakenEveryLayout.setError(getString(R.string.must_be_greater_than_0));
                     }
-                } catch (Exception e)
-                {
-                    if (!customFreqMTakenEveryEnter.getText().toString().isEmpty())
-                    {
+                } catch (Exception e) {
+                    if (!customFreqMTakenEveryEnter.getText().toString().isEmpty()) {
                         customFreqTakenEveryLayout.setError(getString(R.string.val_too_big));
                     }
                 }
@@ -735,8 +660,7 @@ public class AddMedication extends AppCompatActivity
 
         customFreqTimeUnitEnter.setAdapter(timeUnitsAdapter);
 
-        if (medId != -1 && selectedFrequencyTypeIndex == 2)
-        {
+        if (medId != -1 && selectedFrequencyTypeIndex == 2) {
             long freq = medication.getFrequency();
             long displayedFreq = 0;
             int index = 0;
@@ -751,20 +675,16 @@ public class AddMedication extends AppCompatActivity
             );
             customFreqMedTime.setTag(medication.getStartDate().toLocalTime());
 
-            if (freq % (60 * 24 * 7) == 0)
-            {
+            if (freq % (60 * 24 * 7) == 0) {
                 index = 3;
                 displayedFreq = freq / (60 * 24 * 7);
-            } else if (freq % (60 * 24) == 0)
-            {
+            } else if (freq % (60 * 24) == 0) {
                 index = 2;
                 displayedFreq = freq / (60 * 24);
-            } else if (freq % 60 == 0)
-            {
+            } else if (freq % 60 == 0) {
                 index = 1;
                 displayedFreq = freq / (60);
-            } else
-            {
+            } else {
                 displayedFreq = freq;
             }
 
@@ -779,23 +699,20 @@ public class AddMedication extends AppCompatActivity
     /**
      * Prepares Views needed for as needed medications
      */
-    private void setAsNeededViews()
-    {
+    private void setAsNeededViews() {
         asNeededStart = this.findViewById(R.id.asNeededStart);
         asNeededStartInput = this.findViewById(R.id.asNeededStartInput);
 
         asNeededStartInput.setShowSoftInputOnFocus(false);
         asNeededStartInput.setOnFocusChangeListener((view, b) ->
         {
-            if (b)
-            {
+            if (b) {
                 DialogFragment datePicker = new SelectDateFragment(asNeededStartInput);
                 datePicker.show(getSupportFragmentManager(), null);
             }
         });
 
-        if (medId != -1)
-        {
+        if (medId != -1) {
             asNeededStartInput.setText(
                     TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
             );
@@ -806,8 +723,7 @@ public class AddMedication extends AppCompatActivity
     /**
      * Creates an onClickListener for the save button
      */
-    private void setSaveButton()
-    {
+    private void setSaveButton() {
         MaterialButton saveButton = this.findViewById(R.id.saveButton);
 
         saveButton.setOnClickListener((view -> saveMedication()));
@@ -817,20 +733,17 @@ public class AddMedication extends AppCompatActivity
      * Saves medication and calls validation methods. Validation methods also assign/update values
      * of the medication being created/edited.
      */
-    private void saveMedication()
-    {
+    private void saveMedication() {
         boolean nameCardValid = isNameCardValid(),
                 dosageCardValid = isMedNameAndDosageCardValid(),
                 frequencyCardValid = isFrequencyCardValid();
         Intent intent;
 
-        if (!(nameCardValid && dosageCardValid && frequencyCardValid))
-        {
+        if (!(nameCardValid && dosageCardValid && frequencyCardValid)) {
             return;
         }
 
-        if (medId == -1)
-        {
+        if (medId == -1) {
             intent = new Intent(this, MainActivity.class);
 
             long id = db.addMedication(
@@ -845,15 +758,13 @@ public class AddMedication extends AppCompatActivity
 
             medication.setId(id);
 
-            for (LocalDateTime time : medication.getTimes())
-            {
+            for (LocalDateTime time : medication.getTimes()) {
                 db.addDoseTime(
                         id, TimeFormatting.formatTimeForDB(time.getHour(), time.getMinute())
                 );
             }
 
-        } else
-        {
+        } else {
             intent = new Intent(this, MyMedications.class);
 
             db.createChildMedication(medication);
@@ -871,14 +782,12 @@ public class AddMedication extends AppCompatActivity
      *
      * @return True if valid
      */
-    private boolean isNameCardValid()
-    {
+    private boolean isNameCardValid() {
         String patientName;
 
         patientNameInputLayout.setErrorEnabled(false);
 
-        if (meButton.isChecked())
-        {
+        if (meButton.isChecked()) {
             medication.setPatientName("ME!");
 
             return true;
@@ -886,16 +795,13 @@ public class AddMedication extends AppCompatActivity
 
         patientName = patientNameInput.getText().toString();
 
-        if (!patientName.isEmpty() && !patientName.equals("ME!"))
-        {
+        if (!patientName.isEmpty() && !patientName.equals("ME!")) {
             medication.setPatientName(patientName);
 
             return true;
-        } else if (patientName.equals("ME!"))
-        {
+        } else if (patientName.equals("ME!")) {
             patientNameInputLayout.setError(getString(R.string.provided_name_invalid));
-        } else
-        {
+        } else {
             patientNameInputLayout.setError(getString(R.string.err_provide_name));
         }
 
@@ -908,48 +814,39 @@ public class AddMedication extends AppCompatActivity
      *
      * @return True if valid.
      */
-    private boolean isMedNameAndDosageCardValid()
-    {
+    private boolean isMedNameAndDosageCardValid() {
         boolean isValid = true;
 
         medicationNameInputLayout.setErrorEnabled(false);
         dosageUnitsInputLayout.setErrorEnabled(false);
 
-        if (medNameInput.getText().toString().isEmpty())
-        {
+        if (medNameInput.getText().toString().isEmpty()) {
             medicationNameInputLayout.setError(getString(R.string.err_name_for_med));
             isValid = false;
-        } else
-        {
+        } else {
             medication.setName(medNameInput.getText().toString());
         }
 
-        if (aliasSwitch.isChecked() && !aliasInput.getText().toString().isEmpty())
-        {
+        if (aliasSwitch.isChecked() && !aliasInput.getText().toString().isEmpty()) {
             medication.setAlias(aliasInput.getText().toString());
         }
 
-        if ((dosageAmountInputLayout.getError() == null || floatIsParsable(dosageAmountInput.getText().toString())) && !dosageAmountInput.getText().toString().isEmpty())
-        {
+        if ((dosageAmountInputLayout.getError() == null || floatIsParsable(dosageAmountInput.getText().toString())) && !dosageAmountInput.getText().toString().isEmpty()) {
             medication.setDosage(Float.parseFloat(dosageAmountInput.getText().toString()));
 
             dosageAmountInputLayout.setErrorEnabled(false);
-        } else
-        {
+        } else {
             isValid = false;
 
-            if (dosageAmountInput.getText().toString().isEmpty())
-            {
+            if (dosageAmountInput.getText().toString().isEmpty()) {
                 dosageAmountInputLayout.setError(getString(R.string.err_enter_dosage));
             }
         }
 
-        if (dosageUnitsInput.getText().toString().isEmpty())
-        {
+        if (dosageUnitsInput.getText().toString().isEmpty()) {
             dosageUnitsInputLayout.setError(getString(R.string.err_units_for_med));
             isValid = false;
-        } else
-        {
+        } else {
             medication.setDosageUnits(dosageUnitsInput.getText().toString());
         }
 
@@ -962,10 +859,8 @@ public class AddMedication extends AppCompatActivity
      * @return False if no option is selected, else the return value of the validation method for
      * the selected form.
      */
-    private boolean isFrequencyCardValid()
-    {
-        switch (selectedFrequencyTypeIndex)
-        {
+    private boolean isFrequencyCardValid() {
+        switch (selectedFrequencyTypeIndex) {
             case 0:
                 return isMultiplePerDayValid();
             case 1:
@@ -986,16 +881,14 @@ public class AddMedication extends AppCompatActivity
      *
      * @return True if valid
      */
-    private boolean isMultiplePerDayValid()
-    {
+    private boolean isMultiplePerDayValid() {
         TextInputLayout multiplePerDayStartDateLayout =
                 this.findViewById(R.id.multiplePerDayStartDateLayout);
 
         if (!startDateMultiplePerDay.getText().toString().isEmpty()
                 && !numberOfTimersPerDay.getText().toString().isEmpty()
                 && intIsParsable(numberOfTimersPerDay.getText().toString())
-                && numberOfTimersPerDayLayout.getError() == null)
-        {
+                && numberOfTimersPerDayLayout.getError() == null) {
             LinearLayout ll = this.findViewById(R.id.timesPerDayHolder);
             LocalDateTime[] times = new LocalDateTime[ll.getChildCount()];
             LocalDateTime start = LocalDateTime.of((LocalDate) startDateMultiplePerDay.getTag(), LocalTime.now());
@@ -1007,26 +900,22 @@ public class AddMedication extends AppCompatActivity
             medication.setStartDate(start);
             medication.setFrequency(MINUTES_IN_DAY);
 
-            for (int i = 0; i < ll.getChildCount(); i++)
-            {
+            for (int i = 0; i < ll.getChildCount(); i++) {
                 TextInputLayout childLayout = (TextInputLayout) ll.getChildAt(i);
                 EditText time = childLayout.getEditText();
 
                 childLayout.setErrorEnabled(false);
 
-                if (time.getText().toString().isEmpty())
-                {
+                if (time.getText().toString().isEmpty()) {
                     childLayout.setError(getString(R.string.err_select_time));
 
                     errorCount++;
-                } else
-                {
+                } else {
                     times[i] = LocalDateTime.of(start.toLocalDate(), (LocalTime) time.getTag());
                 }
             }
 
-            if (errorCount > 0)
-            {
+            if (errorCount > 0) {
                 return false;
             }
 
@@ -1035,13 +924,11 @@ public class AddMedication extends AppCompatActivity
             return true;
         }
 
-        if (startDateMultiplePerDay.getText().toString().isEmpty())
-        {
+        if (startDateMultiplePerDay.getText().toString().isEmpty()) {
             multiplePerDayStartDateLayout.setError(getString(R.string.err_select_start_date));
         }
 
-        if (numberOfTimersPerDay.getText().toString().isEmpty())
-        {
+        if (numberOfTimersPerDay.getText().toString().isEmpty()) {
             numberOfTimersPerDayLayout.setError(getString(R.string.err_enter_num_timers_per_day));
         }
 
@@ -1053,16 +940,14 @@ public class AddMedication extends AppCompatActivity
      *
      * @return True if valid.
      */
-    private boolean isDailyValid()
-    {
+    private boolean isDailyValid() {
         TextInputLayout dailyStartDateLayout = this.findViewById(R.id.startDateTaken);
         TextInputLayout timeTakenLayout = this.findViewById(R.id.timeTakenLayout);
 
         dailyStartDateLayout.setErrorEnabled(false);
         timeTakenLayout.setErrorEnabled(false);
 
-        if (!dailyMedStartDate.getText().toString().isEmpty() && !dailyMedTime.getText().toString().isEmpty())
-        {
+        if (!dailyMedStartDate.getText().toString().isEmpty() && !dailyMedTime.getText().toString().isEmpty()) {
             LocalDateTime[] times = {
                     LocalDateTime.of(
                             (LocalDate) dailyMedStartDate.getTag(), (LocalTime) dailyMedTime.getTag()
@@ -1076,13 +961,11 @@ public class AddMedication extends AppCompatActivity
             return true;
         }
 
-        if (dailyMedStartDate.getText().toString().isEmpty())
-        {
+        if (dailyMedStartDate.getText().toString().isEmpty()) {
             dailyStartDateLayout.setError(getString(R.string.err_select_start_date));
         }
 
-        if (dailyMedTime.getText().toString().isEmpty())
-        {
+        if (dailyMedTime.getText().toString().isEmpty()) {
             timeTakenLayout.setError(getString(R.string.err_select_time));
         }
 
@@ -1095,8 +978,7 @@ public class AddMedication extends AppCompatActivity
      *
      * @return True if valid, false if invalid
      */
-    private boolean isCustomFrequencyValid()
-    {
+    private boolean isCustomFrequencyValid() {
         boolean allInputsFilled = !(
                 Objects.requireNonNull(customFreqStartDate.getText()).toString().isEmpty()
                         && Objects.requireNonNull(customFreqMedTime.getText()).toString().isEmpty()
@@ -1105,8 +987,7 @@ public class AddMedication extends AppCompatActivity
                 && intIsParsable(Objects.requireNonNull(customFreqMTakenEveryEnter.getText()).toString()
         );
 
-        if (allInputsFilled)
-        {
+        if (allInputsFilled) {
 
             LocalDate startDate = (LocalDate) customFreqStartDate.getTag();
             LocalTime startTime = (LocalTime) customFreqMedTime.getTag();
@@ -1117,15 +998,13 @@ public class AddMedication extends AppCompatActivity
             customFreqTimeTakenLayout.setErrorEnabled(false);
             customFreqTimeUnitLayout.setErrorEnabled(false);
 
-            if (customFreqTakenEveryLayout.getError() != null)
-            {
+            if (customFreqTakenEveryLayout.getError() != null) {
                 return false;
             }
 
             medication.setStartDate(LocalDateTime.of(startDate, startTime));
 
-            switch (selectedTimeUnitIndex)
-            {
+            switch (selectedTimeUnitIndex) {
                 case 3:
                     takenEvery *= 7;
                 case 2:
@@ -1140,33 +1019,27 @@ public class AddMedication extends AppCompatActivity
             return true;
         }
 
-        if (customFreqStartDate.getText().toString().isEmpty())
-        {
+        if (customFreqStartDate.getText().toString().isEmpty()) {
             customFreqStartDateLayout.setError(getString(R.string.err_select_start_date));
         }
 
-        if (Objects.requireNonNull(customFreqMedTime.getText()).toString().isEmpty())
-        {
+        if (Objects.requireNonNull(customFreqMedTime.getText()).toString().isEmpty()) {
             customFreqTimeTakenLayout.setError(getString(R.string.err_select_time));
         }
 
-        if (customFreqMTakenEveryEnter.getText().toString().isEmpty())
-        {
+        if (customFreqMTakenEveryEnter.getText().toString().isEmpty()) {
             customFreqTakenEveryLayout.setError(getString(R.string.err_enter_med_freq));
         }
 
-        if (customFreqTimeUnitEnter.getText().toString().isEmpty())
-        {
+        if (customFreqTimeUnitEnter.getText().toString().isEmpty()) {
             customFreqTimeUnitLayout.setError(getString(R.string.err_enter_time_unit));
         }
 
         return false;
     }
 
-    private boolean isAsNeededValid()
-    {
-        if (!Objects.requireNonNull(asNeededStartInput.getText()).toString().isEmpty())
-        {
+    private boolean isAsNeededValid() {
+        if (!Objects.requireNonNull(asNeededStartInput.getText()).toString().isEmpty()) {
             asNeededStart.setErrorEnabled(false);
 
             medication.setStartDate(LocalDateTime.of((LocalDate) asNeededStartInput.getTag(), LocalTime.of(0, 0)));
@@ -1187,15 +1060,12 @@ public class AddMedication extends AppCompatActivity
      * @param intToParse String to try to convert
      * @return True if the string can be converted, else false
      */
-    private boolean intIsParsable(String intToParse)
-    {
-        try
-        {
+    private boolean intIsParsable(String intToParse) {
+        try {
             Integer.parseInt(intToParse);
 
             return true;
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -1206,15 +1076,12 @@ public class AddMedication extends AppCompatActivity
      * @param floatToParse String to try to convert
      * @return True if the string can be converted, else false
      */
-    private boolean floatIsParsable(String floatToParse)
-    {
-        try
-        {
+    private boolean floatIsParsable(String floatToParse) {
+        try {
             Float.parseFloat(floatToParse);
 
             return true;
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             return false;
         }
     }

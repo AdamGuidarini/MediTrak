@@ -27,8 +27,7 @@ import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Medication;
 
-public class DoseInfoDialog extends DialogFragment
-{
+public class DoseInfoDialog extends DialogFragment {
     private final long doseId;
     private final DBHelper db;
     private final TextView textView;
@@ -36,8 +35,7 @@ public class DoseInfoDialog extends DialogFragment
     private TextInputEditText timeTaken;
     private TextInputEditText dateTaken;
 
-    public DoseInfoDialog(long doseId, DBHelper database, TextView tv)
-    {
+    public DoseInfoDialog(long doseId, DBHelper database, TextView tv) {
         this.doseId = doseId;
         db = database;
         textView = tv;
@@ -45,8 +43,7 @@ public class DoseInfoDialog extends DialogFragment
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstances)
-    {
+    public Dialog onCreateDialog(Bundle savedInstances) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         Medication med = ((Triple<Medication, Long, LocalDateTime>) textView.getTag()).getFirst();
@@ -57,8 +54,7 @@ public class DoseInfoDialog extends DialogFragment
         builder.setPositiveButton(getString(R.string.save), ((dialogInterface, i) -> save()));
         builder.setNegativeButton(R.string.close, ((dialogInterface, i) -> dismiss()));
 
-        if (med.getFrequency() == 0)
-        {
+        if (med.getFrequency() == 0) {
             builder.setNeutralButton(R.string.delete, ((dialogInterface, i) -> deleteAsNeededDose()));
         }
 
@@ -67,21 +63,17 @@ public class DoseInfoDialog extends DialogFragment
 
 
     @Override
-    public void onCancel(@NonNull DialogInterface dialog)
-    {
+    public void onCancel(@NonNull DialogInterface dialog) {
         super.onCancel(dialog);
     }
 
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
 
-        if (!db.getTaken(doseId))
-        {
+        if (!db.getTaken(doseId)) {
             getDialog().findViewById(R.id.notTakenMessage).setVisibility(View.VISIBLE);
-        } else
-        {
+        } else {
             LocalDateTime doseDate = db.getTimeTaken(doseId);
 
             timeTaken = getDialog().findViewById(R.id.dose_time_taken);
@@ -98,8 +90,7 @@ public class DoseInfoDialog extends DialogFragment
 
             timeTaken.setOnFocusChangeListener((view, b) ->
             {
-                if (b)
-                {
+                if (b) {
                     DialogFragment timePicker = new TimePickerFragment(timeTaken);
                     timePicker.show(getParentFragmentManager(), null);
 
@@ -109,8 +100,7 @@ public class DoseInfoDialog extends DialogFragment
 
             dateTaken.setOnFocusChangeListener((view, b) ->
             {
-                if (b)
-                {
+                if (b) {
                     DialogFragment datePicker = new SelectDateFragment(dateTaken);
                     datePicker.show(getParentFragmentManager(), null);
 
@@ -122,10 +112,8 @@ public class DoseInfoDialog extends DialogFragment
         }
     }
 
-    private void save()
-    {
-        if (changed)
-        {
+    private void save() {
+        if (changed) {
             LocalDate date = (LocalDate) dateTaken.getTag();
             LocalTime time = (LocalTime) timeTaken.getTag();
             LocalDateTime dateTime = LocalDateTime.of(date, time);
@@ -140,14 +128,12 @@ public class DoseInfoDialog extends DialogFragment
         dismiss();
     }
 
-    private void deleteAsNeededDose()
-    {
+    private void deleteAsNeededDose() {
         db.deleteDose(doseId);
 
         Fragment fragment = getParentFragment();
 
-        if (fragment instanceof IDialogCloseListener)
-        {
+        if (fragment instanceof IDialogCloseListener) {
             ((IDialogCloseListener) fragment).handleDialogClose(
                     IDialogCloseListener.Action.DELETE, doseId
             );
