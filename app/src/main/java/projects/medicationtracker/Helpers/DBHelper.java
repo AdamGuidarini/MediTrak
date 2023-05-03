@@ -1,5 +1,6 @@
 package projects.medicationtracker.Helpers;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -511,6 +512,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + MED_ID + " = " + id;
 
         Cursor cursor = db.rawQuery(query, null);
+        Medication medication;
 
         cursor.moveToFirst();
 
@@ -519,18 +521,33 @@ public class DBHelper extends SQLiteOpenHelper {
         String units = cursor.getString(cursor.getColumnIndexOrThrow(MED_UNITS));
         LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(cursor.getString(
                 cursor.getColumnIndexOrThrow(START_DATE)));
-        long medId = Long.parseLong(cursor.getString(cursor.getColumnIndexOrThrow(MED_ID)));
-        long frequency = Long.parseLong(cursor.getString(cursor.getColumnIndexOrThrow(MED_FREQUENCY)));
+        long medId = cursor.getLong(cursor.getColumnIndexOrThrow(MED_ID));
+        long frequency = cursor.getLong(cursor.getColumnIndexOrThrow(MED_FREQUENCY));
         float dosage = Float.parseFloat(cursor.getString(cursor.getColumnIndexOrThrow(MED_DOSAGE)));
         String alias = cursor.getString(cursor.getColumnIndexOrThrow(ALIAS));
 
         LocalDateTime[] times = new LocalDateTime[0];
 
-        cursor.close();
-
-        return new Medication(
+        medication = new Medication(
                 medName, patient, units, times, startDate, medId, frequency, dosage, alias
         );
+
+        @SuppressLint("Range")
+        long parentId = cursor.getLong(cursor.getColumnIndex(PARENT_ID));
+        @SuppressLint("Range")
+        long childId = cursor.getLong(cursor.getColumnIndex(CHILD_ID));
+
+//        if (parentId > -1) {
+//            medication.setParent(getMedication(parentId));
+//        }
+
+//        if (childId > -1) {
+//            medication.setChild(getMedication(childId));
+//        }
+
+        cursor.close();
+
+        return medication;
     }
 
     /**
