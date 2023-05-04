@@ -59,8 +59,11 @@ public class MyMedications extends AppCompatActivity {
             if (patientNames.size() == 1) {
                 ArrayList<Medication> patientMeds = db.getMedicationsForPatient(patientNames.get(0));
 
-                for (Medication medication : patientMeds)
+                for (Medication medication : patientMeds) {
+                    if (medication.getChild() != null) continue;
+
                     createMyMedCards(medication, myMedsLayout);
+                }
             } else {
                 if (patientNames.contains("ME!"))
                     patientNames.set(patientNames.indexOf("ME!"), you);
@@ -85,8 +88,11 @@ public class MyMedications extends AppCompatActivity {
 
                         ArrayList<Medication> patientMeds = db.getMedicationsForPatient(patient);
 
-                        for (Medication medication : patientMeds)
+                        for (Medication medication : patientMeds) {
+                            if (medication.getChild() != null) continue;
+
                             createMyMedCards(medication, myMedsLayout);
+                        }
                     }
 
                     @Override
@@ -140,7 +146,7 @@ public class MyMedications extends AppCompatActivity {
 
         thisMedLayout.setId((int) medication.getId());
 
-        bundle.putLong("MedId", medication.getId());
+        bundle.putParcelable("Medication", medication);
 
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)

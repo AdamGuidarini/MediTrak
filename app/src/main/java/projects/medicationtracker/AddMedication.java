@@ -159,8 +159,9 @@ public class AddMedication extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home)
-            finish();
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -170,14 +171,9 @@ public class AddMedication extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        if (medId != -1) {
-            Intent intent = new Intent(this, MyMedications.class);
-            finish();
-            startActivity(intent);
-        }
-
-        super.onBackPressed();
+        Intent intent = new Intent(this, medId > -1 ? MyMedications.class : MainActivity.class);
         finish();
+        startActivity(intent);
     }
 
     /**

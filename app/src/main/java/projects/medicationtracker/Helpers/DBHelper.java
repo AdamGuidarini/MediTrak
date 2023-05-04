@@ -295,58 +295,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String query = "SELECT * FROM " + MEDICATION_TABLE + " WHERE " + PATIENT_NAME + " = \"" + patient + "\"";
 
-        /* -- TEST REPLACEMENT QUERY FOR CHILD MEDS--
-        SELECT
-            med.StartDate,
-            CASE
-               WHEN child.ParentId = med.MedicationID
-                   THEN child.MedName
-                   ELSE med.MedName
-            END MedName,
-            CASE
-               WHEN child.ParentId = med.MedicationID
-                   THEN child.PatientName
-                   ELSE med.PatientName
-            END PatientName,
-            CASE
-               WHEN child.ParentId = med.MedicationID
-                  THEN child.Dosage
-                  ELSE med.Dosage
-            END Dosage,
-            CASE
-               WHEN child.ParentId = med.MedicationID
-                 THEN child.Units
-                 ELSE med.Units
-            END Units,
-            CASE
-               WHEN child.ParentId = med.MedicationID
-                 THEN child.DrugFrequency
-                 ELSE med.DrugFrequency
-            END DrugFrequency,
-            CASE
-               WHEN child.ParentId = med.MedicationID
-                 THEN child.Alias
-                 ELSE med.Alias
-            END Alias,
-            CASE
-               WHEN child.ParentId = med.MedicationID
-                 THEN child.Active
-                 ELSE med.Active
-            END Active,
-            CASE
-               WHEN child.ParentId = med.MedicationID
-                 THEN child.ParentId
-                 ELSE med.ParentId
-            END ParentId
-        FROM Medication med
-            JOIN Medication child
-            ON med.MedicationID = child.ParentId
-         */
-
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
 
         while (!cursor.isAfterLast()) {
+            Medication medToAdd;
+
             int medId = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(MED_ID)));
             int dosage = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(MED_DOSAGE)));
             int freq = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(MED_FREQUENCY)));
@@ -354,6 +308,8 @@ public class DBHelper extends SQLiteOpenHelper {
             String units = cursor.getString(cursor.getColumnIndexOrThrow(MED_UNITS));
             String startDateStr = cursor.getString(cursor.getColumnIndexOrThrow(START_DATE));
             String alias = cursor.getString(cursor.getColumnIndexOrThrow(ALIAS));
+            long parentId = cursor.getLong(cursor.getColumnIndexOrThrow(PARENT_ID));
+            long childId = cursor.getLong(cursor.getColumnIndexOrThrow(CHILD_ID));
 
             LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(startDateStr);
 
@@ -393,8 +349,13 @@ public class DBHelper extends SQLiteOpenHelper {
                 times[0] = LocalDateTime.MIN;
             }
 
-            medications.add(new Medication(medName, patient, units, times,
-                    startDate, medId, freq, dosage, alias));
+            medToAdd = new Medication(medName, patient, units, times,
+                    startDate, medId, freq, dosage, alias);
+
+            if (parentId > 0) medToAdd.setParent(getMedication(parentId));
+            if (childId > 0) medToAdd.setChild(getMedication(childId));
+
+            medications.add(medToAdd);
 
             cursor1.close();
             cursor.moveToNext();
@@ -447,6 +408,8 @@ public class DBHelper extends SQLiteOpenHelper {
             String date1 = meds.getString(meds.getColumnIndexOrThrow(START_DATE));
             String alias = meds.getString(meds.getColumnIndexOrThrow(ALIAS));
             boolean active = Integer.parseInt(meds.getString(meds.getColumnIndexOrThrow(ACTIVE))) == 1;
+            long parentId = meds.getLong(meds.getColumnIndexOrThrow(PARENT_ID));
+            long childId = meds.getLong(meds.getColumnIndexOrThrow(CHILD_ID));
 
             LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(date1);
 
@@ -491,6 +454,9 @@ public class DBHelper extends SQLiteOpenHelper {
                     startDate, medId, frequency, dosage, alias);
             medication.setActiveStatus(active);
 
+            if (parentId > 0) medication.setParent(getMedication(parentId));
+            if (childId > 0) medication.setChild(getMedication(childId));
+
             allMeds.add(medication);
             meds.moveToNext();
         }
@@ -501,12 +467,14 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Retrieves a Medication object based on ID passed to it
+     * Retrieves a Medication object based on ID passed to it. Does not retrieve
+     * parent/child medications.
      *
      * @param id The ID of the Medication
      * @return Medication retrieved from database
      */
     public Medication getMedication(long id) {
+
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + MEDICATION_TABLE + " WHERE "
                 + MED_ID + " = " + id;
@@ -523,7 +491,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 cursor.getColumnIndexOrThrow(START_DATE)));
         long medId = cursor.getLong(cursor.getColumnIndexOrThrow(MED_ID));
         long frequency = cursor.getLong(cursor.getColumnIndexOrThrow(MED_FREQUENCY));
-        float dosage = Float.parseFloat(cursor.getString(cursor.getColumnIndexOrThrow(MED_DOSAGE)));
+        float dosage = cursor.getFloat(cursor.getColumnIndexOrThrow(MED_DOSAGE));
         String alias = cursor.getString(cursor.getColumnIndexOrThrow(ALIAS));
 
         LocalDateTime[] times = new LocalDateTime[0];
@@ -531,19 +499,6 @@ public class DBHelper extends SQLiteOpenHelper {
         medication = new Medication(
                 medName, patient, units, times, startDate, medId, frequency, dosage, alias
         );
-
-        @SuppressLint("Range")
-        long parentId = cursor.getLong(cursor.getColumnIndex(PARENT_ID));
-        @SuppressLint("Range")
-        long childId = cursor.getLong(cursor.getColumnIndex(CHILD_ID));
-
-//        if (parentId > -1) {
-//            medication.setParent(getMedication(parentId));
-//        }
-
-//        if (childId > -1) {
-//            medication.setChild(getMedication(childId));
-//        }
 
         cursor.close();
 

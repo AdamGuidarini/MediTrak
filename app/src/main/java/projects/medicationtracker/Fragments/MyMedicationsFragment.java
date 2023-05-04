@@ -58,19 +58,18 @@ public class MyMedicationsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        long medId = requireArguments().getLong("MedId");
+        Medication med = requireArguments().getParcelable("Medication");
 
         final View rootView = inflater.inflate(R.layout.fragment_my_medications, container, false);
 
-        insertMedicationData(medId, rootView);
+        insertMedicationData(med, rootView);
 
         return rootView;
     }
 
-    private void insertMedicationData(long medId, View v) {
+    private void insertMedicationData(Medication medication, View v) {
         DBHelper db = new DBHelper(getContext());
-        Medication medication = db.getMedication(medId);
-        LocalTime[] times = db.getMedicationTimes(medId);
+        LocalTime[] times = db.getMedicationTimes(medication.getId());
         LocalDateTime[] dateTimes = new LocalDateTime[times.length];
         String dosageVal;
 
