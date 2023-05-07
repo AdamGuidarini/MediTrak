@@ -3,14 +3,14 @@
 
     <item
         android:title="@string/my_medications"
-        android:onClick="onMyMedicationsClick"/>
+        android:onClick="onMyMedicationsClick" />
 
     <item
         android:title="@string/add_medication"
-        android:onClick="onAddMedicationClick"/>
+        android:onClick="onAddMedicationClick" />
 
     <item
         android:title="@string/settings"
-        android:onClick="onSettingsClick"/>
+        android:onClick="onSettingsClick" />
 
 </menu>

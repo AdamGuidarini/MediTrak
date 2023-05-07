@@ -1,9 +1,6 @@
 package projects.medicationtracker.Interfaces;
 
-import android.content.DialogInterface;
-
-public interface IDialogCloseListener
-{
+public interface IDialogCloseListener {
     enum Action {
         DELETE,
         ADD

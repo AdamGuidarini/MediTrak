@@ -17,16 +17,15 @@ import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.Services.NotificationService;
 import projects.medicationtracker.SimpleClasses.Medication;
 
-public class NotificationReceiver extends BroadcastReceiver
-{
+public class NotificationReceiver extends BroadcastReceiver {
     /**
      * Receiver for notification PendingIntent
+     *
      * @param context Context of caller.
-     * @param intent Intent to receive.
+     * @param intent  Intent to receive.
      */
     @Override
-    public void onReceive(Context context, Intent intent)
-    {
+    public void onReceive(Context context, Intent intent) {
         Intent service = new Intent(context, NotificationService.class);
         Bundle extras = intent.getExtras();
         DBHelper db = new DBHelper(context);

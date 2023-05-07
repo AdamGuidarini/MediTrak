@@ -43,8 +43,7 @@ import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.SimpleClasses.Medication;
 import projects.medicationtracker.Views.StandardCardView;
 
-public class MainActivity extends AppCompatActivity
-{
+public class MainActivity extends AppCompatActivity {
     private final DBHelper db = new DBHelper(this);
     private LinearLayout scheduleLayout;
     private LocalDate aDayThisWeek;
@@ -55,24 +54,18 @@ public class MainActivity extends AppCompatActivity
      * @param savedInstanceState Stored instance of activity
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Bundle preferences = db.getPreferences();
 
         String theme = preferences.getString(THEME);
 
-        if (theme.equals(DARK))
-        {
+        if (theme.equals(DARK)) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }
-        else if (theme.equals(LIGHT))
-        {
+        } else if (theme.equals(LIGHT)) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
-        else
-        {
+        } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         }
 
@@ -84,8 +77,7 @@ public class MainActivity extends AppCompatActivity
         NotificationHelper.createNotificationChannel(this);
         prepareNotifications();
 
-        if (!preferences.getBoolean(AGREED_TO_TERMS))
-        {
+        if (!preferences.getBoolean(AGREED_TO_TERMS)) {
             WelcomeDialog welcomeDialog = new WelcomeDialog();
             welcomeDialog.setCancelable(false);
             welcomeDialog.show(getSupportFragmentManager(), null);
@@ -95,8 +87,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         scheduleLayout.removeAllViews();
         createMainActivityViews();
@@ -108,42 +99,38 @@ public class MainActivity extends AppCompatActivity
      * @param menu Menu containing selections for user
      */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
         return super.onCreateOptionsMenu(menu);
     }
 
     /**
-    *  Launches MyMedications.java when "My Medications" option is selected
-    *
-    *  @param item the "My Medications" menu option
-    */
-    public void onMyMedicationsClick(MenuItem item)
-    {
+     * Launches MyMedications.java when "My Medications" option is selected
+     *
+     * @param item the "My Medications" menu option
+     */
+    public void onMyMedicationsClick(MenuItem item) {
         Intent intent = new Intent(this, MyMedications.class);
         startActivity(intent);
     }
 
     /**
-     *  Launches AddMedication.java when "Add Medication" option is selected
+     * Launches AddMedication.java when "Add Medication" option is selected
      *
-     *  @param item The "Add Medication" option
+     * @param item The "Add Medication" option
      */
-    public void onAddMedicationClick(MenuItem item)
-    {
+    public void onAddMedicationClick(MenuItem item) {
         Intent intent = new Intent(this, AddMedication.class);
         startActivity(intent);
     }
 
     /**
-     *  Launches Settings.java when "Settings" option is selected
+     * Launches Settings.java when "Settings" option is selected
      *
-     *  @param item The "Settings" menu option
+     * @param item The "Settings" menu option
      */
-    public void onSettingsClick(MenuItem item)
-    {
+    public void onSettingsClick(MenuItem item) {
         Intent intent = new Intent(this, Settings.class);
         startActivity(intent);
     }
@@ -151,16 +138,14 @@ public class MainActivity extends AppCompatActivity
     /**
      * Creates CardViews for MainActivity
      */
-    public void createMainActivityViews()
-    {
+    public void createMainActivityViews() {
         TextView noMeds = findViewById(R.id.noMeds);
         ScrollView scheduleScrollView = findViewById(R.id.scheduleScrollView);
         Spinner patientNames = findViewById(R.id.patientSpinner);
         final String you = getString(R.string.you);
 
         // Exit if there are no patients in DB
-        if (db.numberOfRows() == 0)
-        {
+        if (db.numberOfRows() == 0) {
             noMeds.setVisibility(View.VISIBLE);
             scheduleScrollView.setVisibility(View.GONE);
             patientNames.setVisibility(View.GONE);
@@ -172,14 +157,11 @@ public class MainActivity extends AppCompatActivity
         ArrayList<String> names = db.getPatients();
 
         // Load contents into spinner, or print results for only patient
-        if (db.getPatients().size() == 1)
-        {
+        if (db.getPatients().size() == 1) {
             patientNames.setVisibility(View.GONE);
 
             createMedicationSchedule(medications, names.get(0));
-        }
-        else
-        {
+        } else {
             patientNames.setVisibility(View.VISIBLE);
 
             if (names.contains("ME!"))
@@ -193,20 +175,16 @@ public class MainActivity extends AppCompatActivity
             patientNames.setAdapter(patientAdapter);
 
             // Select "You" by default
-            if (names.contains(you))
-            {
-                for (int i = 0; i < names.size(); i++)
-                {
+            if (names.contains(you)) {
+                for (int i = 0; i < names.size(); i++) {
                     if (names.get(i).equals(you))
                         patientNames.setSelection(i);
                 }
             }
 
-            patientNames.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-            {
+            patientNames.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
-                {
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     scheduleLayout.removeAllViews();
 
                     String name = adapterView.getSelectedItem().toString();
@@ -218,40 +196,38 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {}
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                }
             });
         }
     }
 
     /**
      * Creates an ArrayList of Medications to be taken this week
+     *
      * @return List of all Medications for this week
      */
-    public ArrayList<Medication> medicationsForThisWeek()
-    {
+    public ArrayList<Medication> medicationsForThisWeek() {
         ArrayList<Medication> medications = db.getMedications();
         ArrayList<LocalDateTime> validTimes;
         // Add times to custom frequency
         LocalDate thisSunday = TimeFormatting.whenIsSunday(aDayThisWeek);
 
         // Look at each medication
-        for (int i = 0; i < medications.size(); i++)
-        {
+        for (int i = 0; i < medications.size(); i++) {
             LocalDateTime[] timeArr;
             ArrayList<Pair<LocalDateTime, LocalDateTime>> pausedIntervals =
                     db.getPauseResumePeriods(medications.get(i));
 
             // Skip as needed meds
-            if (medications.get(i).getFrequency() == 0)
-            {
+            if (medications.get(i).getFrequency() == 0) {
                 medications.get(i).setTimes(db.getDoseFromMedicationTracker(medications.get(i)));
 
                 continue;
             }
 
             // If a medication is taken once per day
-            if (medications.get(i).getTimes().length == 1 && medications.get(i).getFrequency() == 1440)
-            {
+            if (medications.get(i).getTimes().length == 1 && medications.get(i).getFrequency() == 1440) {
                 // if the Medication is taken once per day just add the start of each date to
                 timeArr = new LocalDateTime[7];
                 LocalTime localtime = medications.get(i).getTimes()[0].toLocalTime();
@@ -261,8 +237,7 @@ public class MainActivity extends AppCompatActivity
                             LocalDateTime.of(LocalDate.from(thisSunday.plusDays(j)), localtime);
             }
             // If a medication is taken multiple times per day
-            else if (medications.get(i).getTimes().length > 1 && medications.get(i).getFrequency() == 1440)
-            {
+            else if (medications.get(i).getTimes().length > 1 && medications.get(i).getFrequency() == 1440) {
                 int numberOfTimes = medications.get(i).getTimes().length;
                 int index = 0;
 
@@ -272,10 +247,8 @@ public class MainActivity extends AppCompatActivity
                 for (int j = 0; j < numberOfTimes; j++)
                     drugTimes[j] = medications.get(i).getTimes()[j].toLocalTime();
 
-                for (int j = 0; j < 7; j++)
-                {
-                    for (int y = 0; y < numberOfTimes; y++)
-                    {
+                for (int j = 0; j < 7; j++) {
+                    for (int y = 0; y < numberOfTimes; y++) {
                         timeArr[index] =
                                 LocalDateTime.of(
                                         LocalDate.from(thisSunday.plusDays(j)), drugTimes[y]
@@ -286,8 +259,7 @@ public class MainActivity extends AppCompatActivity
             }
             // If a medication has a custom frequency, take its start date and calculate times for
             // for this week
-            else
-            {
+            else {
                 LocalDateTime timeToCheck = medications.get(i).getStartDate();
                 ArrayList<LocalDateTime> times = new ArrayList<>();
                 long frequency = medications.get(i).getFrequency();
@@ -295,8 +267,7 @@ public class MainActivity extends AppCompatActivity
                 while (timeToCheck.toLocalDate().isBefore(thisSunday))
                     timeToCheck = timeToCheck.plusMinutes(frequency);
 
-                while (timeToCheck.toLocalDate().isBefore(thisSunday.plusDays(7)))
-                {
+                while (timeToCheck.toLocalDate().isBefore(thisSunday.plusDays(7))) {
                     times.add(timeToCheck);
                     timeToCheck = timeToCheck.plusMinutes(frequency);
                 }
@@ -313,21 +284,14 @@ public class MainActivity extends AppCompatActivity
             validTimes.removeIf(
                     (time) ->
                     {
-                        for (Pair<LocalDateTime, LocalDateTime> pausedInterval : pausedIntervals)
-                        {
-                            if (pausedInterval.first == null)
-                            {
-                                if (time.isBefore(pausedInterval.second))
-                                {
+                        for (Pair<LocalDateTime, LocalDateTime> pausedInterval : pausedIntervals) {
+                            if (pausedInterval.first == null) {
+                                if (time.isBefore(pausedInterval.second)) {
                                     return true;
                                 }
-                            }
-                            else if (time.isAfter(pausedInterval.first) && pausedInterval.second == null)
-                            {
+                            } else if (time.isAfter(pausedInterval.first) && pausedInterval.second == null) {
                                 return true;
-                            }
-                            else if (time.isAfter(pausedInterval.first) && time.isBefore(pausedInterval.second))
-                            {
+                            } else if (time.isAfter(pausedInterval.first) && time.isBefore(pausedInterval.second)) {
                                 return true;
                             }
                         }
@@ -350,30 +314,27 @@ public class MainActivity extends AppCompatActivity
      *
      * @param medications An ArrayList of Medications. Will be searched for
      *                    Medications where patientName equals name passed to method.
-     * @param name The name of the patient whose Medications should be displayed
+     * @param name        The name of the patient whose Medications should be displayed
      */
-    public void createMedicationSchedule(ArrayList<Medication> medications, String name)
-    {
+    public void createMedicationSchedule(ArrayList<Medication> medications, String name) {
         ArrayList<Medication> medicationsForThisPatient = new ArrayList<>();
 
-        for (int i = 0; i < medications.size(); i++)
-        {
+        for (int i = 0; i < medications.size(); i++) {
             if (medications.get(i).getPatientName().equals(name))
                 medicationsForThisPatient.add(medications.get(i));
         }
 
         String[] days = {
-            getString(R.string.sunday),
-            getString(R.string.monday),
-            getString(R.string.tuesday),
-            getString(R.string.wednesday),
-            getString(R.string.thursday),
-            getString(R.string.friday),
-            getString(R.string.saturday)
+                getString(R.string.sunday),
+                getString(R.string.monday),
+                getString(R.string.tuesday),
+                getString(R.string.wednesday),
+                getString(R.string.thursday),
+                getString(R.string.friday),
+                getString(R.string.saturday)
         };
 
-        for (int ii = 0; ii < 7; ii++)
-        {
+        for (int ii = 0; ii < 7; ii++) {
             createDayOfWeekCards(
                     days[ii],
                     ii,
@@ -387,17 +348,17 @@ public class MainActivity extends AppCompatActivity
      * Creates a CardView for each day of the week containing information
      * on the medications to be taken that day
      *
-     * @param dayOfWeek String for the name of the day
-     * @param day The number representing the day of the week
-     *            - Sunday = 0
-     *            - Monday = 1
-     *            - Tuesday = 2
-     *            - Wednesday = 3
-     *            - Thursday = 4
-     *            - Friday = 5
-     *            - Saturday = 6
+     * @param dayOfWeek   String for the name of the day
+     * @param day         The number representing the day of the week
+     *                    - Sunday = 0
+     *                    - Monday = 1
+     *                    - Tuesday = 2
+     *                    - Wednesday = 3
+     *                    - Thursday = 4
+     *                    - Friday = 5
+     *                    - Saturday = 6
      * @param medications The list of medications to be taken on the given day
-     * @param layout The LinearLayout in which to place the CardView
+     * @param layout      The LinearLayout in which to place the CardView
      */
     public void createDayOfWeekCards(
             String dayOfWeek,
@@ -430,21 +391,18 @@ public class MainActivity extends AppCompatActivity
      * Prepares pending intents for notifications, useful if app is force stopped
      * Clears all open notifications as well
      */
-    private void prepareNotifications()
-    {
+    private void prepareNotifications() {
         ArrayList<Medication> medications = db.getMedications();
         NotificationManager notificationManager =
                 (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.cancelAll();
 
-        for (Medication medication : medications)
-        {
+        for (Medication medication : medications) {
             NotificationHelper.clearPendingNotifications(medication, this);
         }
 
-        for (Medication medication : medications)
-        {
+        for (Medication medication : medications) {
             NotificationHelper.createNotifications(medication, this);
         }
     }
@@ -452,8 +410,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * Navigates one week back from the currently viewed week
      */
-    public void onLeftClick(View view)
-    {
+    public void onLeftClick(View view) {
         aDayThisWeek = aDayThisWeek.minusWeeks(1);
 
         scheduleLayout.removeAllViews();
@@ -464,8 +421,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * Navigates to the current week
      */
-    public void onTodayClick(View view)
-    {
+    public void onTodayClick(View view) {
         aDayThisWeek = LocalDate.now();
 
         scheduleLayout.removeAllViews();
@@ -476,8 +432,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * Navigates one week forward from the currently viewed week
      */
-    public void onRightClick(View view)
-    {
+    public void onRightClick(View view) {
         aDayThisWeek = aDayThisWeek.plusWeeks(1);
 
         scheduleLayout.removeAllViews();

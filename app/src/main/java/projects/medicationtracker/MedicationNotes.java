@@ -26,13 +26,11 @@ import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.SimpleClasses.Note;
 import projects.medicationtracker.Views.StandardCardView;
 
-public class MedicationNotes extends AppCompatActivity
-{
+public class MedicationNotes extends AppCompatActivity {
     final DBHelper db = new DBHelper(this);
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medication_notes);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -44,26 +42,25 @@ public class MedicationNotes extends AppCompatActivity
 
     /**
      * Creates options menu
+     *
      * @param menu The menu bar
      * @return Options menu
      */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.notes_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     /**
      * Determines which button was selected
+     *
      * @param item Selected menu option
      * @return Selected option
      */
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item)
-    {
-        if (item.getItemId() == android.R.id.home)
-        {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
             Intent intent = new Intent(this, MyMedications.class);
             finish();
             startActivity(intent);
@@ -76,8 +73,7 @@ public class MedicationNotes extends AppCompatActivity
      * Return to MyMedications if back arrow is pressed
      */
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         Intent intent = new Intent(this, MyMedications.class);
         finish();
         startActivity(intent);
@@ -86,16 +82,14 @@ public class MedicationNotes extends AppCompatActivity
     /**
      * Sets CardViews for activity
      */
-    public void setCards()
-    {
+    public void setCards() {
         long medId = getIntent().getLongExtra("medId", 0);
 
         ArrayList<Note> notes = db.getNotes(medId);
 
         if (notes == null)
             return;
-        else
-        {
+        else {
             TextView tv = findViewById(R.id.noNotes);
             tv.setVisibility(View.GONE);
             ScrollView scrollNotes = findViewById(R.id.scrollNotes);
@@ -108,10 +102,10 @@ public class MedicationNotes extends AppCompatActivity
 
     /**
      * Allows the user to create a note
+     *
      * @param item The menu button
      */
-    public void onAddNoteClick(MenuItem item)
-    {
+    public void onAddNoteClick(MenuItem item) {
         long medId = getIntent().getLongExtra("medId", 0);
 
         AddNoteFragment noteFragment = new AddNoteFragment(this, medId);
@@ -121,24 +115,21 @@ public class MedicationNotes extends AppCompatActivity
     /**
      * Sets listeners for the cards
      */
-    public void setCardListeners()
-    {
+    public void setCardListeners() {
         ArrayList<CardView> cardViews = new ArrayList<>();
         LinearLayout noteLayout = findViewById(R.id.notesLayout);
 
-        for (int i = 0; i < noteLayout.getChildCount(); i++)
-        {
+        for (int i = 0; i < noteLayout.getChildCount(); i++) {
             View child = noteLayout.getChildAt(i);
 
             child.getClass().getName();
             CardView.class.getName();
             {
-                cardViews.add((CardView)child);
+                cardViews.add((CardView) child);
             }
         }
 
-        for (CardView card : cardViews)
-        {
+        for (CardView card : cardViews) {
             LinearLayout layout = (LinearLayout) card.getChildAt(0);
             TextView noteText = (TextView) layout.getChildAt(0);
             Note note = (Note) noteText.getTag();
@@ -153,11 +144,11 @@ public class MedicationNotes extends AppCompatActivity
 
     /**
      * Creates a CardView with a note in it
-     * @param note The Note in the CardView
+     *
+     * @param note       The Note in the CardView
      * @param baseLayout The LinearLayout the holds the CardView
      */
-    private void createNoteCard(Note note, LinearLayout baseLayout)
-    {
+    private void createNoteCard(Note note, LinearLayout baseLayout) {
         Context context = baseLayout.getContext();
         StandardCardView noteCard = new StandardCardView(context);
         LinearLayout cardLayout = new LinearLayout(context);
@@ -172,9 +163,9 @@ public class MedicationNotes extends AppCompatActivity
 
         TextView noteDate = new TextView(context);
         String noteDateLabel = getString(
-            R.string.note_timestamp,
-            TimeFormatting.localDateToString(note.getNoteTime().toLocalDate()),
-            TimeFormatting.localTimeToString(note.getNoteTime().toLocalTime())
+                R.string.note_timestamp,
+                TimeFormatting.localDateToString(note.getNoteTime().toLocalDate()),
+                TimeFormatting.localTimeToString(note.getNoteTime().toLocalTime())
         );
 
         TextViewUtils.setTextViewParams(noteDate, noteDateLabel, cardLayout);

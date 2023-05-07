@@ -30,7 +30,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="20dp"
-                app:cardCornerRadius="20px" >
+                app:cardCornerRadius="20px">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -41,7 +41,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/options"
-                        style="@style/standardTextView"/>
+                        style="@style/standardTextView" />
 
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/disableTimeBeforeDose"
@@ -57,7 +57,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="15dp"
-                        android:layout_marginEnd="15dp"                        android:orientation="horizontal"
+                        android:layout_marginEnd="15dp"
+                        android:orientation="horizontal"
                         android:layout_marginBottom="5dp"
                         android:visibility="gone">
 
@@ -107,7 +108,7 @@
                             android:id="@+id/themeSelector"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="none"/>
+                            android:inputType="none" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
@@ -119,7 +120,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="5dp"
-                app:cardCornerRadius="20px" >
+                app:cardCornerRadius="20px">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -131,37 +132,37 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/license"
-                        style="@style/standardTextView"/>
+                        style="@style/standardTextView" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/purpose"
-                        style="@style/standardTextView"/>
+                        style="@style/standardTextView" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/copyright"
-                        style="@style/standardTextView"/>
+                        style="@style/standardTextView" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/licenseInfo"
-                        style="@style/standardTextView"/>
+                        style="@style/standardTextView" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/warranty"
-                        style="@style/standardTextView"/>
+                        style="@style/standardTextView" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/copyOfGPL2"
-                        style="@style/standardTextView"/>
+                        style="@style/standardTextView" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

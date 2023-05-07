@@ -13,15 +13,13 @@ import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Medication;
 
-public class PauseResumeDialog extends DialogFragment
-{
+public class PauseResumeDialog extends DialogFragment {
     private final Medication medication;
     private DBHelper db;
     private final MenuItem pauseButton;
     private final MenuItem resumeButton;
 
-    public PauseResumeDialog(Medication medication, MenuItem pause_button, MenuItem resume_button)
-    {
+    public PauseResumeDialog(Medication medication, MenuItem pause_button, MenuItem resume_button) {
         this.medication = medication;
         pauseButton = pause_button;
         resumeButton = resume_button;
@@ -29,8 +27,7 @@ public class PauseResumeDialog extends DialogFragment
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstances)
-    {
+    public Dialog onCreateDialog(Bundle savedInstances) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         db = new DBHelper(getActivity());
@@ -51,15 +48,12 @@ public class PauseResumeDialog extends DialogFragment
             db.pauseResumeMedication(medication, !isActive);
             db.close();
 
-            if (isActive)
-            {
+            if (isActive) {
                 resumeButton.setVisible(true);
                 pauseButton.setVisible(false);
 
                 NotificationHelper.clearPendingNotifications(medication, getActivity());
-            }
-            else
-            {
+            } else {
                 resumeButton.setVisible(false);
                 pauseButton.setVisible(true);
 
