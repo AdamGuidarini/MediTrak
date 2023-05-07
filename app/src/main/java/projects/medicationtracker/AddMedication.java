@@ -490,7 +490,7 @@ public class AddMedication extends AppCompatActivity {
                 }
 
                 for (int ind = 0; ind < days; ind++) {
-                    TextInputLayout textLayout = new TextInputLayout(new ContextThemeWrapper(getBaseContext(), R.style.Widget_MaterialComponents_TextInputLayout_OutlinedBox_Dense));
+                    TextInputLayout textLayout = new TextInputLayout(new ContextThemeWrapper(numberOfTimersPerDayLayout.getContext(), R.style.Base_Widget_MaterialComponents_TextInputLayout));
                     TextInputEditText timeEntry = new TextInputEditText(textLayout.getContext());
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
