@@ -610,6 +610,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues updateChildMedContent = new ContentValues();
         ContentValues updateActivityStatusCv = new ContentValues();
         ContentValues updateParentCv = new ContentValues();
+        ContentValues notesUpdate = new ContentValues();
         String where = MED_ID + " = ?";
         long row;
 
@@ -635,6 +636,10 @@ public class DBHelper extends SQLiteOpenHelper {
         updateChildMedContent.put(PARENT_ID, medication.getParent().getId());
 
         db.update(MEDICATION_TABLE, updateChildMedContent, MED_ID + " = " + row, null);
+
+        notesUpdate.put(MED_ID, row);
+
+        db.update(NOTES_TABLE, notesUpdate, MED_ID + "=" + medication.getParent().getId(), null);
 
         medication.setId(row);
 
