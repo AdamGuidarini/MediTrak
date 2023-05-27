@@ -124,7 +124,7 @@ public class MyMedicationsFragment extends Fragment {
             alias.setText(getString(R.string.alias_lbl, medication.getAlias()));
         }
 
-        takenSince.setText(getString(R.string.taken_since, TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())));
+        takenSince.setText(getString(R.string.taken_since, TimeFormatting.localDateToString(medication.getParent().getStartDate().toLocalDate())));
 
         Intent notesIntent = new Intent(getActivity(), MedicationNotes.class);
         notesIntent.putExtra("medId", medication.getId());
