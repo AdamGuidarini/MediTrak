@@ -469,7 +469,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return allMeds;
     }
 
-    public Medication getTrueParent(Medication medication, long parentId) {
+    public Medication getTrueParent(long parentId) {
         SQLiteDatabase db = this.getReadableDatabase();
         long res;
         long trueParent = parentId;
@@ -578,6 +578,14 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(PATIENT_NAME, medication.getPatientName());
         cv.put(ALIAS, medication.getAlias());
 
+        if (medication.getChild() != null) {
+            cv.put(CHILD_ID, medication.getChild().getId());
+        }
+
+        if (medication.getParent() != null) {
+            cv.put(PARENT_ID, medication.getParent().getId());
+        }
+
         db.update(MEDICATION_TABLE, cv, MED_ID + " = " + medication.getId(), null);
 
         cv.clear();
@@ -631,8 +639,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
     /**
      * Adds a new medication when when an existing one is updated, the existing medication is updated
+     * @return the id of the newly created child medication
      */
-    public void createChildMedication(Medication medication) {
+    public long createChildMedication(Medication medication) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues pauseOldMedContent = new ContentValues();
         ContentValues updateChildMedContent = new ContentValues();
@@ -679,6 +688,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         updateParentCv.put(CHILD_ID, row);
         db.update(MEDICATION_TABLE, updateParentCv, MED_ID + " = " + medication.getParent().getId(), null);
+
+        return row;
     }
 
     /**
