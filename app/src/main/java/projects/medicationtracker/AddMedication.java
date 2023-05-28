@@ -116,7 +116,7 @@ public class AddMedication extends AppCompatActivity {
             medication.setTimes(dateTimes);
             title = getString(R.string.edit_medication);
 
-            medication.setParent(db.getTrueParent(medication, medId));
+            medication.setParent(db.getTrueParent(medId));
         } else {
             medication = new Medication();
             title = getString(R.string.add_medication);
@@ -762,8 +762,13 @@ public class AddMedication extends AppCompatActivity {
 
         } else {
             intent = new Intent(this, MyMedications.class);
+            Medication parentMed = db.getMedication(medId);
+            long childId = db.createChildMedication(medication);
 
-            db.createChildMedication(medication);
+            medication.setId(childId);
+            parentMed.setChild(medication);
+
+            db.updateMedication(parentMed);
 
             NotificationHelper.clearPendingNotifications(medication, this);
         }
