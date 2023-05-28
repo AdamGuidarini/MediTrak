@@ -116,7 +116,7 @@ public class AddMedication extends AppCompatActivity {
             medication.setTimes(dateTimes);
             title = getString(R.string.edit_medication);
 
-            medication.setParent(db.getMedication(medId));
+            medication.setParent(db.getTrueParent(medication, medId));
         } else {
             medication = new Medication();
             title = getString(R.string.add_medication);
