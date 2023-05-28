@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Locale;
@@ -124,7 +125,11 @@ public class MyMedicationsFragment extends Fragment {
             alias.setText(getString(R.string.alias_lbl, medication.getAlias()));
         }
 
-        takenSince.setText(getString(R.string.taken_since, TimeFormatting.localDateToString(medication.getParent().getStartDate().toLocalDate())));
+        String beginning = TimeFormatting.localDateToString(
+                medication.getParent() == null ? medication.getStartDate().toLocalDate() : medication.getParent().getStartDate().toLocalDate()
+        );
+
+        takenSince.setText(getString(R.string.taken_since, beginning));
 
         Intent notesIntent = new Intent(getActivity(), MedicationNotes.class);
         notesIntent.putExtra("medId", medication.getId());

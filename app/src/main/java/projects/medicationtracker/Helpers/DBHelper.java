@@ -455,27 +455,7 @@ public class DBHelper extends SQLiteOpenHelper {
             medication.setActiveStatus(active);
 
             if (parentId > 0) {
-                long res;
-                long trueParent = parentId;
-                Cursor c;
-
-                while (true) {
-                    c = db.rawQuery("SELECT " + PARENT_ID + " FROM " + MEDICATION_TABLE + " WHERE " + MED_ID + "=" + trueParent, null, null);
-
-                    c.moveToFirst();
-
-                    res = c.getLong(c.getColumnIndexOrThrow(PARENT_ID));
-
-                    c.close();
-
-                    if (res > 0) {
-                        trueParent = res;
-                    } else {
-                        break;
-                    }
-                }
-
-                medication.setParent(getMedication(trueParent));
+                medication.setParent(getMedication(parentId));
             }
 
             if (childId > 0) medication.setChild(getMedication(childId));
@@ -487,6 +467,31 @@ public class DBHelper extends SQLiteOpenHelper {
         meds.close();
 
         return allMeds;
+    }
+
+    public Medication getTrueParent(Medication medication, long parentId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        long res;
+        long trueParent = parentId;
+        Cursor c;
+
+        while (true) {
+            c = db.rawQuery("SELECT " + PARENT_ID + " FROM " + MEDICATION_TABLE + " WHERE " + MED_ID + "=" + trueParent, null, null);
+
+            c.moveToFirst();
+
+            res = c.getLong(c.getColumnIndexOrThrow(PARENT_ID));
+
+            c.close();
+
+            if (res > 0) {
+                trueParent = res;
+            } else {
+                break;
+            }
+        }
+
+        return getMedication(trueParent);
     }
 
     /**
