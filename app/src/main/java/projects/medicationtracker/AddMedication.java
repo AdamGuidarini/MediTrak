@@ -32,6 +32,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -763,14 +764,18 @@ public class AddMedication extends AppCompatActivity {
         } else {
             intent = new Intent(this, MyMedications.class);
             Medication parentMed = db.getMedication(medId);
-            long childId = db.createChildMedication(medication);
+            long childId;
+            String changesNotes = createChangesNote(medication, parentMed);
 
-            medication.setId(childId);
-            parentMed.setChild(medication);
+            if (!changesNotes.isEmpty()) {
+                childId = db.createChildMedication(medication);
+                medication.setId(childId);
+                parentMed.setChild(medication);
 
-            db.updateMedication(parentMed);
+                db.updateMedication(parentMed);
 
-            NotificationHelper.clearPendingNotifications(medication, this);
+                NotificationHelper.clearPendingNotifications(medication, this);
+            }
         }
 
         NotificationHelper.createNotifications(medication, this);
@@ -1085,5 +1090,45 @@ public class AddMedication extends AppCompatActivity {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    /**
+     * Compares changes to medication an adds notes for each
+     * @param child Newly modified medication
+     * @param parent Old version of medication
+     */
+    private String createChangesNote(Medication child, Medication parent) {
+        String note = "";
+
+        if (!child.getPatientName().equals(parent.getPatientName())) {
+            note += getString(R.string.patient_changed, parent.getName(), child.getName()) + "/n";
+        }
+
+        if (!child.getName().equals(parent.getName())) {
+            note += getString(R.string.name_changed, parent.getName(), child.getName()) + "/n";
+        }
+
+        if (!child.getAlias().equals(parent.getAlias())) {
+            if (child.getAlias().isEmpty() && !parent.getAlias().isEmpty()) {
+                note += getString(R.string.removed_alias, parent.getAlias());
+            } else if (!child.getAlias().isEmpty() && parent.getAlias().isEmpty()) {
+                note += getString(R.string.added_alias, child.getAlias());
+            } else {
+                note += getString(R.string.changed_alias, parent.getAlias(), child.getAlias());
+            }
+        }
+
+        if (child.getDosage() != parent.getDosage() || !child.getDosageUnits().equals(parent.getDosageUnits())) {
+            note += getString(R.string.changed_dosage,
+                    parent.getDosage() + " " +parent.getDosageUnits(),
+                    child.getDosage() + " " + child.getDosageUnits()
+            );
+        }
+
+        if (child.getFrequency() != parent.getFrequency() || !Arrays.equals(child.getTimes(), parent.getTimes())) {
+
+        }
+
+        return note;
     }
 }
