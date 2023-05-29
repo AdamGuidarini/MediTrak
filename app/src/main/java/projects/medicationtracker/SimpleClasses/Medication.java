@@ -1,11 +1,19 @@
 package projects.medicationtracker.SimpleClasses;
 
+import static projects.medicationtracker.AddMedication.MINUTES_IN_DAY;
+
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Locale;
+
+import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.R;
 
 public class Medication implements Cloneable, Parcelable {
 
@@ -294,6 +302,35 @@ public class Medication implements Cloneable, Parcelable {
      */
     public void setChild(Medication childMed) {
         child = childMed;
+    }
+
+    /**
+     * Creates a string formatted for frequency
+     * @param applicationContext Context for translations
+     */
+    public String generateFrequencyLabel(Context applicationContext) {
+        StringBuilder freqLabel;
+
+        if (getFrequency() == MINUTES_IN_DAY && (getTimes().length == 1)) {
+            String time = TimeFormatting.localTimeToString(getTimes()[0].toLocalTime());
+            freqLabel = new StringBuilder(applicationContext.getString(R.string.taken_daily_at) + " " + time);
+        } else if (getFrequency() == MINUTES_IN_DAY && (getTimes().length > 1)) {
+            freqLabel = new StringBuilder(applicationContext.getString(R.string.taken_daily_at));
+
+            for (int i = 0; i < this.getTimes().length; i++) {
+                LocalTime time = getTimes()[i].toLocalTime();
+                freqLabel.append(TimeFormatting.localTimeToString(time));
+
+                if (i != (getTimes().length - 1))
+                    freqLabel.append(", ");
+            }
+        } else if (getFrequency() == 0) {
+            freqLabel = new StringBuilder(applicationContext.getString(R.string.taken_as_needed));
+        } else {
+            freqLabel = new StringBuilder(applicationContext.getString(R.string.taken_every_lbl) + TimeFormatting.freqConversion(getFrequency()));
+        }
+
+        return freqLabel.toString();
     }
 
     /**

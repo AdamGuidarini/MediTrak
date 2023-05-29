@@ -1126,7 +1126,10 @@ public class AddMedication extends AppCompatActivity {
         }
 
         if (child.getFrequency() != parent.getFrequency() || !Arrays.equals(child.getTimes(), parent.getTimes())) {
+            String oldFreq = parent.generateFrequencyLabel(this).toLowerCase();
+            String newFreq = child.generateFrequencyLabel(this).toLowerCase();
 
+            note += getString(R.string.frequency_changed, oldFreq, newFreq);
         }
 
         return note;

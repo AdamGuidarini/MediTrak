@@ -97,28 +97,7 @@ public class MyMedicationsFragment extends Fragment {
         name.setText(getString(R.string.med_name, medication.getName()));
         dosage.setText(getString(R.string.dosage, dosageVal, medication.getDosageUnits()));
 
-        StringBuilder freqLabel;
-
-        if (medication.getFrequency() == MINUTES_IN_DAY && (medication.getTimes().length == 1)) {
-            String time = TimeFormatting.localTimeToString(medication.getTimes()[0].toLocalTime());
-            freqLabel = new StringBuilder(getString(R.string.taken_daily_at) + " " + time);
-        } else if (medication.getFrequency() == MINUTES_IN_DAY && (medication.getTimes().length > 1)) {
-            freqLabel = new StringBuilder(getString(R.string.taken_daily_at));
-
-            for (int i = 0; i < medication.getTimes().length; i++) {
-                LocalTime time = medication.getTimes()[i].toLocalTime();
-                freqLabel.append(TimeFormatting.localTimeToString(time));
-
-                if (i != (medication.getTimes().length - 1))
-                    freqLabel.append(", ");
-            }
-        } else if (medication.getFrequency() == 0) {
-            freqLabel = new StringBuilder(getString(R.string.taken_as_needed));
-        } else {
-            freqLabel = new StringBuilder(getString(R.string.taken_every_lbl) + TimeFormatting.freqConversion(medication.getFrequency()));
-        }
-
-        frequency.setText(freqLabel);
+        frequency.setText(medication.generateFrequencyLabel(getContext()));
 
         if (!medication.getAlias().equals("")) {
             alias.setVisibility(View.VISIBLE);
