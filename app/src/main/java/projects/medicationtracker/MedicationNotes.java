@@ -159,7 +159,7 @@ public class MedicationNotes extends AppCompatActivity {
         noteCard.addView(cardLayout);
 
         TextView noteText = new TextView(context);
-        TextViewUtils.setTextViewParams(noteText, "\"" + note.getNote() + "\"", cardLayout);
+        TextViewUtils.setTextViewParams(noteText, note.getNote(), cardLayout);
 
         TextView noteDate = new TextView(context);
         String noteDateLabel = getString(
