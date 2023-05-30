@@ -773,6 +773,7 @@ public class AddMedication extends AppCompatActivity {
                 parentMed.setChild(medication);
 
                 db.updateMedication(parentMed);
+                db.addNote(changesNotes, childId);
 
                 NotificationHelper.clearPendingNotifications(medication, this);
             }
@@ -1096,16 +1097,17 @@ public class AddMedication extends AppCompatActivity {
      * Compares changes to medication an adds notes for each
      * @param child Newly modified medication
      * @param parent Old version of medication
+     * @return Notes for all changes made to medication or empty string
      */
     private String createChangesNote(Medication child, Medication parent) {
         String note = "";
 
         if (!child.getPatientName().equals(parent.getPatientName())) {
-            note += getString(R.string.patient_changed, parent.getName(), child.getName()) + "/n";
+            note += getString(R.string.patient_changed, parent.getName(), child.getName());
         }
 
         if (!child.getName().equals(parent.getName())) {
-            note += getString(R.string.name_changed, parent.getName(), child.getName()) + "/n";
+            note += getString(R.string.name_changed, parent.getName(), child.getName());
         }
 
         if (!child.getAlias().equals(parent.getAlias())) {
