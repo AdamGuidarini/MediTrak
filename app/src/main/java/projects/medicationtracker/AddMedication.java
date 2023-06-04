@@ -1103,7 +1103,18 @@ public class AddMedication extends AppCompatActivity {
         String note = "";
 
         if (!child.getPatientName().equals(parent.getPatientName())) {
-            note += getString(R.string.patient_changed, parent.getPatientName(), child.getPatientName());
+            String patientChild = child.getPatientName();
+            String patientParent = parent.getPatientName();
+
+            if (patientChild.equals("ME!")) {
+                patientChild = getString(R.string.you);
+            }
+
+            if (patientParent.equals("ME!")) {
+                patientParent = getString(R.string.you);
+            }
+
+            note += getString(R.string.patient_changed, patientParent, patientChild);
         }
 
         if (!child.getName().equals(parent.getName())) {
