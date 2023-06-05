@@ -88,6 +88,7 @@ public class AddMedication extends AppCompatActivity {
     private ArrayList<String> timeUnits;
 
     private boolean createClone = false;
+    private boolean canApplyRetroactively = false;
 
     private LocalDateTime[] startingTimes;
 
@@ -495,7 +496,11 @@ public class AddMedication extends AppCompatActivity {
                 }
 
                 for (int ind = 0; ind < days; ind++) {
-                    TextInputLayout textLayout = new TextInputLayout(new ContextThemeWrapper(numberOfTimersPerDayLayout.getContext(), R.style.Base_Widget_MaterialComponents_TextInputLayout));
+                    @SuppressLint("PrivateResource")
+                    TextInputLayout textLayout = new TextInputLayout(
+                            new ContextThemeWrapper(numberOfTimersPerDayLayout.getContext(),
+                                    R.style.Base_Widget_MaterialComponents_TextInputLayout)
+                    );
                     TextInputEditText timeEntry = new TextInputEditText(textLayout.getContext());
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
@@ -1154,6 +1159,7 @@ public class AddMedication extends AppCompatActivity {
 
         if (child.getDosage() != parent.getDosage() || !child.getDosageUnits().equals(parent.getDosageUnits())) {
             createClone = true;
+            canApplyRetroactively = true;
 
             note += getString(R.string.changed_dosage,
                     parent.getDosage() + " " +parent.getDosageUnits(),
@@ -1163,6 +1169,7 @@ public class AddMedication extends AppCompatActivity {
 
         if (child.getFrequency() != parent.getFrequency() || !Arrays.equals(child.getTimes(), startingTimes)) {
             createClone = true;
+            canApplyRetroactively = true;
 
             String oldFreq = parent.generateFrequencyLabel(this).toLowerCase();
             String newFreq = child.generateFrequencyLabel(this).toLowerCase();
