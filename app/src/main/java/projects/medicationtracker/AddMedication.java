@@ -87,6 +87,8 @@ public class AddMedication extends AppCompatActivity {
     private int selectedFrequencyTypeIndex = -1;
     private ArrayList<String> timeUnits;
 
+    private boolean createClone = false;
+
     /**
      * Builds AddMedication Activity
      *
@@ -116,8 +118,6 @@ public class AddMedication extends AppCompatActivity {
 
             medication.setTimes(dateTimes);
             title = getString(R.string.edit_medication);
-
-            medication.setParent(db.getTrueParent(medId));
         } else {
             medication = new Medication();
             title = getString(R.string.add_medication);
@@ -767,15 +767,32 @@ public class AddMedication extends AppCompatActivity {
             long childId;
             String changesNotes = createChangesNote(medication, parentMed);
 
-            if (!changesNotes.isEmpty()) {
+            if (!changesNotes.isEmpty() && createClone) {
+                medication.setParent(parentMed);
+
                 childId = db.createChildMedication(medication);
                 medication.setId(childId);
+
                 parentMed.setChild(medication);
+
+                if (!parentMed.getPatientName().equals(medication.getPatientName())) {
+                    parentMed.setPatientName(medication.getPatientName());
+                }
+
+                if (!parentMed.getName().equals(medication.getPatientName())) {
+                    parentMed.setName(medication.getName());
+                }
+
+                if (!parentMed.getAlias().equals(medication.getAlias())) {
+                    parentMed.setAlias(medication.getAlias());
+                }
 
                 db.updateMedication(parentMed);
                 db.addNote(changesNotes, childId);
 
                 NotificationHelper.clearPendingNotifications(medication, this);
+            } else if (!changesNotes.isEmpty()) {
+                db.updateMedication(medication);
             }
         }
 
@@ -1132,6 +1149,8 @@ public class AddMedication extends AppCompatActivity {
         }
 
         if (child.getDosage() != parent.getDosage() || !child.getDosageUnits().equals(parent.getDosageUnits())) {
+            createClone = true;
+
             note += getString(R.string.changed_dosage,
                     parent.getDosage() + " " +parent.getDosageUnits(),
                     child.getDosage() + " " + child.getDosageUnits()
@@ -1139,6 +1158,8 @@ public class AddMedication extends AppCompatActivity {
         }
 
         if (child.getFrequency() != parent.getFrequency() || !Arrays.equals(child.getTimes(), parent.getTimes())) {
+            createClone = true;
+
             String oldFreq = parent.generateFrequencyLabel(this).toLowerCase();
             String newFreq = child.generateFrequencyLabel(this).toLowerCase();
 
