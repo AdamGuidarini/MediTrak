@@ -16,8 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentContainerView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import kotlin.Pair;
 import projects.medicationtracker.Fragments.MyMedicationsFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.SimpleClasses.Medication;
@@ -54,52 +57,73 @@ public class MyMedications extends AppCompatActivity {
         final LinearLayout myMedsLayout = findViewById(R.id.medLayout);
 
         ArrayList<String> patientNames = db.getPatients();
+        ArrayList<Pair<String, ArrayList<Medication>>> allMeds = new ArrayList<>();
 
-        if (patientNames.size() >= 1) {
-            if (patientNames.size() == 1) {
-                ArrayList<Medication> patientMeds = db.getMedicationsForPatient(patientNames.get(0));
+        for (String patient : patientNames) {
+            ArrayList<Medication> meds = db.getMedicationsForPatient(patient).stream().filter(
+                    m -> m.getChild() == null
+            ).collect(Collectors.toCollection(ArrayList::new));
 
-                for (Medication medication : patientMeds) {
-                    if (medication.getChild() != null) continue;
-
-                    createMyMedCards(medication, myMedsLayout);
-                }
-            } else {
-                if (patientNames.contains("ME!"))
-                    patientNames.set(patientNames.indexOf("ME!"), you);
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, patientNames);
-                nameSpinner.setAdapter(adapter);
-
-                nameSpinner.setVisibility(View.VISIBLE);
-
-                if (patientNames.contains(you))
-                    nameSpinner.setSelection(adapter.getPosition(you));
-
-                nameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        myMedsLayout.removeAllViews();
-
-                        String patient = adapterView.getSelectedItem().toString();
-
-                        if (patient.equals(you))
-                            patient = "ME!";
-
-                        ArrayList<Medication> patientMeds = db.getMedicationsForPatient(patient);
-
-                        for (Medication medication : patientMeds) {
-                            if (medication.getChild() != null) continue;
-
-                            createMyMedCards(medication, myMedsLayout);
-                        }
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-                    }
-                });
+            if (meds.size() > 0) {
+                allMeds.add(new Pair<>(patient, meds));
             }
+        }
+
+        if (allMeds.size() == 1) {
+            ArrayList<Medication> patientMeds = db.getMedicationsForPatient(allMeds.get(0).getFirst());
+
+            for (Medication medication : patientMeds) {
+                if (medication.getChild() != null) continue;
+
+                createMyMedCards(medication, myMedsLayout);
+            }
+        } else if (allMeds.size() > 1) {
+            String[] patients = (String[]) allMeds.stream().map(Pair::getFirst).toArray();
+
+            if (allMeds.stream().allMatch(m -> m.getFirst().equals("ME!"))) {
+                allMeds = allMeds.stream().map(m -> {
+                    if (m.getFirst().equals("ME!")) {
+                        m = new Pair<>(you, m.getSecond());
+                    }
+
+                    return m;
+                }).collect(Collectors.toCollection(ArrayList::new));
+            }
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, patients);
+            nameSpinner.setAdapter(adapter);
+
+            nameSpinner.setVisibility(View.VISIBLE);
+
+            if (Arrays.asList(patients).contains(you))
+                nameSpinner.setSelection(adapter.getPosition(you));
+
+            final ArrayList<Pair<String, ArrayList<Medication>>> allMedsClone = (ArrayList<Pair<String, ArrayList<Medication>>>) allMeds.clone();
+            nameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    myMedsLayout.removeAllViews();
+
+                    String selected = adapterView.getSelectedItem().toString();
+                    final String patient = selected.equals(you) ? "ME!" : selected;
+
+                    Medication[] patientMeds = (Medication[]) allMedsClone.stream().filter(
+                            m -> m.getFirst().equals(patient)
+                    ).collect(Collectors.toCollection(ArrayList::new)).stream().map(
+                            Pair::getSecond
+                    ).toArray();
+
+                    for (Medication medication : patientMeds) {
+                        if (medication.getChild() != null) continue;
+
+                        createMyMedCards(medication, myMedsLayout);
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                }
+            });
         }
     }
 
