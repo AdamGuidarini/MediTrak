@@ -89,6 +89,8 @@ public class AddMedication extends AppCompatActivity {
 
     private boolean createClone = false;
 
+    private LocalDateTime[] startingTimes;
+
     /**
      * Builds AddMedication Activity
      *
@@ -117,6 +119,8 @@ public class AddMedication extends AppCompatActivity {
             }
 
             medication.setTimes(dateTimes);
+            startingTimes = medication.getTimes().clone();
+
             title = getString(R.string.edit_medication);
         } else {
             medication = new Medication();
@@ -1157,7 +1161,7 @@ public class AddMedication extends AppCompatActivity {
             );
         }
 
-        if (child.getFrequency() != parent.getFrequency() || !Arrays.equals(child.getTimes(), parent.getTimes())) {
+        if (child.getFrequency() != parent.getFrequency() || !Arrays.equals(child.getTimes(), startingTimes)) {
             createClone = true;
 
             String oldFreq = parent.generateFrequencyLabel(this).toLowerCase();
