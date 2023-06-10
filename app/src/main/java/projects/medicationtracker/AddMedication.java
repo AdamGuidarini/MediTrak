@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -19,6 +20,7 @@ import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
@@ -87,8 +89,12 @@ public class AddMedication extends AppCompatActivity {
     private int selectedFrequencyTypeIndex = -1;
     private ArrayList<String> timeUnits;
 
+    private CardView applyRetroactiveCard;
+    private CheckBox applyRetroActiveCheckbox;
+
     private boolean createClone = false;
     private boolean canApplyRetroactively = false;
+    private boolean doApplyRetroactively = false;
 
     private LocalDateTime[] startingTimes;
 
@@ -121,6 +127,11 @@ public class AddMedication extends AppCompatActivity {
 
             medication.setTimes(dateTimes);
             startingTimes = medication.getTimes().clone();
+
+            applyRetroactiveCard = findViewById(R.id.retroactive_card);
+            applyRetroActiveCheckbox = findViewById(R.id.apply_retroactive_checkbox);
+
+            applyRetroActiveCheckbox.setOnClickListener(view -> doApplyRetroactively = view.isSelected());
 
             title = getString(R.string.edit_medication);
         } else {
@@ -316,6 +327,41 @@ public class AddMedication extends AppCompatActivity {
             }
 
             dosageUnitsInput.setText(medication.getDosageUnits());
+
+            dosageAmountInput.addTextChangedListener(new TextWatcher() {
+                private final int amount = (int) medication.getDosage();
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (Integer.parseInt(editable.toString()) != amount && medId != -1) {
+                        applyRetroactiveCard.setVisibility(View.VISIBLE);
+                    } else {
+                        applyRetroactiveCard.setVisibility(View.GONE);
+                    }
+                }
+            });
+
+            dosageUnitsInput.addTextChangedListener(new TextWatcher() {
+                private final String unit = medication.getDosageUnits();
+
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (!editable.toString().equals(unit) && medId != -1) {
+                        applyRetroactiveCard.setVisibility(View.VISIBLE);
+                    } else {
+                        applyRetroactiveCard.setVisibility(View.GONE);
+                    }
+                }
+            });
         }
     }
 
@@ -382,8 +428,7 @@ public class AddMedication extends AppCompatActivity {
             }
         }
 
-        frequencyDropDown.setOnItemClickListener((adapterView, view, i, l) ->
-        {
+        frequencyDropDown.setOnItemClickListener((adapterView, view, i, l) ->  {
             frequencyDropdownLayout.setErrorEnabled(false);
 
             switch (i) {
@@ -426,6 +471,24 @@ public class AddMedication extends AppCompatActivity {
             }
         });
 
+        frequencyDropDown.addTextChangedListener(new TextWatcher() {
+            private final String selected = frequencyDropDown.getText().toString();
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!editable.toString().equals(selected) && medId != -1) {
+                    applyRetroactiveCard.setVisibility(View.VISIBLE);
+                } else {
+                    applyRetroactiveCard.setVisibility(View.GONE);
+                }
+            }
+        });
+
         setMultiplePerDayFrequencyViews();
         setDailyFrequencyViews();
         setCustomFrequencyViews();
@@ -453,13 +516,13 @@ public class AddMedication extends AppCompatActivity {
         });
 
         numberOfTimersPerDay.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
+//            private final int numTimes = Integer.parseInt(numberOfTimersPerDay.getText().toString());
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -472,6 +535,12 @@ public class AddMedication extends AppCompatActivity {
 
                     return;
                 }
+
+//                if (days != numTimes && medId != -1) {
+//                    applyRetroactiveCard.setVisibility(View.VISIBLE);
+//                } else {
+//                    applyRetroactiveCard.setVisibility(View.GONE);
+//                }
 
                 if (days > 50) {
                     numberOfTimersPerDayLayout.setError(getString(R.string.cannot_exceed_50));
@@ -563,16 +632,14 @@ public class AddMedication extends AppCompatActivity {
         dailyMedStartDate.setShowSoftInputOnFocus(false);
 
 
-        dailyMedTime.setOnFocusChangeListener((view, b) ->
-        {
+        dailyMedTime.setOnFocusChangeListener((view, b) -> {
             if (b) {
                 DialogFragment dialogFragment = new TimePickerFragment(dailyMedTime);
                 dialogFragment.show(getSupportFragmentManager(), null);
             }
         });
 
-        dailyMedStartDate.setOnFocusChangeListener((view, b) ->
-        {
+        dailyMedStartDate.setOnFocusChangeListener((view, b) -> {
             if (b) {
                 DialogFragment df = new SelectDateFragment(dailyMedStartDate);
                 df.show(getSupportFragmentManager(), null);
@@ -589,6 +656,43 @@ public class AddMedication extends AppCompatActivity {
             dailyMedTime.setText(
                     TimeFormatting.localTimeToString(medication.getStartDate().toLocalTime())
             );
+
+            dailyMedTime.addTextChangedListener(new TextWatcher() {
+                private final LocalTime time = medication.getStartDate().toLocalTime();
+
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (!Objects.equals(time, dailyMedTime.getTag())) {
+                        applyRetroactiveCard.setVisibility(View.VISIBLE);
+                    } else {
+                        applyRetroactiveCard.setVisibility(View.GONE);
+                    }
+                }
+            });
+
+            dailyMedStartDate.addTextChangedListener(new TextWatcher() {
+                private final LocalDate date = medication.getStartDate().toLocalDate();
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if (!Objects.equals(date, dailyMedStartDate.getTag())) {
+                        applyRetroactiveCard.setVisibility(View.VISIBLE);
+                    } else {
+                        applyRetroactiveCard.setVisibility(View.GONE);
+                    }
+                }
+            });
         }
     }
 
@@ -776,7 +880,7 @@ public class AddMedication extends AppCompatActivity {
             long childId;
             String changesNotes = createChangesNote(medication, parentMed);
 
-            if (!changesNotes.isEmpty() && createClone) {
+            if (!changesNotes.isEmpty() && createClone && !doApplyRetroactively) {
                 medication.setParent(parentMed);
 
                 childId = db.createChildMedication(medication);
