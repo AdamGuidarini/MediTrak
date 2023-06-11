@@ -93,7 +93,6 @@ public class AddMedication extends AppCompatActivity {
     private CheckBox applyRetroActiveCheckbox;
 
     private boolean createClone = false;
-    private boolean canApplyRetroactively = false;
     private boolean doApplyRetroactively = false;
 
     private LocalDateTime[] startingTimes;
@@ -131,7 +130,7 @@ public class AddMedication extends AppCompatActivity {
             applyRetroactiveCard = findViewById(R.id.retroactive_card);
             applyRetroActiveCheckbox = findViewById(R.id.apply_retroactive_checkbox);
 
-            applyRetroActiveCheckbox.setOnClickListener(view -> doApplyRetroactively = view.isSelected());
+            applyRetroActiveCheckbox.setOnClickListener(view -> doApplyRetroactively = !doApplyRetroactively);
 
             title = getString(R.string.edit_medication);
         } else {
@@ -337,10 +336,10 @@ public class AddMedication extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable editable) {
+                    if (editable.toString().isEmpty()) return;
+
                     if (Integer.parseInt(editable.toString()) != amount && medId != -1) {
                         applyRetroactiveCard.setVisibility(View.VISIBLE);
-                    } else {
-                        applyRetroactiveCard.setVisibility(View.GONE);
                     }
                 }
             });
@@ -357,8 +356,6 @@ public class AddMedication extends AppCompatActivity {
                 public void afterTextChanged(Editable editable) {
                     if (!editable.toString().equals(unit) && medId != -1) {
                         applyRetroactiveCard.setVisibility(View.VISIBLE);
-                    } else {
-                        applyRetroactiveCard.setVisibility(View.GONE);
                     }
                 }
             });
@@ -483,8 +480,6 @@ public class AddMedication extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
                 if (!editable.toString().equals(selected) && medId != -1) {
                     applyRetroactiveCard.setVisibility(View.VISIBLE);
-                } else {
-                    applyRetroactiveCard.setVisibility(View.GONE);
                 }
             }
         });
@@ -516,8 +511,6 @@ public class AddMedication extends AppCompatActivity {
         });
 
         numberOfTimersPerDay.addTextChangedListener(new TextWatcher() {
-//            private final int numTimes = Integer.parseInt(numberOfTimersPerDay.getText().toString());
-
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
@@ -535,12 +528,6 @@ public class AddMedication extends AppCompatActivity {
 
                     return;
                 }
-
-//                if (days != numTimes && medId != -1) {
-//                    applyRetroactiveCard.setVisibility(View.VISIBLE);
-//                } else {
-//                    applyRetroactiveCard.setVisibility(View.GONE);
-//                }
 
                 if (days > 50) {
                     numberOfTimersPerDayLayout.setError(getString(R.string.cannot_exceed_50));
@@ -603,12 +590,29 @@ public class AddMedication extends AppCompatActivity {
 
         if (medId != -1 && selectedFrequencyTypeIndex == 0) {
             LocalDateTime[] medTimes = medication.getTimes();
+            final int initialNumTimes = medTimes.length;
 
             numberOfTimersPerDay.setText(String.valueOf(medTimes.length));
             startDateMultiplePerDay.setText(
                     TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
             );
             startDateMultiplePerDay.setTag(medication.getStartDate().toLocalDate());
+
+            numberOfTimersPerDay.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (s.toString().isEmpty()) return;
+
+                    if (Integer.parseInt(s.toString()) != initialNumTimes) {
+                     applyRetroactiveCard.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
 
             for (int i = 0; i < medTimes.length; i++) {
                 LocalTime time = medTimes[i].toLocalTime();
@@ -670,8 +674,6 @@ public class AddMedication extends AppCompatActivity {
                 public void afterTextChanged(Editable editable) {
                     if (!Objects.equals(time, dailyMedTime.getTag())) {
                         applyRetroactiveCard.setVisibility(View.VISIBLE);
-                    } else {
-                        applyRetroactiveCard.setVisibility(View.GONE);
                     }
                 }
             });
@@ -688,8 +690,6 @@ public class AddMedication extends AppCompatActivity {
                 public void afterTextChanged(Editable editable) {
                     if (!Objects.equals(date, dailyMedStartDate.getTag())) {
                         applyRetroactiveCard.setVisibility(View.VISIBLE);
-                    } else {
-                        applyRetroactiveCard.setVisibility(View.GONE);
                     }
                 }
             });
@@ -879,8 +879,9 @@ public class AddMedication extends AppCompatActivity {
             Medication parentMed = db.getMedication(medId);
             long childId;
             String changesNotes = createChangesNote(medication, parentMed);
+            boolean applyRetroactively = applyRetroActiveCheckbox.isChecked();
 
-            if (!changesNotes.isEmpty() && createClone && !doApplyRetroactively) {
+            if (!changesNotes.isEmpty() && createClone && !applyRetroactively) {
                 medication.setParent(parentMed);
 
                 childId = db.createChildMedication(medication);
@@ -1263,7 +1264,6 @@ public class AddMedication extends AppCompatActivity {
 
         if (child.getDosage() != parent.getDosage() || !child.getDosageUnits().equals(parent.getDosageUnits())) {
             createClone = true;
-            canApplyRetroactively = true;
 
             note += getString(R.string.changed_dosage,
                     parent.getDosage() + " " +parent.getDosageUnits(),
@@ -1273,7 +1273,6 @@ public class AddMedication extends AppCompatActivity {
 
         if (child.getFrequency() != parent.getFrequency() || !Arrays.equals(child.getTimes(), startingTimes)) {
             createClone = true;
-            canApplyRetroactively = true;
 
             String oldFreq = parent.generateFrequencyLabel(this).toLowerCase();
             String newFreq = child.generateFrequencyLabel(this).toLowerCase();
