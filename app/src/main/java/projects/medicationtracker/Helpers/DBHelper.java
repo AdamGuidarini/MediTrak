@@ -402,7 +402,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // Iterates through cursors to create instances of Medication object
         while (!meds.isAfterLast()) {
             int medId = Integer.parseInt(meds.getString(meds.getColumnIndexOrThrow(MED_ID)));
-            float dosage = Float.parseFloat(meds.getString(meds.getColumnIndexOrThrow(MED_DOSAGE)));
+            int dosage = meds.getInt(meds.getColumnIndexOrThrow(MED_DOSAGE));
             int frequency = Integer.parseInt(meds.getString(meds.getColumnIndexOrThrow(MED_FREQUENCY)));
             String medName = meds.getString(meds.getColumnIndexOrThrow(MED_NAME));
             String patient = meds.getString(meds.getColumnIndexOrThrow(PATIENT_NAME));
@@ -521,7 +521,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 cursor.getColumnIndexOrThrow(START_DATE)));
         long medId = cursor.getLong(cursor.getColumnIndexOrThrow(MED_ID));
         long frequency = cursor.getLong(cursor.getColumnIndexOrThrow(MED_FREQUENCY));
-        float dosage = cursor.getFloat(cursor.getColumnIndexOrThrow(MED_DOSAGE));
+        int dosage = cursor.getInt(cursor.getColumnIndexOrThrow(MED_DOSAGE));
         String alias = cursor.getString(cursor.getColumnIndexOrThrow(ALIAS));
 
         LocalDateTime[] times = new LocalDateTime[0];

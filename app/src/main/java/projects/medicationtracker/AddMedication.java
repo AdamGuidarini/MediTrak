@@ -907,6 +907,7 @@ public class AddMedication extends AppCompatActivity {
                 NotificationHelper.clearPendingNotifications(medication, this);
             } else if (!changesNotes.isEmpty()) {
                 db.updateMedication(medication);
+                db.addNote(changesNotes, medId);
             }
         }
 
@@ -970,7 +971,7 @@ public class AddMedication extends AppCompatActivity {
         }
 
         if ((dosageAmountInputLayout.getError() == null || floatIsParsable(dosageAmountInput.getText().toString())) && !dosageAmountInput.getText().toString().isEmpty()) {
-            medication.setDosage(Float.parseFloat(dosageAmountInput.getText().toString()));
+            medication.setDosage(Integer.parseInt(dosageAmountInput.getText().toString()));
 
             dosageAmountInputLayout.setErrorEnabled(false);
         } else {
