@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -920,8 +921,12 @@ public class AddMedication extends AppCompatActivity {
 
                 NotificationHelper.clearPendingNotifications(medication, this);
             } else if (!changesNotes.isEmpty()) {
-                db.updateMedication(medication);
-                db.addNote(changesNotes, medId);
+                if (retroactiveFromLastChange.isChecked()) {
+                    db.updateMedication(medication);
+                    db.addNote(changesNotes, medId);
+                } else {
+                    Toast.makeText(this, "Apply changes retroactively to start", Toast.LENGTH_SHORT).show();
+                }
             }
         }
 
