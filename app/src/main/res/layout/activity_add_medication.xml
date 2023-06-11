@@ -526,9 +526,7 @@
                         android:text="@string/apply_retroactive" />
 
                     <TextView
-                        style="@style/standardTextView"
-                        android:paddingTop="0dp"
-                        android:textColor="@color/black"
+                        android:paddingBottom="12dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/retroactive_warning"/>
@@ -539,6 +537,41 @@
                         android:layout_height="wrap_content"
                         android:text="@string/would_like_apply_retroactively"
                         tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:paddingTop="12dp"
+                            android:paddingBottom="12dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/apply_changes_as_of" />
+
+                        <RadioGroup
+                            android:id="@+id/retroactive_opts"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.radiobutton.MaterialRadioButton
+                                android:id="@+id/retroactive_from_last_change"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/from_med_last_change"
+                                android:checked="true"/>
+
+                            <com.google.android.material.radiobutton.MaterialRadioButton
+                                android:id="@+id/retroactive_from_start"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="15dp"
+                                android:text="@string/from_med_start" />
+                        </RadioGroup>
+                    </LinearLayout>
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>

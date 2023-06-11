@@ -90,6 +90,9 @@ public class AddMedication extends AppCompatActivity {
 
     private CardView applyRetroactiveCard;
     private SwitchMaterial applyRetroActiveSwitch;
+    private RadioGroup retroactiveOptions;
+    private RadioButton retroactiveFromLastChange;
+    private RadioButton retroactiveFromStart;
 
     private boolean createClone = false;
     private boolean doApplyRetroactively = false;
@@ -129,7 +132,19 @@ public class AddMedication extends AppCompatActivity {
             applyRetroactiveCard = findViewById(R.id.retroactive_card);
             applyRetroActiveSwitch = findViewById(R.id.apply_retroactive_checkbox);
 
-            applyRetroActiveSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> doApplyRetroactively = isChecked);
+            retroactiveOptions = findViewById(R.id.retroactive_opts);
+            retroactiveFromLastChange = findViewById(R.id.retroactive_from_last_change);
+            retroactiveFromStart = findViewById(R.id.retroactive_from_start);
+
+            applyRetroActiveSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                doApplyRetroactively = isChecked;
+
+                if (isChecked) {
+                    ((LinearLayout) retroactiveOptions.getParent()).setVisibility(View.VISIBLE);
+                } else {
+                    ((LinearLayout) retroactiveOptions.getParent()).setVisibility(View.GONE);
+                }
+            });
 
             title = getString(R.string.edit_medication);
         } else {

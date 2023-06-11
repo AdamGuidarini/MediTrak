@@ -126,6 +126,9 @@
     <string name="apply_retroactive">Apply Changes Retroactively</string>
     <string name="retroactive_warning">Warning: Changes to frequency may cause previously taken doses to no longer be visible in the schedule.</string>
     <string name="would_like_apply_retroactively">Changes to dosage and frequency can be applied retroactively. Would you like to apply these changes retroactively?</string>
+    <string name="apply_changes_as_of">Apply changes as of:</string>
+    <string name="from_med_last_change">Last change</string>
+    <string name="from_med_start">Start of medication</string>
 
     <!-- MyMedications -->
     <string name="my_medications">My Medications</string>
