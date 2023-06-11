@@ -525,11 +525,20 @@
                         android:layout_height="wrap_content"
                         android:text="@string/apply_retroactive" />
 
-                    <CheckBox
+                    <TextView
+                        style="@style/standardTextView"
+                        android:paddingTop="0dp"
+                        android:textColor="@color/black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/retroactive_warning"/>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/apply_retroactive_checkbox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/would_like_apply_retroactively"/>
+                        android:text="@string/would_like_apply_retroactively"
+                        tools:ignore="UseSwitchCompatOrMaterialXml" />
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>

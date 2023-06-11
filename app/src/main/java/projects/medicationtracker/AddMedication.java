@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -90,7 +89,7 @@ public class AddMedication extends AppCompatActivity {
     private ArrayList<String> timeUnits;
 
     private CardView applyRetroactiveCard;
-    private CheckBox applyRetroActiveCheckbox;
+    private SwitchMaterial applyRetroActiveSwitch;
 
     private boolean createClone = false;
     private boolean doApplyRetroactively = false;
@@ -128,9 +127,9 @@ public class AddMedication extends AppCompatActivity {
             startingTimes = medication.getTimes().clone();
 
             applyRetroactiveCard = findViewById(R.id.retroactive_card);
-            applyRetroActiveCheckbox = findViewById(R.id.apply_retroactive_checkbox);
+            applyRetroActiveSwitch = findViewById(R.id.apply_retroactive_checkbox);
 
-            applyRetroActiveCheckbox.setOnClickListener(view -> doApplyRetroactively = !doApplyRetroactively);
+            applyRetroActiveSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> doApplyRetroactively = isChecked);
 
             title = getString(R.string.edit_medication);
         } else {
@@ -879,7 +878,7 @@ public class AddMedication extends AppCompatActivity {
             Medication parentMed = db.getMedication(medId);
             long childId;
             String changesNotes = createChangesNote(medication, parentMed);
-            boolean applyRetroactively = applyRetroActiveCheckbox.isChecked();
+            boolean applyRetroactively = applyRetroActiveSwitch.isChecked();
 
             if (!changesNotes.isEmpty() && createClone && !applyRetroactively) {
                 medication.setParent(parentMed);
