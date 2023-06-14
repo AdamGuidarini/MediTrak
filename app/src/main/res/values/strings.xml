@@ -139,6 +139,7 @@
     <string name="alias_lbl">Alias: %1$s</string>
     <string name="taken_since">Taken since: %1$s</string>
     <string name="taken_as_needed">Taken as needed.</string>
+    <string name="all_previous_edits_overridden">All previous changes overridden.</string>
 
     <!-- Notes -->
     <string name="notes">Notes</string>

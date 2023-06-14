@@ -471,31 +471,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return allMeds;
     }
 
-    public Medication getTrueParent(long parentId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        long res;
-        long trueParent = parentId;
-        Cursor c;
-
-        while (true) {
-            c = db.rawQuery("SELECT " + PARENT_ID + " FROM " + MEDICATION_TABLE + " WHERE " + MED_ID + "=" + trueParent, null, null);
-
-            c.moveToFirst();
-
-            res = c.getLong(c.getColumnIndexOrThrow(PARENT_ID));
-
-            c.close();
-
-            if (res > 0) {
-                trueParent = res;
-            } else {
-                break;
-            }
-        }
-
-        return getMedication(trueParent);
-    }
-
     /**
      * Retrieves a Medication object based on ID passed to it. Does not retrieve
      * parent/child medications.
@@ -529,6 +504,20 @@ public class DBHelper extends SQLiteOpenHelper {
         medication = new Medication(
                 medName, patient, units, times, startDate, medId, frequency, dosage, alias
         );
+
+        cursor.close();
+
+        String getParentQuery = "SELECT " + MED_ID + " FROM " + MEDICATION_TABLE
+                + " WHERE " + CHILD_ID + "=" + medication.getId();
+
+        cursor = db.rawQuery(getParentQuery, null);
+        cursor.moveToFirst();
+
+        if (cursor.getCount() > 0) {
+                medication.setParent(
+                        getMedication(cursor.getLong(cursor.getColumnIndexOrThrow(MED_ID)))
+                );
+        }
 
         cursor.close();
 
@@ -692,6 +681,56 @@ public class DBHelper extends SQLiteOpenHelper {
         db.update(MEDICATION_TABLE, updateParentCv, MED_ID + " = " + medication.getParent().getId(), null);
 
         return row;
+    }
+
+    /**
+     * Removes child medications, reactivates parent medication, and updates parent to match given meds.
+     * @param medication Med to store as original parent.
+     */
+    public long overrideChildMedications(Medication medication) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Medication> childMeds = new ArrayList<>();
+        Medication truestParent;
+        long idToSeek = medication.getId();
+
+        while (true) {
+            Medication parent = getMedication(idToSeek);
+
+            truestParent = parent;
+
+            if (parent.getParent() == null) {
+                break;
+            } else {
+                childMeds.add(parent);
+                idToSeek = parent.getParent().getId();
+            }
+        }
+
+        ContentValues cv = new ContentValues();
+        ContentValues notesUpdate = new ContentValues();
+
+        cv.put(MED_ID, truestParent.getId());
+        notesUpdate.put(MED_ID, truestParent.getId());
+
+        for (Medication med : childMeds) {
+            if (med.getParent() != null) {
+                db.update(MEDICATION_TRACKER_TABLE, cv, MED_ID + "=?", new String[]{String.valueOf(med.getId())});
+                db.update(NOTES_TABLE, notesUpdate, MED_ID + "=" + medication.getParent().getId(), null);
+
+                deleteMedication(med);
+            }
+        }
+
+        cv.clear();
+
+        db.delete(ACTIVITY_CHANGE_TABLE, MED_ID + "=?", new String[]{String.valueOf(truestParent.getId())});
+
+        medication.setStartDate(truestParent.getStartDate());
+        medication.setId(truestParent.getId());
+
+        updateMedication(medication);
+
+        return truestParent.getId();
     }
 
     /**

@@ -122,7 +122,7 @@ public class Medication implements Cloneable, Parcelable {
      *
      * @return Medication dosage
      */
-    public float getDosage() {
+    public int getDosage() {
         return medDosage;
     }
 
@@ -364,6 +364,6 @@ public class Medication implements Cloneable, Parcelable {
         parcel.writeString(alias);
         parcel.writeLong(medId);
         parcel.writeLong(medFrequency);
-        parcel.writeFloat(medDosage);
+        parcel.writeInt(medDosage);
     }
 }

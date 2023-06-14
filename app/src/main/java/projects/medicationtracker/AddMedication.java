@@ -343,7 +343,7 @@ public class AddMedication extends AppCompatActivity {
             dosageUnitsInput.setText(medication.getDosageUnits());
 
             dosageAmountInput.addTextChangedListener(new TextWatcher() {
-                private final int amount = (int) medication.getDosage();
+                private final int amount = medication.getDosage();
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
                 @Override
@@ -921,11 +921,12 @@ public class AddMedication extends AppCompatActivity {
 
                 NotificationHelper.clearPendingNotifications(medication, this);
             } else if (!changesNotes.isEmpty()) {
-                if (retroactiveFromLastChange.isChecked()) {
+                if (!retroactiveFromStart.isChecked()) {
                     db.updateMedication(medication);
                     db.addNote(changesNotes, medId);
                 } else {
-                    Toast.makeText(this, "Apply changes retroactively to start", Toast.LENGTH_SHORT).show();
+                    long updatedMedId = db.overrideChildMedications(medication);
+                    db.addNote(changesNotes, updatedMedId);
                 }
             }
         }
@@ -1298,6 +1299,10 @@ public class AddMedication extends AppCompatActivity {
             String newFreq = child.generateFrequencyLabel(this).toLowerCase();
 
             note += getString(R.string.frequency_changed, oldFreq, newFreq);
+        }
+
+        if (retroactiveFromStart.isChecked()) {
+            note += getString(R.string.all_previous_edits_overridden);
         }
 
         return note;
