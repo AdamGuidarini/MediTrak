@@ -91,9 +91,6 @@ public class AddMedication extends AppCompatActivity {
 
     private CardView applyRetroactiveCard;
     private SwitchMaterial applyRetroActiveSwitch;
-    private RadioGroup retroactiveOptions;
-    private RadioButton retroactiveFromLastChange;
-    private RadioButton retroactiveFromStart;
 
     private boolean createClone = false;
     private boolean doApplyRetroactively = false;
@@ -132,20 +129,6 @@ public class AddMedication extends AppCompatActivity {
 
             applyRetroactiveCard = findViewById(R.id.retroactive_card);
             applyRetroActiveSwitch = findViewById(R.id.apply_retroactive_checkbox);
-
-            retroactiveOptions = findViewById(R.id.retroactive_opts);
-            retroactiveFromLastChange = findViewById(R.id.retroactive_from_last_change);
-            retroactiveFromStart = findViewById(R.id.retroactive_from_start);
-
-            applyRetroActiveSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                doApplyRetroactively = isChecked;
-
-                if (isChecked) {
-                    ((LinearLayout) retroactiveOptions.getParent()).setVisibility(View.VISIBLE);
-                } else {
-                    ((LinearLayout) retroactiveOptions.getParent()).setVisibility(View.GONE);
-                }
-            });
 
             title = getString(R.string.edit_medication);
         } else {
@@ -900,6 +883,7 @@ public class AddMedication extends AppCompatActivity {
                 medication.setParent(parentMed);
 
                 childId = db.createChildMedication(medication);
+
                 medication.setId(childId);
 
                 parentMed.setChild(medication);
@@ -918,17 +902,12 @@ public class AddMedication extends AppCompatActivity {
 
                 db.updateMedication(parentMed);
                 db.addNote(changesNotes, childId);
-
-                NotificationHelper.clearPendingNotifications(medication, this);
             } else if (!changesNotes.isEmpty()) {
-                if (!retroactiveFromStart.isChecked()) {
-                    db.updateMedication(medication);
-                    db.addNote(changesNotes, medId);
-                } else {
-                    long updatedMedId = db.overrideChildMedications(medication);
-                    db.addNote(changesNotes, updatedMedId);
-                }
+                db.updateMedication(medication);
+                db.addNote(changesNotes, medId);
             }
+
+            NotificationHelper.clearPendingNotifications(medication, this);
         }
 
         NotificationHelper.createNotifications(medication, this);
@@ -1299,10 +1278,6 @@ public class AddMedication extends AppCompatActivity {
             String newFreq = child.generateFrequencyLabel(this).toLowerCase();
 
             note += getString(R.string.frequency_changed, oldFreq, newFreq);
-        }
-
-        if (retroactiveFromStart.isChecked()) {
-            note += getString(R.string.all_previous_edits_overridden);
         }
 
         return note;
