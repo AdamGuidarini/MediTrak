@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -553,7 +552,7 @@ public class AddMedication extends AppCompatActivity {
                     @SuppressLint("PrivateResource")
                     TextInputLayout textLayout = new TextInputLayout(
                             new ContextThemeWrapper(numberOfTimersPerDayLayout.getContext(),
-                                    R.style.Base_Widget_MaterialComponents_TextInputLayout)
+                                    com.google.android.material.R.style.Base_Widget_MaterialComponents_TextInputLayout)
                     );
                     TextInputEditText timeEntry = new TextInputEditText(textLayout.getContext());
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
