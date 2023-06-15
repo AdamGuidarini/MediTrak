@@ -24,8 +24,8 @@ public class Medication implements Cloneable, Parcelable {
     private String alias;
     private LocalDateTime[] times;
     private long medId;
-    private long medFrequency;
-    private float medDosage;
+    private int medFrequency;
+    private int medDosage;
     private boolean active;
     private Medication parent = null;
     private Medication child = null;
@@ -44,7 +44,7 @@ public class Medication implements Cloneable, Parcelable {
      * @param medAlias  An alias for the Medication to appear in notifications
      */
     public Medication(String thisMed, String patient, String units, LocalDateTime[] time,
-                      LocalDateTime firstDate, long id, long frequency, float dosage, String medAlias) {
+                      LocalDateTime firstDate, long id, int frequency, int dosage, String medAlias) {
         medName = thisMed;
         patientName = patient;
         medDosageUnits = units;
@@ -74,7 +74,7 @@ public class Medication implements Cloneable, Parcelable {
         patientName = in.readString();
         alias = in.readString();
         medId = in.readLong();
-        medFrequency = in.readLong();
+        medFrequency = in.readInt();
         medDosage = in.readInt();
     }
 
@@ -113,7 +113,7 @@ public class Medication implements Cloneable, Parcelable {
      *
      * @return Medication frequency
      */
-    public long getFrequency() {
+    public int getFrequency() {
         return medFrequency;
     }
 
@@ -122,7 +122,7 @@ public class Medication implements Cloneable, Parcelable {
      *
      * @return Medication dosage
      */
-    public float getDosage() {
+    public int getDosage() {
         return medDosage;
     }
 
@@ -221,7 +221,7 @@ public class Medication implements Cloneable, Parcelable {
      *
      * @param medFrequency Frequency of the medication
      */
-    public void setFrequency(long medFrequency) {
+    public void setFrequency(int medFrequency) {
         this.medFrequency = medFrequency;
     }
 
@@ -230,7 +230,7 @@ public class Medication implements Cloneable, Parcelable {
      *
      * @param medDosage dosage of Medication
      */
-    public void setDosage(float medDosage) {
+    public void setDosage(int medDosage) {
         this.medDosage = medDosage;
     }
 
@@ -364,6 +364,6 @@ public class Medication implements Cloneable, Parcelable {
         parcel.writeString(alias);
         parcel.writeLong(medId);
         parcel.writeLong(medFrequency);
-        parcel.writeFloat(medDosage);
+        parcel.writeInt(medDosage);
     }
 }

@@ -65,7 +65,7 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
         tv.clearFocus();
 
         String date = month + "/" + day + "/" + year;
-        tv.setText(date);
         tv.setTag(localDate);
+        tv.setText(date);
     }
 }

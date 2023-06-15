@@ -162,7 +162,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:hint="@string/medication_dosage"
-                                    android:inputType="numberDecimal" />
+                                    android:inputType="number" />
                             </com.google.android.material.textfield.TextInputLayout>
                         </RelativeLayout>
 
@@ -499,6 +499,46 @@
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
                 </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/retroactive_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="20px"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="15dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/standardTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/apply_retroactive" />
+
+                    <TextView
+                        android:paddingBottom="12dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/retroactive_warning"/>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/apply_retroactive_checkbox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/would_like_apply_retroactively"
+                        tools:ignore="UseSwitchCompatOrMaterialXml" />
+                </LinearLayout>
+
             </androidx.cardview.widget.CardView>
 
             <com.google.android.material.button.MaterialButton

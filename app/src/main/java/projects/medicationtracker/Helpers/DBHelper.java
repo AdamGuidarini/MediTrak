@@ -293,7 +293,9 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<Medication> medications = new ArrayList<>();
 
-        String query = "SELECT * FROM " + MEDICATION_TABLE + " WHERE " + PATIENT_NAME + " = \"" + patient + "\"";
+        String query = "SELECT * FROM " + MEDICATION_TABLE
+                + " WHERE " + PATIENT_NAME + " = \"" + patient + "\""
+                + " AND " + CHILD_ID + " IS NULL";
 
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
@@ -400,7 +402,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // Iterates through cursors to create instances of Medication object
         while (!meds.isAfterLast()) {
             int medId = Integer.parseInt(meds.getString(meds.getColumnIndexOrThrow(MED_ID)));
-            float dosage = Float.parseFloat(meds.getString(meds.getColumnIndexOrThrow(MED_DOSAGE)));
+            int dosage = meds.getInt(meds.getColumnIndexOrThrow(MED_DOSAGE));
             int frequency = Integer.parseInt(meds.getString(meds.getColumnIndexOrThrow(MED_FREQUENCY)));
             String medName = meds.getString(meds.getColumnIndexOrThrow(MED_NAME));
             String patient = meds.getString(meds.getColumnIndexOrThrow(PATIENT_NAME));
@@ -469,31 +471,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return allMeds;
     }
 
-    public Medication getTrueParent(long parentId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        long res;
-        long trueParent = parentId;
-        Cursor c;
-
-        while (true) {
-            c = db.rawQuery("SELECT " + PARENT_ID + " FROM " + MEDICATION_TABLE + " WHERE " + MED_ID + "=" + trueParent, null, null);
-
-            c.moveToFirst();
-
-            res = c.getLong(c.getColumnIndexOrThrow(PARENT_ID));
-
-            c.close();
-
-            if (res > 0) {
-                trueParent = res;
-            } else {
-                break;
-            }
-        }
-
-        return getMedication(trueParent);
-    }
-
     /**
      * Retrieves a Medication object based on ID passed to it. Does not retrieve
      * parent/child medications.
@@ -518,8 +495,8 @@ public class DBHelper extends SQLiteOpenHelper {
         LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(cursor.getString(
                 cursor.getColumnIndexOrThrow(START_DATE)));
         long medId = cursor.getLong(cursor.getColumnIndexOrThrow(MED_ID));
-        long frequency = cursor.getLong(cursor.getColumnIndexOrThrow(MED_FREQUENCY));
-        float dosage = cursor.getFloat(cursor.getColumnIndexOrThrow(MED_DOSAGE));
+        int frequency = cursor.getInt(cursor.getColumnIndexOrThrow(MED_FREQUENCY));
+        int dosage = cursor.getInt(cursor.getColumnIndexOrThrow(MED_DOSAGE));
         String alias = cursor.getString(cursor.getColumnIndexOrThrow(ALIAS));
 
         LocalDateTime[] times = new LocalDateTime[0];
@@ -527,6 +504,20 @@ public class DBHelper extends SQLiteOpenHelper {
         medication = new Medication(
                 medName, patient, units, times, startDate, medId, frequency, dosage, alias
         );
+
+        cursor.close();
+
+        String getParentQuery = "SELECT " + MED_ID + " FROM " + MEDICATION_TABLE
+                + " WHERE " + CHILD_ID + "=" + medication.getId();
+
+        cursor = db.rawQuery(getParentQuery, null);
+        cursor.moveToFirst();
+
+        if (cursor.getCount() > 0) {
+                medication.setParent(
+                        getMedication(cursor.getLong(cursor.getColumnIndexOrThrow(MED_ID)))
+                );
+        }
 
         cursor.close();
 
@@ -690,6 +681,61 @@ public class DBHelper extends SQLiteOpenHelper {
         db.update(MEDICATION_TABLE, updateParentCv, MED_ID + " = " + medication.getParent().getId(), null);
 
         return row;
+    }
+
+    /**
+     * Sets edited med, parent, grandparent, etc to match new form and creates a new child med.
+     * @param medication edited medication.
+     */
+    public long overrideChildMedications(Medication medication) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Medication> childMeds = new ArrayList<>();
+        long idToSeek = medication.getId();
+
+        db.beginTransaction();
+
+        long newMedId = addMedication(
+                medication.getName(),
+                medication.getPatientName(),
+                String.valueOf(medication.getDosage()),
+                medication.getDosageUnits(),
+                TimeFormatting.localDateTimeToString(medication.getStartDate()),
+                medication.getFrequency(),
+                medication.getAlias()
+        );
+
+        while (true) {
+            Medication parent = getMedication(idToSeek);
+
+            childMeds.add(parent);
+
+            if (parent.getParent() == null) {
+                break;
+            } else {
+                idToSeek = parent.getParent().getId();
+            }
+        }
+
+        ContentValues cv = new ContentValues();
+        ContentValues notesUpdate = new ContentValues();
+
+        cv.put(MED_ID, newMedId);
+        notesUpdate.put(MED_ID, newMedId);
+
+        // copy all data from old meds to new med
+        for (Medication med : childMeds) {
+            db.update(MEDICATION_TRACKER_TABLE, cv, MED_ID + "=?", new String[]{String.valueOf(med.getId())});
+            db.update(NOTES_TABLE, notesUpdate, MED_ID + "=?",  new String[]{String.valueOf(med.getId())});
+
+            deleteMedication(med);
+        }
+
+        cv.clear();
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
+        return newMedId;
     }
 
     /**
