@@ -20,8 +20,7 @@ import projects.medicationtracker.R;
 import projects.medicationtracker.Receivers.NotificationReceiver;
 import projects.medicationtracker.SimpleClasses.Medication;
 
-public class NotificationHelper
-{
+public class NotificationHelper {
     private final static int SNOOZE_TIME_MINUTES = 15;
 
     public final static String GROUP_KEY = "medicationTrackerNotificationGroup";
@@ -33,17 +32,16 @@ public class NotificationHelper
 
     /**
      * Sets an alarm to create a notification.
+     *
      * @param notificationContext Context for the alarm.
-     * @param medication Medication form which the user will be notified.
-     * @param time Time the notification will be set.
-     * @param notificationId ID for the PendingIntent that stores data for the notification.
+     * @param medication          Medication form which the user will be notified.
+     * @param time                Time the notification will be set.
+     * @param notificationId      ID for the PendingIntent that stores data for the notification.
      */
     public static void scheduleNotification(Context notificationContext, Medication medication,
-                                            LocalDateTime time, long notificationId)
-    {
+                                            LocalDateTime time, long notificationId) {
         // Loops to increase time, prevents notification bombardment when editing time.
-        while (time.isBefore(LocalDateTime.now()))
-        {
+        while (time.isBefore(LocalDateTime.now())) {
             time = time.plusMinutes(medication.getFrequency());
         }
 
@@ -55,14 +53,14 @@ public class NotificationHelper
 
     /**
      * Sets an alarm to create a notification in 15 minutes.
+     *
      * @param notificationContext Context of notification.
-     * @param medication Medication form which the user will be notified.
-     * @param time Time the notification will be set.
-     * @param notificationId ID for the PendingIntent that stores data for the notification.
+     * @param medication          Medication form which the user will be notified.
+     * @param time                Time the notification will be set.
+     * @param notificationId      ID for the PendingIntent that stores data for the notification.
      */
     public static void scheduleIn15Minutes(Context notificationContext, Medication medication,
-                                           LocalDateTime time, long notificationId)
-    {
+                                           LocalDateTime time, long notificationId) {
         ZonedDateTime zdt = LocalDateTime.now().plusMinutes(SNOOZE_TIME_MINUTES).atZone(ZoneId.systemDefault());
         long alarmTimeMillis = zdt.toInstant().toEpochMilli();
 
@@ -71,15 +69,15 @@ public class NotificationHelper
 
     /**
      * Creates an alarm with a pending intent for a notification
+     *
      * @param notificationContext Context of notification.
-     * @param alarmTime Time in millis when alarm should fire.
-     * @param medication Medication form which the user will be notified.
-     * @param time Time the notification will be set.
-     * @param notificationId ID for the PendingIntent that stores data for the notification.
+     * @param alarmTime           Time in millis when alarm should fire.
+     * @param medication          Medication form which the user will be notified.
+     * @param time                Time the notification will be set.
+     * @param notificationId      ID for the PendingIntent that stores data for the notification.
      */
     private static void createNotificationAlarm(Context notificationContext, long alarmTime, Medication medication,
-                                                LocalDateTime time, long notificationId)
-    {
+                                                LocalDateTime time, long notificationId) {
         PendingIntent alarmIntent;
         AlarmManager alarmManager;
         Intent notificationIntent = new Intent(notificationContext, NotificationReceiver.class);
@@ -103,12 +101,12 @@ public class NotificationHelper
 
     /**
      * Creates a message for a notification.
+     *
      * @param medication Medication corresponding to the notification.
-*    * @param context Application context, needed for getString call
+     *                   * @param context Application context, needed for getString call
      * @return The content text to display in the notification.
      */
-    private static String createMedicationReminderMessage(Medication medication, Context context)
-    {
+    private static String createMedicationReminderMessage(Medication medication, Context context) {
         String message;
         String patientName = medication.getPatientName();
         String medicationName = medication.getName();
@@ -117,22 +115,22 @@ public class NotificationHelper
             medicationName = medication.getAlias();
 
         message = patientName.equals("ME!") ?
-            context.getString(R.string.its_time_your_med, medicationName) :
-            context.getString(R.string.time_for_other_med, patientName, medicationName);
+                context.getString(R.string.its_time_your_med, medicationName) :
+                context.getString(R.string.time_for_other_med, patientName, medicationName);
 
         return message;
     }
 
     /**
      * Creates a channel for notifications
+     *
      * @param context Application context
      */
-    public static void createNotificationChannel(Context context)
-    {
+    public static void createNotificationChannel(Context context) {
         CharSequence name = "Medication Reminder";
         int importance = NotificationManager.IMPORTANCE_HIGH;
 
-        NotificationChannel channel = new NotificationChannel( CHANNEL_ID, name, importance);
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
         channel.enableLights(false);
         channel.enableVibration(false);
         channel.setShowBadge(true);
@@ -146,11 +144,11 @@ public class NotificationHelper
 
     /**
      * Deletes a pending intent based on context and notification ID
+     *
      * @param notificationId ID of the notification to be deleted
-     * @param context Pending intent's context
+     * @param context        Pending intent's context
      */
-    public static void deletePendingNotification(long notificationId, Context context)
-    {
+    public static void deletePendingNotification(long notificationId, Context context) {
         Intent intent = new Intent(context, NotificationReceiver.class);
 
         PendingIntent.getBroadcast(context,
@@ -163,23 +161,19 @@ public class NotificationHelper
 
     /**
      * Clears any and all pending notifications for a medication.
+     *
      * @param medication Medication whose notifications should be cleared.
-     * @param context Application context.
+     * @param context    Application context.
      */
-    public static void clearPendingNotifications(Medication medication, Context context)
-    {
+    public static void clearPendingNotifications(Medication medication, Context context) {
         DBHelper db = new DBHelper(context);
 
         long[] medIds = db.getMedicationTimeIds(medication);
 
-        if (medIds.length == 0)
-        {
+        if (medIds.length == 0) {
             NotificationHelper.deletePendingNotification(medication.getId(), context);
-        }
-        else
-        {
-            for (long id : medIds)
-            {
+        } else {
+            for (long id : medIds) {
                 NotificationHelper.deletePendingNotification(id * -1, context);
             }
         }
@@ -189,22 +183,20 @@ public class NotificationHelper
 
     /**
      * Creates any and all medications for a medication.
+     *
      * @param medication Medication in need of notifications.
-     * @param context Application context.
+     * @param context    Application context.
      */
-    public static void createNotifications(Medication medication, Context context)
-    {
+    public static void createNotifications(Medication medication, Context context) {
         DBHelper db = new DBHelper(context);
         long[] medicationTimeIds = db.getMedicationTimeIds(medication);
         LocalTime[] medTimes = db.getMedicationTimes(medication.getId());
 
-        if (!db.isMedicationActive(medication))
-        {
+        if (!db.isMedicationActive(medication)) {
             return;
         }
 
-        if (medicationTimeIds.length == 1)
-        {
+        if (medicationTimeIds.length == 1) {
             scheduleNotification(
                     context,
                     medication,
@@ -214,11 +206,8 @@ public class NotificationHelper
                     ),
                     medication.getId()
             );
-        }
-        else
-        {
-            for (int i = 0; i < medicationTimeIds.length; i++)
-            {
+        } else {
+            for (int i = 0; i < medicationTimeIds.length; i++) {
                 scheduleNotification(
                         context,
                         medication,

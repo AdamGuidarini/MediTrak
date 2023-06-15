@@ -24,23 +24,21 @@ import projects.medicationtracker.MainActivity;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Receivers.EventReceiver;
 
-public class NotificationService extends IntentService
-{
+public class NotificationService extends IntentService {
     public static String MARK_AS_TAKEN_ACTION = "markAsTaken";
-    public static  String SNOOZE_ACTION = "snooze15";
+    public static String SNOOZE_ACTION = "snooze15";
 
-    public NotificationService()
-    {
+    public NotificationService() {
         super("NotificationService");
     }
 
     /**
      * Handles intent sent from NotificationReceiver and issues notification.
+     *
      * @param intent Intent sent from NotificationReceiver.
      */
     @Override
-    protected void onHandleIntent(@Nullable Intent intent)
-    {
+    protected void onHandleIntent(@Nullable Intent intent) {
         NotificationManager notificationManager =
                 (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -57,12 +55,12 @@ public class NotificationService extends IntentService
 
     /**
      * Creates a notification
+     *
      * @param message Message to display in the notification.
      * @return A built notification.
      */
     private Notification createNotification(
-            String message, String doseTime, long notificationId, long medId)
-    {
+            String message, String doseTime, long notificationId, long medId) {
         Intent markTakenIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
         Intent snoozeIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
         String embeddedMedId = "_" + medId;
@@ -100,22 +98,22 @@ public class NotificationService extends IntentService
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText(message)
-                .setSmallIcon(R.drawable.mt_icon)
-                .setAutoCancel(true)
-                .setGroup(GROUP_KEY)
-                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
-                .addAction(
-                        0,
-                        getString(R.string.mark_as_taken),
-                        markAsTakenPendingIntent
-                )
-                .addAction(
-                        0,
-                        getString(R.string.snooze_message),
-                        snoozePendingIntent
-                );
+                        .setContentTitle(getString(R.string.app_name))
+                        .setContentText(message)
+                        .setSmallIcon(R.drawable.mt_icon)
+                        .setAutoCancel(true)
+                        .setGroup(GROUP_KEY)
+                        .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
+                        .addAction(
+                                0,
+                                getString(R.string.mark_as_taken),
+                                markAsTakenPendingIntent
+                        )
+                        .addAction(
+                                0,
+                                getString(R.string.snooze_message),
+                                snoozePendingIntent
+                        );
 
         Intent resIntent =
                 new Intent(this.getApplicationContext(), MainActivity.class);

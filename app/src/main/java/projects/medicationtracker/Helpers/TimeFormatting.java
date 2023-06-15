@@ -12,16 +12,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 
-public class TimeFormatting
-{
+public class TimeFormatting {
     /**
      * Formats time for presentation to user
-     * @param hour Hour to be displayed
+     *
+     * @param hour   Hour to be displayed
      * @param minute The minute to display
      * @return A string containing the time to display to the user
      */
-    public static String formatTimeForUser(int hour, int minute)
-    {
+    public static String formatTimeForUser(int hour, int minute) {
         String minString;
         String amPm = hour >= 12 ? "PM" : "AM";
 
@@ -33,12 +32,12 @@ public class TimeFormatting
 
     /**
      * Formats time to store in database
-     * @param hour Hour to store
+     *
+     * @param hour   Hour to store
      * @param minute minute to store
      * @return A containing the date and time to be stored in database
      */
-    public static String formatTimeForDB(int hour, int minute)
-    {
+    public static String formatTimeForDB(int hour, int minute) {
         String time;
 
         if (hour < 10)
@@ -54,8 +53,7 @@ public class TimeFormatting
         return time + ":00";
     }
 
-    public static String localDateToString(LocalDate localDate)
-    {
+    public static String localDateToString(LocalDate localDate) {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.getDefault());
         return dateFormat.format(localDate);
     }
@@ -63,11 +61,11 @@ public class TimeFormatting
     /**
      * Sets chosen current date and time to 2 TextViews and stores datetime for
      * database in the tag of TextView that will display the date.
+     *
      * @param date Current date
      * @param time Current time
      */
-    public static void getCurrentTimeAndDate(TextView date, TextView time)
-    {
+    public static void getCurrentTimeAndDate(TextView date, TextView time) {
         String dateForUser;
         String dateTime;
 
@@ -85,11 +83,11 @@ public class TimeFormatting
 
     /**
      * Converts a String to LocalDateTime
+     *
      * @param date A string containing a date
      * @return LocalDateTime with date seen in String
      */
-    public static LocalDateTime stringToLocalDateTime (String date)
-    {
+    public static LocalDateTime stringToLocalDateTime(String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss",
                 Locale.getDefault());
 
@@ -102,22 +100,22 @@ public class TimeFormatting
 
     /**
      * Converts a LocalDateTime to a String, this String can be stored the database
+     *
      * @param localDateTime The time to be converted to String
      * @return String containing value of the LocalDateTime
      */
-    public static String localDateTimeToString(LocalDateTime localDateTime)
-    {
+    public static String localDateTimeToString(LocalDateTime localDateTime) {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         return dateFormat.format(localDateTime);
     }
 
     /**
      * Converts a LocalTime to a String in 12-hour format
+     *
      * @param time Time to convert
      * @return A String of the time passed to it in 12-hour format
      */
-    public static String localTimeToString(LocalTime time)
-    {
+    public static String localTimeToString(LocalTime time) {
         int hour = time.getHour();
         int minute = time.getMinute();
         return formatTimeForUser(hour, minute);
@@ -125,19 +123,18 @@ public class TimeFormatting
 
     /**
      * Converts time in minutes to weeks, days, and minutes
+     *
      * @param minutes Time in minutes
      * @return String showing time taken
      */
-    public static String freqConversion(long minutes)
-    {
+    public static String freqConversion(long minutes) {
         boolean containsWeeks = false;
         boolean containsDays = false;
         boolean containsHours = false;
 
         String conversion = "";
 
-        if (minutes >= 10080)
-        {
+        if (minutes >= 10080) {
             int weeks = 0;
 
             for (; minutes >= 10080; minutes -= 10080)
@@ -149,8 +146,7 @@ public class TimeFormatting
             containsWeeks = true;
         }
 
-        if (minutes >= 1440)
-        {
+        if (minutes >= 1440) {
             if (containsWeeks)
                 conversion += ", ";
 
@@ -160,13 +156,12 @@ public class TimeFormatting
                 days++;
 
             conversion += days + " day";
-            if (days > 1)    conversion += "s";
+            if (days > 1) conversion += "s";
 
             containsDays = true;
         }
 
-        if (minutes >= 60)
-        {
+        if (minutes >= 60) {
             if (containsDays)
                 conversion += ", ";
 
@@ -176,13 +171,12 @@ public class TimeFormatting
                 hours++;
 
             conversion += hours + " hour";
-            if (hours > 1)  conversion += "s";
+            if (hours > 1) conversion += "s";
 
             containsHours = true;
         }
 
-        if (minutes > 0)
-        {
+        if (minutes > 0) {
             if (containsHours)
                 conversion += ", ";
 
@@ -193,8 +187,7 @@ public class TimeFormatting
         return conversion;
     }
 
-    public static LocalDate whenIsSunday(LocalDate now)
-    {
+    public static LocalDate whenIsSunday(LocalDate now) {
         LocalDate thisSunday;
         if (now == null)
             now = LocalDate.now(Clock.systemDefaultZone());

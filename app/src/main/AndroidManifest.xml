@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -14,25 +14,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MedicationTracker">
 
-        <activity android:name=".EditMedication"
+        <activity
+            android:name=".MedicationNotes"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".MedicationNotes"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity"  />
-        <activity android:name=".MyMedications"
+        <activity
+            android:name=".MyMedications"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".Settings"
+        <activity
+            android:name=".Settings"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".AddMedication"
+        <activity
+            android:name=".AddMedication"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity"  />
-        <activity android:name=".MainActivity"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" >
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -45,18 +47,18 @@
             android:process=":remote">
 
         </receiver>
-        <receiver android:name=".Receivers.EventReceiver"
+        <receiver
+            android:name=".Receivers.EventReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.TIMEZONE_CHANGED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
         </receiver>
 
         <service
             android:name=".Services.NotificationService"
-            android:exported="false">
-        </service>
+            android:exported="false"></service>
 
     </application>
 

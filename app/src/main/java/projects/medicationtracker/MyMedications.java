@@ -16,24 +16,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentContainerView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import kotlin.Pair;
 import projects.medicationtracker.Fragments.MyMedicationsFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.SimpleClasses.Medication;
 import projects.medicationtracker.Views.StandardCardView;
 
-public class MyMedications extends AppCompatActivity
-{
+public class MyMedications extends AppCompatActivity {
     DBHelper db = new DBHelper(this);
 
     /**
      * Creates MyMedications
+     *
      * @param savedInstanceState Saved instances
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_medications);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -44,8 +46,7 @@ public class MyMedications extends AppCompatActivity
 
         if (db.numberOfRows() == 0)
             return;
-        else
-        {
+        else {
             TextView noMeds = findViewById(R.id.noMyMeds);
             noMeds.setVisibility(View.GONE);
             ScrollView scrollMyMeds = findViewById(R.id.scrollMyMeds);
@@ -56,64 +57,85 @@ public class MyMedications extends AppCompatActivity
         final LinearLayout myMedsLayout = findViewById(R.id.medLayout);
 
         ArrayList<String> patientNames = db.getPatients();
+        ArrayList<Pair<String, ArrayList<Medication>>> allMeds = new ArrayList<>();
 
-        if (patientNames.size() >= 1)
-        {
-            if (patientNames.size() == 1)
-            {
-                ArrayList<Medication> patientMeds = db.getMedicationsForPatient(patientNames.get(0));
+        for (String patient : patientNames) {
+            ArrayList<Medication> meds = db.getMedicationsForPatient(patient).stream().filter(
+                    m -> m.getChild() == null
+            ).collect(Collectors.toCollection(ArrayList::new));
 
-                for (Medication medication : patientMeds)
-                    createMyMedCards(medication, myMedsLayout);
+            if (meds.size() > 0) {
+                allMeds.add(new Pair<>(patient, meds));
             }
-            else
-            {
-                if (patientNames.contains("ME!"))
-                        patientNames.set(patientNames.indexOf("ME!"), you);
+        }
 
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, patientNames);
-                nameSpinner.setAdapter(adapter);
+        if (allMeds.size() == 1) {
+            ArrayList<Medication> patientMeds = db.getMedicationsForPatient(allMeds.get(0).getFirst());
 
-                nameSpinner.setVisibility(View.VISIBLE);
+            for (Medication medication : patientMeds) {
+                if (medication.getChild() != null) continue;
 
-                if (patientNames.contains(you))
-                        nameSpinner.setSelection(adapter.getPosition(you));
+                createMyMedCards(medication, myMedsLayout);
+            }
+        } else if (allMeds.size() > 1) {
+            String[] patients = (String[]) allMeds.stream().map(Pair::getFirst).toArray();
 
-                nameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-                {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
-                    {
-                        myMedsLayout.removeAllViews();
-
-                        String patient = adapterView.getSelectedItem().toString();
-
-                        if (patient.equals(you))
-                            patient = "ME!";
-
-                        ArrayList<Medication> patientMeds = db.getMedicationsForPatient(patient);
-
-                        for (Medication medication : patientMeds)
-                            createMyMedCards(medication, myMedsLayout);
+            if (allMeds.stream().allMatch(m -> m.getFirst().equals("ME!"))) {
+                allMeds = allMeds.stream().map(m -> {
+                    if (m.getFirst().equals("ME!")) {
+                        m = new Pair<>(you, m.getSecond());
                     }
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {}
-                });
+                    return m;
+                }).collect(Collectors.toCollection(ArrayList::new));
             }
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, patients);
+            nameSpinner.setAdapter(adapter);
+
+            nameSpinner.setVisibility(View.VISIBLE);
+
+            if (Arrays.asList(patients).contains(you))
+                nameSpinner.setSelection(adapter.getPosition(you));
+
+            final ArrayList<Pair<String, ArrayList<Medication>>> allMedsClone = (ArrayList<Pair<String, ArrayList<Medication>>>) allMeds.clone();
+            nameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    myMedsLayout.removeAllViews();
+
+                    String selected = adapterView.getSelectedItem().toString();
+                    final String patient = selected.equals(you) ? "ME!" : selected;
+
+                    Medication[] patientMeds = (Medication[]) allMedsClone.stream().filter(
+                            m -> m.getFirst().equals(patient)
+                    ).collect(Collectors.toCollection(ArrayList::new)).stream().map(
+                            Pair::getSecond
+                    ).toArray();
+
+                    for (Medication medication : patientMeds) {
+                        if (medication.getChild() != null) continue;
+
+                        createMyMedCards(medication, myMedsLayout);
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                }
+            });
         }
     }
 
     /**
      * Determines which button was selected
+     *
      * @param item Selected menu option
      * @return Selected option
      */
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item)
-    {
-        if (item.getItemId() == android.R.id.home)
-        {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
             Intent intent = new Intent(this, MainActivity.class);
             finish();
             startActivity(intent);
@@ -125,8 +147,7 @@ public class MyMedications extends AppCompatActivity
      * Return to MainActivity if back arrow is pressed
      */
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         super.onBackPressed();
         Intent intent = new Intent(this, MainActivity.class);
         finish();
@@ -135,11 +156,11 @@ public class MyMedications extends AppCompatActivity
 
     /**
      * Creates a CardView containing all information on a Medication
+     *
      * @param medication The Medication whose details will be displayed.
      * @param baseLayout The LinearLayout in which to place the card
      */
-    private void createMyMedCards(Medication medication, LinearLayout baseLayout)
-    {
+    private void createMyMedCards(Medication medication, LinearLayout baseLayout) {
         StandardCardView thisMedCard = new StandardCardView(this);
         FragmentContainerView thisMedLayout = new FragmentContainerView(this);
         Bundle bundle = new Bundle();
@@ -149,7 +170,7 @@ public class MyMedications extends AppCompatActivity
 
         thisMedLayout.setId((int) medication.getId());
 
-        bundle.putLong("MedId", medication.getId());
+        bundle.putParcelable("Medication", medication);
 
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)

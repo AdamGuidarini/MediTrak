@@ -13,6 +13,7 @@
     <string name="your">Your</string>
     <string name="ok">OK</string>
     <string name="delete">Delete</string>
+    <string name="i_agree">I agree</string>
 
     <!-- Errors -->
     <string name="invalid_value">Invalid value entered</string>
@@ -55,8 +56,30 @@
     <string name="no_meds_for_day">No medications for %1$s</string>
     <string name="cannot_take_more_than_hours">Cannot take medications more than %1$d hours in advance</string>
     <string name="as_needed_dose">As Needed Dose</string>
+    <string name="welcome">Welcome to MediTrak!</string>
+    <string name="warranty_info">
+        This application is meant to assist in keeping track of your medications. It is not intended
+        to provide medical advice and no information provided by this application should be misconstrued
+        as such. The creators of this application are not responsible are not responsible for any missed
+        doses of your medications for any reason. If you require medical assistance, please contact a medical professional.
+        By using this application, you are agreeing to the aforementioned terms as well as those of the GPL2 license under
+        which it is released. \n\n
 
-    <!-- AddEditMedicationFragment -->
+        This application is released under the GNU Public License Version 2, see below for more details:
+    </string>
+
+    <!-- Add/EditMedication -->
+    <string name="add_medication">Add Medication</string>
+    <string name="edit_medication">Edit Medication</string>
+    <string name="delete_medication">Delete Medication</string>
+    <string name="note_timestamp">Date: %1$s at: %2$s</string>
+    <string name="patient_changed">Patient changed from %1$s to %2$s\n</string>
+    <string name="name_changed">Name changed from %1$s to %2$s\n</string>
+    <string name="removed_alias">Alias %1$s removed\n</string>
+    <string name="added_alias">Alias %1$s added\n</string>
+    <string name="changed_alias">Alias changed from %1$s to %2$s\n</string>
+    <string name="changed_dosage">Dosage changed from %1$s to %2$s\n</string>
+    <string name="frequency_changed">Frequency changed from %1$s to %2$s\n</string>
     <string name="times_per">Times per</string>
     <string name="patientIsMe">Me</string>
     <string name="patient">Patient</string>
@@ -100,9 +123,12 @@
     <string name="tap_to_set_date">Tap to set date</string>
     <string name="at">At:</string>
     <string name="tap_to_set_time">Tap to set Time</string>
-
-    <!-- AddMedication -->
-    <string name="add_medication">Add Medication</string>
+    <string name="apply_retroactive">Apply Changes Retroactively</string>
+    <string name="retroactive_warning">Warning: Changes to frequency may cause previously taken doses to no longer be visible in the schedule.</string>
+    <string name="would_like_apply_retroactively">Changes to dosage and frequency can be applied retroactively as of the previous change. Would you like to apply these changes retroactively?</string>
+    <string name="apply_changes_as_of">Apply changes as of:</string>
+    <string name="from_med_last_change">Last change</string>
+    <string name="from_med_start">Start of medication</string>
 
     <!-- MyMedications -->
     <string name="my_medications">My Medications</string>
@@ -113,11 +139,7 @@
     <string name="alias_lbl">Alias: %1$s</string>
     <string name="taken_since">Taken since: %1$s</string>
     <string name="taken_as_needed">Taken as needed.</string>
-
-    <!-- EditMedication -->
-    <string name="edit_medication">Edit Medication</string>
-    <string name="delete_medication">Delete Medication</string>
-    <string name="note_timestamp">Date: %1$s at: %2$s </string>
+    <string name="all_previous_edits_overridden">All previous changes overridden.</string>
 
     <!-- Notes -->
     <string name="notes">Notes</string>
@@ -184,4 +206,5 @@
     <string name="its_time_your_med">It\'s time to take your %1$s</string>
     <string name="time_for_other_med">It\'s time for %1$s\'s %2$s</string>
     <string name="add_dose">Add Dose</string>
+
 </resources>

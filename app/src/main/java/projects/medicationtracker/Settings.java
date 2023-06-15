@@ -3,6 +3,7 @@ package projects.medicationtracker;
 import static projects.medicationtracker.Helpers.DBHelper.DARK;
 import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
+import static projects.medicationtracker.Helpers.DBHelper.THEME;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -28,17 +29,16 @@ import java.util.Objects;
 import projects.medicationtracker.Fragments.ConfirmDeleteAllFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 
-public class Settings extends AppCompatActivity
-{
+public class Settings extends AppCompatActivity {
     DBHelper db = new DBHelper(this);
 
     /**
      * Create Settings
+     *
      * @param savedInstanceState Saved instance
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -55,12 +55,12 @@ public class Settings extends AppCompatActivity
 
     /**
      * Determines which button was selected
+     *
      * @param item Selected menu option
      * @return Selected option
      */
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item)
-    {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home)
             finish();
 
@@ -71,8 +71,7 @@ public class Settings extends AppCompatActivity
      * Return to MainActivity if back arrow is pressed
      */
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         super.onBackPressed();
         finish();
     }
@@ -80,8 +79,7 @@ public class Settings extends AppCompatActivity
     /**
      * Prepares dose restriction switch
      */
-    private void setTimeBeforeDoseRestrictionSwitch()
-    {
+    private void setTimeBeforeDoseRestrictionSwitch() {
         SwitchCompat timeBeforeDoseSwitch = findViewById(R.id.disableTimeBeforeDose);
 
         int timeBeforeDose = db.getTimeBeforeDose();
@@ -90,15 +88,12 @@ public class Settings extends AppCompatActivity
 
         timeBeforeDoseSwitch.setOnCheckedChangeListener((compoundButton, b) ->
         {
-            if (timeBeforeDoseSwitch.isChecked())
-            {
+            if (timeBeforeDoseSwitch.isChecked()) {
                 LinearLayout setHoursBeforeLayout = findViewById(R.id.timeBeforeDoseLayout);
                 setHoursBeforeLayout.setVisibility(View.GONE);
 
                 db.setTimeBeforeDose(-1);
-            }
-            else
-            {
+            } else {
                 setHoursBeforeDoseEditText(2, timeBeforeDoseSwitch.isChecked());
                 db.setTimeBeforeDose(2);
             }
@@ -110,8 +105,7 @@ public class Settings extends AppCompatActivity
     /**
      * Prepares dose restriction EditText
      */
-    private void setHoursBeforeDoseEditText(int hoursBefore, boolean disabled)
-    {
+    private void setHoursBeforeDoseEditText(int hoursBefore, boolean disabled) {
         if (disabled)
             return;
 
@@ -124,20 +118,19 @@ public class Settings extends AppCompatActivity
 
         enterTimeBeforeDose.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
-            public void afterTextChanged(Editable editable)
-            {
+            public void afterTextChanged(Editable editable) {
                 String text = enterTimeBeforeDose.getText().toString();
 
-                if (!text.isEmpty())
-                {
-                    if (!isValidInt(text))
-                    {
+                if (!text.isEmpty()) {
+                    if (!isValidInt(text)) {
                         enterTimeBeforeDose.setError(getString(R.string.invalid_value));
                         return;
                     }
@@ -156,8 +149,7 @@ public class Settings extends AppCompatActivity
     /**
      * Enable notifications for application
      */
-    private void setEnableNotificationSwitch()
-    {
+    private void setEnableNotificationSwitch() {
         SwitchCompat enableNotificationsSwitch = findViewById(R.id.enableNotificationSwitch);
 
         enableNotificationsSwitch.setChecked(db.getNotificationEnabled());
@@ -169,15 +161,13 @@ public class Settings extends AppCompatActivity
     /**
      * Prepares the menu for themes
      */
-    private void setThemeMenu()
-    {
+    private void setThemeMenu() {
         MaterialAutoCompleteTextView themeSelector = findViewById(R.id.themeSelector);
-        String savedTheme = db.getSavedTheme();
+        String savedTheme = db.getPreferences().getString(THEME);
 
         themeSelector.setAdapter(createThemeMenuAdapter());
 
-        switch (savedTheme)
-        {
+        switch (savedTheme) {
             case DEFAULT:
                 themeSelector.setText(themeSelector.getAdapter().getItem(0).toString(), false);
                 break;
@@ -191,8 +181,7 @@ public class Settings extends AppCompatActivity
 
         themeSelector.setOnItemClickListener((parent, view, position, id) ->
         {
-            switch (position)
-            {
+            switch (position) {
                 case 0:
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
                     db.saveTheme(DEFAULT);
@@ -210,17 +199,17 @@ public class Settings extends AppCompatActivity
             themeSelector.clearFocus();
         });
 
-        themeSelector.addTextChangedListener(new TextWatcher()
-        {
+        themeSelector.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
-            public void afterTextChanged(Editable s)
-            {
+            public void afterTextChanged(Editable s) {
                 ArrayList<String> _availableThemes = new ArrayList<>();
 
                 _availableThemes.add(getString(R.string.match_system_theme));
@@ -232,8 +221,7 @@ public class Settings extends AppCompatActivity
         });
     }
 
-    private ArrayAdapter<String> createThemeMenuAdapter()
-    {
+    private ArrayAdapter<String> createThemeMenuAdapter() {
         ArrayList<String> availableThemes = new ArrayList<>();
 
         availableThemes.add(getString(R.string.match_system_theme));
@@ -248,25 +236,21 @@ public class Settings extends AppCompatActivity
     /**
      * Listener for button that deletes all saved data
      */
-    public void onPurgeButtonClick(View view)
-    {
+    public void onPurgeButtonClick(View view) {
         ConfirmDeleteAllFragment deleteAllFragment = new ConfirmDeleteAllFragment(db);
         deleteAllFragment.show(getSupportFragmentManager(), null);
     }
 
     /**
      * Checks if a String can be parsed to int
+     *
      * @param stringToParse The String to convert to an int
      * @return True if can be parsed, else false
      */
-    public static boolean isValidInt(String stringToParse)
-    {
-        try
-        {
+    public static boolean isValidInt(String stringToParse) {
+        try {
             Integer.parseInt(stringToParse);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return false;
         }
 

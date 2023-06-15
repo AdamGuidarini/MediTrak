@@ -30,7 +30,7 @@
                     android:id="@+id/dose_time_taken"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="none"/>
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
@@ -51,7 +51,7 @@
                     android:id="@+id/dose_date_taken"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="none"/>
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
     </LinearLayout>
@@ -63,5 +63,5 @@
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:text="@string/not_taken_yet"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 </LinearLayout>
