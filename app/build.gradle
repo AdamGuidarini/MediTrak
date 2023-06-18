@@ -11,8 +11,18 @@ android {
         targetSdkVersion 33
         versionCode 10
         versionName "0.10.0"
+        
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+        }
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            cmake {
+                arguments'-DANDROID_TOOLCHAIN=clang', '-DANDROID_ARM_NEON=TRUE'
+                cppFlags '-frtti -fexceptions'
+            }
+        }
     }
 
     buildTypes {
@@ -26,6 +36,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     namespace 'projects.medicationtracker'
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.22.1'
+        }
+    }
 }
 
 dependencies {
