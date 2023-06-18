@@ -32,6 +32,10 @@ import projects.medicationtracker.Helpers.DBHelper;
 public class Settings extends AppCompatActivity {
     DBHelper db = new DBHelper(this);
 
+    static {
+        System.loadLibrary("medicationtracker");
+    }
+
     /**
      * Create Settings
      *
@@ -51,6 +55,8 @@ public class Settings extends AppCompatActivity {
         setTimeBeforeDoseRestrictionSwitch();
         setEnableNotificationSwitch();
         setThemeMenu();
+
+        DbManager();
     }
 
     /**
@@ -256,4 +262,6 @@ public class Settings extends AppCompatActivity {
 
         return true;
     }
+
+    public native void DbManager();
 }
