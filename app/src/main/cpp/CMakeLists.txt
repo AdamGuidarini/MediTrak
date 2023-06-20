@@ -9,6 +9,10 @@ cmake_minimum_required(VERSION 3.22.1)
 # Declares and names the project.
 
 project("medicationtracker")
+set(CMAKE_CXX_STANDARD 17)
+
+#add_subdirectory(data_exporter)
+add_subdirectory(dbManager)
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
@@ -24,6 +28,7 @@ add_library( # Sets the name of the library.
              # Provides a relative path to your source file(s).
              medicationtracker.cpp
              dbManager/DbManager.cpp
+             data_exporter/dataExporter.cpp
 
              #for database communication
              sqlite/shell.c
