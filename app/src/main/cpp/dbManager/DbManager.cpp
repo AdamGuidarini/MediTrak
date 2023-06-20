@@ -17,7 +17,7 @@ int DbManager::read() {
     try {
         rc = sqlite3_exec(db, "SELECT * FROM Medication", callback, 0,
                           (char **) "Failed to retrieve data.");
-    } catch (exception e) {
+    } catch (exception &e) {
         std::cerr << e.what() << std::endl;
     }
 
