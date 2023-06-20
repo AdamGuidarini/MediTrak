@@ -56,7 +56,7 @@ public class Settings extends AppCompatActivity {
         setEnableNotificationSwitch();
         setThemeMenu();
 
-        DbManager(DBHelper.DATABASE_NAME);
+        DbManager(db.getReadableDatabase().getPath());
     }
 
     /**

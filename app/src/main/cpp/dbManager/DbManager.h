@@ -8,18 +8,22 @@
 #include <string>
 #include <jni.h>
 #include <iostream>
+#include <map>
+#include <vector>
+#include <android/log.h>
 #include "../sqlite/sqlite3.h"
 
 using namespace std;
 
 class DbManager {
 private:
-    jstring database_name;
-    sqlite3* db{};
-    sqlite3_callback callback;
+    string callbackRes = "";
+    string database_name;
+    sqlite3* db;
+    vector<map<string, string>> medication_table_res;
 
 public:
-    DbManager(jstring fileDescriptor);
+    DbManager(string fileDescriptor);
     void open();
     void close();
     int read();

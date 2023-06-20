@@ -6,10 +6,14 @@ extern "C" JNICALL void
 Java_projects_medicationtracker_Settings_DbManager(
         JNIEnv *env, jobject thiz, jstring database
         ) {
+    std::string db = env->GetStringUTFChars(database, new jboolean(true));
 
-    DbManager* manager = new DbManager(database);
+    __android_log_print(ANDROID_LOG_INFO, "DB NAME", "%s", db.c_str());
+
+    auto* manager = new DbManager(db);
 
     manager->open();
+    manager->read();
     manager->close();
 
     delete manager;
