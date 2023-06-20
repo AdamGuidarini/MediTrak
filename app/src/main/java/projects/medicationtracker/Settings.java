@@ -56,7 +56,7 @@ public class Settings extends AppCompatActivity {
         setEnableNotificationSwitch();
         setThemeMenu();
 
-        DbManager();
+        DbManager(DBHelper.DATABASE_NAME);
     }
 
     /**
@@ -263,5 +263,5 @@ public class Settings extends AppCompatActivity {
         return true;
     }
 
-    public native void DbManager();
+    public native void DbManager(String databaseName);
 }

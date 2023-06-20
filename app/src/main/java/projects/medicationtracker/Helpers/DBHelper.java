@@ -24,7 +24,7 @@ import projects.medicationtracker.SimpleClasses.Medication;
 import projects.medicationtracker.SimpleClasses.Note;
 
 public class DBHelper extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "Medications.db";
+    public static final String DATABASE_NAME = "Medications.db";
     private final static int DATABASE_VERSION = 6;
 
     private static final String MEDICATION_TABLE = "Medication";

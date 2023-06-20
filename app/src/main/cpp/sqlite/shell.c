@@ -3658,7 +3658,7 @@ SQLITE_EXTENSION_INIT1;
 #  include <io.h>
 #  include <fcntl.h>
 # else
-#  define setmode(fd,m)
+#  define setmode(database_name,m)
 # endif
 
 static char *zHelp =
@@ -6036,17 +6036,17 @@ static void statTimesToUtc(
   struct stat *pStatBuf
 ){
   HANDLE hFindFile;
-  WIN32_FIND_DATAW fd;
+  WIN32_FIND_DATAW database_name;
   LPWSTR zUnicodeName;
   extern LPWSTR sqlite3_win32_utf8_to_unicode(const char*);
   zUnicodeName = sqlite3_win32_utf8_to_unicode(zPath);
   if( zUnicodeName ){
-    memset(&fd, 0, sizeof(WIN32_FIND_DATAW));
-    hFindFile = FindFirstFileW(zUnicodeName, &fd);
+    memset(&database_name, 0, sizeof(WIN32_FIND_DATAW));
+    hFindFile = FindFirstFileW(zUnicodeName, &database_name);
     if( hFindFile!=NULL ){
-      pStatBuf->st_ctime = (time_t)fileTimeToUnixTime(&fd.ftCreationTime);
-      pStatBuf->st_atime = (time_t)fileTimeToUnixTime(&fd.ftLastAccessTime);
-      pStatBuf->st_mtime = (time_t)fileTimeToUnixTime(&fd.ftLastWriteTime);
+      pStatBuf->st_ctime = (time_t)fileTimeToUnixTime(&database_name.ftCreationTime);
+      pStatBuf->st_atime = (time_t)fileTimeToUnixTime(&database_name.ftLastAccessTime);
+      pStatBuf->st_mtime = (time_t)fileTimeToUnixTime(&database_name.ftLastWriteTime);
       FindClose(hFindFile);
     }
     sqlite3_free(zUnicodeName);
@@ -9468,7 +9468,7 @@ static int zipfileBegin(sqlite3_vtab *pVtab){
     return SQLITE_ERROR;
   }
 
-  /* Open a write fd on the file. Also load the entire central directory
+  /* Open a write database_name on the file. Also load the entire central directory
   ** structure into memory. During the transaction any new file data is 
   ** appended to the archive file, but the central directory is accumulated
   ** in main-memory until the transaction is committed.  */

@@ -6,16 +6,23 @@
 #define MEDICATIONTRACKER_DBMANAGER_H
 
 #include <string>
+#include <jni.h>
+#include <iostream>
+#include "../sqlite/sqlite3.h"
 
 using namespace std;
 
 class DbManager {
 private:
-    string fd;
+    jstring database_name;
+    sqlite3* db{};
+    sqlite3_callback callback;
 
 public:
-    DbManager(string fileDescriptor);
-
+    DbManager(jstring fileDescriptor);
+    void open();
+    void close();
+    int read();
 };
 
 
