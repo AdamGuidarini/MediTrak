@@ -1,4 +1,4 @@
-#include "dataExporter.h"
+#include "DataExporter.h"
 
 DataExporter::DataExporter(std::string databaseName) {
     database_path = databaseName;
