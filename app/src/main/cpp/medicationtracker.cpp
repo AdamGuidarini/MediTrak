@@ -1,6 +1,6 @@
 #include <jni.h>
 #include <android/log.h>
-#include "data_exporter/dataExporter.h"
+#include "DataExporter/DataExporter.h"
 
 extern "C" JNICALL void
 Java_projects_medicationtracker_Settings_DataExporter(

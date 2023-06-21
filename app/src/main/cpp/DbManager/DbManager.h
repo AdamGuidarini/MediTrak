@@ -6,7 +6,6 @@
 #define MEDICATIONTRACKER_DBMANAGER_H
 
 #include <string>
-#include <jni.h>
 #include <iostream>
 #include <map>
 #include <vector>

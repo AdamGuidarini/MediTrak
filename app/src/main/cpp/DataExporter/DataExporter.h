@@ -2,7 +2,7 @@
 #define DATA_EXPORTER_H
 
 #include <string>
-#include "../dbManager/DbManager.h"
+#include "../DbManager/DbManager.h"
 
 class DataExporter {
 private:
