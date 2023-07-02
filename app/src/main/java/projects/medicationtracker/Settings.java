@@ -56,7 +56,7 @@ public class Settings extends AppCompatActivity {
         setEnableNotificationSwitch();
         setThemeMenu();
 
-        DbManager(db.getReadableDatabase().getPath());
+        DataExporter(db.getReadableDatabase().getPath());
     }
 
     /**
@@ -263,5 +263,5 @@ public class Settings extends AppCompatActivity {
         return true;
     }
 
-    public native void DbManager(String databaseName);
+    public native void DataExporter(String databaseName);
 }

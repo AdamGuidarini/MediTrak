@@ -8,7 +8,9 @@ Java_projects_medicationtracker_Settings_DataExporter(
         ) {
     std::string db = env->GetStringUTFChars(database, new jboolean(true));
 
-    __android_log_print(ANDROID_LOG_INFO, "DB NAME", "%s", db.c_str());
-
     auto* exporter = new DataExporter(db);
+
+    exporter->getDataFromTables();
+
+    delete exporter;
 }

@@ -4,32 +4,42 @@
 
 #include "DbManager.h"
 
+#include <utility>
+
 DbManager::DbManager(string fileDescriptor) {
-    database_name = fileDescriptor;
-//    medication_table_res = vector<map<string, string>>();
+    database_name = std::move(fileDescriptor);
 }
 
 void DbManager::open() { sqlite3_open(database_name.c_str(), &db); }
 void DbManager::close() { sqlite3_close(db); }
 
-int DbManager::read() {
+int DbManager::readAllValuesInTable(vector<map<string, string>>* results, const string& table) {
     sqlite3_stmt *stmt = nullptr;
+    string query = "SELECT * FROM " + table + ";";
+    int rc;
 
-    sqlite3_prepare(db, "SELECT * FROM Medication;", -1, &stmt, nullptr);
+    rc = sqlite3_prepare(db, query.c_str(), -1, &stmt, nullptr);
     sqlite3_step(stmt);
+
+    if (rc != SQLITE_OK) {
+        sqlite3_finalize(stmt);
+
+        return rc;
+    }
 
     while (sqlite3_column_text(stmt, 0)) {
         for (int i = 0; i < sqlite3_column_count(stmt); i++) {
-            map<string, string> m;
+            map<string, string> m = map<string, string>();
 
             m.insert(
-                {
-                    string(sqlite3_column_name(stmt, i)),
-                    string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, i)))
-                }
+                    {
+                            string(sqlite3_column_name(stmt, i)),
+                            string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, i)))
+                    }
             );
 
-            medication_table_res.push_back(m);
+            results->resize(results->size() + 1);
+            results->push_back(m);
         }
 
         sqlite3_step(stmt);
@@ -37,5 +47,5 @@ int DbManager::read() {
 
     sqlite3_finalize(stmt);
 
-    return 0;
+    return rc;
 }
