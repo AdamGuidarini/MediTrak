@@ -28,20 +28,24 @@ int DbManager::readAllValuesInTable(vector<map<string, string>>* results, const 
     }
 
     while (sqlite3_column_text(stmt, 0)) {
+        map<string, string> m = map<string, string>();
+
         for (int i = 0; i < sqlite3_column_count(stmt); i++) {
-            map<string, string> m = map<string, string>();
+            string colText;
+
+            if (sqlite3_column_text(stmt, i) != nullptr) {
+                colText = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, i)));
+            }
 
             m.insert(
                     {
                             string(sqlite3_column_name(stmt, i)),
-                            string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, i)))
+                            string(colText)
                     }
             );
-
-            results->resize(results->size() + 1);
-            results->push_back(m);
         }
 
+        results->push_back(m);
         sqlite3_step(stmt);
     }
 
