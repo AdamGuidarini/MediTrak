@@ -13,6 +13,10 @@ DbManager::DbManager(string fileDescriptor) {
 void DbManager::open() { sqlite3_open(database_name.c_str(), &db); }
 void DbManager::close() { sqlite3_close(db); }
 
+int DbManager::getTables(string* tables) {
+    return 0;
+}
+
 int DbManager::readAllValuesInTable(vector<map<string, string>>* results, const string& table) {
     sqlite3_stmt *stmt = nullptr;
     string query = "SELECT * FROM " + table + ";";
@@ -52,4 +56,8 @@ int DbManager::readAllValuesInTable(vector<map<string, string>>* results, const 
     sqlite3_finalize(stmt);
 
     return rc;
+}
+
+int DbManager::getAllRowFromAllTables(map<string, vector<map<string, string>>*>* allDatabaseData) {
+    return  0;
 }
