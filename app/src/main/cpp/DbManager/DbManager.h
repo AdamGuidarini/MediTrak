@@ -45,30 +45,27 @@ public:
 
     /**
      * Gets all tables in database
-     * @param tables A pointer to a string to hold table names
-     * @return SQLite return code
+     * @return A pointer to a string to hold table names
      */
-    int getTables(string* tables);
+    string* getTables();
 
     /**
      * Retrieves all values from a database table
-     * @param results A pointer to the the value of a vector containing all values in "table".
+     * @param table The table from which to retrieve results
+     * @return A vector containing all values in "table".
      *      Each element of the vector is a map whose key is the column name
      *      and value is the column value.
-     * @param table The table from which to retrieve results
-     * @return The return code from SQLite
      */
-    int readAllValuesInTable(vector<map<string, string>>* results, const string& table);
+    vector<map<string, string>> readAllValuesInTable(const string& table);
 
     /**
      * Retrieves all data from all tables in the database
-     * @param allDatabaseData A map to contain all data in the database.
+     * @return A map to contain all data in the database.
      *      Each key should be a table name.
      *      Each value should be a pointer to vector a maps whose keys are column names
-     *          and values are column values
-     * @return The return code from SQLite
+     *      and values are column values
      */
-    int getAllRowFromAllTables(map<string, vector<map<string, string>>*>* allDatabaseData);
+    map<string, vector<map<string, string>>*> getAllRowFromAllTables();
 };
 
 

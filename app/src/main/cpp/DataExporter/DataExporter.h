@@ -11,7 +11,7 @@ class DataExporter {
 private:
     DbManager* manager;
     std::string database_path;
-    vector<map<string, string>>* medication_table_res;
+    vector<map<string, string>>* medication_table_res{};
 
 public:
     DataExporter(std::string databasePath);

@@ -5,7 +5,6 @@
 DataExporter::DataExporter(std::string databaseName) {
     database_path = std::move(databaseName);
     manager = new DbManager(database_path);
-    medication_table_res = new std::vector<map<string, string>>(0);
 }
 
 DataExporter::~DataExporter() {
@@ -16,7 +15,7 @@ DataExporter::~DataExporter() {
 void DataExporter::getDataFromTables() {
     manager->open();
 
-    manager->readAllValuesInTable(medication_table_res, "Medication");
+    medication_table_res = new std::vector<map<string, string>>(manager->readAllValuesInTable("Medication"));
 
     manager->close();
 }
