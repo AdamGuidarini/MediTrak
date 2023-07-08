@@ -14,7 +14,29 @@ void DbManager::open() { sqlite3_open(database_name.c_str(), &db); }
 void DbManager::close() { sqlite3_close(db); }
 
 string* DbManager::getTables() {
-    return new string();
+    int rc;
+    sqlite3_stmt *stmt = nullptr;
+    string query = "SELECT name FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlite_%';";
+
+    rc = sqlite3_prepare(db, query.c_str(), -1, &stmt, nullptr);
+
+    sqlite3_step(stmt);
+
+    try {
+        if (rc != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+
+            throw exception();
+        }
+
+        // Store some data here
+    } catch (string& error) {
+        cerr << "SQLITE READ ERROR | Return Code: " << rc << endl;
+
+        exit(1);
+    }
+
+    return new string("");
 }
 
 vector<map<string, string>> DbManager::readAllValuesInTable(const string& table) {
