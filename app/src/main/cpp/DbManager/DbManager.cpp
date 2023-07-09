@@ -13,10 +13,11 @@ DbManager::DbManager(string fileDescriptor) {
 void DbManager::open() { sqlite3_open(database_name.c_str(), &db); }
 void DbManager::close() { sqlite3_close(db); }
 
-string* DbManager::getTables() {
+vector<string> DbManager::getTables() {
     int rc;
     sqlite3_stmt *stmt = nullptr;
     string query = "SELECT name FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlite_%';";
+    vector<string> tables;
 
     rc = sqlite3_prepare(db, query.c_str(), -1, &stmt, nullptr);
 
@@ -29,14 +30,26 @@ string* DbManager::getTables() {
             throw exception();
         }
 
-        // Store some data here
+        while (sqlite3_column_text(stmt, 0)) {
+            string colText;
+
+            if (sqlite3_column_text(stmt, 0) != nullptr) {
+                colText = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0)));
+            }
+
+            tables.push_back(colText);
+
+            sqlite3_step(stmt);
+        }
     } catch (string& error) {
         cerr << "SQLITE READ ERROR | Return Code: " << rc << endl;
 
         exit(1);
     }
 
-    return new string("");
+    sqlite3_finalize(stmt);
+
+    return tables;
 }
 
 vector<map<string, string>> DbManager::readAllValuesInTable(const string& table) {
@@ -87,6 +100,13 @@ vector<map<string, string>> DbManager::readAllValuesInTable(const string& table)
     return results;
 }
 
-map<string, vector<map<string, string>>*> DbManager::getAllRowFromAllTables() {
-    return map<string, vector<map<string, string>>*>();
+map<string, vector<map<string, string>>> DbManager::getAllRowFromAllTables() {
+    map<string, vector<map<string, string>>> tableData;
+    vector<string> tables = getTables();
+
+    for (string tbl : tables) {
+        tableData.insert({ tbl, readAllValuesInTable(tbl) });
+    }
+
+    return tableData;
 }

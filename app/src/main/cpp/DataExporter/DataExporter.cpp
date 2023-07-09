@@ -15,7 +15,7 @@ DataExporter::~DataExporter() {
 void DataExporter::getDataFromTables() {
     manager->open();
 
-    medication_table_res = new std::vector<map<string, string>>(manager->readAllValuesInTable("Medication"));
+    manager->getAllRowFromAllTables();
 
     manager->close();
 }

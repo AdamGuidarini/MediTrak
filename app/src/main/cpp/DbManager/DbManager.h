@@ -47,7 +47,7 @@ public:
      * Gets all tables in database
      * @return A pointer to a string to hold table names
      */
-    string* getTables();
+    vector<string> getTables();
 
     /**
      * Retrieves all values from a database table
@@ -65,7 +65,7 @@ public:
      *      Each value should be a pointer to vector a maps whose keys are column names
      *      and values are column values
      */
-    map<string, vector<map<string, string>>*> getAllRowFromAllTables();
+    map<string, vector<map<string, string>>> getAllRowFromAllTables();
 };
 
 
