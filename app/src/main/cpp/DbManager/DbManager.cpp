@@ -27,7 +27,9 @@ vector<string> DbManager::getTables() {
         if (rc != SQLITE_OK) {
             sqlite3_finalize(stmt);
 
-            throw exception();
+            string err = "Error reading from SQLite database.";
+
+            throw runtime_error(err);
         }
 
         while (sqlite3_column_text(stmt, 0)) {
@@ -41,8 +43,8 @@ vector<string> DbManager::getTables() {
 
             sqlite3_step(stmt);
         }
-    } catch (string& error) {
-        cerr << "SQLITE READ ERROR | Return Code: " << rc << endl;
+    } catch (runtime_error& error) {
+        cerr << error.what();
 
         exit(1);
     }
@@ -119,17 +121,20 @@ void DbManager::exportData(string exportFilePath) {
             + to_string(now->tm_year) + "_"
             + to_string(now->tm_mon) + "_"
             + to_string(now->tm_mday) + ".json";
-    string fileData;
+    stringstream fileData;
+    string outData;
 
     int fd = open(exportFilePath.append(fileName).c_str(), O_CREAT, S_IRUSR);
 
-    fileData += "{\n";
+    fileData << "{";
 
+    // write json formatted data here
 
+    fileData << "}";
 
-    fileData += "]\n}\n";
+    fileData >> outData;
 
-    write(fd, fileName.c_str(), size_t(fileData.c_str()));
+    write(fd, fileName.c_str(), size_t(outData.c_str()));
 
     close(fd);
     delete now;

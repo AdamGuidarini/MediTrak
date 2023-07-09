@@ -8,6 +8,7 @@
 #include "../sqlite/sqlite3.h"
 
 #include <string>
+#include <sstream>
 #include <iostream>
 #include <map>
 #include <vector>
