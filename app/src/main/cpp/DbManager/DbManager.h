@@ -11,7 +11,9 @@
 #include <iostream>
 #include <map>
 #include <vector>
-#include <android/log.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <time.h>
 
 using namespace std;
 
@@ -66,6 +68,12 @@ public:
      *      and values are column values
      */
     map<string, vector<map<string, string>>> getAllRowFromAllTables();
+
+    /**
+     * Exports all data stored in DB to provided location
+     * @param exportFilePath Location for file storing database backup
+     */
+    void exportData(string exportFilePath);
 };
 
 

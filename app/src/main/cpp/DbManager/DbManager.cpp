@@ -104,9 +104,28 @@ map<string, vector<map<string, string>>> DbManager::getAllRowFromAllTables() {
     map<string, vector<map<string, string>>> tableData;
     vector<string> tables = getTables();
 
-    for (string tbl : tables) {
+    for (const string& tbl : tables) {
         tableData.insert({ tbl, readAllValuesInTable(tbl) });
     }
 
     return tableData;
+}
+
+void DbManager::exportData(string exportFilePath) {
+    time_t date = time(nullptr);
+    tm* now = localtime(&date);
+    map<string, vector<map<string, string>>> data = getAllRowFromAllTables();
+    string fileName = "meditrak_"
+            + to_string(now->tm_year) + "_"
+            + to_string(now->tm_mon) + "_"
+            + to_string(now->tm_mday) + ".txt";
+    string fileData;
+
+    int fd = ::open(exportFilePath.append(fileName).c_str(), O_CREAT);
+
+    // Decide how to format data and output it here
+
+    write(fd, fileName.c_str(), size_t(fileData.c_str()));
+
+    delete now;
 }
