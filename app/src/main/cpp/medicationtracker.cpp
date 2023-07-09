@@ -10,7 +10,11 @@ Java_projects_medicationtracker_Settings_DbManager(
     std::string db = env->GetStringUTFChars(database, new jboolean(true));
     auto* manager = new DbManager(db);
 
+    manager->openDb();
+
     manager->getAllRowFromAllTables();
+
+    manager->closeDb();
 
     delete manager;
 }

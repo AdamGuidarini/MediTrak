@@ -38,12 +38,12 @@ public:
     /**
      * Opens database
      */
-    void open();
+    void openDb();
 
     /**
      * Closes database
      */
-    void close();
+    void closeDb();
 
     /**
      * Gets all tables in database

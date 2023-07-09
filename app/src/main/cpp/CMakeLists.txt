@@ -25,7 +25,6 @@ add_library( # Sets the name of the library.
              # Provides a relative path to your source file(s).
              medicationtracker.cpp
              DbManager/DbManager.cpp
-             DataExporter/DataExporter.cpp
 
              #for database communication
              sqlite/shell.c

@@ -10,8 +10,8 @@ DbManager::DbManager(string fileDescriptor) {
     database_name = std::move(fileDescriptor);
 }
 
-void DbManager::open() { sqlite3_open(database_name.c_str(), &db); }
-void DbManager::close() { sqlite3_close(db); }
+void DbManager::openDb() { sqlite3_open(database_name.c_str(), &db); }
+void DbManager::closeDb() { sqlite3_close(db); }
 
 vector<string> DbManager::getTables() {
     int rc;
@@ -118,14 +118,19 @@ void DbManager::exportData(string exportFilePath) {
     string fileName = "meditrak_"
             + to_string(now->tm_year) + "_"
             + to_string(now->tm_mon) + "_"
-            + to_string(now->tm_mday) + ".txt";
+            + to_string(now->tm_mday) + ".json";
     string fileData;
 
-    int fd = ::open(exportFilePath.append(fileName).c_str(), O_CREAT);
+    int fd = open(exportFilePath.append(fileName).c_str(), O_CREAT, S_IRUSR);
 
-    // Decide how to format data and output it here
+    fileData += "{\n";
+
+
+
+    fileData += "]\n}\n";
 
     write(fd, fileName.c_str(), size_t(fileData.c_str()));
 
+    close(fd);
     delete now;
 }
