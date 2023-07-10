@@ -8,6 +8,11 @@
 
 DbManager::DbManager(string fileDescriptor) {
     database_name = std::move(fileDescriptor);
+    openDb();
+}
+
+DbManager::~DbManager() {
+    closeDb();
 }
 
 void DbManager::openDb() { sqlite3_open(database_name.c_str(), &db); }

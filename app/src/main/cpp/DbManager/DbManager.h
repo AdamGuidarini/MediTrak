@@ -36,6 +36,8 @@ public:
      */
     DbManager(string fileDescriptor);
 
+    ~DbManager();
+
     /**
      * Opens database
      */
