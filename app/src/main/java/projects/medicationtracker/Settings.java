@@ -7,6 +7,7 @@ import static projects.medicationtracker.Helpers.DBHelper.THEME;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -56,7 +57,12 @@ public class Settings extends AppCompatActivity {
         setEnableNotificationSwitch();
         setThemeMenu();
 
-        DbManager(db.getReadableDatabase().getPath());
+        DbManager(
+                this.getDatabasePath("Medications.db").getAbsolutePath(),
+                Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_DOWNLOADS
+                ).getPath()
+        );
     }
 
     /**
@@ -263,5 +269,5 @@ public class Settings extends AppCompatActivity {
         return true;
     }
 
-    public native void DbManager(String databaseName);
+    public native void DbManager(String databaseName, String exportDirectory);
 }

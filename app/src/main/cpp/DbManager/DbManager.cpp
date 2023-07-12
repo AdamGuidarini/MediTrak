@@ -118,29 +118,32 @@ map<string, vector<map<string, string>>> DbManager::getAllRowFromAllTables() {
     return tableData;
 }
 
-void DbManager::exportData(string exportFilePath) {
+void DbManager::exportData(string exportDirectory) {
+    ofstream outFile;
     time_t date = time(nullptr);
     tm* now = localtime(&date);
     map<string, vector<map<string, string>>> data = getAllRowFromAllTables();
-    string fileName = "meditrak_"
+    string fileName = "/meditrak_"
             + to_string(now->tm_year) + "_"
             + to_string(now->tm_mon) + "_"
             + to_string(now->tm_mday) + ".json";
-    stringstream fileData;
-    string outData;
 
-    int fd = open(exportFilePath.append(fileName).c_str(), O_CREAT, S_IRUSR);
+    outFile.open(exportDirectory + fileName);
 
-    fileData << "{";
+    outFile << "{";
 
-    // write json formatted data here
+    outFile << "\"settings\": {";
 
-    fileData << "}";
+    for (const auto& row : data["Settings"].at(0)) {
+        outFile << "\"" << row.first << "\": " << "\"" << row.second << "\",";
+    }
 
-    fileData >> outData;
+    outFile << "},";
 
-    write(fd, fileName.c_str(), size_t(outData.c_str()));
+    outFile << "\"medications\": [";
+    outFile << "]";
 
-    close(fd);
-    delete now;
+    outFile << "}";
+
+    outFile.close();
 }

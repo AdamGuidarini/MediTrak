@@ -10,10 +10,10 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <fstream>
 #include <map>
 #include <vector>
 #include <fcntl.h>
-#include <unistd.h>
 #include <time.h>
 
 using namespace std;
@@ -74,9 +74,9 @@ public:
 
     /**
      * Exports all data stored in DB to provided location
-     * @param exportFilePath Location for file storing database backup
+     * @param exportDirectory Location for file storing database backup
      */
-    void exportData(string exportFilePath);
+    void exportData(string exportDirectory);
 };
 
 
