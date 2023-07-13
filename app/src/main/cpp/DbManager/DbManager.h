@@ -73,10 +73,10 @@ public:
     map<string, vector<map<string, string>>> getAllRowFromAllTables();
 
     /**
-     * Exports all data stored in DB to provided location
+     * Exports all data stored in DB to provided location as a JSON file
      * @param exportDirectory Location for file storing database backup
      */
-    void exportData(string exportDirectory);
+    void exportData(const string& exportDirectory);
 };
 
 

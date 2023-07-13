@@ -57,6 +57,12 @@ public class Settings extends AppCompatActivity {
         setEnableNotificationSwitch();
         setThemeMenu();
 
+        System.out.println(
+                Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_DOWNLOADS
+                ).getPath()
+        );
+
         DbManager(
                 this.getDatabasePath("Medications.db").getAbsolutePath(),
                 Environment.getExternalStoragePublicDirectory(

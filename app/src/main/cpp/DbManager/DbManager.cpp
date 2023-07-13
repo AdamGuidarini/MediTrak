@@ -4,8 +4,6 @@
 
 #include "DbManager.h"
 
-#include <utility>
-
 DbManager::DbManager(string fileDescriptor) {
     database_name = std::move(fileDescriptor);
     openDb();
@@ -118,7 +116,7 @@ map<string, vector<map<string, string>>> DbManager::getAllRowFromAllTables() {
     return tableData;
 }
 
-void DbManager::exportData(string exportDirectory) {
+void DbManager::exportData(const string& exportDirectory) {
     ofstream outFile;
     time_t date = time(nullptr);
     tm* now = localtime(&date);
@@ -127,23 +125,42 @@ void DbManager::exportData(string exportDirectory) {
             + to_string(now->tm_year) + "_"
             + to_string(now->tm_mon) + "_"
             + to_string(now->tm_mday) + ".json";
+    string outData = "";
 
     outFile.open(exportDirectory + fileName);
 
     outFile << "{";
 
-    outFile << "\"settings\": {";
+    for (const auto& tbl : data) {
+        outData += "\"" + tbl.first + "\":[";
 
-    for (const auto& row : data["Settings"].at(0)) {
-        outFile << "\"" << row.first << "\": " << "\"" << row.second << "\",";
+
+        for (const auto& tblInfo : tbl.second) {
+            outData += "{";
+
+            for (const auto& col : tblInfo) {
+                outData += "\"" + col.first + "\":\"" + col.second + "\",";
+            }
+
+            if (outData.at(outData.size() - 1) == ',') {
+                outData.erase(outData.size() - 1);
+            }
+
+            outData += "},";
+        }
+
+        if (outData.at(outData.size() - 1) == ',') {
+            outData.erase(outData.size() - 1);
+        }
+
+        outData += "],";
     }
 
-    outFile << "},";
+    if (outData.at(outData.size() - 1) == ',') {
+        outData.erase(outData.size() - 1);
+    }
 
-    outFile << "\"medications\": [";
-    outFile << "]";
-
-    outFile << "}";
+    outFile << outData << "}";
 
     outFile.close();
 }
