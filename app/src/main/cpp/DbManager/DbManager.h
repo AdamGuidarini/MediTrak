@@ -80,6 +80,12 @@ public:
      * @param exportDirectory Location for file storing database backup
      */
     void exportData(const string& exportDirectory);
+
+    /**
+     * Imports data from JSON file and writes it to database
+     * @param importFilePath
+     */
+    void importData(const string& importFilePath);
 };
 
 

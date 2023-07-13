@@ -30,9 +30,7 @@ vector<string> DbManager::getTables() {
         if (rc != SQLITE_OK) {
             sqlite3_finalize(stmt);
 
-            string err = "Error reading from SQLite database.";
-
-            throw runtime_error(err);
+            throw runtime_error("Error reading from SQLite database.");
         }
 
         while (sqlite3_column_text(stmt, 0)) {
@@ -48,8 +46,7 @@ vector<string> DbManager::getTables() {
         }
     } catch (runtime_error& error) {
         cerr << error.what();
-
-        exit(1);
+        throw error;
     }
 
     sqlite3_finalize(stmt);
@@ -70,7 +67,7 @@ vector<map<string, string>> DbManager::readAllValuesInTable(const string& table)
         if (rc != SQLITE_OK) {
             sqlite3_finalize(stmt);
 
-            throw exception();
+            throw runtime_error("Error reading from SQLite database.");
         }
 
         while (sqlite3_column_text(stmt, 0)) {
@@ -94,10 +91,9 @@ vector<map<string, string>> DbManager::readAllValuesInTable(const string& table)
             results.push_back(m);
             sqlite3_step(stmt);
         }
-    } catch (string& error) {
+    } catch (runtime_error& error) {
         cerr << "SQLITE READ ERROR | Return Code: " << rc << endl;
-
-        exit(1);
+        throw error;
     }
 
     sqlite3_finalize(stmt);
@@ -125,7 +121,7 @@ void DbManager::exportData(const string& exportDirectory) {
             + to_string(now->tm_year) + "_"
             + to_string(now->tm_mon) + "_"
             + to_string(now->tm_mday) + ".json";
-    string outData = "";
+    string outData;
 
     outFile.open(exportDirectory + fileName);
 
@@ -163,4 +159,21 @@ void DbManager::exportData(const string& exportDirectory) {
     outFile << outData << "}";
 
     outFile.close();
+}
+
+void DbManager::importData(const std::string &importFilePath) {
+    fstream fin;
+    string inData;
+
+    try {
+        fin.open(importFilePath);
+
+        if (!fin.is_open()) { throw runtime_error("Import file failed to open"); }
+
+        fin.close();
+    } catch (runtime_error& error) {
+        cerr << error.what() << ": " << importFilePath << endl;
+
+        throw error;
+    }
 }
