@@ -31,11 +31,14 @@ private:
 
 public:
     /**
-     * Constructor for DbManager class
+     * Constructor for DbManager class, automatically opens database.
      * @param fileDescriptor Name of file containing database
      */
     DbManager(string fileDescriptor);
 
+    /**
+     * Class destructor, will also automatically close database.
+     */
     ~DbManager();
 
     /**
