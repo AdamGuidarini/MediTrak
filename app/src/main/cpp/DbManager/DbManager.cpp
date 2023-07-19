@@ -112,18 +112,12 @@ map<string, vector<map<string, string>>> DbManager::getAllRowFromAllTables() {
     return tableData;
 }
 
-void DbManager::exportData(const string& exportDirectory) {
+void DbManager::exportData(const string& exportFilePath) {
     ofstream outFile;
-    time_t date = time(nullptr);
-    tm* now = localtime(&date);
     map<string, vector<map<string, string>>> data = getAllRowFromAllTables();
-    string fileName = "/meditrak_"
-            + to_string(now->tm_year) + "_"
-            + to_string(now->tm_mon) + "_"
-            + to_string(now->tm_mday) + ".json";
     string outData;
 
-    outFile.open(exportDirectory + fileName);
+    outFile.open(exportFilePath);
 
     outFile << "{";
 

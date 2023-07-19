@@ -2,6 +2,7 @@
 
 #include <jni.h>
 #include <android/log.h>
+#include <time.h>
 
 extern "C" JNICALL void
 Java_projects_medicationtracker_Settings_DbManager(
@@ -10,13 +11,20 @@ Java_projects_medicationtracker_Settings_DbManager(
     std::string db = env->GetStringUTFChars(database, new jboolean(true));
     std::string exportDir = env->GetStringUTFChars(exportPath, new jboolean(true));
 
+    time_t date = time(nullptr);
+    tm* now = localtime(&date);
+    std::string fileName = "/meditrak_"
+                      + to_string(now->tm_year) + "_"
+                      + to_string(now->tm_mon) + "_"
+                      + to_string(now->tm_mday) + ".json";
+
     auto* manager = new DbManager(db);
 
     manager->openDb();
 
 //    manager->getAllRowFromAllTables();
 
-    manager->exportData(exportDir);
+    manager->exportData(exportDir + fileName);
 
     manager->closeDb();
 

@@ -13,8 +13,6 @@
 #include <fstream>
 #include <map>
 #include <vector>
-#include <fcntl.h>
-#include <time.h>
 
 using namespace std;
 
@@ -77,9 +75,9 @@ public:
 
     /**
      * Exports all data stored in DB to provided location as a JSON file.
-     * @param exportDirectory Location for file storing database backup.
+     * @param exportDirectory Location for file storing database backup with its name ex. /src/myDir/data.json.
      */
-    void exportData(const string& exportDirectory);
+    void exportData(const string& exportFilePath);
 
     /**
      * Imports data from JSON file and writes it to database,
