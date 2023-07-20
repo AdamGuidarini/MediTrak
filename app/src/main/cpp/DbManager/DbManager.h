@@ -76,7 +76,7 @@ public:
 
     /**
      * Exports all data stored in DB to provided location as a JSON file.
-     * @param exportDirectory Location for file storing database backup with its name ex. /src/myDir/data.json.
+     * @param exportFilePath Location for file storing database backup with its name ex. /src/myDir/data.json.
      */
     void exportData(const string& exportFilePath);
 
