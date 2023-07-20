@@ -1,4 +1,4 @@
-#include "DbManager/DbManager.h"
+#include "DbManager.h"
 
 #include <jni.h>
 #include <android/log.h>

@@ -11,6 +11,9 @@ cmake_minimum_required(VERSION 3.22.1)
 project("medicationtracker")
 set(CMAKE_CXX_STANDARD 17)
 
+add_subdirectory(DbManager)
+add_subdirectory(sqlite)
+
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
 # You can define multiple libraries, and CMake builds them for you.
@@ -24,13 +27,7 @@ add_library( # Sets the name of the library.
 
              # Provides a relative path to your source file(s).
              medicationtracker.cpp
-             DbManager/DbManager.cpp
-
-             #for database communication
-             sqlite/shell.c
-             sqlite/sqlite3.c
-             sqlite/sqlite3.h
-             sqlite/sqlite3ext.h)
+        )
 
 add_definitions( -DSQLITE_ENABLE_JSON1 )
 
@@ -52,7 +49,10 @@ find_library( # Sets the name of the path variable.
 
 target_link_libraries( # Specifies the target library.
                        medicationtracker
+                       DbManager
                        android
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib} )
+
+

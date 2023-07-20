@@ -5,7 +5,7 @@
 #ifndef MEDICATIONTRACKER_DBMANAGER_H
 #define MEDICATIONTRACKER_DBMANAGER_H
 
-#include "../sqlite/sqlite3.h"
+#include "sqlite3.h"
 
 #include <string>
 #include <sstream>
