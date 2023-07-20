@@ -10,7 +10,9 @@ DbManager::DbManager(string databasePath, bool enableForeignKeys) {
     database_name = std::move(databasePath);
     openDb();
 
-    sqlite3_exec(db, "PRAGMA foreign_keys = ON", nullptr, nullptr, &err);
+    if (enableForeignKeys) {
+        sqlite3_exec(db, "PRAGMA foreign_keys = ON", nullptr, nullptr, &err);
+    }
 }
 
 DbManager::~DbManager() {
