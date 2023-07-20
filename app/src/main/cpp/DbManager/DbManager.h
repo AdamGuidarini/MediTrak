@@ -31,6 +31,7 @@ public:
     /**
      * Constructor for DbManager class, automatically opens database.
      * @param databasePath Name of file containing database.
+     * @param enableForeignKeys Whether or not foreign keys should be enabled.
      */
     DbManager(string databasePath, bool enableForeignKeys);
 
