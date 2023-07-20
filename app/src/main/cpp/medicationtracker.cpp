@@ -18,11 +18,9 @@ Java_projects_medicationtracker_Settings_DbManager(
                       + to_string(now->tm_mon) + "_"
                       + to_string(now->tm_mday) + ".json";
 
-    auto* manager = new DbManager(db);
+    auto* manager = new DbManager(db, true);
 
     manager->openDb();
-
-//    manager->getAllRowFromAllTables();
 
     manager->exportData(exportDir + fileName);
 

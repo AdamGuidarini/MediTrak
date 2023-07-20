@@ -4,9 +4,13 @@
 
 #include "DbManager.h"
 
-DbManager::DbManager(string fileDescriptor) {
-    database_name = std::move(fileDescriptor);
+DbManager::DbManager(string databasePath, bool enableForeignKeys) {
+    char* err;
+
+    database_name = std::move(databasePath);
     openDb();
+
+    sqlite3_exec(db, "PRAGMA foreign_keys = ON", nullptr, nullptr, &err);
 }
 
 DbManager::~DbManager() {
@@ -160,9 +164,15 @@ void DbManager::importData(const std::string &importFilePath) {
     string inData;
 
     try {
+        if (importFilePath.substr(importFilePath.find_last_of('.') + 1) != "json") {
+            throw runtime_error("Provided file is not a JSON file");
+        }
+
         fin.open(importFilePath);
 
         if (!fin.is_open()) { throw runtime_error("Import file failed to open"); }
+
+        inData = string(istreambuf_iterator<char>{fin}, {});
 
         fin.close();
     } catch (runtime_error& error) {

@@ -30,9 +30,9 @@ private:
 public:
     /**
      * Constructor for DbManager class, automatically opens database.
-     * @param fileDescriptor Name of file containing database.
+     * @param databasePath Name of file containing database.
      */
-    DbManager(string fileDescriptor);
+    DbManager(string databasePath, bool enableForeignKeys);
 
     /**
      * Class destructor, will also automatically close database.
