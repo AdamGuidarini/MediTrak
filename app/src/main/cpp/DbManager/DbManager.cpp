@@ -86,12 +86,7 @@ vector<map<string, string>> DbManager::readAllValuesInTable(const string& table)
                     colText = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, i)));
                 }
 
-                m.insert(
-                        {
-                                string(sqlite3_column_name(stmt, i)),
-                                string(colText)
-                        }
-                );
+                m.insert({ string(sqlite3_column_name(stmt, i)),string(colText) });
             }
 
             results.push_back(m);
@@ -175,6 +170,7 @@ void DbManager::importData(const std::string &importFilePath) {
         if (!fin.is_open()) { throw runtime_error("Import file failed to open"); }
 
         inData = string(istreambuf_iterator<char>{fin}, {});
+        inData.erase(remove_if(inData.begin(), inData.end(), [](unsigned char x) { return std::isspace(x); }), inData.end());
 
         fin.close();
     } catch (runtime_error& error) {
