@@ -185,6 +185,9 @@
     <string name="dark_mode">Dark mode</string>
     <string name="match_system_theme">System default</string>
     <string name="number_of_hours_before_dose_can_be_taken">Limit before which medication cannot be taken:</string>
+    <string name="export">Export</string>
+    <string name="importData">Import</string>
+    <string name="data">Data</string>
 
     <!-- Dose Info dialog -->
     <string name="not_taken_yet">Not yet taken</string>

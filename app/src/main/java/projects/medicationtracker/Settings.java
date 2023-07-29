@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -56,19 +57,6 @@ public class Settings extends AppCompatActivity {
         setTimeBeforeDoseRestrictionSwitch();
         setEnableNotificationSwitch();
         setThemeMenu();
-
-        System.out.println(
-                Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_DOWNLOADS
-                ).getPath()
-        );
-
-        DbManager(
-                this.getDatabasePath("Medications.db").getAbsolutePath(),
-                Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_DOWNLOADS
-                ).getPath()
-        );
     }
 
     /**
@@ -249,6 +237,22 @@ public class Settings extends AppCompatActivity {
         return new ArrayAdapter<>(
                 this, android.R.layout.simple_dropdown_item_1line, availableThemes
         );
+    }
+
+    /**
+     * Listener for export data button
+     */
+    public void onExportClick(View view) {
+        DbManager(
+                this.getDatabasePath("Medications.db").getAbsolutePath(),
+                Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_DOWNLOADS
+                ).getPath()
+        );
+    }
+
+    public void onImportClick(View view) {
+        Toast.makeText(this, "This does nothing", Toast.LENGTH_SHORT).show();
     }
 
     /**
