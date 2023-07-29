@@ -2,7 +2,6 @@
 
 #include <jni.h>
 #include <android/log.h>
-#include <time.h>
 
 extern "C" JNICALL void
 Java_projects_medicationtracker_Settings_DbManager(

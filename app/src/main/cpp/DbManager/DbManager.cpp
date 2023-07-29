@@ -22,11 +22,15 @@ DbManager::~DbManager() {
 void DbManager::openDb() { sqlite3_open(database_name.c_str(), &db); }
 void DbManager::closeDb() { sqlite3_close(db); }
 
-vector<string> DbManager::getTables() {
+vector<string> DbManager::getTables(const vector<string>& ignoreTables) {
     int rc;
     sqlite3_stmt *stmt = nullptr;
-    string query = "SELECT name FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlite_%';";
+    string query = "SELECT name FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlite_%'";
     vector<string> tables;
+
+    for (auto &tbl : ignoreTables) {
+        query += " AND name != '" + tbl + "'";
+    }
 
     rc = sqlite3_prepare(db, query.c_str(), -1, &stmt, nullptr);
 
@@ -102,9 +106,9 @@ vector<map<string, string>> DbManager::readAllValuesInTable(const string& table)
     return results;
 }
 
-map<string, vector<map<string, string>>> DbManager::getAllRowFromAllTables() {
+map<string, vector<map<string, string>>> DbManager::getAllRowFromAllTables(const vector<string>& ignoreTables) {
     map<string, vector<map<string, string>>> tableData;
-    vector<string> tables = getTables();
+    vector<string> tables = getTables(ignoreTables);
 
     for (const string& tbl : tables) {
         tableData.insert({ tbl, readAllValuesInTable(tbl) });
@@ -113,9 +117,9 @@ map<string, vector<map<string, string>>> DbManager::getAllRowFromAllTables() {
     return tableData;
 }
 
-void DbManager::exportData(const string& exportFilePath) {
+void DbManager::exportData(const string& exportFilePath, const vector<string>& ignoreTables) {
     ofstream outFile;
-    map<string, vector<map<string, string>>> data = getAllRowFromAllTables();
+    map<string, vector<map<string, string>>> data = getAllRowFromAllTables(ignoreTables);
     string outData;
 
     outFile.open(exportFilePath);

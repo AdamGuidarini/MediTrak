@@ -52,9 +52,10 @@ public:
 
     /**
      * Gets all tables in database.
+     * @param Optional ignoreTables Array of tables to exclude.
      * @return A pointer to a string to hold table names.
      */
-    vector<string> getTables();
+    vector<string> getTables(const vector<string>& ignoreTables = {});
 
     /**
      * Retrieves all values from a database table.
@@ -67,18 +68,20 @@ public:
 
     /**
      * Retrieves all data from all tables in the database.
+     * @param Optional ignoreTables Array of tables to exclude.
      * @return A map to contain all data in the database.
      *      Each key should be a table name.
      *      Each value should be a pointer to vector a maps whose keys are column names
      *      and values are column values.
      */
-    map<string, vector<map<string, string>>> getAllRowFromAllTables();
+    map<string, vector<map<string, string>>> getAllRowFromAllTables(const vector<string>& ignoreTables = {});
 
     /**
      * Exports all data stored in DB to provided location as a JSON file.
      * @param exportFilePath Location for file storing database backup with its name ex. /src/myDir/data.json.
+     * @param Optional ignoreTables Array of tables to exclude.
      */
-    void exportData(const string& exportFilePath);
+    void exportData(const string& exportFilePath, const vector<string>& ignoreTables = {});
 
     /**
      * Imports data from JSON file and writes it to database,
