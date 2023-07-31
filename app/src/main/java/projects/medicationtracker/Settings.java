@@ -5,9 +5,9 @@ import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -18,6 +18,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -32,7 +34,8 @@ import projects.medicationtracker.Fragments.ConfirmDeleteAllFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 
 public class Settings extends AppCompatActivity {
-    DBHelper db = new DBHelper(this);
+    private DBHelper db = new DBHelper(this);
+    private ActivityResultLauncher<Intent> resultLauncher;
 
     static {
         System.loadLibrary("medicationtracker");
@@ -53,6 +56,16 @@ public class Settings extends AppCompatActivity {
 
         Button purgeButton = findViewById(R.id.purgeButton);
         purgeButton.setBackgroundColor(Color.RED);
+
+        resultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    assert result.getData() != null;
+
+                    String data = result.getData().getDataString();
+
+                }
+        );
 
         setTimeBeforeDoseRestrictionSwitch();
         setEnableNotificationSwitch();
@@ -243,12 +256,19 @@ public class Settings extends AppCompatActivity {
      * Listener for export data button
      */
     public void onExportClick(View view) {
-        DbManager(
-                this.getDatabasePath("Medications.db").getAbsolutePath(),
-                Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_DOWNLOADS
-                ).getPath()
-        );
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.setType(Intent.normalizeMimeType("application/*"));
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.putExtra(Intent.EXTRA_TITLE, "foo");
+
+        resultLauncher.launch(intent);
+
+//        DbManager(
+//                this.getDatabasePath("Medications.db").getAbsolutePath(),
+//                Environment.getExternalStoragePublicDirectory(
+//                        Environment.DIRECTORY_DOWNLOADS
+//                ).getPath()
+//        );
     }
 
     public void onImportClick(View view) {
