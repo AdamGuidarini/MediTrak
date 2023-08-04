@@ -7,7 +7,10 @@ import static projects.medicationtracker.Helpers.DBHelper.THEME;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -18,6 +21,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -27,6 +32,7 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -34,7 +40,7 @@ import projects.medicationtracker.Fragments.ConfirmDeleteAllFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 
 public class Settings extends AppCompatActivity {
-    private DBHelper db = new DBHelper(this);
+    private final DBHelper db = new DBHelper(this);
     private ActivityResultLauncher<Intent> resultLauncher;
 
     static {
@@ -60,9 +66,20 @@ public class Settings extends AppCompatActivity {
         resultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    assert result.getData() != null;
+                    Uri uri = result.getData() != null ? result.getData().getData() : null;
 
-                    String data = result.getData().getDataString();
+                    if (result.getResultCode() == RESULT_OK && uri != null) {
+                        Toast.makeText(this, uri.toString(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Failed to create backup", Toast.LENGTH_SHORT).show();
+                    }
+
+//                    DbManager(
+//                            this.getDatabasePath("Medications.db").getAbsolutePath(),
+//                            Environment.getExternalStoragePublicDirectory(
+//                                    Environment.DIRECTORY_DOWNLOADS
+//                            ).getPath()
+//                    );
 
                 }
         );
@@ -256,19 +273,17 @@ public class Settings extends AppCompatActivity {
      * Listener for export data button
      */
     public void onExportClick(View view) {
+        LocalDate now = LocalDate.now();
+        String file = "meditrak_" + now.getYear() + "_" + now.getMonthValue() + "_" + now.getDayOfMonth() + ".json";
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         intent.setType(Intent.normalizeMimeType("application/*"));
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.putExtra(Intent.EXTRA_TITLE, "foo");
+        intent.putExtra(
+                Intent.EXTRA_TITLE,
+                file
+        );
 
         resultLauncher.launch(intent);
-
-//        DbManager(
-//                this.getDatabasePath("Medications.db").getAbsolutePath(),
-//                Environment.getExternalStoragePublicDirectory(
-//                        Environment.DIRECTORY_DOWNLOADS
-//                ).getPath()
-//        );
     }
 
     public void onImportClick(View view) {
