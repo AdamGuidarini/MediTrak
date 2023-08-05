@@ -5,12 +5,17 @@ import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 
+import android.app.Activity;
+import android.content.ContentProvider;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
+import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -32,6 +37,7 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -67,20 +73,29 @@ public class Settings extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     Uri uri = result.getData() != null ? result.getData().getData() : null;
+                    String path;
 
                     if (result.getResultCode() == RESULT_OK && uri != null) {
-                        Toast.makeText(this, uri.toString(), Toast.LENGTH_SHORT).show();
+
+                        Cursor returnCursor = getContentResolver().query(uri, null, null, null, null);
+                        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                        int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+                        returnCursor.moveToFirst();
+                        String name = (returnCursor.getString(nameIndex));
+                        String size = (Long.toString(returnCursor.getLong(sizeIndex)));
+                        File file = new File(getFilesDir(), name);
+
+                        path = file.getPath();
+
+                        returnCursor.close();
+
+                        DbManager(
+                            this.getDatabasePath("Medications.db").getAbsolutePath(),
+                            path
+                        );
                     } else {
                         Toast.makeText(this, "Failed to create backup", Toast.LENGTH_SHORT).show();
                     }
-
-//                    DbManager(
-//                            this.getDatabasePath("Medications.db").getAbsolutePath(),
-//                            Environment.getExternalStoragePublicDirectory(
-//                                    Environment.DIRECTORY_DOWNLOADS
-//                            ).getPath()
-//                    );
-
                 }
         );
 

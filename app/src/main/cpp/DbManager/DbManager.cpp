@@ -122,7 +122,17 @@ void DbManager::exportData(const string& exportFilePath, const vector<string>& i
     map<string, vector<map<string, string>>> data = getAllRowFromAllTables(ignoreTables);
     string outData;
 
-    outFile.open(exportFilePath);
+    try {
+        outFile.open(exportFilePath);
+
+        if (!outFile.is_open()) {
+            throw runtime_error("Could not open file: " + exportFilePath);
+        }
+    } catch (exception& e) {
+        cerr << e.what() << endl;
+
+        throw e;
+    }
 
     outFile << "{";
 
@@ -174,7 +184,10 @@ void DbManager::importData(const std::string &importFilePath) {
         if (!fin.is_open()) { throw runtime_error("Import file failed to open"); }
 
         inData = string(istreambuf_iterator<char>{fin}, {});
-        inData.erase(remove_if(inData.begin(), inData.end(), [](unsigned char x) { return std::isspace(x); }), inData.end());
+        inData.erase(
+        remove_if(inData.begin(), inData.end(), [](unsigned char x) { return std::isspace(x); }),
+        inData.end()
+        );
 
         fin.close();
     } catch (runtime_error& error) {
