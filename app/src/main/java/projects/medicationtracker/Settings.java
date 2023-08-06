@@ -5,17 +5,9 @@ import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 
-import android.app.Activity;
-import android.content.ContentProvider;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
-import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -26,10 +18,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -37,11 +26,10 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
-import java.io.File;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import projects.medicationtracker.Dialogs.BackupDestinationPicker;
 import projects.medicationtracker.Fragments.ConfirmDeleteAllFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 
@@ -68,36 +56,6 @@ public class Settings extends AppCompatActivity {
 
         Button purgeButton = findViewById(R.id.purgeButton);
         purgeButton.setBackgroundColor(Color.RED);
-
-        resultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    Uri uri = result.getData() != null ? result.getData().getData() : null;
-                    String path;
-
-                    if (result.getResultCode() == RESULT_OK && uri != null) {
-
-                        Cursor returnCursor = getContentResolver().query(uri, null, null, null, null);
-                        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                        int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
-                        returnCursor.moveToFirst();
-                        String name = (returnCursor.getString(nameIndex));
-                        String size = (Long.toString(returnCursor.getLong(sizeIndex)));
-                        File file = new File(getFilesDir(), name);
-
-                        path = file.getPath();
-
-                        returnCursor.close();
-
-                        DbManager(
-                            this.getDatabasePath("Medications.db").getAbsolutePath(),
-                            path
-                        );
-                    } else {
-                        Toast.makeText(this, "Failed to create backup", Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
 
         setTimeBeforeDoseRestrictionSwitch();
         setEnableNotificationSwitch();
@@ -288,17 +246,7 @@ public class Settings extends AppCompatActivity {
      * Listener for export data button
      */
     public void onExportClick(View view) {
-        LocalDate now = LocalDate.now();
-        String file = "meditrak_" + now.getYear() + "_" + now.getMonthValue() + "_" + now.getDayOfMonth() + ".json";
-        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-        intent.setType(Intent.normalizeMimeType("application/*"));
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.putExtra(
-                Intent.EXTRA_TITLE,
-                file
-        );
-
-        resultLauncher.launch(intent);
+        BackupDestinationPicker picker = new BackupDestinationPicker();
     }
 
     public void onImportClick(View view) {
@@ -328,6 +276,4 @@ public class Settings extends AppCompatActivity {
 
         return true;
     }
-
-    public native void DbManager(String databaseName, String exportDirectory);
 }
