@@ -188,6 +188,11 @@
     <string name="export">Export</string>
     <string name="importData">Import</string>
     <string name="data">Data</string>
+    <string name="export_directory">Export Directory</string>
+    <string name="export_file_name">Export File Name</string>
+    <string name="downloads">Downloads</string>
+    <string name="documents">Documents</string>
+    <string name="export_data">Export Data</string>
 
     <!-- Dose Info dialog -->
     <string name="not_taken_yet">Not yet taken</string>
@@ -209,7 +214,5 @@
     <string name="its_time_your_med">It\'s time to take your %1$s</string>
     <string name="time_for_other_med">It\'s time for %1$s\'s %2$s</string>
     <string name="add_dose">Add Dose</string>
-    <string name="export_directory">Export Directory</string>
-    <string name="export_file_name">Export File Name</string>
 
 </resources>

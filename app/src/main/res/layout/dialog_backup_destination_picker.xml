@@ -8,8 +8,7 @@
         android:id="@+id/dose_time_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,8 +25,8 @@
                 android:hint="@string/export_directory"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/dose_time_taken"
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/export_dir"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="none" />
@@ -48,7 +47,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/dose_date_taken"
+                    android:id="@+id/export_file"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="none" />

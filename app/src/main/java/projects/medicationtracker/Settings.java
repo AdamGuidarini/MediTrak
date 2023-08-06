@@ -5,7 +5,6 @@ import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -18,7 +17,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -35,7 +33,6 @@ import projects.medicationtracker.Helpers.DBHelper;
 
 public class Settings extends AppCompatActivity {
     private final DBHelper db = new DBHelper(this);
-    private ActivityResultLauncher<Intent> resultLauncher;
 
     static {
         System.loadLibrary("medicationtracker");
@@ -247,6 +244,7 @@ public class Settings extends AppCompatActivity {
      */
     public void onExportClick(View view) {
         BackupDestinationPicker picker = new BackupDestinationPicker();
+        picker.show(getSupportFragmentManager(), null);
     }
 
     public void onImportClick(View view) {

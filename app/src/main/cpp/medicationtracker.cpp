@@ -4,7 +4,7 @@
 #include <android/log.h>
 
 extern "C"
-JNIEXPORT void JNICALL
+JNIEXPORT jboolean JNICALL
 Java_projects_medicationtracker_Dialogs_BackupDestinationPicker_DbManager(JNIEnv *env, jobject thiz,
                                                                           jstring database_name,
                                                                           jstring export_directory) {
@@ -19,4 +19,7 @@ Java_projects_medicationtracker_Dialogs_BackupDestinationPicker_DbManager(JNIEnv
 
     manager->closeDb();
 
-    delete manager;}
+    delete manager;
+
+    return true;
+}
