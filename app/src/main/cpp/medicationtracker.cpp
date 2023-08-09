@@ -11,15 +11,15 @@ Java_projects_medicationtracker_Dialogs_BackupDestinationPicker_DbManager(JNIEnv
     std::string db = env->GetStringUTFChars(database_name, new jboolean(true));
     std::string exportDir = env->GetStringUTFChars(export_directory, new jboolean(true));
 
-    auto* manager = new DbManager(db, true);
-
-    manager->openDb();
-
-    manager->exportData(exportDir);
-
-    manager->closeDb();
-
-    delete manager;
+//    auto* manager = new DbManager(db, true);
+//
+//    manager->openDb();
+//
+//    manager->exportData(exportDir);
+//
+//    manager->closeDb();
+//
+//    delete manager;
 
     return true;
 }

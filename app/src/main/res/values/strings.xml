@@ -32,6 +32,8 @@
     <string name="err_enter_med_freq">Please enter how often the medication is taken.</string>
     <string name="err_enter_time_unit">Please select a time unit.</string>
     <string name="err_name_for_med">Please enter a name for this medication</string>
+    <string name="err_missing_file_name">Missing file name</string>
+    <string name="err_file_must_be_json">Export file must have a .json extension</string>
 
     <!-- Time formats -->
     <string name="date_format">Mmm dd, yyyy</string>
@@ -193,6 +195,8 @@
     <string name="downloads">Downloads</string>
     <string name="documents">Documents</string>
     <string name="export_data">Export Data</string>
+    <string name="successful_export">Successfully exported data to: %1$s?</string>
+    <string name="failed_export">Data could not be exported</string>
 
     <!-- Dose Info dialog -->
     <string name="not_taken_yet">Not yet taken</string>

@@ -5,18 +5,24 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
+import androidx.annotation.StringRes;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.R;
@@ -25,6 +31,7 @@ public class BackupDestinationPicker extends DialogFragment {
     private String exportDir;
     private String exportFile;
     private MaterialAutoCompleteTextView dirSelector;
+    private TextInputLayout fileNameInputLayout;
     private TextInputEditText fileName;
 
     @Override
@@ -49,8 +56,6 @@ public class BackupDestinationPicker extends DialogFragment {
         dialog = builder.create();
         dialog.show();
 
-        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
-
         dirs.add(getString(R.string.downloads));
         dirs.add(getString(R.string.documents));
 
@@ -62,16 +67,18 @@ public class BackupDestinationPicker extends DialogFragment {
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, dirs);
 
         dirSelector = dialog.findViewById(R.id.export_dir);
+        fileNameInputLayout = dialog.findViewById(R.id.export_file_layout);
         fileName = dialog.findViewById(R.id.export_file);
 
         dirSelector.setAdapter(adapter);
+        dirSelector.setText(adapter.getItem(0));
+
+        exportDir = directories[0];
 
         dirSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 exportDir = directories[position];
-
-                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(evaluate());
             }
 
             @Override
@@ -85,7 +92,38 @@ public class BackupDestinationPicker extends DialogFragment {
 
         fileName.setText(exportFile);
 
-        // TODO ADD TEXT WATCHER TO FILE NAME
+        fileName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                Optional<String> fileNameChecker;
+                exportFile = editable.toString();
+
+                fileNameChecker = Optional.of(exportFile)
+                        .filter(f -> f.contains("."))
+                        .map(f -> f.substring(exportFile.lastIndexOf(".") + 1));
+
+                if (exportFile.isEmpty()) {
+                    fileNameInputLayout.setError(getString(R.string.err_missing_file_name));
+                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+
+                    return;
+                } else if (fileNameChecker.isPresent() && !fileNameChecker.get().equals("json")) {
+                    fileNameInputLayout.setError(getString(R.string.err_file_must_be_json));
+                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+
+                    return;
+                }
+
+                fileNameInputLayout.setErrorEnabled(false);
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
+            }
+        });
 
         return dialog;
     }
@@ -124,12 +162,14 @@ public class BackupDestinationPicker extends DialogFragment {
         });
     }
 
-        private void onExportClick() {
+    private void onExportClick() {
+        String resMessage;
         boolean res = DbManager(DBHelper.DATABASE_NAME, exportDir + '/' + exportFile);
-    }
 
-    private boolean evaluate() {
-        return  exportFile != null && exportDir != null;
+        resMessage = res ? getString(R.string.successful_export, exportDir + '/' + exportFile)
+                : getString(R.string.failed_export);
+
+        Toast.makeText(getContext(), resMessage, Toast.LENGTH_SHORT).show();
     }
 
     public native boolean DbManager(String databaseName, String exportDirectory);
