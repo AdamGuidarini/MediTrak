@@ -13,7 +13,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import androidx.annotation.StringRes;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
