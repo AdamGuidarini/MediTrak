@@ -1,6 +1,6 @@
 package projects.medicationtracker.Dialogs;
 
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -36,7 +37,7 @@ public class BackupDestinationPicker extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstances) {
         AlertDialog dialog;
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         final String[] directories;
         ArrayAdapter<String> adapter;
