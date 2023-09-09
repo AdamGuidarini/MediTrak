@@ -19,12 +19,18 @@ DbManager::~DbManager() {
     closeDb();
 }
 
-void DbManager::openDb() { sqlite3_open(database_name.c_str(), &db); }
+void DbManager::openDb() {
+    const int rc = sqlite3_open(database_name.c_str(), &db);
+
+    if (rc != SQLITE_OK) {
+        throw runtime_error("Failed to open database file at: " + database_name);
+    }
+}
 void DbManager::closeDb() { sqlite3_close(db); }
 
 vector<string> DbManager::getTables(const vector<string>& ignoreTables) {
     int rc;
-    sqlite3_stmt *stmt = nullptr;
+    sqlite3_stmt *stmt;
     string query = "SELECT name FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlite_%'";
     vector<string> tables;
 
@@ -32,7 +38,7 @@ vector<string> DbManager::getTables(const vector<string>& ignoreTables) {
         query += " AND name != '" + tbl + "'";
     }
 
-    rc = sqlite3_prepare(db, query.c_str(), -1, &stmt, nullptr);
+    rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
 
     sqlite3_step(stmt);
 
@@ -70,7 +76,7 @@ vector<map<string, string>> DbManager::readAllValuesInTable(const string& table)
     vector<map<string, string>> results;
     int rc;
 
-    rc = sqlite3_prepare(db, query.c_str(), -1, &stmt, nullptr);
+    rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
     sqlite3_step(stmt);
 
     try {

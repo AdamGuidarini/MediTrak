@@ -163,7 +163,7 @@ public class BackupDestinationPicker extends DialogFragment {
 
     private void onExportClick() {
         String resMessage;
-        boolean res = DbManager(DBHelper.DATABASE_NAME, exportDir + '/' + exportFile);
+        boolean res = DbManager(getContext().getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath(), exportDir + '/' + exportFile);
 
         resMessage = res ? getString(R.string.successful_export, exportDir + '/' + exportFile)
                 : getString(R.string.failed_export);
