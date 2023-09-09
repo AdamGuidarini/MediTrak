@@ -13,11 +13,19 @@ Java_projects_medicationtracker_Dialogs_BackupDestinationPicker_DbManager(JNIEnv
 
     auto* manager = new DbManager(db, true);
 
-    manager->openDb();
+    try {
+        manager->openDb();
 
-    manager->exportData(exportDir);
+        manager->exportData(exportDir);
 
-    manager->closeDb();
+        manager->closeDb();
+    } catch (exception &e) {
+        cerr << e.what() << endl;
+
+        delete manager;
+
+        return false;
+    }
 
     delete manager;
 
