@@ -17,6 +17,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -33,6 +35,7 @@ import projects.medicationtracker.Helpers.DBHelper;
 
 public class Settings extends AppCompatActivity {
     private final DBHelper db = new DBHelper(this);
+    private ActivityResultLauncher<String> chooseFileLauncher;
 
     static {
         System.loadLibrary("medicationtracker");
@@ -57,6 +60,22 @@ public class Settings extends AppCompatActivity {
         setTimeBeforeDoseRestrictionSwitch();
         setEnableNotificationSwitch();
         setThemeMenu();
+
+        chooseFileLauncher = registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                result -> {
+                    final String basePath = result.getPath();
+
+                    if (basePath != null && !basePath.isEmpty()) {
+                        final String absPath = result.getPath().replace("/document/raw:", "");
+
+                        System.out.println(absPath);
+
+                        //TODO Call C++ function to import data
+                    } else {
+                        Toast.makeText(this, getString(R.string.could_not_retrieve_file), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     /**
@@ -248,7 +267,7 @@ public class Settings extends AppCompatActivity {
     }
 
     public void onImportClick(View view) {
-        Toast.makeText(this, "This does nothing", Toast.LENGTH_SHORT).show();
+        chooseFileLauncher.launch("*/*");
     }
 
     /**
