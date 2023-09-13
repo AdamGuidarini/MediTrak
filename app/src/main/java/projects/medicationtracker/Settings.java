@@ -293,4 +293,6 @@ public class Settings extends AppCompatActivity {
 
         return true;
     }
+
+    private native boolean dbImporter(String dbPath, String importPath);
 }

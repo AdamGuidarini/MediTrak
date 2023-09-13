@@ -5,7 +5,7 @@
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_projects_medicationtracker_Dialogs_BackupDestinationPicker_DbManager(JNIEnv *env, jobject thiz,
+Java_projects_medicationtracker_Dialogs_BackupDestinationPicker_dbExporter(JNIEnv *env, jobject thiz,
                                                                           jstring database_name,
                                                                           jstring export_directory) {
     std::string db = env->GetStringUTFChars(database_name, new jboolean(true));
@@ -28,6 +28,32 @@ Java_projects_medicationtracker_Dialogs_BackupDestinationPicker_DbManager(JNIEnv
     }
 
     delete manager;
+
+    return true;
+}
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_projects_medicationtracker_Settings_dbImporter(JNIEnv *env, jobject thiz, jstring db_path, jstring import_path) {
+    std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string importPath = env->GetStringUTFChars(import_path, new jboolean(true));
+
+    auto* dbManager = new DbManager(db, true);
+
+    try {
+        dbManager->openDb();
+
+        dbManager->exportData(importPath);
+
+        dbManager->closeDb();
+    } catch (exception &e) {
+        cerr << e.what() <<endl;
+
+        delete dbManager;
+
+        return false;
+    }
+
+    delete dbManager;
 
     return true;
 }
