@@ -5,8 +5,11 @@ import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 
+import android.content.ContentResolver;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -26,6 +29,8 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -64,14 +69,18 @@ public class Settings extends AppCompatActivity {
         chooseFileLauncher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
                 result -> {
-                    final String basePath = result.getPath();
+                    if (result != null) {
 
-                    if (basePath != null && !basePath.isEmpty()) {
-                        final String absPath = result.getPath().replace("/document/raw:", "");
-
-                        System.out.println(absPath);
-
-                        //TODO Call C++ function to import data
+//                        final String importPath = result.getEncodedPath(); // basePath.replace("/document/raw:", "");
+//                        final String dbPath = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
+//
+//                        System.out.println(importPath);
+//
+//                        if (dbImporter(dbPath, importPath)) {
+//                            Toast.makeText(this, "Succeeded", Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            Toast.makeText(this, "failed", Toast.LENGTH_SHORT).show();
+//                        }
                     } else {
                         Toast.makeText(this, getString(R.string.could_not_retrieve_file), Toast.LENGTH_SHORT).show();
                     }

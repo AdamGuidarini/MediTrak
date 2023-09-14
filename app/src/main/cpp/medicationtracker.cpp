@@ -37,23 +37,19 @@ Java_projects_medicationtracker_Settings_dbImporter(JNIEnv *env, jobject thiz, j
     std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
     std::string importPath = env->GetStringUTFChars(import_path, new jboolean(true));
 
-    auto* dbManager = new DbManager(db, true);
+    DbManager dbManager(db, true);
 
     try {
-        dbManager->openDb();
+        dbManager.openDb();
 
-        dbManager->importData(importPath);
+        dbManager.importData(importPath);
 
-        dbManager->closeDb();
+        dbManager.closeDb();
     } catch (exception &e) {
         cerr << e.what() <<endl;
 
-        delete dbManager;
-
         return false;
     }
-
-    delete dbManager;
 
     return true;
 }
