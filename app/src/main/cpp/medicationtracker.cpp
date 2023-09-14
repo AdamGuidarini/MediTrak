@@ -42,7 +42,7 @@ Java_projects_medicationtracker_Settings_dbImporter(JNIEnv *env, jobject thiz, j
     try {
         dbManager->openDb();
 
-        dbManager->exportData(importPath);
+        dbManager->importData(importPath);
 
         dbManager->closeDb();
     } catch (exception &e) {
