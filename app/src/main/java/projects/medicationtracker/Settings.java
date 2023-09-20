@@ -29,7 +29,6 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 

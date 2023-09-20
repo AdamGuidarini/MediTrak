@@ -179,6 +179,8 @@ void DbManager::exportData(const string& exportFilePath, const vector<string>& i
 void DbManager::importData(const std::string &importFilePath) {
     fstream fin;
     string inData;
+    map<string, vector<map<string, string>>> data;
+    vector<string> tables = getTables();
 
     try {
         if (importFilePath.substr(importFilePath.find_last_of('.') + 1) != "json") {
@@ -190,15 +192,35 @@ void DbManager::importData(const std::string &importFilePath) {
         if (!fin.is_open()) { throw runtime_error("Import file failed to open"); }
 
         inData = string(istreambuf_iterator<char>{fin}, {});
-        inData.erase(
-        remove_if(inData.begin(), inData.end(), [](unsigned char x) { return std::isspace(x); }),
-        inData.end()
-        );
+
 
         fin.close();
     } catch (runtime_error& error) {
         cerr << error.what() << ": " << importFilePath << endl;
 
         throw error;
+    }
+
+    // Remove unneeded chars
+    inData.erase(
+            remove_if(inData.begin(), inData.end(), [](unsigned char x) { return std::isspace(x); }),
+            inData.end()
+    );
+
+    inData.erase(0, 1);
+    inData.erase(inData.end() - 1, inData.end());
+
+    inData.erase(
+            remove_if(inData.begin(), inData.end(), [](unsigned char x) { return x == '\"'; }),
+            inData.end()
+    );
+
+    for (const string &tbl : tables) {
+        size_t tblStart = inData.find(tbl + ":[");
+        size_t endTblData = inData.find(']', tblStart);
+
+        string tblStr = inData.substr(tblStart, endTblData);
+
+        cout << tblStr;
     }
 }
