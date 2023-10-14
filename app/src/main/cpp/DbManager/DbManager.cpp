@@ -215,12 +215,22 @@ void DbManager::importData(const std::string &importFilePath) {
             inData.end()
     );
 
-    for (const string &tbl : tables) {
-        size_t tblStart = inData.find(tbl + ":[");
-        size_t endTblData = inData.find(']', tblStart);
+    try {
+        for (const string &tbl : tables) {
+            size_t tblStart = inData.find(tbl + ":[");
+            size_t endTblData = inData.find(']', tblStart + string(tbl + ":[").size());
 
-        string tblStr = inData.substr(tblStart, endTblData);
+            if (tblStart == string::npos) {
+                throw runtime_error("Table \"" + tbl + "\" not found in input file");
+            }
 
-        cout << tblStr;
+            string tblStr = inData.substr(tblStart, endTblData - tblStart);
+
+            cout << tblStr;
+        }
+    } catch (exception& e) {
+        cerr << e.what() << endl;
+
+        throw e;
     }
 }
