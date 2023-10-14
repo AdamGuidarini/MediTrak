@@ -181,6 +181,8 @@ void DbManager::importData(const std::string &importFilePath) {
     string inData;
     map<string, vector<map<string, string>>> data;
     vector<string> tables = getTables();
+    stringstream importQuery;
+    char* err;
 
     try {
         if (importFilePath.substr(importFilePath.find_last_of('.') + 1) != "json") {
@@ -269,5 +271,17 @@ void DbManager::importData(const std::string &importFilePath) {
         throw e;
     }
 
+    importQuery << "BEGIN TRANSACTION;"
+    << "DELETE * FROM Medication;"
+    << "DELETE * FROM Settings;"
+    << "DELETE * FROM MedicationTracker;"
+    << "DELETE * FROM MedicationTimes;"
+    << "DELETE * FROM MedicationTimes;"
+    << "DELETE * FROM ActivityChanges;";
 
+    // TODO add imported data here
+
+    importQuery << "COMMIT;";
+
+    sqlite3_exec(db, importQuery.str().c_str(), nullptr, nullptr, &err);
 }
