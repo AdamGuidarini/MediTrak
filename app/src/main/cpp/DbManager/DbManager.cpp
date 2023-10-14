@@ -217,6 +217,9 @@ void DbManager::importData(const std::string &importFilePath) {
 
     try {
         for (const string &tbl : tables) {
+            vector<vector<string>> tokens;
+            size_t pos;
+            string tblStr;
             size_t tblStart = inData.find(tbl + ":[");
             size_t endTblData = inData.find(']', tblStart + string(tbl + ":[").size());
 
@@ -224,9 +227,34 @@ void DbManager::importData(const std::string &importFilePath) {
                 throw runtime_error("Table \"" + tbl + "\" not found in input file");
             }
 
-            string tblStr = inData.substr(tblStart, endTblData - tblStart);
+            tblStr = inData.substr(tblStart, endTblData - tblStart);
 
-            cout << tblStr;
+            tblStr.erase(0, (tbl + ":[").size());
+
+            if (tblStr.empty()) {
+                data.insert({ tbl, {} });
+                continue;
+            }
+
+            tblStr.erase(0, 1);
+            tblStr.erase(tblStr.size() - 1, 1);
+
+            int ind = 0;
+            tokens.resize(std::count(tblStr.begin(), tblStr.end(),'}') + 1);
+
+            while ((pos = tblStr.find(',')) != std::string::npos) {
+
+                string token = tblStr.substr(0, tblStr.find(','));
+
+                if (token.at(0) == '{') token.erase(0, 1);
+                if (token.at(token.size() - 1) == '}') {
+                    token.erase(token.find('}'), 1);
+                    ind++;
+                }
+
+                tokens.at(ind).push_back(token);
+                tblStr.erase(0, pos + 1);
+            }
         }
     } catch (exception& e) {
         cerr << e.what() << endl;
