@@ -217,7 +217,7 @@ void DbManager::importData(const std::string &importFilePath) {
 
     try {
         for (const string &tbl : tables) {
-            vector<vector<string>> tokens;
+            vector<map<string, string>> tokens;
             size_t pos;
             string tblStr;
             size_t tblStart = inData.find(tbl + ":[");
@@ -252,13 +252,22 @@ void DbManager::importData(const std::string &importFilePath) {
                     ind++;
                 }
 
-                tokens.at(ind).push_back(token);
+                pair<string, string> col = {
+                        token.substr(0, token.find(':')),
+                        token.substr(token.find(':') + 1, token.size() - 1)
+                };
+
+                tokens.at(ind).insert(col);
                 tblStr.erase(0, pos + 1);
             }
+
+            data.insert({ tbl, tokens });
         }
     } catch (exception& e) {
         cerr << e.what() << endl;
 
         throw e;
     }
+
+
 }
