@@ -164,7 +164,11 @@ public class BackupDestinationPicker extends DialogFragment {
 
     private void onExportClick() {
         String resMessage;
-        boolean res = dbExporter(getContext().getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath(), exportDir + '/' + exportFile);
+        boolean res = dbExporter(
+                getContext().getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath(),
+                exportDir + '/' + exportFile,
+                new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE}
+        );
 
         resMessage = res ? getString(R.string.successful_export, exportDir + '/' + exportFile)
                 : getString(R.string.failed_export);
@@ -172,5 +176,5 @@ public class BackupDestinationPicker extends DialogFragment {
         Toast.makeText(getContext(), resMessage, Toast.LENGTH_SHORT).show();
     }
 
-    public native boolean dbExporter(String databaseName, String exportDirectory);
+    public native boolean dbExporter(String databaseName, String exportDirectory, String[] ignoredTables);
 }

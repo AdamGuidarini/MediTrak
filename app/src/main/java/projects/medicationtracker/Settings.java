@@ -98,7 +98,7 @@ public class Settings extends AppCompatActivity {
 
                         final String dbPath = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
 
-                        if (dbImporter(dbPath, absPath)) {
+                        if (dbImporter(dbPath, absPath, new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE})) {
                             Toast.makeText(this, "Succeeded", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(this, "failed", Toast.LENGTH_SHORT).show();
@@ -325,5 +325,5 @@ public class Settings extends AppCompatActivity {
         return true;
     }
 
-    private native boolean dbImporter(String dbPath, String importPath);
+    private native boolean dbImporter(String dbPath, String importPath, String[] ignoredTables);
 }

@@ -176,11 +176,11 @@ void DbManager::exportData(const string& exportFilePath, const vector<string>& i
     outFile.close();
 }
 
-void DbManager::importData(const std::string &importFilePath) {
+void DbManager::importData(const std::string &importFilePath, const vector<string>& ignoreTables) {
     fstream fin;
     string inData;
     map<string, vector<map<string, string>>> data;
-    vector<string> tables = getTables();
+    vector<string> tables = getTables(ignoreTables);
     stringstream importQuery;
     char* err;
 
@@ -271,17 +271,15 @@ void DbManager::importData(const std::string &importFilePath) {
         throw e;
     }
 
-    importQuery << "BEGIN TRANSACTION;"
-    << "DELETE * FROM Medication;"
-    << "DELETE * FROM Settings;"
-    << "DELETE * FROM MedicationTracker;"
-    << "DELETE * FROM MedicationTimes;"
-    << "DELETE * FROM MedicationTimes;"
-    << "DELETE * FROM ActivityChanges;";
+    importQuery << "BEGIN TRANSACTION;";
+
+    for (const string &tbl : tables) {
+        importQuery << "DELETE * FROM " << tbl << ';';
+    }
 
     // TODO add imported data here
 
     importQuery << "COMMIT;";
 
-    sqlite3_exec(db, importQuery.str().c_str(), nullptr, nullptr, &err);
+//    sqlite3_exec(db, importQuery.str().c_str(), nullptr, nullptr, &err);
 }

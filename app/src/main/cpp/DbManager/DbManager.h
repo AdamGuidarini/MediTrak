@@ -89,7 +89,7 @@ public:
      *  column that does not exist in the provided database/table.
      * @param importFilePath Path to JSON file storing data to import.
      */
-    void importData(const string& importFilePath);
+    void importData(const string& importFilePath, const vector<string>& ignoreTables = {});
 };
 
 

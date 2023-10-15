@@ -26,6 +26,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Medications.db";
     private final static int DATABASE_VERSION = 6;
 
+    public final static String ANDROID_METADATA = "android_metadata";
+
     private static final String MEDICATION_TABLE = "Medication";
     private static final String MED_ID = "MedicationID";
     private static final String MED_NAME = "MedName";
@@ -56,7 +58,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String NOTE = "Note";
     private static final String ENTRY_TIME = "EntryTime";
 
-    private static final String SETTINGS_TABLE = "Settings";
+    public static final String SETTINGS_TABLE = "Settings";
     private static final String TIME_BEFORE_DOSE = "TimeBeforeDose";
     private static final String ENABLE_NOTIFICATIONS = "EnableNotifications";
     public static final String THEME = "Theme";
