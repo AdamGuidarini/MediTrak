@@ -277,7 +277,21 @@ void DbManager::importData(const std::string &importFilePath, const vector<strin
         importQuery << "DELETE * FROM " << tbl << ';';
     }
 
-    // TODO add imported data here
+    for (const auto& tbl : data) {
+        importQuery << "INSERT INTO "
+                    << tbl.first
+                    << "(";
+
+        if (!tbl.second.empty()) {
+            for (auto& col : tbl.second.at(0)) {
+                importQuery << col.first << ',';
+            }
+
+            importQuery.seekp(-1, ios_base::end);
+        }
+
+        importQuery << ");";
+    }
 
     importQuery << "COMMIT;";
 
