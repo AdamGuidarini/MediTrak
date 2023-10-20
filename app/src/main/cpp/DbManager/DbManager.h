@@ -26,6 +26,19 @@ private:
      * Database reference.
      */
     sqlite3* db{};
+    /**
+     * Searches for characters that can cause issues with parsing when importing and replace them with HTML safe values
+     * @param str String to search
+     * @return str with unsafe values replaces with HTML safe chars
+     */
+    string escapeUnsafeChars(string str);
+
+    /**
+     * Replaces safe HTML chars with their regular equivalents
+     * @param str String to check for HTML escape characters
+     * @return str with any HTML escape characters replaced with regualr characters
+     */
+    string unescapeSafeChars(string str);
 
 public:
     /**

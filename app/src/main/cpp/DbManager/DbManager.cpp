@@ -15,6 +15,62 @@ DbManager::DbManager(string databasePath, bool enableForeignKeys) {
     }
 }
 
+string DbManager::escapeUnsafeChars(string str) {
+    if (str.find(' ') != string::npos) {
+        str.replace(str.begin(), str.end(), " ", "&dbsp;");
+    }
+
+    if(str.find('"') != string::npos) {
+        str.replace(str.begin(), str.end(), "\"", "&qout;");
+    }
+
+    if (str.find('{') != string::npos) {
+        str.replace(str.begin(), str.end(), "{", "&#123;");
+    }
+
+    if (str.find('}') != string::npos) {
+        str.replace(str.begin(), str.end(), "}", "&#125;");
+    }
+
+    if (str.find(':') != string::npos) {
+        str.replace(str.begin(), str.end(), ":", "&#58;");
+    }
+
+    if (str.find(',') != string::npos) {
+        str.replace(str.begin(), str.end(), ",", "&#130;");
+    }
+
+    return str;
+}
+
+string DbManager::unescapeSafeChars(string str) {
+    if (str.find("&dbsp;") != string::npos) {
+        str.replace(str.begin(), str.end(), "&dbsp;", " ");
+    }
+
+    if(str.find("&qout;") != string::npos) {
+        str.replace(str.begin(), str.end(), "&qout;", "\"");
+    }
+
+    if (str.find("&#123;") != string::npos) {
+        str.replace(str.begin(), str.end(), "&#123;", "{");
+    }
+
+    if (str.find("&#125;") != string::npos) {
+        str.replace(str.begin(), str.end(), "&#125;", "}");
+    }
+
+    if (str.find("&#58;") != string::npos) {
+        str.replace(str.begin(), str.end(), "&#58;", ":");
+    }
+
+    if (str.find("&#130;") != string::npos) {
+        str.replace(str.begin(), str.end(), "&#130;", ",");
+    }
+
+    return str;
+}
+
 DbManager::~DbManager() {
     closeDb();
 }
@@ -150,7 +206,7 @@ void DbManager::exportData(const string& exportFilePath, const vector<string>& i
             outData += "{";
 
             for (const auto& col : tblInfo) {
-                outData += "\"" + col.first + "\":\"" + col.second + "\",";
+                outData += "\"" + col.first + "\":\"" + escapeUnsafeChars(col.second) + "\",";
             }
 
             if (outData.at(outData.size() - 1) == ',') {
