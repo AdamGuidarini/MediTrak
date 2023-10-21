@@ -17,27 +17,27 @@ DbManager::DbManager(string databasePath, bool enableForeignKeys) {
 
 string DbManager::escapeUnsafeChars(string str) {
     if (str.find(' ') != string::npos) {
-        str.replace(str.begin(), str.end(), " ", "&dbsp;");
+        replaceAll(str, " ", "&dbsp;");
     }
 
-    if(str.find('"') != string::npos) {
-        str.replace(str.begin(), str.end(), "\"", "&qout;");
+    if(str.find('\"') != string::npos) {
+        replaceAll(str, "\"", "&qout;");
     }
 
     if (str.find('{') != string::npos) {
-        str.replace(str.begin(), str.end(), "{", "&#123;");
+        replaceAll(str, "{", "&#123;");
     }
 
     if (str.find('}') != string::npos) {
-        str.replace(str.begin(), str.end(), "}", "&#125;");
+        replaceAll(str, "}", "&#125;");
     }
 
     if (str.find(':') != string::npos) {
-        str.replace(str.begin(), str.end(), ":", "&#58;");
+        replaceAll(str, ":", "&#58;");
     }
 
     if (str.find(',') != string::npos) {
-        str.replace(str.begin(), str.end(), ",", "&#130;");
+        replaceAll(str, ",", "&#130;");
     }
 
     return str;
@@ -45,30 +45,38 @@ string DbManager::escapeUnsafeChars(string str) {
 
 string DbManager::unescapeSafeChars(string str) {
     if (str.find("&dbsp;") != string::npos) {
-        str.replace(str.begin(), str.end(), "&dbsp;", " ");
+        replaceAll(str, "&dbsp;", " ");
     }
 
     if(str.find("&qout;") != string::npos) {
-        str.replace(str.begin(), str.end(), "&qout;", "\"");
+        replaceAll(str, "&qout;", "\"");
     }
 
     if (str.find("&#123;") != string::npos) {
-        str.replace(str.begin(), str.end(), "&#123;", "{");
+        replaceAll(str, "&#123;", "{");
     }
 
     if (str.find("&#125;") != string::npos) {
-        str.replace(str.begin(), str.end(), "&#125;", "}");
+        replaceAll(str, "&#125;", "}");
     }
 
     if (str.find("&#58;") != string::npos) {
-        str.replace(str.begin(), str.end(), "&#58;", ":");
+        replaceAll(str, "&#58;", ":");
     }
 
     if (str.find("&#130;") != string::npos) {
-        str.replace(str.begin(), str.end(), "&#130;", ",");
+        replaceAll(str, "&#130;", ",");
     }
 
     return str;
+}
+
+void DbManager::replaceAll(string &str, const string& from, const string& to) {
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length();
+    }
 }
 
 DbManager::~DbManager() {
@@ -185,7 +193,7 @@ void DbManager::exportData(const string& exportFilePath, const vector<string>& i
     string outData;
 
     try {
-        outFile.open(exportFilePath);
+        outFile.open(exportFilePath, fstream::in | fstream::out | fstream::trunc);
 
         if (!outFile.is_open()) {
             throw runtime_error("Could not open file: " + exportFilePath);

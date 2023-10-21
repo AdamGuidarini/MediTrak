@@ -40,6 +40,14 @@ private:
      */
     string unescapeSafeChars(string str);
 
+    /**
+     * Replaces all occurences of from with to in str
+     * @param str string that will have characters replaces
+     * @param from substring of str to replace with to
+     * @param to substring that will replace from
+     */
+    void replaceAll(string& str, const string& from, const string& to);
+
 public:
     /**
      * Constructor for DbManager class, automatically opens database.

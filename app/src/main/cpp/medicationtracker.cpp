@@ -26,7 +26,7 @@ Java_projects_medicationtracker_Dialogs_BackupDestinationPicker_dbExporter(JNIEn
     try {
         manager->openDb();
 
-        manager->exportData(exportDir);
+        manager->exportData(exportDir, ignoredTbls);
 
         manager->closeDb();
     } catch (exception &e) {
