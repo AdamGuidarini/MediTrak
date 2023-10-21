@@ -320,7 +320,7 @@ void DbManager::importData(const std::string &importFilePath, const vector<strin
 
                 pair<string, string> col = {
                         token.substr(0, token.find(':')),
-                        token.substr(token.find(':') + 1, token.size() - 1)
+                        unescapeSafeChars(token.substr(token.find(':') + 1, token.size() - 1))
                 };
 
                 tokens.at(ind).insert(col);
@@ -338,26 +338,40 @@ void DbManager::importData(const std::string &importFilePath, const vector<strin
     importQuery << "BEGIN TRANSACTION;";
 
     for (const string &tbl : tables) {
-        importQuery << "DELETE * FROM " << tbl << ';';
+        importQuery << "DELETE FROM " << tbl << ';';
     }
 
     for (const auto& tbl : data) {
+        if (tbl.second.empty()) continue;
+
         importQuery << "INSERT INTO "
                     << tbl.first
                     << "(";
 
-        if (!tbl.second.empty()) {
-            for (auto& col : tbl.second.at(0)) {
-                importQuery << col.first << ',';
-            }
-
-            importQuery.seekp(-1, ios_base::end);
+        for (auto& col : tbl.second.at(0)) {
+            importQuery << col.first << ',';
         }
 
-        importQuery << ");";
+        importQuery.seekp(-1, ios_base::end);
+        importQuery << ") VALUES ";
+
+        for (auto& row : tbl.second) {
+            importQuery << '(';
+            for (auto& col : row) {
+                importQuery << "\"" << col.second << "\"" << ',';
+            }
+            importQuery.seekp(-1, ios_base::end);
+            importQuery << "),";
+        }
+
+        importQuery.seekp(-1, ios_base::end);
+
+        importQuery << ";";
     }
 
     importQuery << "COMMIT;";
 
-//    sqlite3_exec(db, importQuery.str().c_str(), nullptr, nullptr, &err);
+    const int retVal = sqlite3_exec(db, importQuery.str().c_str(), nullptr, nullptr, &err);
+
+    cout << retVal;
 }
