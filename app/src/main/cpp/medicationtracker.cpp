@@ -30,7 +30,7 @@ Java_projects_medicationtracker_Dialogs_BackupDestinationPicker_dbExporter(JNIEn
 
         manager->closeDb();
     } catch (exception &e) {
-        cerr << e.what() << endl;
+        __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
 
         delete manager;
 
@@ -66,7 +66,7 @@ Java_projects_medicationtracker_Settings_dbImporter(JNIEnv *env, jobject thiz, j
 
         dbManager.closeDb();
     } catch (exception &e) {
-        cerr << e.what() <<endl;
+        __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
 
         return false;
     }

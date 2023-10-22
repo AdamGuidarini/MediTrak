@@ -371,7 +371,18 @@ void DbManager::importData(const std::string &importFilePath, const vector<strin
 
     importQuery << "COMMIT;";
 
-    const int retVal = sqlite3_exec(db, importQuery.str().c_str(), nullptr, nullptr, &err);
+    try {
+        const int retVal = sqlite3_exec(db, importQuery.str().c_str(), nullptr, nullptr, &err);
 
-    cout << retVal;
+        if (retVal != SQLITE_OK) {
+            throw runtime_error(err);
+        }
+    } catch (exception& e) {
+        cerr << e.what() << endl;
+
+        string error = "SQLite Error: ";
+        error += err;
+
+        throw runtime_error(error);
+    }
 }
