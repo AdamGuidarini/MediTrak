@@ -283,7 +283,7 @@ void DbManager::importData(const std::string &importFilePath, const vector<strin
 
     try {
         for (const string &tbl : tables) {
-            vector<map<string, string>> tokens;
+            vector<map<string, string>> table;
             size_t pos;
             string tblStr;
             size_t tblStart = inData.find(tbl + ":[");
@@ -306,16 +306,17 @@ void DbManager::importData(const std::string &importFilePath, const vector<strin
             tblStr.erase(tblStr.size() - 1, 1);
 
             int ind = 0;
-            tokens.resize(std::count(tblStr.begin(), tblStr.end(),'}') + 1);
+            table.resize(count(tblStr.begin(), tblStr.end(), '}') + 1);
 
-            while ((pos = tblStr.find(',')) != std::string::npos) {
-
-                string token = tblStr.substr(0, tblStr.find(','));
+            while ((pos = tblStr.find(',')) != string::npos || tblStr.length() > 0) {
+                unsigned int end = tblStr.find(',') != string::npos ? tblStr.find(',') : tblStr.length() - 1;
+                string token = tblStr.substr(0, end);
+                bool incrimentInd = false;
 
                 if (token.at(0) == '{') token.erase(0, 1);
                 if (token.at(token.size() - 1) == '}') {
                     token.erase(token.find('}'), 1);
-                    ind++;
+                    incrimentInd = true;
                 }
 
                 pair<string, string> col = {
@@ -323,11 +324,17 @@ void DbManager::importData(const std::string &importFilePath, const vector<strin
                         unescapeSafeChars(token.substr(token.find(':') + 1, token.size() - 1))
                 };
 
-                tokens.at(ind).insert(col);
-                tblStr.erase(0, pos + 1);
+                table.at(ind).insert(col);
+
+                if (incrimentInd) ind++;
+                if (pos != string::npos) {
+                    tblStr.erase(0, pos + 1);
+                } else {
+                    tblStr = "";
+                }
             }
 
-            data.insert({ tbl, tokens });
+            data.insert({tbl, table });
         }
     } catch (exception& e) {
         cerr << e.what() << endl;
