@@ -13,19 +13,28 @@
 #include <fstream>
 #include <map>
 #include <vector>
+#include <SqliteTable.h>
 
 using namespace std;
 
 class DbManager {
 private:
+
     /**
      * Path to the database file.
      */
     string database_name;
+
     /**
      * Database reference.
      */
     sqlite3* db{};
+
+    /**
+     * Flag for tracking if DB is open
+     */
+    bool isOpen = false;
+
     /**
      * Searches for characters that can cause issues with parsing when importing and replace them with HTML safe values
      * @param str String to search
@@ -36,18 +45,24 @@ private:
     /**
      * Replaces safe HTML chars with their regular equivalents
      * @param str String to check for HTML escape characters
-     * @return str with any HTML escape characters replaced with regualr characters
+     * @return str with any HTML escape characters replaced with regular characters
      */
     string unescapeSafeChars(string str);
 
     /**
-     * Replaces all occurences of from with to in str
+     * Replaces all occurrences of from with to in str
      * @param str string that will have characters replaces
      * @param from substring of str to replace with to
      * @param to substring that will replace from
      */
     void replaceAll(string& str, const string& from, const string& to);
 
+    /**
+     * Checks if a string is or is not a number
+     * @param str string to check if it is a number
+     * @return True if a number, else false
+     */
+    bool isNumber(string str);
 public:
     /**
      * Constructor for DbManager class, automatically opens database.

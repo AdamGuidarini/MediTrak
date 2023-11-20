@@ -365,7 +365,11 @@ void DbManager::importData(const std::string &importFilePath, const vector<strin
         for (auto& row : tbl.second) {
             importQuery << '(';
             for (auto& col : row) {
-                importQuery << "\"" << col.second << "\"" << ',';
+                if (isNumber(col.second)) {
+                    importQuery << col.second << ',';
+                } else {
+                    importQuery << "\"" << col.second << "\"" << ',';
+                }
             }
             importQuery.seekp(-1, ios_base::end);
             importQuery << "),";
@@ -392,4 +396,11 @@ void DbManager::importData(const std::string &importFilePath, const vector<strin
 
         throw runtime_error(error);
     }
+}
+
+bool DbManager::isNumber(string str) {
+    string::const_iterator it = str.begin();
+    while (it != str.end() && std::isdigit(*it)) ++it;
+
+    return !str.empty() && it == str.end();
 }

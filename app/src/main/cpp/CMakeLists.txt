@@ -13,6 +13,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory(DbManager)
 add_subdirectory(sqlite)
+add_subdirectory(SqliteTable)
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
@@ -50,6 +51,7 @@ find_library( # Sets the name of the path variable.
 target_link_libraries( # Specifies the target library.
                        medicationtracker
                        DbManager
+                       SqliteTable
                        android
                        # Links the target library to the log library
                        # included in the NDK.
