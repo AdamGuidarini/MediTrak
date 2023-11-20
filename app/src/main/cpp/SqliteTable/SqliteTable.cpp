@@ -7,12 +7,12 @@
 SqliteTable::SqliteTable(
         string name,
         string primary_key,
-        vector<SecondaryKey> secondary_keys,
+        vector<ForeignKey> foreign_keys,
         vector<map<string, string>> table_data
 ) {
     this->name = name;
     primaryKey = primary_key;
-    secondaryKeys = secondary_keys;
+    foreignKeys = foreign_keys;
     data = table_data;
 }
 

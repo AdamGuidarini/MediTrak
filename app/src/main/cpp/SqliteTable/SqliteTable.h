@@ -11,7 +11,7 @@
 
 using namespace std;
 
-struct SecondaryKey {
+struct ForeignKey {
     string name;
     string referencedTable;
     string referencedValue;
@@ -30,10 +30,10 @@ private:
     /**
      * Secondary keys in table
      */
-    vector<SecondaryKey> secondaryKeys;
+    vector<ForeignKey> foreignKeys;
     vector<map<string,string>> data;
 public:
-    SqliteTable(string name, string primary_key, vector<SecondaryKey> secondary_keys, vector<map<string,string>> table_data = {});
+    SqliteTable(string name, string primary_key, vector<ForeignKey> secondary_keys, vector<map<string,string>> table_data = {});
     void setData(vector<map<string,string>> table_data);
     vector<map<string,string>> getData();
 };
