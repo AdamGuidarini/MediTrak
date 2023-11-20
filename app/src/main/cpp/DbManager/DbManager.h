@@ -13,9 +13,21 @@
 #include <fstream>
 #include <map>
 #include <vector>
-#include <SqliteTable.h>
 
 using namespace std;
+
+struct ForeignKey {
+    string name;
+    string referencedTable;
+    string referencedColumn;
+};
+
+struct SQLiteTable {
+    string name;
+    string primaryKey;
+    vector<ForeignKey> foreignKeys;
+    vector<map<string,string>> data;
+};
 
 class DbManager {
 private:
