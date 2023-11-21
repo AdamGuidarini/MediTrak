@@ -422,7 +422,7 @@ vector<SQLiteTable*>* DbManager::collectData(string& tblName, int offset, int li
 
     if (data == nullptr) {
         data = new vector<SQLiteTable*>(0);
-        tbl = new SQLiteTable;
+        tbl = new SQLiteTable();
         tbl->name = tblName;
         tbl->start = offset;
         tbl->maxRecords = limit;
