@@ -82,11 +82,12 @@ void DbManager::replaceAll(string &str, const string& from, const string& to) {
 DbManager::~DbManager() {
     closeDb();
 
-    for (const auto t : *data) {
-        delete t;
+    if (data != nullptr && !data->empty()) {
+        for (const auto t : *data) {
+            delete t;
+        }
+        delete data;
     }
-
-    delete data;
 }
 
 void DbManager::openDb() {
