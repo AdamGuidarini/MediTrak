@@ -47,7 +47,7 @@ private:
     /**
      * Data stored in database
      */
-    vector<SQLiteTable>* data;
+    vector<SQLiteTable*>* data;
 
     /**
      * Searches for characters that can cause issues with parsing when importing and replace them with HTML safe values
@@ -81,7 +81,7 @@ private:
     /**
      * Collects and stores data in
      */
-    vector<SQLiteTable>* collectData(string& tblName, int offset = 0, int limit = -1);
+    vector<SQLiteTable*>* collectData(string& tblName, int offset = 0, int limit = -1);
 public:
     /**
      * Constructor for DbManager class, automatically opens database.
@@ -146,7 +146,7 @@ public:
      */
     void importData(const string& importFilePath, const vector<string>& ignoreTables = {});
 
-    vector<SQLiteTable>* getData();
+    vector<SQLiteTable*>* getData();
 };
 
 
