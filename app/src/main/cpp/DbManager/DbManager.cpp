@@ -81,6 +81,7 @@ void DbManager::replaceAll(string &str, const string& from, const string& to) {
 
 DbManager::~DbManager() {
     closeDb();
+    delete data;
 }
 
 void DbManager::openDb() {
@@ -404,3 +405,63 @@ bool DbManager::isNumber(string str) {
 
     return !str.empty() && it == str.end();
 }
+
+vector<SQLiteTable>* DbManager::collectData(string& tblName, int offset, int limit) {
+    sqlite3_stmt *stmt = nullptr;
+    auto query = "SELECT * FROM " + tblName
+                 + " LIMIT " + to_string(limit)
+                 + " OFFSET " + to_string(offset) + ";";
+    vector<map<string, string>> results;
+    int rc;
+    struct SQLiteTable tbl;
+
+    if (data == nullptr) {
+        data = new vector<SQLiteTable>(0);
+        tbl.name = tblName;
+        tbl.start = offset;
+        tbl.maxRecords = limit;
+    } else {
+        // Find table record, if exists
+        function<bool(SQLiteTable)> isInTables = [&tblName](const SQLiteTable& tbl) { return tbl.name == tblName; };
+
+        const auto ind = find_if(data->begin(), data->end(), isInTables);
+    }
+
+    rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
+    sqlite3_step(stmt);
+
+    try {
+        if (rc != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+
+            throw runtime_error("Error reading from SQLite database.");
+        }
+
+        while (sqlite3_column_text(stmt, 0)) {
+            map<string, string> m = map<string, string>();
+
+            for (int i = 0; i < sqlite3_column_count(stmt); i++) {
+                string colText;
+
+                if (sqlite3_column_text(stmt, i) != nullptr) {
+                    colText = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, i)));
+                }
+
+                m.insert({ string(sqlite3_column_name(stmt, i)),string(colText) });
+            }
+
+            tbl.data.push_back(m);
+            sqlite3_step(stmt);
+        }
+    } catch (runtime_error& error) {
+        cerr << "SQLITE READ ERROR | Return Code: " << rc << endl;
+        sqlite3_finalize(stmt);
+        throw error;
+    }
+
+    sqlite3_finalize(stmt);
+
+    return data;
+}
+
+vector<SQLiteTable>* DbManager::getData() {  return data; }

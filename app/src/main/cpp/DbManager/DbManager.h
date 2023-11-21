@@ -27,6 +27,8 @@ struct SQLiteTable {
     string primaryKey;
     vector<ForeignKey> foreignKeys;
     vector<map<string,string>> data;
+    int start;
+    int maxRecords;
 };
 
 class DbManager {
@@ -43,9 +45,9 @@ private:
     sqlite3* db{};
 
     /**
-     * Flag for tracking if DB is open
+     * Data stored in database
      */
-    bool isOpen = false;
+    vector<SQLiteTable>* data;
 
     /**
      * Searches for characters that can cause issues with parsing when importing and replace them with HTML safe values
@@ -75,6 +77,11 @@ private:
      * @return True if a number, else false
      */
     bool isNumber(string str);
+
+    /**
+     * Collects and stores data in
+     */
+    vector<SQLiteTable>* collectData(string& tblName, int offset = 0, int limit = -1);
 public:
     /**
      * Constructor for DbManager class, automatically opens database.
@@ -138,6 +145,8 @@ public:
      * @param importFilePath Path to JSON file storing data to import.
      */
     void importData(const string& importFilePath, const vector<string>& ignoreTables = {});
+
+    vector<SQLiteTable>* getData();
 };
 
 
