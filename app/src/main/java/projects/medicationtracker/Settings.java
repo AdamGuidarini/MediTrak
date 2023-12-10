@@ -5,8 +5,11 @@ import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -15,7 +18,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -26,11 +32,17 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import projects.medicationtracker.Dialogs.BackupDestinationPicker;
 import projects.medicationtracker.Fragments.ConfirmDeleteAllFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 
 public class Settings extends AppCompatActivity {
-    DBHelper db = new DBHelper(this);
+    private final DBHelper db = new DBHelper(this);
+    private ActivityResultLauncher<String> chooseFileLauncher;
+
+    static {
+        System.loadLibrary("medicationtracker");
+    }
 
     /**
      * Create Settings
@@ -51,6 +63,50 @@ public class Settings extends AppCompatActivity {
         setTimeBeforeDoseRestrictionSwitch();
         setEnableNotificationSwitch();
         setThemeMenu();
+
+        chooseFileLauncher = registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                result -> {
+                    if (result != null && result.getPath() != null) {
+                        String absPath;
+                        String name;
+                        Cursor cursor = getContentResolver().query(result, null, null, null, null);
+
+                        if (cursor != null && cursor.getCount() > 0) {
+                            cursor.moveToFirst();
+
+                            name = cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME));
+                        } else {
+                            return;
+                        }
+
+                        System.out.println(result.getAuthority());
+                        System.out.println(result.getEncodedPath());
+
+
+                        switch (Objects.requireNonNull(result.getAuthority())) {
+                            case "com.android.providers.downloads.documents":
+                                absPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/" + name;
+                                break;
+                            case "com.android.providers.documents.documents":
+                                absPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getPath() + "/" + name;
+                                break;
+                            default:
+                                Toast.makeText(this, "=Invalid import location. Import file must be in Documents or Downloads.", Toast.LENGTH_LONG).show();
+                                return;
+                        }
+
+                        final String dbPath = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
+
+                        if (dbImporter(dbPath, absPath, new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE})) {
+                            Toast.makeText(this, getString(R.string.import_success), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, getString(R.string.failed_import), Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(this, getString(R.string.could_not_retrieve_file), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     /**
@@ -234,6 +290,18 @@ public class Settings extends AppCompatActivity {
     }
 
     /**
+     * Listener for export data button
+     */
+    public void onExportClick(View view) {
+        BackupDestinationPicker picker = new BackupDestinationPicker();
+        picker.show(getSupportFragmentManager(), null);
+    }
+
+    public void onImportClick(View view) {
+        chooseFileLauncher.launch("application/json");
+    }
+
+    /**
      * Listener for button that deletes all saved data
      */
     public void onPurgeButtonClick(View view) {
@@ -256,4 +324,6 @@ public class Settings extends AppCompatActivity {
 
         return true;
     }
+
+    private native boolean dbImporter(String dbPath, String importPath, String[] ignoredTables);
 }
