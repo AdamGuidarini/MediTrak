@@ -374,6 +374,8 @@ void DbManager::importData(const std::string &importFilePath, const vector<strin
             for (auto& col : row) {
                 if (isNumber(col.second)) {
                     importQuery << col.second << ',';
+                } else if (col.second.empty()) {
+                    importQuery << "NULL,";
                 } else {
                     importQuery << "\"" << col.second << "\"" << ',';
                 }
@@ -477,4 +479,6 @@ vector<SQLiteTable*>* DbManager::collectData(string& tblName, int offset, int li
     return data;
 }
 
-vector<SQLiteTable*>* DbManager::getData() {  return data; }
+vector<SQLiteTable*>* DbManager::getData() {
+    return data;
+}
