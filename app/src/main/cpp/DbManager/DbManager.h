@@ -16,21 +16,6 @@
 
 using namespace std;
 
-struct ForeignKey {
-    string name;
-    string referencedTable;
-    string referencedColumn;
-};
-
-struct SQLiteTable {
-    string name;
-    string primaryKey;
-    vector<ForeignKey> foreignKeys;
-    vector<map<string,string>> data;
-    int start;
-    int maxRecords;
-};
-
 class DbManager {
 private:
 
@@ -43,11 +28,6 @@ private:
      * Database reference.
      */
     sqlite3* db{};
-
-    /**
-     * Data stored in database
-     */
-    vector<SQLiteTable*>* data;
 
     /**
      * Searches for characters that can cause issues with parsing when importing and replace them with HTML safe values
@@ -78,10 +58,6 @@ private:
      */
     bool isNumber(string str);
 
-    /**
-     * Collects and stores data in
-     */
-    vector<SQLiteTable*>* collectData(string& tblName, int offset = 0, int limit = -1);
 public:
     /**
      * Constructor for DbManager class, automatically opens database.
@@ -145,8 +121,6 @@ public:
      * @param importFilePath Path to JSON file storing data to import.
      */
     void importData(const string& importFilePath, const vector<string>& ignoreTables = {});
-
-    vector<SQLiteTable*>* getData();
 };
 
 
