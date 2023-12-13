@@ -201,7 +201,7 @@ void DbManager::exportData(const string& exportFilePath, const vector<string>& i
     } catch (exception& e) {
         cerr << e.what() << endl;
 
-        throw e;
+        throw runtime_error("Could not open file: " + exportFilePath);
     }
 
     outFile << "{";
@@ -259,7 +259,6 @@ void DbManager::importData(const std::string &importFilePath, const vector<strin
 
         inData = string(istreambuf_iterator<char>{fin}, {});
 
-
         fin.close();
     } catch (runtime_error& error) {
         cerr << error.what() << ": " << importFilePath << endl;
@@ -311,12 +310,12 @@ void DbManager::importData(const std::string &importFilePath, const vector<strin
             while ((pos = tblStr.find(',')) != string::npos || tblStr.length() > 0) {
                 unsigned int end = tblStr.find(',') != string::npos ? tblStr.find(',') : tblStr.length() - 1;
                 string token = tblStr.substr(0, end);
-                bool incrimentInd = false;
+                bool incrementInd = false;
 
                 if (token.at(0) == '{') token.erase(0, 1);
                 if (token.at(token.size() - 1) == '}') {
                     token.erase(token.find('}'), 1);
-                    incrimentInd = true;
+                    incrementInd = true;
                 }
 
                 pair<string, string> col = {
@@ -326,7 +325,7 @@ void DbManager::importData(const std::string &importFilePath, const vector<strin
 
                 table.at(ind).insert(col);
 
-                if (incrimentInd) ind++;
+                if (incrementInd) ind++;
                 if (pos != string::npos) {
                     tblStr.erase(0, pos + 1);
                 } else {

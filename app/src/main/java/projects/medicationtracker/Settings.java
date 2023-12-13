@@ -5,6 +5,7 @@ import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
@@ -79,10 +81,6 @@ public class Settings extends AppCompatActivity {
                         } else {
                             return;
                         }
-
-                        System.out.println(result.getAuthority());
-                        System.out.println(result.getEncodedPath());
-
 
                         switch (Objects.requireNonNull(result.getAuthority())) {
                             case "com.android.providers.downloads.documents":

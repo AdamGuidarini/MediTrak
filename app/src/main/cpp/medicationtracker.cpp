@@ -21,23 +21,19 @@ Java_projects_medicationtracker_Dialogs_BackupDestinationPicker_dbExporter(JNIEn
         ignoredTbls.push_back(rawString);
     }
 
-    auto* manager = new DbManager(db, true);
+    DbManager manager(db, true);
 
     try {
-        manager->openDb();
+        manager.openDb();
 
-        manager->exportData(exportDir, ignoredTbls);
+        manager.exportData(exportDir, ignoredTbls);
 
-        manager->closeDb();
+        manager.closeDb();
     } catch (exception &e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
 
-        delete manager;
-
         return false;
     }
-
-    delete manager;
 
     return true;
 }
