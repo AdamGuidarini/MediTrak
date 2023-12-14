@@ -5,6 +5,7 @@ import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -115,8 +116,9 @@ public class Settings extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home)
-            finish();
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -126,8 +128,9 @@ public class Settings extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        Intent intent = new Intent(this,MainActivity.class);
         finish();
+        startActivity(intent);
     }
 
     /**
