@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -225,7 +226,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         String medName = medication.getName();
         String dosage;
         if (medication.getDosage() == (int) medication.getDosage()) {
-            dosage = String.format(Locale.getDefault(), "%d", (int) medication.getDosage());
+            dosage = String.format(Locale.getDefault(), "%d", medication.getDosage());
         } else {
             dosage = String.valueOf(medication.getDosage());
         }
@@ -326,14 +327,20 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
 
         switch (action) {
             case ADD:
-                LinearLayout checkBoxHolder = rootView.findViewById(R.id.medicationSchedule);
+                LinearLayout layout = rootView.findViewById(R.id.medicationSchedule);
 
                 meds.forEach(m ->
                 {
-                    if (m.getFrequency() == 0) m.setTimes(db.getDoseFromMedicationTracker(m));
+                    if (m.getFrequency() == 0) {
+                        ArrayList<LocalDateTime> doses = new ArrayList<>(Arrays.asList(db.getMedicationDoses(m)));
+                        LocalDateTime[] times = doses.stream().filter(
+                                d -> d.toLocalDate().isEqual(TimeFormatting.whenIsSunday(dayInCurrentWeek).plusDays(dayNumber))
+                        ).toArray(LocalDateTime[]::new);
+                        m.setTimes(times);
+                    }
                 });
 
-                checkBoxHolder.removeAllViews();
+                layout.removeAllViews();
                 ll.removeAllViews();
 
                 createSchedule();

@@ -67,7 +67,10 @@ public class AddAsNeededDoseDialog extends DialogFragment {
         builder.setView(inflater.inflate(R.layout.dialog_add_as_needed, null));
         builder.setTitle(R.string.add_dose);
 
-        builder.setPositiveButton(R.string.save, ((dialogInterface, i) -> save()));
+        builder.setPositiveButton(R.string.save, ((dialogInterface, i) -> {
+            save();
+            dismiss();
+        }));
         builder.setNegativeButton(R.string.close, ((dialogInterface, i) -> dismiss()));
 
         dialog = builder.create();

@@ -797,7 +797,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.insert(MEDICATION_TRACKER_TABLE, null, medTrackerValues);
     }
 
-    public LocalDateTime[] getDoseFromMedicationTracker(Medication medication) {
+    public LocalDateTime[] getMedicationDoses(Medication medication) {
         LocalDateTime[] times;
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " + DOSE_TIME + " FROM " + MEDICATION_TRACKER_TABLE
