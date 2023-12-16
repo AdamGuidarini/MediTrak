@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -32,7 +34,6 @@ public class DoseInfoDialog extends DialogFragment {
     private final long doseId;
     private final DBHelper db;
     private final TextView textView;
-    private boolean changed = false;
     private TextInputEditText timeTaken;
     private TextInputEditText dateTaken;
 
@@ -48,6 +49,7 @@ public class DoseInfoDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         Medication med = ((Triple<Medication, Long, LocalDateTime>) textView.getTag()).getFirst();
+        AlertDialog infoDialog;
 
         builder.setView(inflater.inflate(R.layout.dialog_dose_info, null));
         builder.setTitle(R.string.this_dose);
@@ -59,7 +61,42 @@ public class DoseInfoDialog extends DialogFragment {
             builder.setNeutralButton(R.string.delete, ((dialogInterface, i) -> deleteAsNeededDose()));
         }
 
-        return builder.create();
+        infoDialog = builder.create();
+        infoDialog.show();
+
+        infoDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+
+        timeTaken = infoDialog.findViewById(R.id.dose_time_taken);
+        dateTaken = infoDialog.findViewById(R.id.dose_date_taken);
+
+        if (doseId != -1) {
+            LocalDateTime doseDate = db.getTimeTaken(doseId);
+
+            timeTaken.setShowSoftInputOnFocus(false);
+            dateTaken.setShowSoftInputOnFocus(false);
+
+            timeTaken.setText(TimeFormatting.localTimeToString(doseDate.toLocalTime()));
+            timeTaken.setTag(doseDate.toLocalTime());
+
+            dateTaken.setText(TimeFormatting.localDateToString(doseDate.toLocalDate()));
+            dateTaken.setTag(doseDate.toLocalDate());
+            TextWatcher tw = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    infoDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
+                }
+            };
+
+            timeTaken.addTextChangedListener(tw);
+            dateTaken.addTextChangedListener(tw);
+        }
+
+        return infoDialog;
     }
 
 
@@ -75,27 +112,11 @@ public class DoseInfoDialog extends DialogFragment {
         if (!db.getTaken(doseId)) {
             getDialog().findViewById(R.id.notTakenMessage).setVisibility(View.VISIBLE);
         } else {
-            LocalDateTime doseDate = db.getTimeTaken(doseId);
-
-            timeTaken = getDialog().findViewById(R.id.dose_time_taken);
-            dateTaken = getDialog().findViewById(R.id.dose_date_taken);
-
-            timeTaken.setShowSoftInputOnFocus(false);
-            dateTaken.setShowSoftInputOnFocus(false);
-
-            timeTaken.setText(TimeFormatting.localTimeToString(doseDate.toLocalTime()));
-            timeTaken.setTag(doseDate.toLocalTime());
-
-            dateTaken.setText(TimeFormatting.localDateToString(doseDate.toLocalDate()));
-            dateTaken.setTag(doseDate.toLocalDate());
-
             timeTaken.setOnFocusChangeListener((view, b) ->
             {
                 if (b) {
                     DialogFragment timePicker = new TimePickerFragment(timeTaken);
                     timePicker.show(getParentFragmentManager(), null);
-
-                    changed = true;
                 }
             });
 
@@ -104,8 +125,6 @@ public class DoseInfoDialog extends DialogFragment {
                 if (b) {
                     DialogFragment datePicker = new SelectDateFragment(dateTaken);
                     datePicker.show(getParentFragmentManager(), null);
-
-                    changed = true;
                 }
             });
 
@@ -114,17 +133,15 @@ public class DoseInfoDialog extends DialogFragment {
     }
 
     private void save() {
-        if (changed) {
-            LocalDate date = (LocalDate) dateTaken.getTag();
-            LocalTime time = (LocalTime) timeTaken.getTag();
-            LocalDateTime dateTime = LocalDateTime.of(date, time);
+        LocalDate date = (LocalDate) dateTaken.getTag();
+        LocalTime time = (LocalTime) timeTaken.getTag();
+        LocalDateTime dateTime = LocalDateTime.of(date, time);
 
-            db.updateDoseStatus(
-                    doseId,
-                    TimeFormatting.localDateTimeToString(dateTime),
-                    true
-            );
-        }
+        db.updateDoseStatus(
+                doseId,
+                TimeFormatting.localDateTimeToString(dateTime),
+                true
+        );
 
         dismiss();
     }

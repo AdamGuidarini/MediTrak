@@ -832,7 +832,7 @@ public class DBHelper extends SQLiteOpenHelper {
      *
      * @param medId    ID of Medication
      * @param doseTime Time of dose
-     * @return Dose ID of match found in MedicationTracker table
+     * @return Dose ID of match found in MedicationTracker table or -1 if not found
      */
     public long getDoseId(long medId, String doseTime) {
         SQLiteDatabase db = this.getReadableDatabase();
