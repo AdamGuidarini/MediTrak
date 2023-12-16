@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -54,11 +55,9 @@ public class AddMedication extends AppCompatActivity {
     private MenuItem pauseButton;
     private MenuItem resumeButton;
     private long medId;
-
     private RadioButton meButton;
     private TextInputLayout patientNameInputLayout;
     private MaterialAutoCompleteTextView patientNameInput;
-
     private TextInputLayout medicationNameInputLayout;
     private EditText medNameInput;
     private SwitchMaterial aliasSwitch;
@@ -68,7 +67,6 @@ public class AddMedication extends AppCompatActivity {
     private EditText dosageAmountInput;
     private TextInputLayout dosageUnitsInputLayout;
     private EditText dosageUnitsInput;
-
     private TextInputLayout frequencyDropdownLayout;
     private TextInputLayout numberOfTimersPerDayLayout;
     private EditText dailyMedTime;
@@ -87,14 +85,20 @@ public class AddMedication extends AppCompatActivity {
     private TextInputEditText asNeededStartInput;
     private int selectedFrequencyTypeIndex = -1;
     private ArrayList<String> timeUnits;
-
     private CardView applyRetroactiveCard;
     private SwitchMaterial applyRetroActiveSwitch;
-
+    private Button saveButton;
     private boolean createClone = false;
-    private boolean doApplyRetroactively = false;
-
     private LocalDateTime[] startingTimes;
+
+    /*
+    * Validators
+     */
+    private boolean isPatientNameValid = false;
+    private boolean isMedNameValid = false;
+    private boolean isMedDosageValid = false;
+    private boolean isMedDoseUnitValid = false;
+    private boolean isMedFrequencyValid = false;
 
     /**
      * Builds AddMedication Activity
@@ -216,6 +220,9 @@ public class AddMedication extends AppCompatActivity {
         setPatientCard();
         setMedNameAndDosageCard();
         setFrequencyCard();
+
+        saveButton = findViewById(R.id.saveButton);
+        saveButton.setEnabled(false);
     }
 
     /**
@@ -1280,5 +1287,15 @@ public class AddMedication extends AppCompatActivity {
         }
 
         return note;
+    }
+
+    private void validateForm() {
+        boolean allValid = isPatientNameValid
+                && isMedNameValid
+                && isMedDosageValid
+                && isMedDoseUnitValid 
+                && isMedFrequencyValid;
+
+        saveButton.setEnabled(allValid);
     }
 }
