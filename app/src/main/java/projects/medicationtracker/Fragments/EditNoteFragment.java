@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.widget.EditText;
 
@@ -19,6 +21,7 @@ import projects.medicationtracker.SimpleClasses.Note;
 public class EditNoteFragment extends DialogFragment {
     final DBHelper db;
     final Note note;
+    private EditText alterNote;
 
     public EditNoteFragment(Note note, DBHelper db) {
         this.note = note;
@@ -36,14 +39,13 @@ public class EditNoteFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-
+        AlertDialog noteDialog;
         builder.setView(inflater.inflate(R.layout.fragment_edit_note, null));
         builder.setTitle(getString(R.string.edit_note));
 
-        builder.setPositiveButton(getString(R.string.ok), ((dialogInterface, i) ->
+        builder.setPositiveButton(getString(R.string.save), ((dialogInterface, i) ->
         {
-            EditText alterNote = getDialog().findViewById(R.id.alterNote);
-            db.updateNote(note, alterNote.getText().toString());
+            save();
             restartActivity();
         }));
 
@@ -55,7 +57,29 @@ public class EditNoteFragment extends DialogFragment {
             restartActivity();
         }));
 
-        return builder.create();
+        noteDialog = builder.create();
+        noteDialog.show();
+
+        noteDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+
+        alterNote = noteDialog.findViewById(R.id.alterNote);
+        alterNote.setText(note.getNote());
+        alterNote.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                noteDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(
+                        alterNote.getText().length() > 0
+                );
+            }
+        });
+
+        return noteDialog;
     }
 
     @Override
@@ -63,11 +87,9 @@ public class EditNoteFragment extends DialogFragment {
         super.onCancel(dialog);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        EditText alterNote = getDialog().findViewById(R.id.alterNote);
-        alterNote.setText(note.getNote());
+    private void save() {
+        alterNote = getDialog().findViewById(R.id.alterNote);
+        db.updateNote(note, alterNote.getText().toString());
     }
 
     public void restartActivity() {
