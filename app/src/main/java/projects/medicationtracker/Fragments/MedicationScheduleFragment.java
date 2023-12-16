@@ -20,7 +20,6 @@ import androidx.fragment.app.Fragment;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -184,9 +183,11 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
             TextViewUtils.setTextViewParams(textView, noMed, checkBoxHolder);
         } else {
             sortSchedule(scheduledMeds);
-            sortSchedule(asNeededMeds);
-
             scheduledMeds.forEach(checkBoxHolder::addView);
+        }
+
+        if (asNeededMeds.size() > 0) {
+            sortSchedule(asNeededMeds);
             asNeededMeds.forEach(asNeededList::addView);
         }
     }
