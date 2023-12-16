@@ -23,6 +23,7 @@ public class Medication implements Cloneable, Parcelable {
     private LocalDateTime startDate;
     private String alias;
     private LocalDateTime[] times;
+    private Dose[] doses;
     private long medId;
     private int medFrequency;
     private int medDosage;
@@ -303,6 +304,18 @@ public class Medication implements Cloneable, Parcelable {
     public void setChild(Medication childMed) {
         child = childMed;
     }
+
+    /**
+     * Retrieves doses
+     * @return doses
+     */
+    public Dose[] getDoses() { return doses; }
+
+    /**
+     * set doses
+     * @param doses Doses for this medication
+     */
+    public void setDoses(Dose[] doses) { this.doses = doses; }
 
     /**
      * Creates a string formatted for frequency

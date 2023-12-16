@@ -331,6 +331,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
 
                 meds.forEach(m ->
                 {
+                    // TODO fix weird filtering issue when adding dose
                     if (m.getFrequency() == 0) {
                         ArrayList<LocalDateTime> doses = new ArrayList<>(Arrays.asList(db.getMedicationDoses(m)));
                         LocalDateTime[] times = doses.stream().filter(
