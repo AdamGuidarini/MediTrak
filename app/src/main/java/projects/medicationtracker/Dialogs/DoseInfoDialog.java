@@ -25,6 +25,7 @@ import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
+import projects.medicationtracker.SimpleClasses.Dose;
 import projects.medicationtracker.SimpleClasses.Medication;
 
 public class DoseInfoDialog extends DialogFragment {
@@ -133,9 +134,11 @@ public class DoseInfoDialog extends DialogFragment {
 
         Fragment fragment = getParentFragment();
 
+        Dose dose = new Dose(doseId, -1, true, LocalDateTime.of((LocalDate) dateTaken.getTag(), (LocalTime) timeTaken.getTag()));
+
         if (fragment instanceof IDialogCloseListener) {
             ((IDialogCloseListener) fragment).handleDialogClose(
-                    IDialogCloseListener.Action.DELETE, doseId
+                    IDialogCloseListener.Action.DELETE, dose
             );
         }
     }

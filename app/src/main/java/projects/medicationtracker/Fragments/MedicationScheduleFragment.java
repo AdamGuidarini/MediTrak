@@ -32,6 +32,7 @@ import projects.medicationtracker.Helpers.TextViewUtils;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
+import projects.medicationtracker.SimpleClasses.Dose;
 import projects.medicationtracker.SimpleClasses.Medication;
 
 /**
@@ -322,36 +323,35 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     }
 
     @Override
-    public void handleDialogClose(Action action, Long doseId) {
+    public void handleDialogClose(Action action, Dose dose) {
         LinearLayout ll = rootView.findViewById(R.id.asNeededViews);
 
         switch (action) {
             case ADD:
-                LinearLayout layout = rootView.findViewById(R.id.medicationSchedule);
+                Medication med = meds.stream().filter(m -> m.getId() == dose.getMedId()).toArray(Medication[]::new)[0];
+                ArrayList<RelativeLayout> asNeededList = new ArrayList<>();
+                final int childCount;
 
-                meds.forEach(m ->
-                {
-                    // TODO fix weird filtering issue when adding dose
-                    if (m.getFrequency() == 0) {
-                        ArrayList<LocalDateTime> doses = new ArrayList<>(Arrays.asList(db.getMedicationDoses(m)));
-                        LocalDateTime[] times = doses.stream().filter(
-                                d -> d.toLocalDate().isEqual(TimeFormatting.whenIsSunday(dayInCurrentWeek).plusDays(dayNumber))
-                        ).toArray(LocalDateTime[]::new);
-                        m.setTimes(times);
-                    }
-                });
+                ll.addView(buildCheckbox(med, dose.getDoseTime()));
+                childCount = ll.getChildCount();
 
-                layout.removeAllViews();
+                ll.addView(buildCheckbox(med, dose.getDoseTime()));
+
+                for (int i = 0; i < childCount; i++) {
+                    asNeededList.add((RelativeLayout) ll.getChildAt(i));
+                }
+
                 ll.removeAllViews();
+                sortSchedule(asNeededList);
 
-                createSchedule();
+                asNeededList.forEach(ll::addView);
 
                 break;
             case DELETE:
                 for (int i = 0; i < ll.getChildCount(); i++) {
                     RelativeLayout layoutToDelete = (RelativeLayout) ll.getChildAt(i);
 
-                    if (((Triple<Medication, Long, LocalDateTime>) layoutToDelete.getChildAt(0).getTag()).getSecond().equals(doseId)) {
+                    if (((Triple<Medication, Long, LocalDateTime>) layoutToDelete.getChildAt(0).getTag()).getSecond().equals(dose.getDoseId())) {
                         ll.removeViewAt(i);
 
                         break;

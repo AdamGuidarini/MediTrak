@@ -20,7 +20,7 @@ public class Dose {
      * @param isTaken Whether or not medication is taken
      * @param timeTaken Time when medication was taken or null
      */
-    Dose(long id, long medicationId, boolean isTaken, @Nullable LocalDateTime timeTaken) {
+    public Dose(long id, long medicationId, boolean isTaken, @Nullable LocalDateTime timeTaken) {
         doseId = id;
         medId = medicationId;
         taken = isTaken;
