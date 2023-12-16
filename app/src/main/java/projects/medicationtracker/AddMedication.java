@@ -94,7 +94,7 @@ public class AddMedication extends AppCompatActivity {
     /*
     * Validators
      */
-    private boolean isPatientNameValid = false;
+    private boolean isPatientNameValid = true;
     private boolean isMedNameValid = false;
     private boolean isMedDosageValid = false;
     private boolean isMedDoseUnitValid = false;
@@ -248,6 +248,28 @@ public class AddMedication extends AppCompatActivity {
 
         patientNameInput.setAdapter(patientNamesAdapter);
 
+        patientNameInput.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String patientName = editable.toString();
+
+                patientNameInputLayout.setErrorEnabled(false);
+
+                if (patientName.isEmpty()) {
+                    patientNameInputLayout.setError(getString(R.string.err_provide_name));
+                } else if (patientName.equals("ME!")) {
+                    patientNameInputLayout.setError(getString(R.string.provided_name_invalid));
+                } else {
+                    isPatientNameValid = true;
+                }
+
+                validateForm();
+            }
+        });
+
         if (medId == -1 || (medication != null && medication.getPatientName().equals("ME!"))) {
             meButton.setChecked(true);
         } else {
@@ -262,9 +284,14 @@ public class AddMedication extends AppCompatActivity {
                 if (patientNameInputLayout.getVisibility() == View.VISIBLE) {
                     patientNameInputLayout.setVisibility(View.GONE);
                 }
+
+                isPatientNameValid = true;
             } else {
                 patientNameInputLayout.setVisibility(View.VISIBLE);
+                isPatientNameValid = false;
             }
+
+            validateForm();
         });
     }
 
@@ -283,29 +310,6 @@ public class AddMedication extends AppCompatActivity {
         dosageUnitsInput = this.findViewById(R.id.dosageUnits);
 
         aliasSwitch.setChecked(medId != -1 && !medication.getAlias().isEmpty());
-
-        dosageAmountInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                try {
-                    Float.parseFloat(dosageAmountInput.getText().toString());
-
-                    dosageAmountInputLayout.setErrorEnabled(false);
-                } catch (Exception e) {
-                    if (!dosageAmountInput.getText().toString().isEmpty()) {
-                        dosageAmountInputLayout.setError(getString(R.string.val_too_big));
-                    }
-                }
-            }
-        });
 
         aliasSwitch.setOnCheckedChangeListener((compoundButton, b) ->
         {
@@ -330,40 +334,85 @@ public class AddMedication extends AppCompatActivity {
             }
 
             dosageUnitsInput.setText(medication.getDosageUnits());
-
-            dosageAmountInput.addTextChangedListener(new TextWatcher() {
-                private final int amount = medication.getDosage();
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (editable.toString().isEmpty()) return;
-
-                    if (Integer.parseInt(editable.toString()) != amount && medId != -1) {
-                        applyRetroactiveCard.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
-
-            dosageUnitsInput.addTextChangedListener(new TextWatcher() {
-                private final String unit = medication.getDosageUnits();
-
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (!editable.toString().equals(unit) && medId != -1) {
-                        applyRetroactiveCard.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
         }
+
+        medNameInput.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                medicationNameInputLayout.setErrorEnabled(false);
+
+                if (editable.toString().isEmpty()) {
+                    isMedNameValid = false;
+                    medicationNameInputLayout.setError(getString(R.string.err_name_for_med));
+                } else {
+                    isMedDoseUnitValid = true;
+                }
+            }
+        });
+
+        dosageAmountInput.addTextChangedListener(new TextWatcher() {
+            private final int amount = medication.getDosage();
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                dosageAmountInputLayout.setErrorEnabled(false);
+
+                if (editable.toString().isEmpty()) {
+                    isMedDosageValid = false;
+                    dosageAmountInputLayout.setError(getString(R.string.err_enter_dosage));
+                } else {
+                    try {
+                        Float.parseFloat(dosageAmountInput.getText().toString());
+                        isMedDosageValid = true;
+                    } catch (Exception e) {
+                        if (!dosageAmountInput.getText().toString().isEmpty()) {
+                            dosageAmountInputLayout.setError(getString(R.string.val_too_big));
+                            isMedDosageValid = false;
+                        }
+                    }
+                }
+
+                if (!editable.toString().isEmpty() && Integer.parseInt(editable.toString()) != amount && medId != -1) {
+                    applyRetroactiveCard.setVisibility(View.VISIBLE);
+                }
+
+                validateForm();
+            }
+        });
+
+        dosageUnitsInput.addTextChangedListener(new TextWatcher() {
+            private final String unit = medication.getDosageUnits();
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                dosageUnitsInputLayout.setErrorEnabled(false);
+
+                if (!editable.toString().equals(unit) && medId != -1) {
+                    applyRetroactiveCard.setVisibility(View.VISIBLE);
+                }
+
+                if (editable.toString().isEmpty()) {
+                    isMedDoseUnitValid = false;
+                    dosageUnitsInputLayout.setError(getString(R.string.err_units_for_med));
+                } else {
+                    isMedDoseUnitValid = true;
+                }
+
+                validateForm();
+            }
+        });
     }
 
     /**
