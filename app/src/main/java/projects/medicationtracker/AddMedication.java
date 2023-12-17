@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,10 +34,13 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Properties;
 
 import projects.medicationtracker.Dialogs.PauseResumeDialog;
 import projects.medicationtracker.Fragments.ConfirmMedicationDeleteFragment;
@@ -348,8 +352,10 @@ public class AddMedication extends AppCompatActivity {
                     isMedNameValid = false;
                     medicationNameInputLayout.setError(getString(R.string.err_name_for_med));
                 } else {
-                    isMedDoseUnitValid = true;
+                    isMedNameValid = true;
                 }
+
+                validateForm();
             }
         });
 
@@ -480,6 +486,7 @@ public class AddMedication extends AppCompatActivity {
 
         frequencyDropDown.setOnItemClickListener((adapterView, view, i, l) ->  {
             frequencyDropdownLayout.setErrorEnabled(false);
+            isMedFrequencyValid = false;
 
             switch (i) {
                 case 0:
@@ -523,11 +530,8 @@ public class AddMedication extends AppCompatActivity {
 
         frequencyDropDown.addTextChangedListener(new TextWatcher() {
             private final String selected = frequencyDropDown.getText().toString();
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -564,11 +568,8 @@ public class AddMedication extends AppCompatActivity {
         });
 
         numberOfTimersPerDay.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -713,40 +714,44 @@ public class AddMedication extends AppCompatActivity {
             dailyMedTime.setText(
                     TimeFormatting.localTimeToString(medication.getStartDate().toLocalTime())
             );
-
-            dailyMedTime.addTextChangedListener(new TextWatcher() {
-                private final LocalTime time = medication.getStartDate().toLocalTime();
-
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (!Objects.equals(time, dailyMedTime.getTag())) {
-                        applyRetroactiveCard.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
-
-            dailyMedStartDate.addTextChangedListener(new TextWatcher() {
-                private final LocalDate date = medication.getStartDate().toLocalDate();
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (!Objects.equals(date, dailyMedStartDate.getTag())) {
-                        applyRetroactiveCard.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
         }
+
+        dailyMedTime.addTextChangedListener(new TextWatcher() {
+            private final LocalTime time = medication.getStartDate().toLocalTime();
+
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (medId != -1 && !Objects.equals(time, dailyMedTime.getTag())) {
+                    applyRetroactiveCard.setVisibility(View.VISIBLE);
+                }
+
+                isMedFrequencyValid = isDailyValid();
+                validateForm();
+            }
+        });
+
+        dailyMedStartDate.addTextChangedListener(new TextWatcher() {
+            private final LocalDate date = medication.getStartDate().toLocalDate();
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (medId != -1 && !Objects.equals(date, dailyMedStartDate.getTag())) {
+                    applyRetroactiveCard.setVisibility(View.VISIBLE);
+                }
+
+                isMedFrequencyValid = isDailyValid();
+                validateForm();
+            }
+        });
     }
 
     /**
@@ -1152,14 +1157,6 @@ public class AddMedication extends AppCompatActivity {
             medication.setFrequency(MINUTES_IN_DAY);
 
             return true;
-        }
-
-        if (dailyMedStartDate.getText().toString().isEmpty()) {
-            dailyStartDateLayout.setError(getString(R.string.err_select_start_date));
-        }
-
-        if (dailyMedTime.getText().toString().isEmpty()) {
-            timeTakenLayout.setError(getString(R.string.err_select_time));
         }
 
         return false;
