@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Pair;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,13 +33,10 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Properties;
 
 import projects.medicationtracker.Dialogs.PauseResumeDialog;
 import projects.medicationtracker.Fragments.ConfirmMedicationDeleteFragment;
@@ -567,45 +563,68 @@ public class AddMedication extends AppCompatActivity {
             }
         });
 
+        startDateMultiplePerDay.addTextChangedListener(
+                new TextWatcher() {
+                    @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                    @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        isMedFrequencyValid = !editable.toString().isEmpty() && isMultiplePerDayValid();
+                        validateForm();
+                    }
+                }
+        );
+
         numberOfTimersPerDay.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
             @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void afterTextChanged(Editable editable) {
-                int days;
+                int timesPerDay;
 
                 try {
-                    days = Integer.parseInt(numberOfTimersPerDay.getText().toString());
+                    timesPerDay = Integer.parseInt(numberOfTimersPerDay.getText().toString());
                 } catch (Exception e) {
                     numberOfTimersPerDayLayout.setError(getString(R.string.cannot_exceed_50));
+
 
                     return;
                 }
 
-                if (days > 50) {
+                if (timesPerDay > 50) {
                     numberOfTimersPerDayLayout.setError(getString(R.string.cannot_exceed_50));
 
+                    isMedFrequencyValid = false;
+                    validateForm();
+
                     return;
-                } else if (days == 0) {
+                } else if (timesPerDay == 0) {
                     numberOfTimersPerDayLayout.setError(getString(R.string.must_be_greater_than_0));
+
+                    isMedFrequencyValid = false;
+                    validateForm();
 
                     return;
                 } else {
                     numberOfTimersPerDayLayout.setErrorEnabled(false);
                 }
 
-                if (timesPerDayHolder.getChildCount() > days) {
-                    for (int i = timesPerDayHolder.getChildCount(); i > days; i--) {
+                if (timesPerDayHolder.getChildCount() > timesPerDay) {
+                    for (int i = timesPerDayHolder.getChildCount(); i > timesPerDay; i--) {
                         timesPerDayHolder.removeViewAt(i - 1);
                     }
 
+                    isMedFrequencyValid = isMultiplePerDayValid();
+                    validateForm();
+
                     return;
                 } else {
-                    days -= timesPerDayHolder.getChildCount();
+                    timesPerDay -= timesPerDayHolder.getChildCount();
                 }
 
-                for (int ind = 0; ind < days; ind++) {
+                for (int ind = 0; ind < timesPerDay; ind++) {
                     @SuppressLint("PrivateResource")
                     TextInputLayout textLayout = new TextInputLayout(
                             new ContextThemeWrapper(numberOfTimersPerDayLayout.getContext(),
@@ -637,8 +656,28 @@ public class AddMedication extends AppCompatActivity {
                         }
                     });
 
+                    timeEntry.addTextChangedListener(new TextWatcher() {
+                        @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                        @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                            textLayout.setErrorEnabled(false);
+
+                            if (editable.toString().isEmpty()) {
+                                textLayout.setError(getString(R.string.err_select_time));
+                            }
+
+                            isMedFrequencyValid = isMultiplePerDayValid();
+                            validateForm();
+                        }
+                    });
+
                     timesPerDayHolder.addView(textLayout);
                 }
+
+                isMedFrequencyValid = isMultiplePerDayValid();
+                validateForm();
             }
         });
 
@@ -1092,8 +1131,6 @@ public class AddMedication extends AppCompatActivity {
             LocalDateTime start = LocalDateTime.of((LocalDate) startDateMultiplePerDay.getTag(), LocalTime.now());
             int errorCount = 0;
 
-            multiplePerDayStartDateLayout.setErrorEnabled(false);
-            numberOfTimersPerDayLayout.setErrorEnabled(false);
 
             medication.setStartDate(start);
             medication.setFrequency(MINUTES_IN_DAY);
@@ -1105,8 +1142,6 @@ public class AddMedication extends AppCompatActivity {
                 childLayout.setErrorEnabled(false);
 
                 if (time.getText().toString().isEmpty()) {
-                    childLayout.setError(getString(R.string.err_select_time));
-
                     errorCount++;
                 } else {
                     times[i] = LocalDateTime.of(start.toLocalDate(), (LocalTime) time.getTag());
@@ -1120,14 +1155,6 @@ public class AddMedication extends AppCompatActivity {
             medication.setTimes(times);
 
             return true;
-        }
-
-        if (startDateMultiplePerDay.getText().toString().isEmpty()) {
-            multiplePerDayStartDateLayout.setError(getString(R.string.err_select_start_date));
-        }
-
-        if (numberOfTimersPerDay.getText().toString().isEmpty()) {
-            numberOfTimersPerDayLayout.setError(getString(R.string.err_enter_num_timers_per_day));
         }
 
         return false;
