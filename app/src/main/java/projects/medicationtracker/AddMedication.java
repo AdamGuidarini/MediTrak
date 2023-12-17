@@ -829,29 +829,89 @@ public class AddMedication extends AppCompatActivity {
             }
         });
 
-        customFreqMTakenEveryEnter.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
+        customFreqMedTime.addTextChangedListener(new TextWatcher() {
+            private final LocalTime time = medication.getStartDate().toLocalTime();
+
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void afterTextChanged(Editable editable) {
+                customFreqTimeTakenLayout.setErrorEnabled(false);
+
+                if (medId != -1 && !Objects.equals(time, customFreqMedTime.getTag())) {
+                    applyRetroactiveCard.setVisibility(View.VISIBLE);
+                }
+
+                if (Objects.requireNonNull(customFreqMedTime.getText()).toString().isEmpty()) {
+                    customFreqTimeTakenLayout.setError(getString(R.string.err_select_time));
+                    isMedFrequencyValid = false;
+                } else {
+                    isMedFrequencyValid = isCustomFrequencyValid();
+                }
+
+                validateForm();
             }
+        });
+
+        customFreqStartDate.addTextChangedListener(new TextWatcher() {
+            private final LocalDate date = medication.getStartDate().toLocalDate();
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                customFreqStartDateLayout.setErrorEnabled(false);
+
+                if (medId != -1 && !Objects.equals(date, customFreqStartDate.getTag())) {
+                    applyRetroactiveCard.setVisibility(View.VISIBLE);
+                }
+
+                if (editable.toString().isEmpty()) {
+                    customFreqStartDateLayout.setError(getString(R.string.err_select_start_date));
+                    isMedFrequencyValid = false;
+                } else {
+                    isMedFrequencyValid = isCustomFrequencyValid();
+                }
+
+                isMedFrequencyValid = isCustomFrequencyValid();
+                validateForm();
+            }
+        });
+
+        customFreqMTakenEveryEnter.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void afterTextChanged(Editable editable) {
                 customFreqTakenEveryLayout.setErrorEnabled(false);
+
+                if (customFreqMTakenEveryEnter.getText().toString().isEmpty()) {
+                    customFreqTakenEveryLayout.setError(getString(R.string.err_enter_med_freq));
+                    isMedFrequencyValid = false;
+                }
 
                 try {
                     Integer.parseInt(customFreqMTakenEveryEnter.getText().toString());
 
                     if (Integer.parseInt(customFreqMTakenEveryEnter.getText().toString()) == 0) {
                         customFreqTakenEveryLayout.setError(getString(R.string.must_be_greater_than_0));
+                        isMedFrequencyValid = false;
+                    } else {
+                        isMedFrequencyValid = isCustomFrequencyValid();
                     }
                 } catch (Exception e) {
                     if (!customFreqMTakenEveryEnter.getText().toString().isEmpty()) {
                         customFreqTakenEveryLayout.setError(getString(R.string.val_too_big));
+                        isMedFrequencyValid = false;
                     }
+                } finally {
+                    validateForm();
                 }
             }
         });
@@ -901,6 +961,23 @@ public class AddMedication extends AppCompatActivity {
 
             customFreqMTakenEveryEnter.setText(String.valueOf(displayedFreq));
         }
+
+        customFreqTimeUnitEnter.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                customFreqTimeUnitLayout.setErrorEnabled(false);
+
+                if (customFreqTimeUnitEnter.getText().toString().isEmpty()) {
+                    customFreqTimeUnitLayout.setError(getString(R.string.err_enter_time_unit));
+                }
+
+                isMedFrequencyValid = !editable.toString().isEmpty() && isCustomFrequencyValid();
+                validateForm();
+            }
+        });
     }
 
     /**
@@ -1196,16 +1273,16 @@ public class AddMedication extends AppCompatActivity {
      * @return True if valid, false if invalid
      */
     private boolean isCustomFrequencyValid() {
-        boolean allInputsFilled = !(
-                Objects.requireNonNull(customFreqStartDate.getText()).toString().isEmpty()
-                        && Objects.requireNonNull(customFreqMedTime.getText()).toString().isEmpty()
-                        && Objects.requireNonNull(customFreqMTakenEveryEnter.getText()).toString().isEmpty()
-                        && customFreqTimeUnitEnter.getText().toString().isEmpty())
-                && intIsParsable(Objects.requireNonNull(customFreqMTakenEveryEnter.getText()).toString()
-        );
+        boolean allInputsFilled = !(Objects.requireNonNull(customFreqStartDate.getText()).toString().isEmpty()
+                && Objects.requireNonNull(customFreqMedTime.getText()).toString().isEmpty()
+                && Objects.requireNonNull(customFreqMTakenEveryEnter.getText()).toString().isEmpty()
+                && customFreqTimeUnitEnter.getText().toString().isEmpty())
+                && intIsParsable(Objects.requireNonNull(customFreqMTakenEveryEnter.getText()).toString());
 
-        if (allInputsFilled) {
+        boolean timesValid = customFreqStartDate.getTag() != null && customFreqMedTime.getTag() != null;
+        boolean unitSelected = timeUnits.contains(customFreqTimeUnitEnter.getText().toString());
 
+        if (allInputsFilled && timesValid && unitSelected) {
             LocalDate startDate = (LocalDate) customFreqStartDate.getTag();
             LocalTime startTime = (LocalTime) customFreqMedTime.getTag();
             int selectedTimeUnitIndex = timeUnits.indexOf(customFreqTimeUnitEnter.getText().toString());
@@ -1234,22 +1311,6 @@ public class AddMedication extends AppCompatActivity {
             medication.setTimes(new LocalDateTime[]{LocalDateTime.of(startDate, startTime)});
 
             return true;
-        }
-
-        if (customFreqStartDate.getText().toString().isEmpty()) {
-            customFreqStartDateLayout.setError(getString(R.string.err_select_start_date));
-        }
-
-        if (Objects.requireNonNull(customFreqMedTime.getText()).toString().isEmpty()) {
-            customFreqTimeTakenLayout.setError(getString(R.string.err_select_time));
-        }
-
-        if (customFreqMTakenEveryEnter.getText().toString().isEmpty()) {
-            customFreqTakenEveryLayout.setError(getString(R.string.err_enter_med_freq));
-        }
-
-        if (customFreqTimeUnitEnter.getText().toString().isEmpty()) {
-            customFreqTimeUnitLayout.setError(getString(R.string.err_enter_time_unit));
         }
 
         return false;

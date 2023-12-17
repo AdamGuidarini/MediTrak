@@ -379,15 +379,15 @@
                                 <com.google.android.material.textfield.TextInputLayout
                                     android:id="@+id/customFreqStartDate"
                                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
                                     android:layout_alignParentStart="true"
                                     android:layout_marginBottom="15dp"
                                     android:hint="@string/start_date">
 
                                     <com.google.android.material.textfield.TextInputEditText
                                         android:id="@+id/CustomFreqMedStart"
-                                        android:layout_width="170dp"
+                                        android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:cursorVisible="false"
                                         android:inputType="date" />
@@ -403,14 +403,14 @@
                                 <com.google.android.material.textfield.TextInputLayout
                                     android:id="@+id/CustomFreqTimeTakenLayout"
                                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
                                     android:layout_alignParentEnd="true"
                                     android:hint="@string/taken_at">
 
                                     <com.google.android.material.textfield.TextInputEditText
                                         android:id="@+id/CustomFreqMedTime"
-                                        android:layout_width="170dp"
+                                        android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:cursorVisible="false"
                                         android:inputType="time" />
@@ -434,15 +434,15 @@
                                 <com.google.android.material.textfield.TextInputLayout
                                     android:id="@+id/customFreqTakenEveryLayout"
                                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
                                     android:layout_alignParentStart="true"
                                     android:layout_marginBottom="15dp"
                                     android:hint="@string/taken_every">
 
                                     <com.google.android.material.textfield.TextInputEditText
                                         android:id="@+id/CustomFreqMTakenEveryEnter"
-                                        android:layout_width="170dp"
+                                        android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:cursorVisible="false"
                                         android:inputType="number" />
@@ -458,14 +458,14 @@
                                 <com.google.android.material.textfield.TextInputLayout
                                     android:id="@+id/CustomFreqTimeUnitLayout"
                                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
                                     android:layout_alignParentEnd="true"
                                     android:hint="@string/unit_of_time">
 
                                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                                         android:id="@+id/CustomFreqTimeUnitEnter"
-                                        android:layout_width="170dp"
+                                        android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:cursorVisible="false"
                                         android:inputType="none" />
@@ -487,7 +487,6 @@
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
                             android:hint="@string/start_date">
 
                             <com.google.android.material.textfield.TextInputEditText
