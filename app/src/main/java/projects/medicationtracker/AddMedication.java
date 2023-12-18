@@ -1002,6 +1002,26 @@ public class AddMedication extends AppCompatActivity {
             );
             asNeededStartInput.setTag(medication.getStartDate().toLocalDate());
         }
+
+        asNeededStartInput.addTextChangedListener(
+                new TextWatcher() {
+                    @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                    @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        asNeededStart.setErrorEnabled(false);
+
+                        isMedFrequencyValid = !editable.toString().isEmpty();
+
+                        if (!isMedFrequencyValid) {
+                            asNeededStart.setError(getString(R.string.err_select_start_date));
+                        }
+
+                        validateForm();
+                    }
+                }
+        );
     }
 
     /**
@@ -1326,8 +1346,6 @@ public class AddMedication extends AppCompatActivity {
 
             return true;
         }
-
-        asNeededStart.setError(getString(R.string.err_select_start_date));
 
         return false;
     }
