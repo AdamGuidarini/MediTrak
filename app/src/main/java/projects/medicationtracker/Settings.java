@@ -5,8 +5,11 @@ import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.OpenableColumns;
@@ -39,6 +42,10 @@ import projects.medicationtracker.Helpers.DBHelper;
 public class Settings extends AppCompatActivity {
     private final DBHelper db = new DBHelper(this);
     private ActivityResultLauncher<String> chooseFileLauncher;
+    private final ActivityResultLauncher<String> notificationPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            isGranted -> {}
+    );
 
     static {
         System.loadLibrary("medicationtracker");
@@ -60,6 +67,17 @@ public class Settings extends AppCompatActivity {
         Button purgeButton = findViewById(R.id.purgeButton);
         purgeButton.setBackgroundColor(Color.RED);
 
+        Button enableNotificationsButton = findViewById(R.id.enableNotifications);
+        SwitchCompat notificationToggle = findViewById(R.id.enableNotificationSwitch);
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            enableNotificationsButton.setVisibility(View.VISIBLE);
+            notificationToggle.setVisibility(View.GONE);
+        } else {
+            enableNotificationsButton.setVisibility(View.GONE);
+            notificationToggle.setVisibility(View.VISIBLE);
+        }
+
         setTimeBeforeDoseRestrictionSwitch();
         setEnableNotificationSwitch();
         setThemeMenu();
@@ -79,10 +97,6 @@ public class Settings extends AppCompatActivity {
                         } else {
                             return;
                         }
-
-                        System.out.println(result.getAuthority());
-                        System.out.println(result.getEncodedPath());
-
 
                         switch (Objects.requireNonNull(result.getAuthority())) {
                             case "com.android.providers.downloads.documents":
@@ -117,8 +131,9 @@ public class Settings extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home)
-            finish();
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -128,8 +143,9 @@ public class Settings extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        Intent intent = new Intent(this,MainActivity.class);
         finish();
+        startActivity(intent);
     }
 
     /**
@@ -200,18 +216,6 @@ public class Settings extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    /**
-     * Enable notifications for application
-     */
-    private void setEnableNotificationSwitch() {
-        SwitchCompat enableNotificationsSwitch = findViewById(R.id.enableNotificationSwitch);
-
-        enableNotificationsSwitch.setChecked(db.getNotificationEnabled());
-
-        enableNotificationsSwitch.setOnCheckedChangeListener(((compoundButton, b) ->
-                db.setNotificationEnabled(enableNotificationsSwitch.isChecked())));
     }
 
     /**
@@ -323,6 +327,27 @@ public class Settings extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    public void OnEnableNotificationsClick(View view) {
+        if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
+        } else {
+            Toast.makeText(this, getString(R.string.notifications_already_enabled), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    /**
+     * Enable notifications for application
+     */
+    private void setEnableNotificationSwitch() {
+        SwitchCompat enableNotificationsSwitch = findViewById(R.id.enableNotificationSwitch);
+
+        enableNotificationsSwitch.setChecked(db.getNotificationEnabled());
+
+        enableNotificationsSwitch.setOnCheckedChangeListener(((compoundButton, b) ->
+                db.setNotificationEnabled(enableNotificationsSwitch.isChecked())));
     }
 
     private native boolean dbImporter(String dbPath, String importPath, String[] ignoredTables);

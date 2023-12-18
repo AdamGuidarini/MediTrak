@@ -31,6 +31,7 @@ import projects.medicationtracker.Helpers.TextViewUtils;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
+import projects.medicationtracker.SimpleClasses.Dose;
 import projects.medicationtracker.SimpleClasses.Medication;
 
 /**
@@ -182,9 +183,11 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
             TextViewUtils.setTextViewParams(textView, noMed, checkBoxHolder);
         } else {
             sortSchedule(scheduledMeds);
-            sortSchedule(asNeededMeds);
-
             scheduledMeds.forEach(checkBoxHolder::addView);
+        }
+
+        if (asNeededMeds.size() > 0) {
+            sortSchedule(asNeededMeds);
             asNeededMeds.forEach(asNeededList::addView);
         }
     }
@@ -225,7 +228,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         String medName = medication.getName();
         String dosage;
         if (medication.getDosage() == (int) medication.getDosage()) {
-            dosage = String.format(Locale.getDefault(), "%d", (int) medication.getDosage());
+            dosage = String.format(Locale.getDefault(), "%d", medication.getDosage());
         } else {
             dosage = String.valueOf(medication.getDosage());
         }
@@ -321,29 +324,35 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     }
 
     @Override
-    public void handleDialogClose(Action action, Long doseId) {
+    public void handleDialogClose(Action action, Dose dose) {
         LinearLayout ll = rootView.findViewById(R.id.asNeededViews);
 
         switch (action) {
             case ADD:
-                LinearLayout checkBoxHolder = rootView.findViewById(R.id.medicationSchedule);
+                Medication med = meds.stream().filter(m -> m.getId() == dose.getMedId()).toArray(Medication[]::new)[0];
+                ArrayList<RelativeLayout> asNeededList = new ArrayList<>();
+                final int childCount;
 
-                meds.forEach(m ->
-                {
-                    if (m.getFrequency() == 0) m.setTimes(db.getDoseFromMedicationTracker(m));
-                });
+                ll.addView(buildCheckbox(med, dose.getDoseTime()));
+                childCount = ll.getChildCount();
 
-                checkBoxHolder.removeAllViews();
+                ll.addView(buildCheckbox(med, dose.getDoseTime()));
+
+                for (int i = 0; i < childCount; i++) {
+                    asNeededList.add((RelativeLayout) ll.getChildAt(i));
+                }
+
                 ll.removeAllViews();
+                sortSchedule(asNeededList);
 
-                createSchedule();
+                asNeededList.forEach(ll::addView);
 
                 break;
             case DELETE:
                 for (int i = 0; i < ll.getChildCount(); i++) {
                     RelativeLayout layoutToDelete = (RelativeLayout) ll.getChildAt(i);
 
-                    if (((Triple<Medication, Long, LocalDateTime>) layoutToDelete.getChildAt(0).getTag()).getSecond().equals(doseId)) {
+                    if (((Triple<Medication, Long, LocalDateTime>) layoutToDelete.getChildAt(0).getTag()).getSecond().equals(dose.getDoseId())) {
                         ll.removeViewAt(i);
 
                         break;

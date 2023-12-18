@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -54,11 +55,9 @@ public class AddMedication extends AppCompatActivity {
     private MenuItem pauseButton;
     private MenuItem resumeButton;
     private long medId;
-
     private RadioButton meButton;
     private TextInputLayout patientNameInputLayout;
     private MaterialAutoCompleteTextView patientNameInput;
-
     private TextInputLayout medicationNameInputLayout;
     private EditText medNameInput;
     private SwitchMaterial aliasSwitch;
@@ -68,7 +67,6 @@ public class AddMedication extends AppCompatActivity {
     private EditText dosageAmountInput;
     private TextInputLayout dosageUnitsInputLayout;
     private EditText dosageUnitsInput;
-
     private TextInputLayout frequencyDropdownLayout;
     private TextInputLayout numberOfTimersPerDayLayout;
     private EditText dailyMedTime;
@@ -87,14 +85,20 @@ public class AddMedication extends AppCompatActivity {
     private TextInputEditText asNeededStartInput;
     private int selectedFrequencyTypeIndex = -1;
     private ArrayList<String> timeUnits;
-
     private CardView applyRetroactiveCard;
     private SwitchMaterial applyRetroActiveSwitch;
-
+    private Button saveButton;
     private boolean createClone = false;
-    private boolean doApplyRetroactively = false;
-
     private LocalDateTime[] startingTimes;
+
+    /*
+    * Validators
+     */
+    private boolean isPatientNameValid = true;
+    private boolean isMedNameValid = false;
+    private boolean isMedDosageValid = false;
+    private boolean isMedDoseUnitValid = false;
+    private boolean isMedFrequencyValid = false;
 
     /**
      * Builds AddMedication Activity
@@ -213,9 +217,16 @@ public class AddMedication extends AppCompatActivity {
      * Builds all views in activity
      */
     private void buildViews() {
+        saveButton = findViewById(R.id.saveButton);
+        saveButton.setEnabled(false);
+
         setPatientCard();
         setMedNameAndDosageCard();
         setFrequencyCard();
+
+        if (medId != -1) {
+            saveButton.setEnabled(false);
+        }
     }
 
     /**
@@ -241,13 +252,27 @@ public class AddMedication extends AppCompatActivity {
 
         patientNameInput.setAdapter(patientNamesAdapter);
 
-        if (medId == -1 || (medication != null && medication.getPatientName().equals("ME!"))) {
-            meButton.setChecked(true);
-        } else {
-            otherButton.setChecked(true);
-            patientNameInputLayout.setVisibility(View.VISIBLE);
-            patientNameInput.setText(medication.getPatientName());
-        }
+        patientNameInput.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String patientName = editable.toString();
+
+                patientNameInputLayout.setErrorEnabled(false);
+
+                if (patientName.isEmpty()) {
+                    patientNameInputLayout.setError(getString(R.string.err_provide_name));
+                } else if (patientName.equals("ME!")) {
+                    patientNameInputLayout.setError(getString(R.string.provided_name_invalid));
+                } else {
+                    isPatientNameValid = true;
+                }
+
+                validateForm();
+            }
+        });
 
         patientGroup.setOnCheckedChangeListener((radioGroup, i) ->
         {
@@ -255,10 +280,23 @@ public class AddMedication extends AppCompatActivity {
                 if (patientNameInputLayout.getVisibility() == View.VISIBLE) {
                     patientNameInputLayout.setVisibility(View.GONE);
                 }
+
+                isPatientNameValid = true;
             } else {
                 patientNameInputLayout.setVisibility(View.VISIBLE);
+                isPatientNameValid = false;
             }
+
+            validateForm();
         });
+
+        if (medId == -1 || (medication != null && medication.getPatientName().equals("ME!"))) {
+            meButton.setChecked(true);
+        } else {
+            otherButton.setChecked(true);
+            patientNameInputLayout.setVisibility(View.VISIBLE);
+            patientNameInput.setText(medication.getPatientName());
+        }
     }
 
     /**
@@ -277,29 +315,6 @@ public class AddMedication extends AppCompatActivity {
 
         aliasSwitch.setChecked(medId != -1 && !medication.getAlias().isEmpty());
 
-        dosageAmountInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                try {
-                    Float.parseFloat(dosageAmountInput.getText().toString());
-
-                    dosageAmountInputLayout.setErrorEnabled(false);
-                } catch (Exception e) {
-                    if (!dosageAmountInput.getText().toString().isEmpty()) {
-                        dosageAmountInputLayout.setError(getString(R.string.val_too_big));
-                    }
-                }
-            }
-        });
-
         aliasSwitch.setOnCheckedChangeListener((compoundButton, b) ->
         {
             if (aliasInputLayout.getVisibility() == View.GONE) {
@@ -307,6 +322,86 @@ public class AddMedication extends AppCompatActivity {
             } else {
                 aliasInputLayout.setVisibility(View.GONE);
                 aliasInput.setText("");
+            }
+        });
+
+        medNameInput.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                medicationNameInputLayout.setErrorEnabled(false);
+
+                if (editable.toString().isEmpty()) {
+                    isMedNameValid = false;
+                    medicationNameInputLayout.setError(getString(R.string.err_name_for_med));
+                } else {
+                    isMedNameValid = true;
+                }
+
+                validateForm();
+            }
+        });
+
+        dosageAmountInput.addTextChangedListener(new TextWatcher() {
+            private final int amount = medication.getDosage();
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                dosageAmountInputLayout.setErrorEnabled(false);
+
+                if (editable.toString().isEmpty()) {
+                    isMedDosageValid = false;
+                    dosageAmountInputLayout.setError(getString(R.string.err_enter_dosage));
+                } else {
+                    try {
+                        Float.parseFloat(dosageAmountInput.getText().toString());
+                        isMedDosageValid = true;
+                    } catch (Exception e) {
+                        if (!dosageAmountInput.getText().toString().isEmpty()) {
+                            dosageAmountInputLayout.setError(getString(R.string.val_too_big));
+                            isMedDosageValid = false;
+                        }
+                    }
+                }
+
+                if (!editable.toString().isEmpty() && Integer.parseInt(editable.toString()) != amount && medId != -1) {
+                    applyRetroactiveCard.setVisibility(View.VISIBLE);
+                }
+
+                validateForm();
+            }
+        });
+
+        dosageUnitsInput.addTextChangedListener(new TextWatcher() {
+            private final String unit = medication.getDosageUnits();
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                dosageUnitsInputLayout.setErrorEnabled(false);
+
+                if (!editable.toString().equals(unit) && medId != -1) {
+                    applyRetroactiveCard.setVisibility(View.VISIBLE);
+                }
+
+                if (editable.toString().isEmpty()) {
+                    isMedDoseUnitValid = false;
+                    dosageUnitsInputLayout.setError(getString(R.string.err_units_for_med));
+                } else {
+                    isMedDoseUnitValid = true;
+                }
+
+                validateForm();
             }
         });
 
@@ -323,39 +418,6 @@ public class AddMedication extends AppCompatActivity {
             }
 
             dosageUnitsInput.setText(medication.getDosageUnits());
-
-            dosageAmountInput.addTextChangedListener(new TextWatcher() {
-                private final int amount = medication.getDosage();
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (editable.toString().isEmpty()) return;
-
-                    if (Integer.parseInt(editable.toString()) != amount && medId != -1) {
-                        applyRetroactiveCard.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
-
-            dosageUnitsInput.addTextChangedListener(new TextWatcher() {
-                private final String unit = medication.getDosageUnits();
-
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (!editable.toString().equals(unit) && medId != -1) {
-                        applyRetroactiveCard.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
         }
     }
 
@@ -424,6 +486,7 @@ public class AddMedication extends AppCompatActivity {
 
         frequencyDropDown.setOnItemClickListener((adapterView, view, i, l) ->  {
             frequencyDropdownLayout.setErrorEnabled(false);
+            isMedFrequencyValid = false;
 
             switch (i) {
                 case 0:
@@ -467,11 +530,8 @@ public class AddMedication extends AppCompatActivity {
 
         frequencyDropDown.addTextChangedListener(new TextWatcher() {
             private final String selected = frequencyDropDown.getText().toString();
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -507,48 +567,68 @@ public class AddMedication extends AppCompatActivity {
             }
         });
 
-        numberOfTimersPerDay.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        startDateMultiplePerDay.addTextChangedListener(
+                new TextWatcher() {
+                    @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                    @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        isMedFrequencyValid = !editable.toString().isEmpty() && isMultiplePerDayValid();
+                        validateForm();
+                    }
+                }
+        );
+
+        numberOfTimersPerDay.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void afterTextChanged(Editable editable) {
-                int days;
+                int timesPerDay;
 
                 try {
-                    days = Integer.parseInt(numberOfTimersPerDay.getText().toString());
+                    timesPerDay = Integer.parseInt(numberOfTimersPerDay.getText().toString());
                 } catch (Exception e) {
                     numberOfTimersPerDayLayout.setError(getString(R.string.cannot_exceed_50));
+
 
                     return;
                 }
 
-                if (days > 50) {
+                if (timesPerDay > 50) {
                     numberOfTimersPerDayLayout.setError(getString(R.string.cannot_exceed_50));
 
+                    isMedFrequencyValid = false;
+                    validateForm();
+
                     return;
-                } else if (days == 0) {
+                } else if (timesPerDay == 0) {
                     numberOfTimersPerDayLayout.setError(getString(R.string.must_be_greater_than_0));
+
+                    isMedFrequencyValid = false;
+                    validateForm();
 
                     return;
                 } else {
                     numberOfTimersPerDayLayout.setErrorEnabled(false);
                 }
 
-                if (timesPerDayHolder.getChildCount() > days) {
-                    for (int i = timesPerDayHolder.getChildCount(); i > days; i--) {
+                if (timesPerDayHolder.getChildCount() > timesPerDay) {
+                    for (int i = timesPerDayHolder.getChildCount(); i > timesPerDay; i--) {
                         timesPerDayHolder.removeViewAt(i - 1);
                     }
 
+                    isMedFrequencyValid = isMultiplePerDayValid();
+                    validateForm();
+
                     return;
                 } else {
-                    days -= timesPerDayHolder.getChildCount();
+                    timesPerDay -= timesPerDayHolder.getChildCount();
                 }
 
-                for (int ind = 0; ind < days; ind++) {
+                for (int ind = 0; ind < timesPerDay; ind++) {
                     @SuppressLint("PrivateResource")
                     TextInputLayout textLayout = new TextInputLayout(
                             new ContextThemeWrapper(numberOfTimersPerDayLayout.getContext(),
@@ -580,8 +660,28 @@ public class AddMedication extends AppCompatActivity {
                         }
                     });
 
+                    timeEntry.addTextChangedListener(new TextWatcher() {
+                        @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                        @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                            textLayout.setErrorEnabled(false);
+
+                            if (editable.toString().isEmpty()) {
+                                textLayout.setError(getString(R.string.err_select_time));
+                            }
+
+                            isMedFrequencyValid = isMultiplePerDayValid();
+                            validateForm();
+                        }
+                    });
+
                     timesPerDayHolder.addView(textLayout);
                 }
+
+                isMedFrequencyValid = isMultiplePerDayValid();
+                validateForm();
             }
         });
 
@@ -647,6 +747,43 @@ public class AddMedication extends AppCompatActivity {
             }
         });
 
+        dailyMedTime.addTextChangedListener(new TextWatcher() {
+            private final LocalTime time = medication.getStartDate().toLocalTime();
+
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (medId != -1 && !Objects.equals(time, dailyMedTime.getTag())) {
+                    applyRetroactiveCard.setVisibility(View.VISIBLE);
+                }
+
+                isMedFrequencyValid = isDailyValid();
+                validateForm();
+            }
+        });
+
+        dailyMedStartDate.addTextChangedListener(new TextWatcher() {
+            private final LocalDate date = medication.getStartDate().toLocalDate();
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (medId != -1 && !Objects.equals(date, dailyMedStartDate.getTag())) {
+                    applyRetroactiveCard.setVisibility(View.VISIBLE);
+                }
+
+                isMedFrequencyValid = isDailyValid();
+                validateForm();
+            }
+        });
+
         if (medId != -1 && selectedFrequencyTypeIndex == 1) {
             dailyMedStartDate.setTag(medication.getStartDate().toLocalDate());
             dailyMedStartDate.setText(
@@ -657,39 +794,6 @@ public class AddMedication extends AppCompatActivity {
             dailyMedTime.setText(
                     TimeFormatting.localTimeToString(medication.getStartDate().toLocalTime())
             );
-
-            dailyMedTime.addTextChangedListener(new TextWatcher() {
-                private final LocalTime time = medication.getStartDate().toLocalTime();
-
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (!Objects.equals(time, dailyMedTime.getTag())) {
-                        applyRetroactiveCard.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
-
-            dailyMedStartDate.addTextChangedListener(new TextWatcher() {
-                private final LocalDate date = medication.getStartDate().toLocalDate();
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (!Objects.equals(date, dailyMedStartDate.getTag())) {
-                        applyRetroactiveCard.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
         }
     }
 
@@ -729,29 +833,89 @@ public class AddMedication extends AppCompatActivity {
             }
         });
 
-        customFreqMTakenEveryEnter.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
+        customFreqMedTime.addTextChangedListener(new TextWatcher() {
+            private final LocalTime time = medication.getStartDate().toLocalTime();
+
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void afterTextChanged(Editable editable) {
+                customFreqTimeTakenLayout.setErrorEnabled(false);
+
+                if (medId != -1 && !Objects.equals(time, customFreqMedTime.getTag())) {
+                    applyRetroactiveCard.setVisibility(View.VISIBLE);
+                }
+
+                if (Objects.requireNonNull(customFreqMedTime.getText()).toString().isEmpty()) {
+                    customFreqTimeTakenLayout.setError(getString(R.string.err_select_time));
+                    isMedFrequencyValid = false;
+                } else {
+                    isMedFrequencyValid = isCustomFrequencyValid();
+                }
+
+                validateForm();
             }
+        });
+
+        customFreqStartDate.addTextChangedListener(new TextWatcher() {
+            private final LocalDate date = medication.getStartDate().toLocalDate();
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                customFreqStartDateLayout.setErrorEnabled(false);
+
+                if (medId != -1 && !Objects.equals(date, customFreqStartDate.getTag())) {
+                    applyRetroactiveCard.setVisibility(View.VISIBLE);
+                }
+
+                if (editable.toString().isEmpty()) {
+                    customFreqStartDateLayout.setError(getString(R.string.err_select_start_date));
+                    isMedFrequencyValid = false;
+                } else {
+                    isMedFrequencyValid = isCustomFrequencyValid();
+                }
+
+                isMedFrequencyValid = isCustomFrequencyValid();
+                validateForm();
+            }
+        });
+
+        customFreqMTakenEveryEnter.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void afterTextChanged(Editable editable) {
                 customFreqTakenEveryLayout.setErrorEnabled(false);
+
+                if (customFreqMTakenEveryEnter.getText().toString().isEmpty()) {
+                    customFreqTakenEveryLayout.setError(getString(R.string.err_enter_med_freq));
+                    isMedFrequencyValid = false;
+                }
 
                 try {
                     Integer.parseInt(customFreqMTakenEveryEnter.getText().toString());
 
                     if (Integer.parseInt(customFreqMTakenEveryEnter.getText().toString()) == 0) {
                         customFreqTakenEveryLayout.setError(getString(R.string.must_be_greater_than_0));
+                        isMedFrequencyValid = false;
+                    } else {
+                        isMedFrequencyValid = isCustomFrequencyValid();
                     }
                 } catch (Exception e) {
                     if (!customFreqMTakenEveryEnter.getText().toString().isEmpty()) {
                         customFreqTakenEveryLayout.setError(getString(R.string.val_too_big));
+                        isMedFrequencyValid = false;
                     }
+                } finally {
+                    validateForm();
                 }
             }
         });
@@ -801,6 +965,23 @@ public class AddMedication extends AppCompatActivity {
 
             customFreqMTakenEveryEnter.setText(String.valueOf(displayedFreq));
         }
+
+        customFreqTimeUnitEnter.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                customFreqTimeUnitLayout.setErrorEnabled(false);
+
+                if (customFreqTimeUnitEnter.getText().toString().isEmpty()) {
+                    customFreqTimeUnitLayout.setError(getString(R.string.err_enter_time_unit));
+                }
+
+                isMedFrequencyValid = !editable.toString().isEmpty() && isCustomFrequencyValid();
+                validateForm();
+            }
+        });
     }
 
     /**
@@ -818,6 +999,26 @@ public class AddMedication extends AppCompatActivity {
                 datePicker.show(getSupportFragmentManager(), null);
             }
         });
+
+        asNeededStartInput.addTextChangedListener(
+                new TextWatcher() {
+                    @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                    @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        asNeededStart.setErrorEnabled(false);
+
+                        isMedFrequencyValid = !editable.toString().isEmpty();
+
+                        if (!isMedFrequencyValid) {
+                            asNeededStart.setError(getString(R.string.err_select_start_date));
+                        }
+
+                        validateForm();
+                    }
+                }
+        );
 
         if (medId != -1) {
             asNeededStartInput.setText(
@@ -1031,8 +1232,6 @@ public class AddMedication extends AppCompatActivity {
             LocalDateTime start = LocalDateTime.of((LocalDate) startDateMultiplePerDay.getTag(), LocalTime.now());
             int errorCount = 0;
 
-            multiplePerDayStartDateLayout.setErrorEnabled(false);
-            numberOfTimersPerDayLayout.setErrorEnabled(false);
 
             medication.setStartDate(start);
             medication.setFrequency(MINUTES_IN_DAY);
@@ -1044,8 +1243,6 @@ public class AddMedication extends AppCompatActivity {
                 childLayout.setErrorEnabled(false);
 
                 if (time.getText().toString().isEmpty()) {
-                    childLayout.setError(getString(R.string.err_select_time));
-
                     errorCount++;
                 } else {
                     times[i] = LocalDateTime.of(start.toLocalDate(), (LocalTime) time.getTag());
@@ -1059,14 +1256,6 @@ public class AddMedication extends AppCompatActivity {
             medication.setTimes(times);
 
             return true;
-        }
-
-        if (startDateMultiplePerDay.getText().toString().isEmpty()) {
-            multiplePerDayStartDateLayout.setError(getString(R.string.err_select_start_date));
-        }
-
-        if (numberOfTimersPerDay.getText().toString().isEmpty()) {
-            numberOfTimersPerDayLayout.setError(getString(R.string.err_enter_num_timers_per_day));
         }
 
         return false;
@@ -1098,14 +1287,6 @@ public class AddMedication extends AppCompatActivity {
             return true;
         }
 
-        if (dailyMedStartDate.getText().toString().isEmpty()) {
-            dailyStartDateLayout.setError(getString(R.string.err_select_start_date));
-        }
-
-        if (dailyMedTime.getText().toString().isEmpty()) {
-            timeTakenLayout.setError(getString(R.string.err_select_time));
-        }
-
         return false;
     }
 
@@ -1116,16 +1297,16 @@ public class AddMedication extends AppCompatActivity {
      * @return True if valid, false if invalid
      */
     private boolean isCustomFrequencyValid() {
-        boolean allInputsFilled = !(
-                Objects.requireNonNull(customFreqStartDate.getText()).toString().isEmpty()
-                        && Objects.requireNonNull(customFreqMedTime.getText()).toString().isEmpty()
-                        && Objects.requireNonNull(customFreqMTakenEveryEnter.getText()).toString().isEmpty()
-                        && customFreqTimeUnitEnter.getText().toString().isEmpty())
-                && intIsParsable(Objects.requireNonNull(customFreqMTakenEveryEnter.getText()).toString()
-        );
+        boolean allInputsFilled = !(Objects.requireNonNull(customFreqStartDate.getText()).toString().isEmpty()
+                && Objects.requireNonNull(customFreqMedTime.getText()).toString().isEmpty()
+                && Objects.requireNonNull(customFreqMTakenEveryEnter.getText()).toString().isEmpty()
+                && customFreqTimeUnitEnter.getText().toString().isEmpty())
+                && intIsParsable(Objects.requireNonNull(customFreqMTakenEveryEnter.getText()).toString());
 
-        if (allInputsFilled) {
+        boolean timesValid = customFreqStartDate.getTag() != null && customFreqMedTime.getTag() != null;
+        boolean unitSelected = timeUnits.contains(customFreqTimeUnitEnter.getText().toString());
 
+        if (allInputsFilled && timesValid && unitSelected) {
             LocalDate startDate = (LocalDate) customFreqStartDate.getTag();
             LocalTime startTime = (LocalTime) customFreqMedTime.getTag();
             int selectedTimeUnitIndex = timeUnits.indexOf(customFreqTimeUnitEnter.getText().toString());
@@ -1156,22 +1337,6 @@ public class AddMedication extends AppCompatActivity {
             return true;
         }
 
-        if (customFreqStartDate.getText().toString().isEmpty()) {
-            customFreqStartDateLayout.setError(getString(R.string.err_select_start_date));
-        }
-
-        if (Objects.requireNonNull(customFreqMedTime.getText()).toString().isEmpty()) {
-            customFreqTimeTakenLayout.setError(getString(R.string.err_select_time));
-        }
-
-        if (customFreqMTakenEveryEnter.getText().toString().isEmpty()) {
-            customFreqTakenEveryLayout.setError(getString(R.string.err_enter_med_freq));
-        }
-
-        if (customFreqTimeUnitEnter.getText().toString().isEmpty()) {
-            customFreqTimeUnitLayout.setError(getString(R.string.err_enter_time_unit));
-        }
-
         return false;
     }
 
@@ -1185,8 +1350,6 @@ public class AddMedication extends AppCompatActivity {
 
             return true;
         }
-
-        asNeededStart.setError(getString(R.string.err_select_start_date));
 
         return false;
     }
@@ -1280,5 +1443,15 @@ public class AddMedication extends AppCompatActivity {
         }
 
         return note;
+    }
+
+    private void validateForm() {
+        boolean allValid = isPatientNameValid
+                && isMedNameValid
+                && isMedDosageValid
+                && isMedDoseUnitValid 
+                && isMedFrequencyValid;
+
+        saveButton.setEnabled(allValid);
     }
 }

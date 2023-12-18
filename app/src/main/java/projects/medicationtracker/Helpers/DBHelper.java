@@ -24,7 +24,7 @@ import projects.medicationtracker.SimpleClasses.Note;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Medications.db";
-    private final static int DATABASE_VERSION = 6;
+    private final static int DATABASE_VERSION = 7;
 
     public final static String ANDROID_METADATA = "android_metadata";
 
@@ -61,6 +61,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String SETTINGS_TABLE = "Settings";
     private static final String TIME_BEFORE_DOSE = "TimeBeforeDose";
     private static final String ENABLE_NOTIFICATIONS = "EnableNotifications";
+    public static final String SEEN_NOTIFICATION_REQUEST = "SeenNotificationRequest";
     public static final String THEME = "Theme";
     public static final String DEFAULT = "default";
     public static final String LIGHT = "light";
@@ -140,7 +141,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
                         + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1, "
                         + THEME + " TEXT DEFAULT '" + DEFAULT + "',"
-                        + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0)"
+                        + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0,"
+                        + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0)"
         );
 
         sqLiteDatabase.execSQL("INSERT INTO " + SETTINGS_TABLE + "("
@@ -208,6 +210,10 @@ public class DBHelper extends SQLiteOpenHelper {
         if (i < 6) {
             sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + PARENT_ID + " INTEGER REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE");
             sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + CHILD_ID + " INTEGER REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE");
+        }
+
+        if (i < 7) {
+            sqLiteDatabase.execSQL("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0;");
         }
     }
 
@@ -797,7 +803,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.insert(MEDICATION_TRACKER_TABLE, null, medTrackerValues);
     }
 
-    public LocalDateTime[] getDoseFromMedicationTracker(Medication medication) {
+    public LocalDateTime[] getMedicationDoses(Medication medication) {
         LocalDateTime[] times;
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " + DOSE_TIME + " FROM " + MEDICATION_TRACKER_TABLE
@@ -832,7 +838,7 @@ public class DBHelper extends SQLiteOpenHelper {
      *
      * @param medId    ID of Medication
      * @param doseTime Time of dose
-     * @return Dose ID of match found in MedicationTracker table
+     * @return Dose ID of match found in MedicationTracker table or -1 if not found
      */
     public long getDoseId(long medId, String doseTime) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -1090,7 +1096,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public Bundle getPreferences() {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT " + THEME + "," + AGREED_TO_TERMS + " FROM " + SETTINGS_TABLE;
+        String query = "SELECT " + THEME + "," + AGREED_TO_TERMS + "," + SEEN_NOTIFICATION_REQUEST + " FROM " + SETTINGS_TABLE;
         Bundle retVal = new Bundle();
 
         Cursor cursor = db.rawQuery(query, null);
@@ -1100,6 +1106,10 @@ public class DBHelper extends SQLiteOpenHelper {
         retVal.putBoolean(
                 AGREED_TO_TERMS,
                 Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(AGREED_TO_TERMS))) == 1
+        );
+        retVal.putBoolean(
+                SEEN_NOTIFICATION_REQUEST,
+                Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(SEEN_NOTIFICATION_REQUEST))) == 1
         );
 
         cursor.close();
@@ -1263,11 +1273,11 @@ public class DBHelper extends SQLiteOpenHelper {
     /**
      * Saves terms acceptance
      */
-    public void saveTermsAcceptance() {
+    public void seenPermissionRequest(String permission) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put(AGREED_TO_TERMS, true);
+        cv.put(permission, true);
 
         db.update(SETTINGS_TABLE, cv, null, null);
     }

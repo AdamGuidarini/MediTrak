@@ -16,7 +16,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -70,6 +70,15 @@
                             android:text="@string/number_of_hours_before_dose_can_be_taken"
                             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/enableNotificationSwitch"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/enable_notifications"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="5dp" />
+
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
@@ -83,17 +92,6 @@
                                 android:inputType="number" />
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
-
-
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/enableNotificationSwitch"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/enable_notifications"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginBottom="5dp" />
-
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
@@ -111,6 +109,15 @@
                             android:inputType="none" />
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <Button
+                        android:id="@+id/enableNotifications"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="15dp"
+                        android:onClick="OnEnableNotificationsClick"
+                        android:visibility="gone"
+                        app:cornerRadius="30dp"
+                        android:text="@string/enable_notifications" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

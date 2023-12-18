@@ -200,6 +200,7 @@
     <string name="failed_export">Data could not be exported</string>
     <string name="failed_import">Failed to import data</string>
     <string name="could_not_retrieve_file">Could not retrieve import file</string>
+    <string name="notifications_already_enabled">Notifications are already enabled</string>
 
     <!-- Dose Info dialog -->
     <string name="not_taken_yet">Not yet taken</string>

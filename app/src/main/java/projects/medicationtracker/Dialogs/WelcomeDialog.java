@@ -41,7 +41,7 @@ public class WelcomeDialog extends DialogFragment {
 
         agreeBox.setOnCheckedChangeListener((compoundButton, b) ->
         {
-            db.saveTermsAcceptance();
+            db.seenPermissionRequest(DBHelper.AGREED_TO_TERMS);
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(b);
         });
 
