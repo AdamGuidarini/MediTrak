@@ -217,12 +217,16 @@ public class AddMedication extends AppCompatActivity {
      * Builds all views in activity
      */
     private void buildViews() {
+        saveButton = findViewById(R.id.saveButton);
+        saveButton.setEnabled(false);
+
         setPatientCard();
         setMedNameAndDosageCard();
         setFrequencyCard();
 
-        saveButton = findViewById(R.id.saveButton);
-        saveButton.setEnabled(false);
+        if (medId != -1) {
+            saveButton.setEnabled(false);
+        }
     }
 
     /**
@@ -270,14 +274,6 @@ public class AddMedication extends AppCompatActivity {
             }
         });
 
-        if (medId == -1 || (medication != null && medication.getPatientName().equals("ME!"))) {
-            meButton.setChecked(true);
-        } else {
-            otherButton.setChecked(true);
-            patientNameInputLayout.setVisibility(View.VISIBLE);
-            patientNameInput.setText(medication.getPatientName());
-        }
-
         patientGroup.setOnCheckedChangeListener((radioGroup, i) ->
         {
             if (meButton.isChecked()) {
@@ -293,6 +289,14 @@ public class AddMedication extends AppCompatActivity {
 
             validateForm();
         });
+
+        if (medId == -1 || (medication != null && medication.getPatientName().equals("ME!"))) {
+            meButton.setChecked(true);
+        } else {
+            otherButton.setChecked(true);
+            patientNameInputLayout.setVisibility(View.VISIBLE);
+            patientNameInput.setText(medication.getPatientName());
+        }
     }
 
     /**
@@ -320,21 +324,6 @@ public class AddMedication extends AppCompatActivity {
                 aliasInput.setText("");
             }
         });
-
-        if (medId != -1) {
-            medNameInput.setText(medication.getName());
-            if (!medication.getAlias().isEmpty()) {
-                aliasInput.setText(medication.getAlias());
-            }
-
-            if (medication.getDosage() == (int) medication.getDosage()) {
-                dosageAmountInput.setText(String.format(Locale.getDefault(), "%d", (int) medication.getDosage()));
-            } else {
-                dosageAmountInput.setText(String.valueOf(medication.getDosage()));
-            }
-
-            dosageUnitsInput.setText(medication.getDosageUnits());
-        }
 
         medNameInput.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
@@ -415,6 +404,21 @@ public class AddMedication extends AppCompatActivity {
                 validateForm();
             }
         });
+
+        if (medId != -1) {
+            medNameInput.setText(medication.getName());
+            if (!medication.getAlias().isEmpty()) {
+                aliasInput.setText(medication.getAlias());
+            }
+
+            if (medication.getDosage() == (int) medication.getDosage()) {
+                dosageAmountInput.setText(String.format(Locale.getDefault(), "%d", (int) medication.getDosage()));
+            } else {
+                dosageAmountInput.setText(String.valueOf(medication.getDosage()));
+            }
+
+            dosageUnitsInput.setText(medication.getDosageUnits());
+        }
     }
 
     /**
@@ -743,18 +747,6 @@ public class AddMedication extends AppCompatActivity {
             }
         });
 
-        if (medId != -1 && selectedFrequencyTypeIndex == 1) {
-            dailyMedStartDate.setTag(medication.getStartDate().toLocalDate());
-            dailyMedStartDate.setText(
-                    TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
-            );
-
-            dailyMedTime.setTag(medication.getStartDate().toLocalTime());
-            dailyMedTime.setText(
-                    TimeFormatting.localTimeToString(medication.getStartDate().toLocalTime())
-            );
-        }
-
         dailyMedTime.addTextChangedListener(new TextWatcher() {
             private final LocalTime time = medication.getStartDate().toLocalTime();
 
@@ -791,6 +783,18 @@ public class AddMedication extends AppCompatActivity {
                 validateForm();
             }
         });
+
+        if (medId != -1 && selectedFrequencyTypeIndex == 1) {
+            dailyMedStartDate.setTag(medication.getStartDate().toLocalDate());
+            dailyMedStartDate.setText(
+                    TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
+            );
+
+            dailyMedTime.setTag(medication.getStartDate().toLocalTime());
+            dailyMedTime.setText(
+                    TimeFormatting.localTimeToString(medication.getStartDate().toLocalTime())
+            );
+        }
     }
 
     /**
@@ -996,13 +1000,6 @@ public class AddMedication extends AppCompatActivity {
             }
         });
 
-        if (medId != -1) {
-            asNeededStartInput.setText(
-                    TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
-            );
-            asNeededStartInput.setTag(medication.getStartDate().toLocalDate());
-        }
-
         asNeededStartInput.addTextChangedListener(
                 new TextWatcher() {
                     @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
@@ -1022,6 +1019,13 @@ public class AddMedication extends AppCompatActivity {
                     }
                 }
         );
+
+        if (medId != -1) {
+            asNeededStartInput.setText(
+                    TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
+            );
+            asNeededStartInput.setTag(medication.getStartDate().toLocalDate());
+        }
     }
 
     /**
