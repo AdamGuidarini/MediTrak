@@ -3,7 +3,6 @@ package projects.medicationtracker;
 import static projects.medicationtracker.Helpers.DBHelper.DARK;
 import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
-import static projects.medicationtracker.Helpers.DBHelper.SEEN_NOTIFICATION_REQUEST;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 
 import android.content.Intent;
@@ -30,7 +29,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
-import androidx.core.app.ActivityCompat;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
@@ -70,9 +68,18 @@ public class Settings extends AppCompatActivity {
         purgeButton.setBackgroundColor(Color.RED);
 
         Button enableNotificationsButton = findViewById(R.id.enableNotifications);
-        enableNotificationsButton.setVisibility(Build.VERSION.SDK_INT >= 33 ? View.VISIBLE : View.GONE);
+        SwitchCompat notificationToggle = findViewById(R.id.enableNotificationSwitch);
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            enableNotificationsButton.setVisibility(View.VISIBLE);
+            notificationToggle.setVisibility(View.GONE);
+        } else {
+            enableNotificationsButton.setVisibility(View.GONE);
+            notificationToggle.setVisibility(View.VISIBLE);
+        }
 
         setTimeBeforeDoseRestrictionSwitch();
+        setEnableNotificationSwitch();
         setThemeMenu();
 
         chooseFileLauncher = registerForActivityResult(
@@ -328,6 +335,19 @@ public class Settings extends AppCompatActivity {
         } else {
             Toast.makeText(this, getString(R.string.notifications_already_enabled), Toast.LENGTH_SHORT).show();
         }
+    }
+
+
+    /**
+     * Enable notifications for application
+     */
+    private void setEnableNotificationSwitch() {
+        SwitchCompat enableNotificationsSwitch = findViewById(R.id.enableNotificationSwitch);
+
+        enableNotificationsSwitch.setChecked(db.getNotificationEnabled());
+
+        enableNotificationsSwitch.setOnCheckedChangeListener(((compoundButton, b) ->
+                db.setNotificationEnabled(enableNotificationsSwitch.isChecked())));
     }
 
     private native boolean dbImporter(String dbPath, String importPath, String[] ignoredTables);

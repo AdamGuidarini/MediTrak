@@ -8,6 +8,7 @@ import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
 import java.time.LocalDateTime;
@@ -47,7 +48,9 @@ public class NotificationReceiver extends BroadcastReceiver {
                 extras.getLong(NOTIFICATION_ID, 0)
         );
 
-        context.startService(service);
+        // Fire notification if enabled, or fire and let the OS block it in Android 13+
+        if (db.getNotificationEnabled() || Build.VERSION.SDK_INT >= 33)
+            context.startService(service);
 
         db.close();
     }
