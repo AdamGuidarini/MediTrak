@@ -47,9 +47,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                 extras.getLong(NOTIFICATION_ID, 0)
         );
 
-        // Fire notification if enabled
-        if (db.getNotificationEnabled())
-            context.startService(service);
+        context.startService(service);
 
         db.close();
     }

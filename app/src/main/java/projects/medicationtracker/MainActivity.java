@@ -7,11 +7,14 @@ import static projects.medicationtracker.Fragments.MedicationScheduleFragment.ME
 import static projects.medicationtracker.Helpers.DBHelper.AGREED_TO_TERMS;
 import static projects.medicationtracker.Helpers.DBHelper.DARK;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
+import static projects.medicationtracker.Helpers.DBHelper.SEEN_NOTIFICATION_REQUEST;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.Menu;
@@ -24,6 +27,8 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentContainerView;
@@ -47,6 +52,10 @@ public class MainActivity extends AppCompatActivity {
     private final DBHelper db = new DBHelper(this);
     private LinearLayout scheduleLayout;
     private LocalDate aDayThisWeek;
+    private final ActivityResultLauncher<String> notificationPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            isGranted -> db.seenPermissionRequest(SEEN_NOTIFICATION_REQUEST)
+    );
 
     /**
      * Runs at start of activity, builds MainActivity
@@ -81,6 +90,10 @@ public class MainActivity extends AppCompatActivity {
             WelcomeDialog welcomeDialog = new WelcomeDialog();
             welcomeDialog.setCancelable(false);
             welcomeDialog.show(getSupportFragmentManager(), null);
+        }
+
+        if (Build.VERSION.SDK_INT >= 33 && !preferences.getBoolean(SEEN_NOTIFICATION_REQUEST) && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
         }
 
         createMainActivityViews();
