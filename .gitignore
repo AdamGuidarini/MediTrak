@@ -35,7 +35,7 @@ google-services.json
 *.hprof
 
 # Non-original sources
-*sqlite/sqlite3.h
-*sqlite/sqlite3.c
-*sqlite/shell.c
-*sqlite/sqlite3ext.h
+*sqlite3.h
+*sqlite3.c
+*shell.c
+*sqlite3ext.h
