@@ -26,7 +26,7 @@ This project uses the ````sqlite3.c```` and ````sqlite3.h```` files in its NDK p
   export SQLITE3_LIB_PATH=/path/to/dir/
   ````
 
-  It is strongly recommended to add this to the ````.bashrc```` file on Linux in your home directory so they will persist across sessions.
+  It is strongly recommended to add this to the ````.bashrc```` file in your home directory so they will persist across sessions.
 
 - Linux (Flatpak)
 
