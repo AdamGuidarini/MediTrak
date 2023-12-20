@@ -193,7 +193,7 @@ void DbManager::exportData(const string& exportFilePath, const vector<string>& i
     string outData;
 
     try {
-        outFile.open(exportFilePath, fstream::in | fstream::out | fstream::trunc);
+        outFile.open(exportFilePath, fstream::trunc);
 
         if (!outFile.is_open()) {
             throw runtime_error("Could not open file: " + exportFilePath);

@@ -111,7 +111,7 @@ public class NotificationHelper {
         String patientName = medication.getPatientName();
         String medicationName = medication.getName();
 
-        if (!medication.getAlias().isEmpty())
+        if (medication.getAlias() != null && !medication.getAlias().isEmpty())
             medicationName = medication.getAlias();
 
         message = patientName.equals("ME!") ?
