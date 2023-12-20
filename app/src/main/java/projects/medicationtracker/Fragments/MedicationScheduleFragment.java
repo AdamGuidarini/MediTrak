@@ -1,6 +1,7 @@
 package projects.medicationtracker.Fragments;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -246,8 +247,6 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         thisMedication.setTag(tag);
 
         if (medication.getFrequency() == 0) {
-            thisMedication.setTextColor(Color.WHITE);
-
             return rl;
         }
 
