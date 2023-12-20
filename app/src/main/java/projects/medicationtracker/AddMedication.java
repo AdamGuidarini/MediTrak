@@ -1220,10 +1220,8 @@ public class AddMedication extends AppCompatActivity {
      * @return True if valid
      */
     private boolean isMultiplePerDayValid() {
-        TextInputLayout multiplePerDayStartDateLayout =
-                this.findViewById(R.id.multiplePerDayStartDateLayout);
-
         if (!startDateMultiplePerDay.getText().toString().isEmpty()
+                && startDateMultiplePerDay.getTag() != null
                 && !numberOfTimersPerDay.getText().toString().isEmpty()
                 && intIsParsable(numberOfTimersPerDay.getText().toString())
                 && numberOfTimersPerDayLayout.getError() == null) {
@@ -1242,7 +1240,7 @@ public class AddMedication extends AppCompatActivity {
 
                 childLayout.setErrorEnabled(false);
 
-                if (time.getText().toString().isEmpty()) {
+                if ((time!= null && time.getText().toString().isEmpty()) || start == null || Objects.requireNonNull(time).getTag() == null) {
                     errorCount++;
                 } else {
                     times[i] = LocalDateTime.of(start.toLocalDate(), (LocalTime) time.getTag());
