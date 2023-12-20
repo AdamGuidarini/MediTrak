@@ -36,6 +36,7 @@ Thanks to [IzzySoft](https://github.com/IzzySoft), this app is available in the 
 
 ##### Adding the repository to the F-Droid App
 
+- Download [F-Droid](https://f-droid.org/) (if not already installed)
 - Navigate to "Settings"
 - Under the "My Apps" section, select "Repositories"
 - Click on the "+" button
