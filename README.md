@@ -17,12 +17,18 @@ This project uses the ````sqlite3.c```` and ````sqlite3.h```` files in its NDK p
 
 ##### Setting the Envrioment Variable
 
-- Linux
+- Linux (native)
   ````
   export SQLITE3_LIB_PATH=/path/to/dir/
   ````
 
   It is strongly recommended to add this to the ````.bashrc```` file on Linux in your home directory so they will persist across sessions.
+
+- Linux (Flatpak)
+
+  ````
+  flatpak override --user --env=SQLITE3_LIB_PATH=/path/to/dir/ com.google.AndroidStudio
+  ````
 
 - Windows
   ````
