@@ -246,8 +246,6 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         thisMedication.setTag(tag);
 
         if (medication.getFrequency() == 0) {
-            thisMedication.setTextColor(Color.WHITE);
-
             return rl;
         }
 
