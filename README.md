@@ -21,7 +21,7 @@ This project uses the ````sqlite3.c```` and ````sqlite3.h```` files in its NDK p
 
 ##### Setting the Envrioment Variable
 
-- Linux (native)
+- Linux (Native)
   ````
   export SQLITE3_LIB_PATH=/path/to/dir/
   ````
