@@ -10,9 +10,14 @@ cmake_minimum_required(VERSION 3.22.1)
 
 project("medicationtracker")
 set(CMAKE_CXX_STANDARD 17)
+set(SQLITE3_PATH $ENV{SQLITE3_LIB_PATH})
 
+if (NOT SQLITE3_PATH)
+    message(SEND_ERROR "Missing environment variable: \"SQLITE3_LIB_PATH\".")
+endif ()
+
+include_directories(${SQLITE3_PATH})
 add_subdirectory(DbManager)
-add_subdirectory(sqlite)
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
@@ -28,6 +33,10 @@ add_library( # Sets the name of the library.
              # Provides a relative path to your source file(s).
              medicationtracker.cpp
         )
+
+add_library(
+        sqlite3 SHARED ${SQLITE3_PATH}/sqlite3.h ${SQLITE3_PATH}/sqlite3.c
+)
 
 add_definitions( -DSQLITE_ENABLE_JSON1 )
 
@@ -51,8 +60,10 @@ target_link_libraries( # Specifies the target library.
                        medicationtracker
                        DbManager
                        android
+                       sqlite3
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib} )
 
+target_include_directories(sqlite3 PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 
