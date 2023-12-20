@@ -13,7 +13,23 @@ It is strongly recommended to use [Android Studio](https://developer.android.com
 ### Additional Dependencies
 #### C/C++ SQLite3 Library
 
-This project uses the ````sqlite3.c```` and ````sqlite3.h```` files in its NDK portion. These can be found [here](https://www.sqlite.org/download.html) in the zip file under "Source Code". Copy the two files to ````app/src/main/cpp/sqlite```` where a ````CMakeLists.txt```` file is configured for them.
+This project uses the ````sqlite3.c```` and ````sqlite3.h```` files in its NDK portion. These can be found [here](https://www.sqlite.org/download.html) in the zip file under "Source Code". In order for CMake to find them, and enviroment variable called ````SQLITE3_LIB_PATH```` has to be set to their path.
+
+##### Setting the Envrioment Variable
+
+- Linux
+  ````
+  export SQLITE3_LIB_PATH=/path/to/dir/
+  ````
+
+  It is strongly recommended to add this to the ````.bashrc```` file on Linux in your home directory so they will persist across sessions.
+
+- Windows
+  ````
+  [Environment]::SetEnvironmentVariable('SQLITE3_LIB_PATH', 'C:\path\to\dir', 'Machine')
+  ````
+
+  This will create an environment variable that will persist across sessions.
 
 ## Status
 
