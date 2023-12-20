@@ -1,6 +1,10 @@
 # MediTrak
 An Android app that helps users keep track of their medications.
 
+## About
+
+MediTrak is an Android application designed to make it easier for users to keep track of their medications and to help them remember to take them. It offers the ability to add medications for multpile patients, set medication reminders on a variety of intervals, and take notes on a medication to record any adverse effects if might cause. All user data is stored locally is not share with either the developer or any other third party.
+
 ## Requirements
 
 + Android 8.0 Oreo or newer
@@ -36,15 +40,6 @@ This project uses the ````sqlite3.c```` and ````sqlite3.h```` files in its NDK p
   ````
 
   This will create an environment variable that will persist across sessions.
-
-## Status
-
-+ In active development, this app is a personal project that I work on in my free time.
-+ The app is largely functioning as intended with notifications and navigation to past and future weeks being fully functional. Most of the updates I'm planning will have to do more with styling than new features, however I do have a couple ideas for how to make the app more helpful in the works.
-
-## About
-
-MediTrak is an Android application designed to make it easier for users to keep track of their medications and to help them remember to take them. It offers the ability to add medications for multpile patients, set medication reminders on a variety of intervals, and take notes on a medication to record any adverse effects if might cause. All user data is stored locally is not share with either the developer or any other third party.
 
 ## Installation
 
