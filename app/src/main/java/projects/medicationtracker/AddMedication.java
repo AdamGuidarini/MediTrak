@@ -226,6 +226,7 @@ public class AddMedication extends AppCompatActivity {
 
         if (medId != -1) {
             saveButton.setEnabled(false);
+            applyRetroactiveCard.setVisibility(View.GONE);
         }
     }
 
