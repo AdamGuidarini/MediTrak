@@ -33,3 +33,9 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# Non-original sources
+*sqlite3.h
+*sqlite3.c
+*shell.c
+*sqlite3ext.h

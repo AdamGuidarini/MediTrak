@@ -28,6 +28,7 @@ import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
+import projects.medicationtracker.SimpleClasses.Dose;
 import projects.medicationtracker.SimpleClasses.Medication;
 
 public class AddAsNeededDoseDialog extends DialogFragment {
@@ -67,7 +68,10 @@ public class AddAsNeededDoseDialog extends DialogFragment {
         builder.setView(inflater.inflate(R.layout.dialog_add_as_needed, null));
         builder.setTitle(R.string.add_dose);
 
-        builder.setPositiveButton(R.string.save, ((dialogInterface, i) -> save()));
+        builder.setPositiveButton(R.string.save, ((dialogInterface, i) -> {
+            save();
+            dismiss();
+        }));
         builder.setNegativeButton(R.string.close, ((dialogInterface, i) -> dismiss()));
 
         dialog = builder.create();
@@ -156,9 +160,11 @@ public class AddAsNeededDoseDialog extends DialogFragment {
 
         db.updateDoseStatus(doseId, TimeFormatting.localDateTimeToString(dateTimeTaken), true);
 
+        Dose dose = new Dose(doseId, med.getId(), true, dateTimeTaken);
+
         if (fragment instanceof IDialogCloseListener) {
             ((IDialogCloseListener) fragment).handleDialogClose(
-                    IDialogCloseListener.Action.ADD, doseId
+                    IDialogCloseListener.Action.ADD, dose
             );
         }
     }

@@ -32,6 +32,8 @@
     <string name="err_enter_med_freq">Please enter how often the medication is taken.</string>
     <string name="err_enter_time_unit">Please select a time unit.</string>
     <string name="err_name_for_med">Please enter a name for this medication</string>
+    <string name="err_missing_file_name">Missing file name</string>
+    <string name="err_file_must_be_json">Export file must have a .json extension</string>
 
     <!-- Time formats -->
     <string name="date_format">Mmm dd, yyyy</string>
@@ -60,7 +62,7 @@
     <string name="warranty_info">
         This application is meant to assist in keeping track of your medications. It is not intended
         to provide medical advice and no information provided by this application should be misconstrued
-        as such. The creators of this application are not responsible are not responsible for any missed
+        as such. The creators of this application are not responsible for any missed
         doses of your medications for any reason. If you require medical assistance, please contact a medical professional.
         By using this application, you are agreeing to the aforementioned terms as well as those of the GPL2 license under
         which it is released. \n\n
@@ -185,6 +187,20 @@
     <string name="dark_mode">Dark mode</string>
     <string name="match_system_theme">System default</string>
     <string name="number_of_hours_before_dose_can_be_taken">Limit before which medication cannot be taken:</string>
+    <string name="export">Export</string>
+    <string name="importData">Import</string>
+    <string name="data">Data</string>
+    <string name="export_directory">Export Directory</string>
+    <string name="export_file_name">Export File Name</string>
+    <string name="downloads">Downloads</string>
+    <string name="documents">Documents</string>
+    <string name="export_data">Export Data</string>
+    <string name="successful_export">Successfully exported data to: %1$s?</string>
+    <string name="import_success">Successfully imported data</string>
+    <string name="failed_export">Data could not be exported</string>
+    <string name="failed_import">Failed to import data</string>
+    <string name="could_not_retrieve_file">Could not retrieve import file</string>
+    <string name="notifications_already_enabled">Notifications are already enabled</string>
 
     <!-- Dose Info dialog -->
     <string name="not_taken_yet">Not yet taken</string>

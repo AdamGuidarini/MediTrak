@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentContainerView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -78,7 +79,7 @@ public class MyMedications extends AppCompatActivity {
                 createMyMedCards(medication, myMedsLayout);
             }
         } else if (allMeds.size() > 1) {
-            String[] patients = (String[]) allMeds.stream().map(Pair::getFirst).toArray();
+            String[] patients = allMeds.stream().map(Pair::getFirst).map(p -> Objects.equals(p, "ME!") ? getString(R.string.you) : p).toArray(String[]::new);
 
             if (allMeds.stream().allMatch(m -> m.getFirst().equals("ME!"))) {
                 allMeds = allMeds.stream().map(m -> {
@@ -107,11 +108,9 @@ public class MyMedications extends AppCompatActivity {
                     String selected = adapterView.getSelectedItem().toString();
                     final String patient = selected.equals(you) ? "ME!" : selected;
 
-                    Medication[] patientMeds = (Medication[]) allMedsClone.stream().filter(
+                    ArrayList<Medication> patientMeds = allMedsClone.stream().filter(
                             m -> m.getFirst().equals(patient)
-                    ).collect(Collectors.toCollection(ArrayList::new)).stream().map(
-                            Pair::getSecond
-                    ).toArray();
+                    ).map(Pair::getSecond).collect(Collectors.toList()).get(0);
 
                     for (Medication medication : patientMeds) {
                         if (medication.getChild() != null) continue;
