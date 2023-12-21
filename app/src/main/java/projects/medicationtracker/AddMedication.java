@@ -527,6 +527,9 @@ public class AddMedication extends AppCompatActivity {
                     selectedFrequencyTypeIndex = 3;
                     break;
             }
+
+            isMedFrequencyValid = isFrequencyCardValid();
+            validateForm();
         });
 
         frequencyDropDown.addTextChangedListener(new TextWatcher() {
