@@ -5,6 +5,7 @@ import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -42,7 +43,7 @@ import projects.medicationtracker.Helpers.DBHelper;
 public class Settings extends AppCompatActivity {
     private final DBHelper db = new DBHelper(this);
     private ActivityResultLauncher<String> chooseFileLauncher;
-    private final ActivityResultLauncher<String> notificationPermissionLauncher = registerForActivityResult(
+    private final ActivityResultLauncher<String> permissionRequester = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             isGranted -> {}
     );
@@ -297,12 +298,22 @@ public class Settings extends AppCompatActivity {
      * Listener for export data button
      */
     public void onExportClick(View view) {
+        if (Build.VERSION.SDK_INT <= 32 && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionRequester.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
         BackupDestinationPicker picker = new BackupDestinationPicker();
         picker.show(getSupportFragmentManager(), null);
     }
 
     public void onImportClick(View view) {
-        chooseFileLauncher.launch("application/json");
+        String type= Build.VERSION.SDK_INT >= 30 ? "application/json" : "*/*";
+
+        if (Build.VERSION.SDK_INT <= 32 && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionRequester.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+
+        chooseFileLauncher.launch(type);
     }
 
     /**
@@ -331,12 +342,11 @@ public class Settings extends AppCompatActivity {
 
     public void OnEnableNotificationsClick(View view) {
         if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
+            permissionRequester.launch(android.Manifest.permission.POST_NOTIFICATIONS);
         } else {
             Toast.makeText(this, getString(R.string.notifications_already_enabled), Toast.LENGTH_SHORT).show();
         }
     }
-
 
     /**
      * Enable notifications for application
