@@ -8,10 +8,12 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Pair;
 
 import androidx.annotation.Nullable;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -24,7 +26,7 @@ import projects.medicationtracker.SimpleClasses.Note;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Medications.db";
-    private final static int DATABASE_VERSION = 7;
+    private final static int DATABASE_VERSION = 8;
 
     public final static String ANDROID_METADATA = "android_metadata";
 
@@ -57,6 +59,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String NOTE_ID = "NoteID";
     private static final String NOTE = "Note";
     private static final String ENTRY_TIME = "EntryTime";
+    private static final String TIME_EDITED = "TimeEdited";
 
     public static final String SETTINGS_TABLE = "Settings";
     private static final String TIME_BEFORE_DOSE = "TimeBeforeDose";
@@ -83,8 +86,10 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        ArrayList<String> queries = new ArrayList<>();
+
         // Holds all constant information on a given medication
-        sqLiteDatabase.execSQL(
+        queries.add(
                 "CREATE TABLE IF NOT EXISTS " + MEDICATION_TABLE + "("
                         + MED_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                         + MED_NAME + " TEXT,"
@@ -99,11 +104,11 @@ public class DBHelper extends SQLiteOpenHelper {
                         + CHILD_ID + " INTEGER,"
                         + "FOREIGN KEY (" + PARENT_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE,"
                         + "FOREIGN KEY (" + CHILD_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                        + ")"
+                        + ");"
         );
 
         // Holds data on past doses, as well as doses for current week
-        sqLiteDatabase.execSQL(
+        queries.add(
                 "CREATE TABLE IF NOT EXISTS " + MEDICATION_TRACKER_TABLE + "("
                         + DOSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                         + MED_ID + " INT,"
@@ -111,53 +116,56 @@ public class DBHelper extends SQLiteOpenHelper {
                         + TAKEN + " BOOLEAN,"
                         + TIME_TAKEN + " DATETIME,"
                         + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                        + ")"
+                        + ");"
         );
 
         // Holds information on doses with a custom frequency so times for upcoming doses can be calculated
-        sqLiteDatabase.execSQL(
+        queries.add(
                 "CREATE TABLE IF NOT EXISTS " + MEDICATION_TIMES + "("
                         + TIME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                         + MED_ID + " INT,"
                         + DRUG_TIME + " TEXT,"
                         + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                        + ")"
+                        + ");"
         );
 
         // Stores a users notes for a medication, designed to help track how a medication is
         // affecting the patient. Facilitates tracking possible issues to bring up with prescriber
-        sqLiteDatabase.execSQL(
+        queries.add(
                 "CREATE TABLE IF NOT EXISTS " + NOTES_TABLE + "("
                         + NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                         + MED_ID + " INT, "
                         + NOTE + " TEXT, "
                         + ENTRY_TIME + " DATETIME,"
+                        + TIME_EDITED + " DATETIME,"
                         + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                        + ")"
+                        + ");"
         );
 
-        sqLiteDatabase.execSQL(
+        queries.add(
                 "CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
                         + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
                         + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1, "
                         + THEME + " TEXT DEFAULT '" + DEFAULT + "',"
                         + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0,"
-                        + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0)"
+                        + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0);"
         );
 
-        sqLiteDatabase.execSQL("INSERT INTO " + SETTINGS_TABLE + "("
+        queries.add("INSERT INTO " + SETTINGS_TABLE + "("
                 + ENABLE_NOTIFICATIONS + ", " + TIME_BEFORE_DOSE + ")"
-                + "VALUES (1, 2)");
+                + "VALUES (1, 2);");
 
-        sqLiteDatabase.execSQL(
+        queries.add(
                 "CREATE TABLE IF NOT EXISTS " + ACTIVITY_CHANGE_TABLE + "("
                         + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                         + MED_ID + " INT,"
                         + CHANGE_DATE + " DATETIME,"
                         + PAUSED + " BOOLEAN,"
                         + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                        + ")"
+                        + ");"
         );
+
+        queries.forEach(sqLiteDatabase::execSQL);
     }
 
     /**
@@ -181,40 +189,48 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+        ArrayList<String> queries = new ArrayList<>();
+
         onCreate(sqLiteDatabase);
 
         if (i < 2) {
-            sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + ACTIVE + " BOOLEAN DEFAULT 1;");
+            queries.add("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + ACTIVE + " BOOLEAN DEFAULT 1;");
         }
 
         if (i < 3) {
-            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MEDICATION_STATS_TABLE);
+            queries.add("DROP TABLE IF EXISTS " + MEDICATION_STATS_TABLE + ";");
         }
 
         if (i < 4) {
-            sqLiteDatabase.execSQL(
+            queries.add(
                     "CREATE TABLE IF NOT EXISTS " + ACTIVITY_CHANGE_TABLE + "("
                             + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                             + MED_ID + " INT,"
                             + CHANGE_DATE + " DATETIME,"
                             + PAUSED + " BOOLEAN,"
                             + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                            + ")"
+                            + ");"
             );
         }
 
         if (i < 5) {
-            sqLiteDatabase.execSQL("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0;");
+            queries.add("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0;");
         }
 
         if (i < 6) {
-            sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + PARENT_ID + " INTEGER REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE");
-            sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + CHILD_ID + " INTEGER REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE");
+            queries.add("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + PARENT_ID + " INTEGER REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE;");
+            queries.add("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + CHILD_ID + " INTEGER REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE;");
         }
 
         if (i < 7) {
-            sqLiteDatabase.execSQL("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0;");
+            queries.add("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0;");
         }
+
+        if (i < 8) {
+            queries.add("ALTER TABLE " + NOTES_TABLE + " ADD COLUMN " + TIME_EDITED + " DATETIME;");
+        }
+
+        queries.forEach(sqLiteDatabase::execSQL);
     }
 
     /**
@@ -919,7 +935,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param note  The note to add
      * @param medId ID of medication note is about
      */
-    public void addNote(String note, long medId) {
+    public long addNote(String note, long medId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         String now = TimeFormatting.localDateTimeToString(LocalDateTime.now());
@@ -928,7 +944,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(NOTE, note);
         cv.put(ENTRY_TIME, now);
 
-        db.insert(NOTES_TABLE, null, cv);
+        return db.insert(NOTES_TABLE, null, cv);
     }
 
     /**
@@ -950,11 +966,11 @@ public class DBHelper extends SQLiteOpenHelper {
      *
      * @param note The new note.
      */
-    public void updateNote(Note note, String newNote) {
+    public void updateNote(Note note) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put(NOTE, newNote);
+        cv.put(NOTE, note.getNote());
 
         db.update(NOTES_TABLE, cv, NOTE_ID + "=?", new String[]{String.valueOf(
                 note.getNoteId())});

@@ -37,6 +37,7 @@ Java_projects_medicationtracker_Dialogs_BackupDestinationPicker_dbExporter(JNIEn
 
     return true;
 }
+
 extern "C"
 JNIEXPORT jboolean JNICALL
 Java_projects_medicationtracker_Settings_dbImporter(JNIEnv *env, jobject thiz, jstring db_path, jstring import_path,
