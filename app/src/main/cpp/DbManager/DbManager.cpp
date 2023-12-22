@@ -83,7 +83,7 @@ void DbManager::replaceAll(string &str, const string& from, const string& to) {
     }
 }
 
-void DbManager::openDb(int newestVersion) {
+void DbManager::openDb() {
     const int rc = sqlite3_open(database_name.c_str(), &db);
 
     if (rc != SQLITE_OK) {

@@ -76,7 +76,7 @@ public:
     /**
      * Opens database.
      */
-    void openDb(int newestVersion = -1);
+    void openDb();
 
     /**
      * Closes database.
