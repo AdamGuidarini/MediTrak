@@ -22,10 +22,12 @@ import projects.medicationtracker.Dialogs.AddNoteDialog;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TextViewUtils;
 import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.Interfaces.IDialogCloseListener;
+import projects.medicationtracker.SimpleClasses.Dose;
 import projects.medicationtracker.SimpleClasses.Note;
 import projects.medicationtracker.Views.StandardCardView;
 
-public class MedicationNotes extends AppCompatActivity {
+public class MedicationNotes extends AppCompatActivity implements IDialogCloseListener {
     final DBHelper db = new DBHelper(this);
 
     @Override
@@ -171,5 +173,21 @@ public class MedicationNotes extends AppCompatActivity {
         TextViewUtils.setTextViewParams(noteDate, noteDateLabel, cardLayout);
 
         noteText.setTag(note);
+    }
+
+    @Override
+    public void handleDialogClose(Action action, Object obj) {
+        Note note = (Note) obj;
+
+        switch (action) {
+            case ADD:
+                // create new note fragment and add it to end of list
+                break;
+            case EDIT:
+                // Modify existing note fragment
+                break;
+            case DELETE:
+                // Remove delete note Fragment
+        }
     }
 }

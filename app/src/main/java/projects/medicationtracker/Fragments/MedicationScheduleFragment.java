@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import kotlin.Triple;
@@ -323,7 +324,8 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     }
 
     @Override
-    public void handleDialogClose(Action action, Dose dose) {
+    public void handleDialogClose(Action action, Object obj) {
+        Dose dose = (Dose) obj;
         LinearLayout ll = rootView.findViewById(R.id.asNeededViews);
 
         switch (action) {
