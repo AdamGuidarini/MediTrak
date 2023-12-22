@@ -92,32 +92,6 @@ void DbManager::openDb(int newestVersion) {
 }
 void DbManager::closeDb() { sqlite3_close(db); }
 
-void DbManager::upgrade(int version, string query) {
-    int currentVersion;
-    sqlite3_stmt *stmt;
-    char* err;
-
-    int rc = sqlite3_prepare_v2(db, "SELECT schema_version;", -1, &stmt, nullptr);
-
-    if (rc == SQLITE_OK) {
-        sqlite3_step(stmt);
-
-        currentVersion = atoi(reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1)));
-
-        sqlite3_finalize(stmt);
-    } else {
-        throw runtime_error("A database error occurred. Return code: " + to_string(rc));
-    }
-
-    if (currentVersion > version) {
-        query = "BEGIN TRANSACTION; " + query + " COMMIT;";
-
-        if (sqlite3_exec(db, query.c_str(), nullptr, nullptr, &err) != SQLITE_OK) {
-            throw runtime_error("Database upgrade failed");
-        }
-    }
-}
-
 vector<string> DbManager::getTables(const vector<string>& ignoreTables) {
     int rc;
     sqlite3_stmt *stmt;

@@ -193,8 +193,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
         onCreate(sqLiteDatabase);
 
-        queries.add("BEGIN TRANSACTION;");
-
         if (i < 2) {
             queries.add("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + ACTIVE + " BOOLEAN DEFAULT 1;");
         }
@@ -232,9 +230,7 @@ public class DBHelper extends SQLiteOpenHelper {
             queries.add("ALTER TABLE " + NOTES_TABLE + " ADD COLUMN " + TIME_EDITED + " DATETIME;");
         }
 
-        queries.add("COMMIT;");
-
-        sqLiteDatabase.execSQL(TextUtils.join(" ", queries));
+        queries.forEach(sqLiteDatabase::execSQL);
     }
 
     /**
@@ -1301,6 +1297,4 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.update(SETTINGS_TABLE, cv, null, null);
     }
-
-    private native boolean onUpgrade(String dbPath, String query, int version);
 }

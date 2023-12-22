@@ -84,11 +84,6 @@ public:
     void closeDb();
 
     /**
-     * Handles upgrading databaseVersion
-     */
-    void upgrade(int version, string queries);
-
-    /**
      * Gets all tables in database.
      * @param Optional ignoreTables Array of tables to exclude.
      * @return A pointer to a string to hold table names.
