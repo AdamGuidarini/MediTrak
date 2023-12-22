@@ -13,6 +13,7 @@
 #include <fstream>
 #include <map>
 #include <vector>
+#include <cstdlib>
 
 using namespace std;
 
@@ -74,12 +75,17 @@ public:
     /**
      * Opens database.
      */
-    void openDb();
+    void openDb(int newestVersion = -1);
 
     /**
      * Closes database.
      */
     void closeDb();
+
+    /**
+     * Handles upgrading databaseVersion
+     */
+    void upgrade(int version);
 
     /**
      * Gets all tables in database.

@@ -919,7 +919,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param note  The note to add
      * @param medId ID of medication note is about
      */
-    public void addNote(String note, long medId) {
+    public long addNote(String note, long medId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         String now = TimeFormatting.localDateTimeToString(LocalDateTime.now());
@@ -928,7 +928,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(NOTE, note);
         cv.put(ENTRY_TIME, now);
 
-        db.insert(NOTES_TABLE, null, cv);
+        return db.insert(NOTES_TABLE, null, cv);
     }
 
     /**
@@ -950,11 +950,11 @@ public class DBHelper extends SQLiteOpenHelper {
      *
      * @param note The new note.
      */
-    public void updateNote(Note note, String newNote) {
+    public void updateNote(Note note) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put(NOTE, newNote);
+        cv.put(NOTE, note.getNote());
 
         db.update(NOTES_TABLE, cv, NOTE_ID + "=?", new String[]{String.valueOf(
                 note.getNoteId())});

@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -28,7 +29,9 @@ import projects.medicationtracker.SimpleClasses.Note;
 import projects.medicationtracker.Views.StandardCardView;
 
 public class MedicationNotes extends AppCompatActivity implements IDialogCloseListener {
-    final DBHelper db = new DBHelper(this);
+    private final DBHelper db = new DBHelper(this);
+    private LinearLayout notesLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +40,9 @@ public class MedicationNotes extends AppCompatActivity implements IDialogCloseLi
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.notes));
 
+        notesLayout = findViewById(R.id.notesLayout);
+
         setCards();
-        setCardListeners();
     }
 
     /**
@@ -97,8 +101,9 @@ public class MedicationNotes extends AppCompatActivity implements IDialogCloseLi
             scrollNotes.setVisibility(View.VISIBLE);
         }
 
-        for (int i = 0; i < notes.size(); i++)
-            createNoteCard(notes.get(i), findViewById(R.id.notesLayout));
+        for (final Note note : notes) {
+            createNoteCard(note, notesLayout);
+        }
     }
 
     /**
@@ -110,38 +115,8 @@ public class MedicationNotes extends AppCompatActivity implements IDialogCloseLi
         long medId = getIntent().getLongExtra("medId", 0);
         Note note = new Note(-1, medId, null, null);
 
-        AddNoteDialog noteFragment = new AddNoteDialog(note, db);
+        AddNoteDialog noteFragment = new AddNoteDialog(note);
         noteFragment.show(getSupportFragmentManager(), getString(R.string.add_note));
-    }
-
-    /**
-     * Sets listeners for the cards
-     */
-    public void setCardListeners() {
-        ArrayList<CardView> cardViews = new ArrayList<>();
-        LinearLayout noteLayout = findViewById(R.id.notesLayout);
-
-        for (int i = 0; i < noteLayout.getChildCount(); i++) {
-            View child = noteLayout.getChildAt(i);
-
-            child.getClass().getName();
-            CardView.class.getName();
-            {
-                cardViews.add((CardView) child);
-            }
-        }
-
-        for (CardView card : cardViews) {
-            LinearLayout layout = (LinearLayout) card.getChildAt(0);
-            TextView noteText = (TextView) layout.getChildAt(0);
-            Note note = (Note) noteText.getTag();
-
-            card.setOnClickListener(view ->
-            {
-                DialogFragment editNote = new AddNoteDialog(note, db);
-                editNote.show(getSupportFragmentManager(), null);
-            });
-        }
     }
 
     /**
@@ -159,6 +134,12 @@ public class MedicationNotes extends AppCompatActivity implements IDialogCloseLi
 
         baseLayout.addView(noteCard);
         noteCard.addView(cardLayout);
+        noteCard.setOnClickListener(
+                view -> {
+                    DialogFragment editNote = new AddNoteDialog(note);
+                    editNote.show(getSupportFragmentManager(), null);
+                }
+        );
 
         TextView noteText = new TextView(context);
         TextViewUtils.setTextViewParams(noteText, note.getNote(), cardLayout);
@@ -172,22 +153,38 @@ public class MedicationNotes extends AppCompatActivity implements IDialogCloseLi
 
         TextViewUtils.setTextViewParams(noteDate, noteDateLabel, cardLayout);
 
-        noteText.setTag(note);
+        noteCard.setTag(note);
     }
 
     @Override
-    public void handleDialogClose(Action action, Object obj) {
-        Note note = (Note) obj;
+    public void handleDialogClose(Action action, Object data) {
+        Note note = (Note) data;
 
         switch (action) {
             case ADD:
-                // create new note fragment and add it to end of list
+                note.setNoteId(db.addNote(note.getNote(), note.getMedId()));
+                note.setNoteTime(LocalDateTime.now());
+
+                createNoteCard(note, notesLayout);
                 break;
             case EDIT:
-                // Modify existing note fragment
+                db.updateNote(note);
+
+                notesLayout.removeAllViews();
+
+
                 break;
             case DELETE:
-                // Remove delete note Fragment
+                db.deleteNote(note);
+
+                for (int i = 0; i < notesLayout.getChildCount(); i++) {
+                    Note thisNote = (Note) notesLayout.getChildAt(i).getTag();
+
+                    if (thisNote.getNoteId() == note.getNoteId()) {
+                        notesLayout.removeViewAt(i);
+                        break;
+                    }
+                }
         }
     }
 }

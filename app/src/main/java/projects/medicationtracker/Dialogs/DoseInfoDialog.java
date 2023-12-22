@@ -155,7 +155,7 @@ public class DoseInfoDialog extends DialogFragment {
 
         if (fragment instanceof IDialogCloseListener) {
             ((IDialogCloseListener) fragment).handleDialogClose(
-                    IDialogCloseListener.Action.DELETE, dose
+                    IDialogCloseListener.Action.DELETE, (Object) dose
             );
         }
     }

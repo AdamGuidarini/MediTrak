@@ -83,14 +83,34 @@ void DbManager::replaceAll(string &str, const string& from, const string& to) {
     }
 }
 
-void DbManager::openDb() {
+void DbManager::openDb(int newestVersion) {
     const int rc = sqlite3_open(database_name.c_str(), &db);
 
     if (rc != SQLITE_OK) {
         throw runtime_error("Failed to open database file at: " + database_name);
     }
+
+    if (newestVersion != -1) {
+        upgrade(newestVersion);
+    }
 }
 void DbManager::closeDb() { sqlite3_close(db); }
+
+void DbManager::upgrade(int version) {
+    int currentVersion;
+    char* err;
+    sqlite3_stmt *stmt;
+
+    int rc = sqlite3_prepare_v2(db, "SELECT schema_version;", -1, &stmt, nullptr);
+
+    if (rc == SQLITE_OK) {
+        sqlite3_step(stmt);
+
+        currentVersion = atoi(reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1)));
+
+        sqlite3_finalize(stmt);
+    }
+}
 
 vector<string> DbManager::getTables(const vector<string>& ignoreTables) {
     int rc;

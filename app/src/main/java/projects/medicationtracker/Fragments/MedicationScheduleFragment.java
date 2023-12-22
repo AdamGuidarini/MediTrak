@@ -324,8 +324,8 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     }
 
     @Override
-    public void handleDialogClose(Action action, Object obj) {
-        Dose dose = (Dose) obj;
+    public void handleDialogClose(Action action, Object data) {
+        Dose dose = (Dose) data;
         LinearLayout ll = rootView.findViewById(R.id.asNeededViews);
 
         switch (action) {

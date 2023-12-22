@@ -20,7 +20,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
             <EditText
-                android:id="@+id/alterNote"
+                android:id="@+id/noteInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:importantForAutofill="no"

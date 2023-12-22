@@ -1,6 +1,6 @@
 package projects.medicationtracker.Dialogs;
 
-import android.app.AlertDialog;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,21 +11,22 @@ import android.view.LayoutInflater;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
-import projects.medicationtracker.Helpers.DBHelper;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.MedicationNotes;
 import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Note;
 
 public class AddNoteDialog extends DialogFragment {
-    final DBHelper db;
     final Note note;
-    private EditText alterNote;
+    private EditText noteInput;
 
-    public AddNoteDialog(Note note, DBHelper db) {
+    public AddNoteDialog(Note note) {
         this.note = note;
-        this.db = db;
     }
 
     /**
@@ -37,16 +38,18 @@ public class AddNoteDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         AlertDialog noteDialog;
+        int titleResId = note.getNoteId() == -1 ? R.string.add_note : R.string.edit_note;
+
         builder.setView(inflater.inflate(R.layout.dialog_add_note, null));
-        builder.setTitle(getString(R.string.edit_note));
+        builder.setTitle(getString(titleResId));
 
         builder.setPositiveButton(getString(R.string.save), ((dialogInterface, i) ->
         {
             save();
-            restartActivity();
+            dismiss();
         }));
 
         builder.setNegativeButton(getString(R.string.cancel), ((dialogInterface, i) -> dismiss()));
@@ -54,8 +57,12 @@ public class AddNoteDialog extends DialogFragment {
         if (note.getNoteId() != -1) {
             builder.setNeutralButton(getString(R.string.delete), ((dialogInterface, i) ->
             {
-                db.deleteNote(note);
-                restartActivity();
+                Activity parent = getActivity();
+
+                if (parent instanceof IDialogCloseListener) {
+                    ((IDialogCloseListener) parent).handleDialogClose(IDialogCloseListener.Action.DELETE, note);
+                }
+                dismiss();
             }));
         }
 
@@ -64,13 +71,13 @@ public class AddNoteDialog extends DialogFragment {
 
         noteDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
 
-        alterNote = noteDialog.findViewById(R.id.alterNote);
+        noteInput = noteDialog.findViewById(R.id.noteInput);
 
         if (note.getNoteId() != -1) {
-            alterNote.setText(note.getNote());
+            noteInput.setText(note.getNote());
         }
 
-        alterNote.addTextChangedListener(new TextWatcher() {
+        noteInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
@@ -94,12 +101,14 @@ public class AddNoteDialog extends DialogFragment {
     }
 
     private void save() {
-        alterNote = getDialog().findViewById(R.id.alterNote);
+        Activity parent = getActivity();
+        IDialogCloseListener.Action action = note.getNoteId() == -1 ?
+                IDialogCloseListener.Action.ADD : IDialogCloseListener.Action.EDIT;
 
-        if (note.getNoteId() != -1) {
-            db.updateNote(note, alterNote.getText().toString());
-        } else {
-            db.addNote(alterNote.getText().toString(), note.getMedId());
+        note.setNote(noteInput.getText().toString());
+
+        if (parent instanceof IDialogCloseListener) {
+            ((IDialogCloseListener) parent).handleDialogClose(action, note);
         }
     }
 
