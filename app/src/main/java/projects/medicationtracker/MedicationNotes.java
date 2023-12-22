@@ -171,7 +171,7 @@ public class MedicationNotes extends AppCompatActivity implements IDialogCloseLi
                 db.updateNote(note);
 
                 notesLayout.removeAllViews();
-
+                setCards();
 
                 break;
             case DELETE:
