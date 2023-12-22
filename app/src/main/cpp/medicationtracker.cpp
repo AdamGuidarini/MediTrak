@@ -69,3 +69,23 @@ Java_projects_medicationtracker_Settings_dbImporter(JNIEnv *env, jobject thiz, j
 
     return true;
 }
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_projects_medicationtracker_Helpers_DBHelper_onUpgrade(
+        JNIEnv *env, jobject thiz, jstring db_path, jstring query, jint version
+) {
+    std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
+    auto _query = env->GetStringUTFChars(query, new jboolean(true));
+    int _version = version;
+    DbManager manager(db, true);
+
+    try {
+        manager.upgrade(_version, _query);
+    } catch (exception& e) {
+        __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
+
+        return false;
+    }
+
+    return true;
+}

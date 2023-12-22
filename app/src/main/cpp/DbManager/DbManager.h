@@ -14,6 +14,7 @@
 #include <map>
 #include <vector>
 #include <cstdlib>
+#include <iterator>
 
 using namespace std;
 
@@ -85,7 +86,7 @@ public:
     /**
      * Handles upgrading databaseVersion
      */
-    void upgrade(int version);
+    void upgrade(int version, string queries);
 
     /**
      * Gets all tables in database.
