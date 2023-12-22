@@ -18,8 +18,7 @@ import androidx.fragment.app.DialogFragment;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import projects.medicationtracker.Fragments.AddNoteFragment;
-import projects.medicationtracker.Fragments.EditNoteFragment;
+import projects.medicationtracker.Dialogs.AddNoteDialog;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TextViewUtils;
 import projects.medicationtracker.Helpers.TimeFormatting;
@@ -107,8 +106,9 @@ public class MedicationNotes extends AppCompatActivity {
      */
     public void onAddNoteClick(MenuItem item) {
         long medId = getIntent().getLongExtra("medId", 0);
+        Note note = new Note(-1, medId, null, null);
 
-        AddNoteFragment noteFragment = new AddNoteFragment(this, medId);
+        AddNoteDialog noteFragment = new AddNoteDialog(note, db);
         noteFragment.show(getSupportFragmentManager(), getString(R.string.add_note));
     }
 
@@ -136,7 +136,7 @@ public class MedicationNotes extends AppCompatActivity {
 
             card.setOnClickListener(view ->
             {
-                DialogFragment editNote = new EditNoteFragment(note, db);
+                DialogFragment editNote = new AddNoteDialog(note, db);
                 editNote.show(getSupportFragmentManager(), null);
             });
         }

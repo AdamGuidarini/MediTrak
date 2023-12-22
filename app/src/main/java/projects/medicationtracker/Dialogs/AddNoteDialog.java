@@ -1,4 +1,4 @@
-package projects.medicationtracker.Fragments;
+package projects.medicationtracker.Dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -18,12 +18,12 @@ import projects.medicationtracker.MedicationNotes;
 import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Note;
 
-public class EditNoteFragment extends DialogFragment {
+public class AddNoteDialog extends DialogFragment {
     final DBHelper db;
     final Note note;
     private EditText alterNote;
 
-    public EditNoteFragment(Note note, DBHelper db) {
+    public AddNoteDialog(Note note, DBHelper db) {
         this.note = note;
         this.db = db;
     }
@@ -40,7 +40,7 @@ public class EditNoteFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         AlertDialog noteDialog;
-        builder.setView(inflater.inflate(R.layout.fragment_edit_note, null));
+        builder.setView(inflater.inflate(R.layout.dialog_add_note, null));
         builder.setTitle(getString(R.string.edit_note));
 
         builder.setPositiveButton(getString(R.string.save), ((dialogInterface, i) ->
@@ -51,11 +51,13 @@ public class EditNoteFragment extends DialogFragment {
 
         builder.setNegativeButton(getString(R.string.cancel), ((dialogInterface, i) -> dismiss()));
 
-        builder.setNeutralButton(getString(R.string.delete), ((dialogInterface, i) ->
-        {
-            db.deleteNote(note);
-            restartActivity();
-        }));
+        if (note.getNoteId() != -1) {
+            builder.setNeutralButton(getString(R.string.delete), ((dialogInterface, i) ->
+            {
+                db.deleteNote(note);
+                restartActivity();
+            }));
+        }
 
         noteDialog = builder.create();
         noteDialog.show();
@@ -63,7 +65,11 @@ public class EditNoteFragment extends DialogFragment {
         noteDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
 
         alterNote = noteDialog.findViewById(R.id.alterNote);
-        alterNote.setText(note.getNote());
+
+        if (note.getNoteId() != -1) {
+            alterNote.setText(note.getNote());
+        }
+
         alterNote.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
@@ -74,7 +80,7 @@ public class EditNoteFragment extends DialogFragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 noteDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(
-                        alterNote.getText().length() > 0
+                        editable.toString().length() > 0
                 );
             }
         });
@@ -89,7 +95,12 @@ public class EditNoteFragment extends DialogFragment {
 
     private void save() {
         alterNote = getDialog().findViewById(R.id.alterNote);
-        db.updateNote(note, alterNote.getText().toString());
+
+        if (note.getNoteId() != -1) {
+            db.updateNote(note, alterNote.getText().toString());
+        } else {
+            db.addNote(alterNote.getText().toString(), note.getMedId());
+        }
     }
 
     public void restartActivity() {
