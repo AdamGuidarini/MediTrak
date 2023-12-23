@@ -1,11 +1,13 @@
 #include "DbManager.h"
+#include "MediTrakDbHelper.h"
 
 #include <jni.h>
 #include <android/log.h>
+#include <string>
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_projects_medicationtracker_Dialogs_BackupDestinationPicker_dbExporter(JNIEnv *env, jobject thiz,
+Java_projects_medicationtracker_Helpers_NativeDbHelper_dbExporter(JNIEnv *env, jobject thiz,
                                                                           jstring database_name,
                                                                           jstring export_directory,
                                                                           jobjectArray ignoredTables) {
@@ -24,15 +26,19 @@ Java_projects_medicationtracker_Dialogs_BackupDestinationPicker_dbExporter(JNIEn
     DbManager manager(db, true);
 
     try {
-        manager.openDb();
-
         manager.exportData(exportDir, ignoredTbls);
-
-        manager.closeDb();
     } catch (exception &e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
 
         return false;
+    }
+
+    try {
+        MediTrakDbHelper helper;
+
+        helper.addIgnoredTables(ignoredTbls);
+    } catch (exception& e) {
+        __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
     }
 
     return true;
@@ -40,15 +46,17 @@ Java_projects_medicationtracker_Dialogs_BackupDestinationPicker_dbExporter(JNIEn
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_projects_medicationtracker_Settings_dbImporter(JNIEnv *env, jobject thiz, jstring db_path, jstring import_path,
-                                                    jobjectArray ignoredTables) {
+Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(JNIEnv *env, jobject thiz,
+                                                                  jstring db_path,
+                                                                  jstring import_path,
+                                                                  jobjectArray ignored_tables) {
     std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
     std::string importPath = env->GetStringUTFChars(import_path, new jboolean(true));
     std::vector<std::string> ignoredTbls;
-    int len = env->GetArrayLength(ignoredTables);
+    int len = env->GetArrayLength(ignored_tables);
 
     for (int i = 0; i < len; i++) {
-        auto str = (jstring) (env->GetObjectArrayElement(ignoredTables, i));
+        auto str = (jstring) (env->GetObjectArrayElement(ignored_tables, i));
         string rawString = env->GetStringUTFChars(str, JNI_FALSE);
 
         ignoredTbls.push_back(rawString);
@@ -57,11 +65,7 @@ Java_projects_medicationtracker_Settings_dbImporter(JNIEnv *env, jobject thiz, j
     DbManager dbManager(db, true);
 
     try {
-        dbManager.openDb();
-
         dbManager.importData(importPath, ignoredTbls);
-
-        dbManager.closeDb();
     } catch (exception &e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
 

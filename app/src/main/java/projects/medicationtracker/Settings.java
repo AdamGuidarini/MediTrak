@@ -39,6 +39,7 @@ import java.util.Objects;
 import projects.medicationtracker.Dialogs.BackupDestinationPicker;
 import projects.medicationtracker.Fragments.ConfirmDeleteAllFragment;
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 
 public class Settings extends AppCompatActivity {
     private final DBHelper db = new DBHelper(this);
@@ -47,6 +48,7 @@ public class Settings extends AppCompatActivity {
             new ActivityResultContracts.RequestPermission(),
             isGranted -> {}
     );
+    private final NativeDbHelper nativeDb = new NativeDbHelper();
 
     static {
         System.loadLibrary("medicationtracker");
@@ -113,7 +115,7 @@ public class Settings extends AppCompatActivity {
 
                         final String dbPath = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
 
-                        if (dbImporter(dbPath, absPath, new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE})) {
+                        if (nativeDb.dbImporter(dbPath, absPath, new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE})) {
                             Toast.makeText(this, getString(R.string.import_success), Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(this, getString(R.string.failed_import), Toast.LENGTH_SHORT).show();
@@ -359,6 +361,4 @@ public class Settings extends AppCompatActivity {
         enableNotificationsSwitch.setOnCheckedChangeListener(((compoundButton, b) ->
                 db.setNotificationEnabled(enableNotificationsSwitch.isChecked())));
     }
-
-    private native boolean dbImporter(String dbPath, String importPath, String[] ignoredTables);
 }

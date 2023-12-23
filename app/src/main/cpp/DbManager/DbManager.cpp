@@ -4,6 +4,8 @@
 
 #include "DbManager.h"
 
+DbManager::DbManager() {}
+
 DbManager::DbManager(string databasePath, bool enableForeignKeys) {
     char* err;
 
@@ -91,6 +93,24 @@ void DbManager::openDb() {
     }
 }
 void DbManager::closeDb() { sqlite3_close(db); }
+
+int DbManager::getVersionNumber() {
+    sqlite3_stmt *stmt = nullptr;
+    int version;
+    int rc = sqlite3_prepare_v2(db, "PRAGMA version_number", -1, &stmt, nullptr);
+
+    if (rc != SQLITE_OK) {
+        throw runtime_error("An error occurred while querying version_number");
+    }
+
+    sqlite3_step(stmt);
+
+    version = atoi(reinterpret_cast<const char *>(sqlite3_column_text(stmt, 0)));
+
+    sqlite3_finalize(stmt);
+
+    return version;
+}
 
 vector<string> DbManager::getTables(const vector<string>& ignoreTables) {
     int rc;

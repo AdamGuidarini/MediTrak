@@ -13,6 +13,7 @@
 #include <fstream>
 #include <map>
 #include <vector>
+#include <cstdlib>
 
 using namespace std;
 
@@ -60,6 +61,11 @@ private:
 
 public:
     /**
+     * Empty default constructor
+     */
+    DbManager();
+
+    /**
      * Constructor for DbManager class, automatically opens database.
      * @param databasePath Name of file containing database.
      * @param enableForeignKeys Whether or not foreign keys should be enabled.
@@ -80,6 +86,18 @@ public:
      * Closes database.
      */
     void closeDb();
+
+    /**
+     * Retrieves DB version number
+     * @return
+     */
+    int getVersionNumber();
+
+    long insert(string table, map<string, string> values);
+
+    long update(string tabel, string where);
+
+    long deleteRecord(string table, string where);
 
     /**
      * Gets all tables in database.

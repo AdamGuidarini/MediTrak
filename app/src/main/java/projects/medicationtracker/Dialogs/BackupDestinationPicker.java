@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.R;
 
 public class BackupDestinationPicker extends DialogFragment {
@@ -33,6 +34,7 @@ public class BackupDestinationPicker extends DialogFragment {
     private MaterialAutoCompleteTextView dirSelector;
     private TextInputLayout fileNameInputLayout;
     private TextInputEditText fileName;
+    private final NativeDbHelper nativeDb = new NativeDbHelper();
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstances) {
@@ -164,7 +166,7 @@ public class BackupDestinationPicker extends DialogFragment {
 
     private void onExportClick() {
         String resMessage;
-        boolean res = dbExporter(
+        boolean res = nativeDb.dbExporter(
                 getContext().getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath(),
                 exportDir + '/' + exportFile,
                 new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE}
@@ -175,6 +177,4 @@ public class BackupDestinationPicker extends DialogFragment {
 
         Toast.makeText(getContext(), resMessage, Toast.LENGTH_SHORT).show();
     }
-
-    public native boolean dbExporter(String databaseName, String exportDirectory, String[] ignoredTables);
 }
