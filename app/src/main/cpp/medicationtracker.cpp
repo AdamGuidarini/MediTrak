@@ -23,22 +23,14 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbExporter(JNIEnv *env, j
         ignoredTbls.push_back(rawString);
     }
 
-    DbManager manager(db, true);
+    MediTrakDbHelper helper(db);
 
     try {
-        manager.exportData(exportDir, ignoredTbls);
-    } catch (exception &e) {
+        helper.exportJSON(exportDir, ignoredTbls);
+    } catch (exception& e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
 
         return false;
-    }
-
-    try {
-        MediTrakDbHelper helper;
-
-        helper.addIgnoredTables(ignoredTbls);
-    } catch (exception& e) {
-        __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
     }
 
     return true;
@@ -62,10 +54,10 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(JNIEnv *env, j
         ignoredTbls.push_back(rawString);
     }
 
-    DbManager dbManager(db, true);
+    MediTrakDbHelper helper(db);
 
     try {
-        dbManager.importData(importPath, ignoredTbls);
+        helper.importJSON(importPath, ignoredTbls);
     } catch (exception &e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
 

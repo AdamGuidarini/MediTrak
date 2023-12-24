@@ -189,48 +189,44 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        ArrayList<String> queries = new ArrayList<>();
-
         onCreate(sqLiteDatabase);
 
-        if (i < 2) {
-            queries.add("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + ACTIVE + " BOOLEAN DEFAULT 1;");
-        }
-
-        if (i < 3) {
-            queries.add("DROP TABLE IF EXISTS " + MEDICATION_STATS_TABLE + ";");
-        }
-
-        if (i < 4) {
-            queries.add(
-                    "CREATE TABLE IF NOT EXISTS " + ACTIVITY_CHANGE_TABLE + "("
-                            + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                            + MED_ID + " INT,"
-                            + CHANGE_DATE + " DATETIME,"
-                            + PAUSED + " BOOLEAN,"
-                            + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                            + ");"
-            );
-        }
-
-        if (i < 5) {
-            queries.add("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0;");
-        }
-
-        if (i < 6) {
-            queries.add("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + PARENT_ID + " INTEGER REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE;");
-            queries.add("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + CHILD_ID + " INTEGER REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE;");
-        }
-
-        if (i < 7) {
-            queries.add("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0;");
-        }
-
-        if (i < 8) {
-            queries.add("ALTER TABLE " + NOTES_TABLE + " ADD COLUMN " + TIME_EDITED + " DATETIME;");
-        }
-
-        queries.forEach(sqLiteDatabase::execSQL);
+//        if (i < 2) {
+//            sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + ACTIVE + " BOOLEAN DEFAULT 1;");
+//        }
+//
+//        if (i < 3) {
+//            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MEDICATION_STATS_TABLE + ";");
+//        }
+//
+//        if (i < 4) {
+//            sqLiteDatabase.execSQL(
+//                    "CREATE TABLE IF NOT EXISTS " + ACTIVITY_CHANGE_TABLE + "("
+//                            + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+//                            + MED_ID + " INT,"
+//                            + CHANGE_DATE + " DATETIME,"
+//                            + PAUSED + " BOOLEAN,"
+//                            + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
+//                            + ");"
+//            );
+//        }
+//
+//        if (i < 5) {
+//            sqLiteDatabase.execSQL("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0;");
+//        }
+//
+//        if (i < 6) {
+//            sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + PARENT_ID + " INTEGER REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE;");
+//            sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + CHILD_ID + " INTEGER REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE;");
+//        }
+//
+//        if (i < 7) {
+//            sqLiteDatabase.execSQL("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0;");
+//        }
+//
+//        if (i < 8) {
+//            sqLiteDatabase.execSQL("ALTER TABLE " + NOTES_TABLE + " ADD COLUMN " + TIME_EDITED + " DATETIME;");
+//        }
     }
 
     /**

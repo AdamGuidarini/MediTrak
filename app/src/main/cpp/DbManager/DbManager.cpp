@@ -95,21 +95,35 @@ void DbManager::openDb() {
 void DbManager::closeDb() { sqlite3_close(db); }
 
 int DbManager::getVersionNumber() {
-    sqlite3_stmt *stmt = nullptr;
+    sqlite3_stmt *stmt;
     int version;
-    int rc = sqlite3_prepare_v2(db, "PRAGMA version_number", -1, &stmt, nullptr);
+    string query = "PRAGMA schema_version;";
+    int rc;
+
+    rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
+    sqlite3_step(stmt);
+
 
     if (rc != SQLITE_OK) {
-        throw runtime_error("An error occurred while querying version_number");
+        throw runtime_error("An error occurred while querying schema_version");
     }
-
-    sqlite3_step(stmt);
 
     version = atoi(reinterpret_cast<const char *>(sqlite3_column_text(stmt, 0)));
 
     sqlite3_finalize(stmt);
 
     return version;
+}
+
+void DbManager::execSql(string sql) {
+    char *err;
+    int rc = sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &err);
+
+    if (rc != SQLITE_OK) {
+        string errorMessage = "An error occurred while attempting to execute query: " + sql + "\n" + err;
+
+        throw runtime_error(errorMessage);
+    }
 }
 
 vector<string> DbManager::getTables(const vector<string>& ignoreTables) {

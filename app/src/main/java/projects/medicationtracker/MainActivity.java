@@ -43,6 +43,7 @@ import java.util.Objects;
 import projects.medicationtracker.Dialogs.WelcomeDialog;
 import projects.medicationtracker.Fragments.MedicationScheduleFragment;
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.SimpleClasses.Medication;
@@ -50,6 +51,7 @@ import projects.medicationtracker.Views.StandardCardView;
 
 public class MainActivity extends AppCompatActivity {
     private final DBHelper db = new DBHelper(this);
+    private final NativeDbHelper nativeDb = new NativeDbHelper();
     private LinearLayout scheduleLayout;
     private LocalDate aDayThisWeek;
     private final ActivityResultLauncher<String> notificationPermissionLauncher = registerForActivityResult(

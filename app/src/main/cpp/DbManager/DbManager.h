@@ -93,6 +93,12 @@ public:
      */
     int getVersionNumber();
 
+    /**
+     * Executes the provided SQL query
+     * @param sql  query to execute
+     */
+    void execSql(string sql);
+
     long insert(string table, map<string, string> values);
 
     long update(string tabel, string where);
