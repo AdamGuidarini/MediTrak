@@ -2,8 +2,8 @@
 // Created by adam on 12/23/23.
 //
 
-#ifndef MEDICATIONTRACKER_MEDITRAKDBHELPER_H
-#define MEDICATIONTRACKER_MEDITRAKDBHELPER_H
+#ifndef MEDICATIONTRACKER_DATABASECONTROLLER_H
+#define MEDICATIONTRACKER_DATABASECONTROLLER_H
 
 #include <string>
 #include <vector>
@@ -11,7 +11,7 @@
 
 using namespace std;
 
-class MediTrakDbHelper {
+class DatabaseController {
 private:
     const int DB_VERSION = 9;
     const string DATABASE_NAME = "Medications.db";
@@ -80,12 +80,12 @@ public:
      * Class constructor
      * @param dbPath
      */
-    MediTrakDbHelper(string path);
+    DatabaseController(string path);
 
     /**
      * Class destructor
      */
-    ~MediTrakDbHelper();
+    ~DatabaseController();
 
     /**
      * Exports all data stored in DB to provided location as a JSON file.
@@ -104,4 +104,4 @@ public:
 };
 
 
-#endif //MEDICATIONTRACKER_MEDITRAKDBHELPER_H
+#endif //MEDICATIONTRACKER_DATABASECONTROLLER_H

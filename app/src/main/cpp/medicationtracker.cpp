@@ -1,5 +1,5 @@
 #include "DbManager.h"
-#include "MediTrakDbHelper.h"
+#include "DatabaseController.h"
 
 #include <jni.h>
 #include <android/log.h>
@@ -23,7 +23,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbExporter(JNIEnv *env, j
         ignoredTbls.push_back(rawString);
     }
 
-    MediTrakDbHelper helper(db);
+    DatabaseController helper(db);
 
     try {
         helper.exportJSON(exportDir, ignoredTbls);
@@ -54,7 +54,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(JNIEnv *env, j
         ignoredTbls.push_back(rawString);
     }
 
-    MediTrakDbHelper helper(db);
+    DatabaseController helper(db);
 
     try {
         helper.importJSON(importPath, ignoredTbls);

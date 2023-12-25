@@ -2,9 +2,9 @@
 // Created by adam on 12/23/23.
 //
 
-#include "MediTrakDbHelper.h"
+#include "DatabaseController.h"
 
-MediTrakDbHelper::MediTrakDbHelper(string path) {
+DatabaseController::DatabaseController(string path) {
     manager = DbManager(path, true);
 
     manager.openDb();
@@ -16,13 +16,13 @@ MediTrakDbHelper::MediTrakDbHelper(string path) {
     }
 }
 
-MediTrakDbHelper::~MediTrakDbHelper() {}
+DatabaseController::~DatabaseController() {}
 
-void MediTrakDbHelper::create() {
+void DatabaseController::create() {
 
 }
 
-void MediTrakDbHelper::upgrade(int currentVersion) {
+void DatabaseController::upgrade(int currentVersion) {
     const vector<string> upgrades;
 
     if (currentVersion < 2) {
@@ -65,14 +65,14 @@ void MediTrakDbHelper::upgrade(int currentVersion) {
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
 }
 
-void MediTrakDbHelper::exportJSON(
+void DatabaseController::exportJSON(
         const std::string &exportFilePath,
         const vector<std::string> &ignoreTables
 ) {
     manager.exportData(exportFilePath, ignoreTables);
 }
 
-void MediTrakDbHelper::importJSON(
+void DatabaseController::importJSON(
         const std::string &importFilePath,
         const vector<std::string> &ignoreTables
 ) {
