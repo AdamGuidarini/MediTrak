@@ -90,8 +90,6 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         nativeHelper = new NativeDbHelper(MainActivity.dbDir);
-
-        nativeHelper.create();
     }
 
     /**
@@ -115,10 +113,9 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        nativeHelper = new NativeDbHelper(MainActivity.dbDir);
-
-        nativeHelper.create();
-        nativeHelper.upgrade(i);
+        if (nativeHelper == null) {
+            nativeHelper = new NativeDbHelper(MainActivity.dbDir);
+        }
     }
 
     /**

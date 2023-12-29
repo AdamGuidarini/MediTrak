@@ -8,6 +8,7 @@ DatabaseController::DatabaseController(string path) {
     manager = DbManager(path, true);
 
     manager.openDb();
+    create();
 
     int currentVersion = manager.getVersionNumber();
 

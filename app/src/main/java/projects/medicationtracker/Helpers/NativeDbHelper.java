@@ -9,6 +9,7 @@ public class NativeDbHelper {
 
     public NativeDbHelper(String databasePath) {
         dbPath = databasePath;
+        dbCreate(dbPath);
     }
 
     public void create() {
