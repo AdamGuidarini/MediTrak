@@ -21,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import projects.medicationtracker.MainActivity;
 import projects.medicationtracker.SimpleClasses.Medication;
 import projects.medicationtracker.SimpleClasses.Note;
 
@@ -75,6 +76,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CHANGE_DATE = "ChangeDate";
     private static final String PAUSED = "Paused";
 
+    private NativeDbHelper nativeHelper;
+
     public DBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -86,86 +89,9 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        ArrayList<String> queries = new ArrayList<>();
+        nativeHelper = new NativeDbHelper(MainActivity.dbDir);
 
-        // Holds all constant information on a given medication
-        queries.add(
-                "CREATE TABLE IF NOT EXISTS " + MEDICATION_TABLE + "("
-                        + MED_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                        + MED_NAME + " TEXT,"
-                        + PATIENT_NAME + " Text,"
-                        + MED_DOSAGE + " DECIMAL(3,2),"
-                        + MED_UNITS + " TEXT,"
-                        + START_DATE + " DATETIME,"
-                        + MED_FREQUENCY + " INT,"
-                        + ALIAS + " TEXT,"
-                        + ACTIVE + " BOOLEAN DEFAULT 1,"
-                        + PARENT_ID + " INTEGER,"
-                        + CHILD_ID + " INTEGER,"
-                        + "FOREIGN KEY (" + PARENT_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE,"
-                        + "FOREIGN KEY (" + CHILD_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                        + ");"
-        );
-
-        // Holds data on past doses, as well as doses for current week
-        queries.add(
-                "CREATE TABLE IF NOT EXISTS " + MEDICATION_TRACKER_TABLE + "("
-                        + DOSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                        + MED_ID + " INT,"
-                        + DOSE_TIME + " DATETIME,"
-                        + TAKEN + " BOOLEAN,"
-                        + TIME_TAKEN + " DATETIME,"
-                        + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                        + ");"
-        );
-
-        // Holds information on doses with a custom frequency so times for upcoming doses can be calculated
-        queries.add(
-                "CREATE TABLE IF NOT EXISTS " + MEDICATION_TIMES + "("
-                        + TIME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                        + MED_ID + " INT,"
-                        + DRUG_TIME + " TEXT,"
-                        + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                        + ");"
-        );
-
-        // Stores a users notes for a medication, designed to help track how a medication is
-        // affecting the patient. Facilitates tracking possible issues to bring up with prescriber
-        queries.add(
-                "CREATE TABLE IF NOT EXISTS " + NOTES_TABLE + "("
-                        + NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                        + MED_ID + " INT, "
-                        + NOTE + " TEXT, "
-                        + ENTRY_TIME + " DATETIME,"
-                        + TIME_EDITED + " DATETIME,"
-                        + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                        + ");"
-        );
-
-        queries.add(
-                "CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
-                        + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
-                        + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1, "
-                        + THEME + " TEXT DEFAULT '" + DEFAULT + "',"
-                        + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0,"
-                        + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0);"
-        );
-
-        queries.add("INSERT INTO " + SETTINGS_TABLE + "("
-                + ENABLE_NOTIFICATIONS + ", " + TIME_BEFORE_DOSE + ")"
-                + "VALUES (1, 2);");
-
-        queries.add(
-                "CREATE TABLE IF NOT EXISTS " + ACTIVITY_CHANGE_TABLE + "("
-                        + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                        + MED_ID + " INT,"
-                        + CHANGE_DATE + " DATETIME,"
-                        + PAUSED + " BOOLEAN,"
-                        + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                        + ");"
-        );
-
-        queries.forEach(sqLiteDatabase::execSQL);
+        nativeHelper.create();
     }
 
     /**
@@ -189,44 +115,10 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        onCreate(sqLiteDatabase);
+        nativeHelper = new NativeDbHelper(MainActivity.dbDir);
 
-//        if (i < 2) {
-//            sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + ACTIVE + " BOOLEAN DEFAULT 1;");
-//        }
-//
-//        if (i < 3) {
-//            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MEDICATION_STATS_TABLE + ";");
-//        }
-//
-//        if (i < 4) {
-//            sqLiteDatabase.execSQL(
-//                    "CREATE TABLE IF NOT EXISTS " + ACTIVITY_CHANGE_TABLE + "("
-//                            + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-//                            + MED_ID + " INT,"
-//                            + CHANGE_DATE + " DATETIME,"
-//                            + PAUSED + " BOOLEAN,"
-//                            + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-//                            + ");"
-//            );
-//        }
-//
-//        if (i < 5) {
-//            sqLiteDatabase.execSQL("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0;");
-//        }
-//
-//        if (i < 6) {
-//            sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + PARENT_ID + " INTEGER REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE;");
-//            sqLiteDatabase.execSQL("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + CHILD_ID + " INTEGER REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE;");
-//        }
-//
-//        if (i < 7) {
-//            sqLiteDatabase.execSQL("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0;");
-//        }
-//
-//        if (i < 8) {
-//            sqLiteDatabase.execSQL("ALTER TABLE " + NOTES_TABLE + " ADD COLUMN " + TIME_EDITED + " DATETIME;");
-//        }
+        nativeHelper.create();
+        nativeHelper.upgrade(i);
     }
 
     /**

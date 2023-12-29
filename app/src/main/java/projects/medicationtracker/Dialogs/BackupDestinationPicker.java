@@ -34,7 +34,7 @@ public class BackupDestinationPicker extends DialogFragment {
     private MaterialAutoCompleteTextView dirSelector;
     private TextInputLayout fileNameInputLayout;
     private TextInputEditText fileName;
-    private final NativeDbHelper nativeDb = new NativeDbHelper();
+    private NativeDbHelper nativeDb;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstances) {
@@ -54,6 +54,10 @@ public class BackupDestinationPicker extends DialogFragment {
             dismiss();
         }));
         builder.setNegativeButton(R.string.cancel, ((dialogInterface, i) -> dismiss()));
+
+        nativeDb = new NativeDbHelper(
+                getContext().getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath()
+        );
 
         dialog = builder.create();
         dialog.show();
@@ -166,8 +170,7 @@ public class BackupDestinationPicker extends DialogFragment {
 
     private void onExportClick() {
         String resMessage;
-        boolean res = nativeDb.dbExporter(
-                getContext().getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath(),
+        boolean res = nativeDb.dbExport(
                 exportDir + '/' + exportFile,
                 new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE}
         );

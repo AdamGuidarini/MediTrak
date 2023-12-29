@@ -48,7 +48,7 @@ public class Settings extends AppCompatActivity {
             new ActivityResultContracts.RequestPermission(),
             isGranted -> {}
     );
-    private final NativeDbHelper nativeDb = new NativeDbHelper();
+    private NativeDbHelper nativeDb;
 
     static {
         System.loadLibrary("medicationtracker");
@@ -72,6 +72,8 @@ public class Settings extends AppCompatActivity {
 
         Button enableNotificationsButton = findViewById(R.id.enableNotifications);
         SwitchCompat notificationToggle = findViewById(R.id.enableNotificationSwitch);
+
+        nativeDb = new NativeDbHelper(getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath());
 
         if (Build.VERSION.SDK_INT >= 33) {
             enableNotificationsButton.setVisibility(View.VISIBLE);
@@ -113,9 +115,7 @@ public class Settings extends AppCompatActivity {
                                 return;
                         }
 
-                        final String dbPath = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
-
-                        if (nativeDb.dbImporter(dbPath, absPath, new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE})) {
+                        if (nativeDb.dbImport(absPath, new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE})) {
                             Toast.makeText(this, getString(R.string.import_success), Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(this, getString(R.string.failed_import), Toast.LENGTH_SHORT).show();

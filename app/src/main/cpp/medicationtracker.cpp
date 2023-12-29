@@ -71,11 +71,17 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_projects_medicationtracker_Helpers_NativeDbHelper_dbCreate(JNIEnv *env, jobject thiz,
                                                                 jstring db_path) {
-    // TODO: implement dbCreate()
+    std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
+
+    DatabaseController dbController(db);
+    dbController.create();
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_projects_medicationtracker_Helpers_NativeDbHelper_dbUpdate(JNIEnv *env, jobject thiz,
-                                                                jstring db_path) {
-    // TODO: implement dbUpdate()
+Java_projects_medicationtracker_Helpers_NativeDbHelper_dbUpgrade(JNIEnv *env, jobject thiz,
+                                                                jstring db_path, jint version) {
+    std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
+
+    DatabaseController dbController(db);
+    dbController.upgrade(static_cast<int>(version));
 }

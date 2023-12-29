@@ -65,16 +65,6 @@ private:
     const string CHANGE_DATE = "ChangeDate";
     const string PAUSED = "Paused";
 
-    /**
-     * Handles creation of database
-     */
-    void create();
-
-    /**
-     * Upgrades database to a newer version
-     * @param currentVersion version of database currently stored
-     */
-    void upgrade(int currentVersion);
 public:
     /**
      * Class constructor
@@ -86,6 +76,17 @@ public:
      * Class destructor
      */
     ~DatabaseController();
+
+    /**
+     * Handles creation of database
+     */
+    void create();
+
+    /**
+     * Upgrades database to a newer version
+     * @param currentVersion version of database currently stored
+     */
+    void upgrade(int currentVersion);
 
     /**
      * Exports all data stored in DB to provided location as a JSON file.

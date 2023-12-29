@@ -50,8 +50,9 @@ import projects.medicationtracker.SimpleClasses.Medication;
 import projects.medicationtracker.Views.StandardCardView;
 
 public class MainActivity extends AppCompatActivity {
+    public static String dbDir;
     private final DBHelper db = new DBHelper(this);
-    private final NativeDbHelper nativeDb = new NativeDbHelper();
+    private NativeDbHelper nativeDb;
     private LinearLayout scheduleLayout;
     private LocalDate aDayThisWeek;
     private final ActivityResultLauncher<String> notificationPermissionLauncher = registerForActivityResult(
@@ -68,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        dbDir = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
+
+        nativeDb = new NativeDbHelper(dbDir);
+
         Bundle preferences = db.getPreferences();
 
         String theme = preferences.getString(THEME);
@@ -82,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
             default:
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         }
-
 
         aDayThisWeek = LocalDate.now();
         scheduleLayout = findViewById(R.id.scheduleLayout);
