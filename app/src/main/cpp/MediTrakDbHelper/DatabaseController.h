@@ -89,6 +89,14 @@ public:
     void upgrade(int currentVersion);
 
     /**
+     * Updates rows matching where clause with with new values
+     * @param table Table in which to change values
+     * @param values Updated values
+     * @param where Arguments for where clause
+     */
+    void update(string table, map<string, string> values, map<string, string> where);
+
+    /**
      * Exports all data stored in DB to provided location as a JSON file.
      * @param exportFilePath Location for file storing database backup with its name ex. /src/myDir/data.json.
      * @param Optional ignoreTables Array of tables to exclude.

@@ -135,16 +135,40 @@ void DatabaseController::upgrade(int currentVersion) {
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
 }
 
+void DatabaseController::update(string table, map<string, string> values, map<string, string> where) {
+    stringstream query;
+
+    query << "UPDATE " << table << " SET ";
+
+    for (const auto &updates : values) {
+        query << updates.first << "= \'" << updates.second << "\',";
+    }
+
+    query.seekp(-1, ios_base::end);
+    query << " WHERE ";
+
+    for (const auto &whereArgs : where) {
+        query << whereArgs.first << "=\'" << whereArgs.second << "\' AND";
+    }
+
+    for (int i = 0; i < 3; i++) {
+        query.seekp(-1, ios_base::end);
+    }
+    query << ';';
+
+    manager.execSql(query.str());
+}
+
 void DatabaseController::exportJSON(
-        const std::string &exportFilePath,
-        const vector<std::string> &ignoreTables
+        const string &exportFilePath,
+        const vector<string> &ignoreTables
 ) {
     manager.exportData(exportFilePath, ignoreTables);
 }
 
 void DatabaseController::importJSON(
-        const std::string &importFilePath,
-        const vector<std::string> &ignoreTables
+        const string &importFilePath,
+        const vector<string> &ignoreTables
 ) {
     manager.importData(importFilePath, ignoreTables);
 }

@@ -27,7 +27,7 @@ import projects.medicationtracker.SimpleClasses.Note;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Medications.db";
-    private final static int DATABASE_VERSION = 8;
+    private final static int DATABASE_VERSION = 9;
 
     public final static String ANDROID_METADATA = "android_metadata";
 
@@ -852,13 +852,31 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param note The new note.
      */
     public void updateNote(Note note) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        ContentValues cv = new ContentValues();
+//
+//        cv.put(NOTE, note.getNote());
+//
+//        db.update(NOTES_TABLE, cv, NOTE_ID + "=?", new String[]{String.valueOf(
+//                note.getNoteId())});
 
-        cv.put(NOTE, note.getNote());
+        Pair<String, String>[] values = new Pair[2];
+        Pair<String, String>[] where = new Pair[1];
 
-        db.update(NOTES_TABLE, cv, NOTE_ID + "=?", new String[]{String.valueOf(
-                note.getNoteId())});
+        values[0] = new Pair<>(NOTE, note.getNote());
+        values[1] = new Pair<>(TIME_EDITED, TimeFormatting.localDateTimeToString(LocalDateTime.now()));
+
+        where[0] = new Pair<>(NOTE_ID, String.valueOf(note.getNoteId()));
+
+        if (nativeHelper == null) {
+            nativeHelper = new NativeDbHelper(MainActivity.dbDir);
+        }
+
+        nativeHelper.update(
+                NOTES_TABLE,
+                values,
+                where
+        );
     }
 
     /**
