@@ -95,8 +95,6 @@ void DatabaseController::create() {
 }
 
 void DatabaseController::upgrade(int currentVersion) {
-    create();
-
     if (currentVersion < 2) {
         manager.execSql("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + ACTIVE + " BOOLEAN DEFAULT 1;");
     }
