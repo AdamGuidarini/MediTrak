@@ -23,10 +23,10 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbExporter(JNIEnv *env, j
         ignoredTbls.push_back(rawString);
     }
 
-    DatabaseController helper(db);
+    DatabaseController controller(db);
 
     try {
-        helper.exportJSON(exportDir, ignoredTbls);
+        controller.exportJSON(exportDir, ignoredTbls);
     } catch (exception& e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
 
@@ -54,10 +54,10 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(JNIEnv *env, j
         ignoredTbls.push_back(rawString);
     }
 
-    DatabaseController helper(db);
+    DatabaseController controller(db);
 
     try {
-        helper.importJSON(importPath, ignoredTbls);
+        controller.importJSON(importPath, ignoredTbls);
     } catch (exception &e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
 
@@ -65,4 +65,17 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(JNIEnv *env, j
     }
 
     return true;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_dbCreate(JNIEnv *env, jobject thiz,
+                                                                jstring db_path) {
+    // TODO: implement dbCreate()
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_dbUpdate(JNIEnv *env, jobject thiz,
+                                                                jstring db_path) {
+    // TODO: implement dbUpdate()
 }
