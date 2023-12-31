@@ -381,6 +381,8 @@ void DbManager::importData(const std::string &importFilePath, const vector<strin
         importQuery << "DELETE FROM " << tbl << ';';
     }
 
+    map<string, string>::iterator it;
+
     for (const auto& tbl : data) {
         if (tbl.second.empty()) continue;
 

@@ -137,23 +137,36 @@ void DatabaseController::upgrade(int currentVersion) {
 
 void DatabaseController::update(string table, map<string, string> values, map<string, string> where) {
     stringstream query;
+    map<string, string>::iterator it;
 
     query << "UPDATE " << table << " SET ";
 
-    for (const auto &updates : values) {
-        query << updates.first << "= \'" << updates.second << "\',";
+    for (it = values.begin(); it != values.end();) {
+        query << it->first << "=\'" << it->second << "\'";
+
+        if (++it != values.end()) {
+            query << ',';
+        }
     }
 
-    query.seekp(-1, ios_base::end);
     query << " WHERE ";
 
-    for (const auto &whereArgs : where) {
-        query << whereArgs.first << "=\'" << whereArgs.second << "\' AND";
+    for (it = where.begin(); it != where.end();) {
+        query << it->first << "=";
+
+        if (manager.isNumber(it->second)) {
+            query << it->second;
+        } else if (it->second .empty()) {
+            query << "NULL";
+        } else {
+            query << "\'" << it->second << "\'";
+        }
+
+        if (++it != where.end()) {
+            query << " AND ";
+        }
     }
 
-    for (int i = 0; i < 3; i++) {
-        query.seekp(-1, ios_base::end);
-    }
     query << ';';
 
     manager.execSql(query.str());

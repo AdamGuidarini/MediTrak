@@ -8,10 +8,13 @@
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_projects_medicationtracker_Helpers_NativeDbHelper_dbExporter(JNIEnv *env, jobject thiz,
-                                                                          jstring database_name,
-                                                                          jstring export_directory,
-                                                                          jobjectArray ignoredTables) {
+Java_projects_medicationtracker_Helpers_NativeDbHelper_dbExporter(
+        JNIEnv *env,
+        jobject thiz,
+        jstring database_name,
+        jstring export_directory,
+        jobjectArray ignoredTables
+) {
     std::string db = env->GetStringUTFChars(database_name, new jboolean(true));
     std::string exportDir = env->GetStringUTFChars(export_directory, new jboolean(true));
     std::vector<std::string> ignoredTbls;
@@ -39,10 +42,13 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbExporter(JNIEnv *env, j
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(JNIEnv *env, jobject thiz,
-                                                                  jstring db_path,
-                                                                  jstring import_path,
-                                                                  jobjectArray ignored_tables) {
+Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jstring import_path,
+        jobjectArray ignored_tables
+) {
     std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
     std::string importPath = env->GetStringUTFChars(import_path, new jboolean(true));
     std::vector<std::string> ignoredTbls;
@@ -70,8 +76,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(JNIEnv *env, j
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_projects_medicationtracker_Helpers_NativeDbHelper_dbCreate(JNIEnv *env, jobject thiz,
-                                                                jstring db_path) {
+Java_projects_medicationtracker_Helpers_NativeDbHelper_dbCreate(JNIEnv *env, jobject thiz, jstring db_path) {
     std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
 
     try {
@@ -83,8 +88,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbCreate(JNIEnv *env, job
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_projects_medicationtracker_Helpers_NativeDbHelper_dbUpgrade(JNIEnv *env, jobject thiz,
-                                                                jstring db_path, jint version) {
+Java_projects_medicationtracker_Helpers_NativeDbHelper_dbUpgrade(JNIEnv *env, jobject thiz, jstring db_path, jint version) {
     std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
 
     try {

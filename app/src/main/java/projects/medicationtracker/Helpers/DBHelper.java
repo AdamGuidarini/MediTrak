@@ -852,14 +852,6 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param note The new note.
      */
     public void updateNote(Note note) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        ContentValues cv = new ContentValues();
-//
-//        cv.put(NOTE, note.getNote());
-//
-//        db.update(NOTES_TABLE, cv, NOTE_ID + "=?", new String[]{String.valueOf(
-//                note.getNoteId())});
-
         Pair<String, String>[] values = new Pair[2];
         Pair<String, String>[] where = new Pair[1];
 
@@ -902,7 +894,16 @@ public class DBHelper extends SQLiteOpenHelper {
             LocalDateTime entryTime = TimeFormatting.stringToLocalDateTime(cursor.getString(
                     cursor.getColumnIndexOrThrow(ENTRY_TIME)));
 
-            notes.add(new Note(noteId, medId, note, entryTime));
+            Note n = new Note(noteId, medId, note, entryTime);
+
+            if (cursor.getColumnIndex(TIME_EDITED) != -1 && !cursor.getString((cursor.getColumnIndexOrThrow(TIME_EDITED))).isEmpty()) {
+                LocalDateTime editTime = TimeFormatting.stringToLocalDateTime(
+                        cursor.getString((cursor.getColumnIndexOrThrow(TIME_EDITED)))
+                );
+                n.setModifiedTime(editTime);
+            }
+
+            notes.add(n);
 
             cursor.moveToNext();
         }

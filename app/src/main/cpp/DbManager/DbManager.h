@@ -52,13 +52,6 @@ private:
      */
     void replaceAll(string& str, const string& from, const string& to);
 
-    /**
-     * Checks if a string is or is not a number
-     * @param str string to check if it is a number
-     * @return True if a number, else false
-     */
-    bool isNumber(string str);
-
 public:
     /**
      * Empty default constructor
@@ -145,6 +138,13 @@ public:
      * @param importFilePath Path to JSON file storing data to import.
      */
     void importData(const string& importFilePath, const vector<string>& ignoreTables = {});
+
+    /**
+     * Checks if a string is or is not a number
+     * @param str string to check if it is a number
+     * @return True if a number, else false
+     */
+    bool isNumber(string str);
 };
 
 

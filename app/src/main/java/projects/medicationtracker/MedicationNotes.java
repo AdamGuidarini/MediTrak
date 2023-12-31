@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
 
 import java.time.LocalDateTime;
@@ -24,14 +23,12 @@ import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TextViewUtils;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
-import projects.medicationtracker.SimpleClasses.Dose;
 import projects.medicationtracker.SimpleClasses.Note;
 import projects.medicationtracker.Views.StandardCardView;
 
 public class MedicationNotes extends AppCompatActivity implements IDialogCloseListener {
     private final DBHelper db = new DBHelper(this);
     private LinearLayout notesLayout;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,6 +147,16 @@ public class MedicationNotes extends AppCompatActivity implements IDialogCloseLi
                 TimeFormatting.localDateToString(note.getNoteTime().toLocalDate()),
                 TimeFormatting.localTimeToString(note.getNoteTime().toLocalTime())
         );
+
+        if (note.getModifiedTime() != null) {
+            String editedLabel = getString(
+                R.string.note_edit_timestamp,
+                TimeFormatting.localDateToString(note.getModifiedTime().toLocalDate()),
+                TimeFormatting.localTimeToString(note.getModifiedTime().toLocalTime()
+            ));
+
+            noteDateLabel += "\n" + editedLabel;
+        }
 
         TextViewUtils.setTextViewParams(noteDate, noteDateLabel, cardLayout);
 
