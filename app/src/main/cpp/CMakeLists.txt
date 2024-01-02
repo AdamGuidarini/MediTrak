@@ -18,7 +18,7 @@ endif ()
 
 include_directories(${SQLITE3_PATH})
 add_subdirectory(DbManager)
-add_subdirectory(MediTrakDbHelper)
+add_subdirectory(DatabaseController)
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
@@ -62,7 +62,7 @@ target_link_libraries( # Specifies the target library.
                        DbManager
                        android
                        sqlite3
-                       MediTrakDbHelper
+                       DatabaseController
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib} )
