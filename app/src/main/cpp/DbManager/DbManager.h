@@ -14,7 +14,6 @@
 #include <map>
 #include <vector>
 #include <cstdlib>
-#include <future>
 
 using namespace std;
 
