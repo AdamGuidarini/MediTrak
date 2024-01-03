@@ -51,6 +51,15 @@ public class NativeDbHelper {
     }
 
     /**
+     * Update a row in a database
+     * @param table Table in which to update row
+     * @param where Where clause values
+     */
+    public void delete(String table, Pair<String, String>[] where) {
+        delete(dbPath, table, where);
+    }
+
+    /**
      * Exports a database
      * @param exportPath Path where exported file will be created
      * @param ignoredTables Tables to ignore in database
@@ -74,6 +83,7 @@ public class NativeDbHelper {
     private native void dbUpgrade(String dbPath, int version);
     private native long insert(String dbPath, String table, Pair<String, String>[] values);
     private native boolean update(String dbPath, String table, Pair<String, String>[] values, Pair<String, String >[] where);
+    private native long delete(String dbPath, String table, Pair<String, String>[] values);
     private native boolean dbExporter(String databaseName, String exportDirectory, String[] ignoredTables);
     private native boolean dbImporter(String dbPath, String importPath, String[] ignoredTables);
 }

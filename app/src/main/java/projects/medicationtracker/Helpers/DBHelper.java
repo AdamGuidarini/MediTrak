@@ -821,16 +821,6 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param medId ID of medication note is about
      */
     public long addNote(String note, long medId) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        ContentValues cv = new ContentValues();
-//        String now = TimeFormatting.localDateTimeToString(LocalDateTime.now());
-//
-//        cv.put(MED_ID, medId);
-//        cv.put(NOTE, note);
-//        cv.put(ENTRY_TIME, now);
-//
-//        return db.insert(NOTES_TABLE, null, cv);
-
         if (nativeHelper == null) {
             nativeHelper = new NativeDbHelper(MainActivity.dbDir);
         }
@@ -850,12 +840,15 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param note Note to remove
      */
     public void deleteNote(Note note) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        if (nativeHelper == null) {
+            nativeHelper = new NativeDbHelper(MainActivity.dbDir);
+        }
 
-        String query = NOTE + " = \"" + note.getNote() + "\" AND " + ENTRY_TIME
-                + " = '" + TimeFormatting.localDateTimeToString(note.getNoteTime()) + "'";
+        Pair<String, String>[] values = new Pair[1];
 
-        db.delete(NOTES_TABLE, query, null);
+        values[0] = new Pair<>(NOTE_ID, String.valueOf(note.getNoteId()));
+
+        nativeHelper.delete(NOTES_TABLE, values);
     }
 
     /**

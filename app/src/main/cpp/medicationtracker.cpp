@@ -171,3 +171,26 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_insert(
         return -1;
     }
 }
+
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_delete(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jstring table,
+        jobjectArray values) {
+
+    std::string path = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string tbl = env->GetStringUTFChars(table, new jboolean(true));
+
+    DatabaseController dbController(path);
+
+    try {
+        dbController.deleteRecord(tbl, getValues(values, env));
+
+        return true;
+    } catch (exception &e) {
+        return false;
+    }
+}

@@ -115,7 +115,7 @@ public:
      */
     void update(string table,  map<string, string> values, map<string, string> where);
 
-    long deleteRecord(string table, string where);
+    void deleteRecord(string table, map<string, string> where);
 
     /**
      * Gets all tables in database.

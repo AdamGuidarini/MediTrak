@@ -105,6 +105,13 @@ public:
     void update(string table, map<string, string> values, map<string, string> where);
 
     /**
+     * Deletes records from the database matching the where arguments
+     * @param table Table in which to add a row
+     * @param values Values to add to new row
+     */
+    void deleteRecord(string table, map<string, string> where);
+
+    /**
      * Exports all data stored in DB to provided location as a JSON file.
      * @param exportFilePath Location for file storing database backup with its name ex. /src/myDir/data.json.
      * @param Optional ignoreTables Array of tables to exclude.

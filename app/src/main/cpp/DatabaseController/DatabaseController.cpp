@@ -143,6 +143,10 @@ void DatabaseController::update(string table, map<string, string> values, map<st
     manager.update(table, values, where);
 }
 
+void DatabaseController::deleteRecord(string table, map<string, string> where) {
+    manager.deleteRecord(table, where);
+}
+
 void DatabaseController::exportJSON(
         const string &exportFilePath,
         const vector<string> &ignoreTables

@@ -213,6 +213,36 @@ void DbManager::update(string table,  map<string, string> values, map<string, st
     execSql(query.str());
 }
 
+void DbManager::deleteRecord(string table, map<string, string> where) {
+    stringstream query;
+
+    query << "DELETE FROM " << table;
+
+    if (!where.empty()) {
+        map<string, string>::iterator it;
+
+        query << " WHERE ";
+
+        for (it = where.begin(); it != where.end();) {
+            query << it->first << "=";
+
+            if (isNumber(it->second)) {
+                query << it->second;
+            } else if (it->second .empty()) {
+                query << "NULL";
+            } else {
+                query << "\'" << it->second << "\'";
+            }
+
+            if (++it != where.end()) {
+                query << " AND ";
+            }
+        }
+    }
+
+    execSql(query.str());
+}
+
 vector<string> DbManager::getTables(const vector<string>& ignoreTables) {
     int rc;
     sqlite3_stmt *stmt;
