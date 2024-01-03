@@ -13,6 +13,8 @@
 #include <fstream>
 #include <map>
 #include <vector>
+#include <cstdlib>
+#include <future>
 
 using namespace std;
 
@@ -57,8 +59,12 @@ private:
      * @return True if a number, else false
      */
     bool isNumber(string str);
-
 public:
+    /**
+     * Empty default constructor
+     */
+    DbManager();
+
     /**
      * Constructor for DbManager class, automatically opens database.
      * @param databasePath Name of file containing database.
@@ -80,6 +86,36 @@ public:
      * Closes database.
      */
     void closeDb();
+
+    /**
+     * Retrieves DB version number
+     * @return Version number stored in DB
+     */
+    int getVersionNumber();
+
+    /**
+     * Executes the provided SQL query
+     * @param sql  query to execute
+     */
+    void execSql(string sql, int (*callback) (void *, int, char**, char **) = nullptr);
+
+    /**
+     * Insert a record into the database
+     * @param table Table in which to add a row
+     * @param values Values to add to new row
+     * @return Row id of added row
+     */
+    long insert(string table, map<string, string> values);
+
+    /**
+     * Performs an update query
+     * @param table Table in which to update records
+     * @param values Values to change where key is the column name and value is the updated value
+     * @param where Where clause arguments where the key is the column to check and value is the value to match
+     */
+    void update(string table,  map<string, string> values, map<string, string> where);
+
+    void deleteRecord(string table, map<string, string> where);
 
     /**
      * Gets all tables in database.

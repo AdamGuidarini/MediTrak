@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.DialogFragment;
 
 import java.time.LocalDateTime;
@@ -24,14 +23,12 @@ import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TextViewUtils;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
-import projects.medicationtracker.SimpleClasses.Dose;
 import projects.medicationtracker.SimpleClasses.Note;
 import projects.medicationtracker.Views.StandardCardView;
 
 public class MedicationNotes extends AppCompatActivity implements IDialogCloseListener {
     private final DBHelper db = new DBHelper(this);
     private LinearLayout notesLayout;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,6 +148,16 @@ public class MedicationNotes extends AppCompatActivity implements IDialogCloseLi
                 TimeFormatting.localTimeToString(note.getNoteTime().toLocalTime())
         );
 
+        if (note.getModifiedTime() != null) {
+            String editedLabel = getString(
+                R.string.note_edit_timestamp,
+                TimeFormatting.localDateToString(note.getModifiedTime().toLocalDate()),
+                TimeFormatting.localTimeToString(note.getModifiedTime().toLocalTime()
+            ));
+
+            noteDateLabel += "\n" + editedLabel;
+        }
+
         TextViewUtils.setTextViewParams(noteDate, noteDateLabel, cardLayout);
 
         noteCard.setTag(note);
@@ -164,6 +171,14 @@ public class MedicationNotes extends AppCompatActivity implements IDialogCloseLi
             case ADD:
                 note.setNoteId(db.addNote(note.getNote(), note.getMedId()));
                 note.setNoteTime(LocalDateTime.now());
+
+                if (notesLayout.getChildCount() == 0) {
+                    TextView tv = findViewById(R.id.noNotes);
+                    tv.setVisibility(View.GONE);
+
+                    ScrollView scrollNotes = findViewById(R.id.scrollNotes);
+                    scrollNotes.setVisibility(View.VISIBLE);
+                }
 
                 createNoteCard(note, notesLayout);
                 break;
@@ -184,6 +199,14 @@ public class MedicationNotes extends AppCompatActivity implements IDialogCloseLi
                         notesLayout.removeViewAt(i);
                         break;
                     }
+                }
+
+                if (notesLayout.getChildCount() == 0) {
+                    TextView tv = findViewById(R.id.noNotes);
+                    tv.setVisibility(View.VISIBLE);
+
+                    ScrollView scrollNotes = findViewById(R.id.scrollNotes);
+                    scrollNotes.setVisibility(View.GONE);
                 }
         }
     }
