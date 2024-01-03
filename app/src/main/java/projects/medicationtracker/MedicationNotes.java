@@ -172,6 +172,14 @@ public class MedicationNotes extends AppCompatActivity implements IDialogCloseLi
                 note.setNoteId(db.addNote(note.getNote(), note.getMedId()));
                 note.setNoteTime(LocalDateTime.now());
 
+                if (notesLayout.getChildCount() == 0) {
+                    TextView tv = findViewById(R.id.noNotes);
+                    tv.setVisibility(View.GONE);
+
+                    ScrollView scrollNotes = findViewById(R.id.scrollNotes);
+                    scrollNotes.setVisibility(View.VISIBLE);
+                }
+
                 createNoteCard(note, notesLayout);
                 break;
             case EDIT:
@@ -191,6 +199,14 @@ public class MedicationNotes extends AppCompatActivity implements IDialogCloseLi
                         notesLayout.removeViewAt(i);
                         break;
                     }
+                }
+
+                if (notesLayout.getChildCount() == 0) {
+                    TextView tv = findViewById(R.id.noNotes);
+                    tv.setVisibility(View.VISIBLE);
+
+                    ScrollView scrollNotes = findViewById(R.id.scrollNotes);
+                    scrollNotes.setVisibility(View.GONE);
                 }
         }
     }
