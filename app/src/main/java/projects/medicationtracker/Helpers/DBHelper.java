@@ -896,7 +896,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             Note n = new Note(noteId, medId, note, entryTime);
 
-            if (cursor.getColumnIndex(TIME_EDITED) != -1 && !cursor.getString((cursor.getColumnIndexOrThrow(TIME_EDITED))).isEmpty()) {
+            if (cursor.getString(cursor.getColumnIndexOrThrow(TIME_EDITED)) != null && !cursor.getString((cursor.getColumnIndexOrThrow(TIME_EDITED))).isEmpty()) {
                 LocalDateTime editTime = TimeFormatting.stringToLocalDateTime(
                         cursor.getString((cursor.getColumnIndexOrThrow(TIME_EDITED)))
                 );
