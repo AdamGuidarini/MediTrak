@@ -30,6 +30,16 @@ public class NativeDbHelper {
     }
 
     /**
+     * Inserts a new record into table
+     * @param table Table in which to insert record
+     * @param values values to add
+     * @return Row id of new record
+     */
+    public long insert(String table, Pair<String, String>[] values) {
+        return insert(dbPath, table, values);
+    }
+
+    /**
      * Update a row in a database
      * @param table Table in which to update row
      * @param values Values to update
@@ -62,6 +72,7 @@ public class NativeDbHelper {
 
     private  native void dbCreate(String dbPath);
     private native void dbUpgrade(String dbPath, int version);
+    private native long insert(String dbPath, String table, Pair<String, String>[] values);
     private native boolean update(String dbPath, String table, Pair<String, String>[] values, Pair<String, String >[] where);
     private native boolean dbExporter(String databaseName, String exportDirectory, String[] ignoredTables);
     private native boolean dbImporter(String dbPath, String importPath, String[] ignoredTables);

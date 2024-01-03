@@ -19,7 +19,7 @@ private:
     DbManager manager;
     
     const string ANDROID_METADATA = "android_metadata";
-    
+
     const string MEDICATION_TABLE = "Medication";
     const string MED_ID = "MedicationID";
     const string MED_NAME = "MedName";
@@ -89,10 +89,18 @@ public:
     void upgrade(int currentVersion);
 
     /**
+     * Insert a record into the database
+     * @param table Table in which to add a row
+     * @param values Values to add to new row
+     * @return Row id of added row
+     */
+    long insert(string table, map<string, string> values);
+
+    /**
      * Updates rows matching where clause with with new values
-     * @param table Table in which to change values
-     * @param values Updated values
-     * @param where Arguments for where clause
+     * @param table Table in which to update records
+     * @param values Values to change where key is the column name and value is the updated value
+     * @param where Where clause arguments where the key is the column to check and value is the value to matc
      */
     void update(string table, map<string, string> values, map<string, string> where);
 

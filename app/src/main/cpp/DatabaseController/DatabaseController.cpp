@@ -135,41 +135,12 @@ void DatabaseController::upgrade(int currentVersion) {
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
 }
 
+long DatabaseController::insert(string table, map<string, string> values) {
+    return manager.insert(table, values);
+}
+
 void DatabaseController::update(string table, map<string, string> values, map<string, string> where) {
-    stringstream query;
-    map<string, string>::iterator it;
-
-    query << "UPDATE " << table << " SET ";
-
-    for (it = values.begin(); it != values.end();) {
-        query << it->first << "=\'" << it->second << "\'";
-
-        if (++it != values.end()) {
-            query << ',';
-        }
-    }
-
-    query << " WHERE ";
-
-    for (it = where.begin(); it != where.end();) {
-        query << it->first << "=";
-
-        if (manager.isNumber(it->second)) {
-            query << it->second;
-        } else if (it->second .empty()) {
-            query << "NULL";
-        } else {
-            query << "\'" << it->second << "\'";
-        }
-
-        if (++it != where.end()) {
-            query << " AND ";
-        }
-    }
-
-    query << ';';
-
-    manager.execSql(query.str());
+    manager.update(table, values, where);
 }
 
 void DatabaseController::exportJSON(

@@ -115,15 +115,102 @@ int DbManager::getVersionNumber() {
     return version;
 }
 
-void DbManager::execSql(string sql) {
+void DbManager::execSql(string sql,  int (*callback) (void *, int, char**, char **)) {
     char *err;
-    int rc = sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &err);
+    int rc = sqlite3_exec(db, sql.c_str(), callback, 0, &err);
 
     if (rc != SQLITE_OK) {
         string errorMessage = "An error occurred while attempting to execute query: " + sql + "\n" + err;
 
         throw runtime_error(errorMessage);
     }
+}
+
+long DbManager::insert(string table, map<string, string> values) {
+    stringstream query;
+    map<string, string>::iterator it;
+    sqlite3_stmt *stmt;
+    long rowId = 0;
+
+    query << "INSERT INTO " << table << " (";
+
+    for (it = values.begin(); it != values.end();) {
+        query << it->first;
+
+        if (++it != values.end()) {
+            query << ',';
+        }
+    }
+
+    query << ") VALUES(";
+
+    for (it = values.begin(); it != values.end();) {
+        if (isNumber(it->second)) {
+            query << it->second;
+        } else if (it->second .empty()) {
+            query << "NULL";
+        } else {
+            query << "\'" << it->second << "\'";
+        }
+
+        if (++it != values.end()) {
+            query << ',';
+        }
+    }
+
+    query << ");";
+
+    execSql(query.str());
+
+    sqlite3_prepare_v2(db, "SELECT last_insert_rowid()", -1, &stmt, nullptr);
+    sqlite3_step(stmt);
+
+    string colName = string(reinterpret_cast<const char*>(sqlite3_column_name(stmt, 0)));
+
+    if (colName == "last_insert_rowid()") {
+        rowId = stol(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0)));
+    }
+
+    sqlite3_finalize(stmt);
+
+    return rowId;
+}
+
+void DbManager::update(string table,  map<string, string> values, map<string, string> where) {
+    stringstream query;
+    map<string, string>::iterator it;
+
+    query << "UPDATE " << table << " SET ";
+
+    for (it = values.begin(); it != values.end();) {
+        query << it->first << "=\'" << it->second << "\'";
+
+        if (++it != values.end()) {
+            query << ',';
+        }
+    }
+
+    query << " WHERE ";
+
+    for (it = where.begin(); it != where.end();) {
+        query << it->first << "=";
+
+        if (isNumber(it->second)) {
+            query << it->second;
+        } else if (it->second .empty()) {
+            query << "NULL";
+        } else {
+            query << "\'" << it->second << "\'";
+        }
+
+        if (++it != where.end()) {
+            query << " AND ";
+        }
+    }
+
+    query << ';';
+
+    execSql(query.str());
 }
 
 vector<string> DbManager::getTables(const vector<string>& ignoreTables) {

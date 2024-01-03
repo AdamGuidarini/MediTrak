@@ -821,15 +821,27 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param medId ID of medication note is about
      */
     public long addNote(String note, long medId) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        String now = TimeFormatting.localDateTimeToString(LocalDateTime.now());
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        ContentValues cv = new ContentValues();
+//        String now = TimeFormatting.localDateTimeToString(LocalDateTime.now());
+//
+//        cv.put(MED_ID, medId);
+//        cv.put(NOTE, note);
+//        cv.put(ENTRY_TIME, now);
+//
+//        return db.insert(NOTES_TABLE, null, cv);
 
-        cv.put(MED_ID, medId);
-        cv.put(NOTE, note);
-        cv.put(ENTRY_TIME, now);
+        if (nativeHelper == null) {
+            nativeHelper = new NativeDbHelper(MainActivity.dbDir);
+        }
 
-        return db.insert(NOTES_TABLE, null, cv);
+        Pair<String, String>[] values = new Pair[3];
+
+        values[0] = new Pair<>(NOTE, note);
+        values[1] = new Pair<>(ENTRY_TIME, TimeFormatting.localDateTimeToString(LocalDateTime.now()));
+        values[2] = new Pair<>(MED_ID, String.valueOf(medId));
+
+        return nativeHelper.insert(NOTES_TABLE, values);
     }
 
     /**

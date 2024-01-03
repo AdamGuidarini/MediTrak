@@ -6,6 +6,27 @@
 #include <string>
 #include <map>
 
+std::map<std::string, std::string> getValues(jobjectArray arr, JNIEnv *env) {
+    const jclass pair = env->FindClass("android/util/Pair");
+
+    _jfieldID *const firstFieldId = env->GetFieldID(pair, "first", "Ljava/lang/Object;");
+    _jfieldID *const secondFieldId = env->GetFieldID(pair, "second", "Ljava/lang/Object;");
+
+    map<string, string> vals;
+
+    for (int i = 0; i < env->GetArrayLength(arr); i++) {
+        jstring firstField = (jstring) env->GetObjectField(env->GetObjectArrayElement(arr, i), firstFieldId);
+        jstring secondField = (jstring) env->GetObjectField(env->GetObjectArrayElement(arr, i), secondFieldId);
+
+        std::string first = env->GetStringUTFChars(firstField, new jboolean(true));
+        std::string second = env->GetStringUTFChars(secondField, new jboolean(true));
+
+        vals.insert({ first, second });
+    }
+
+    return vals;
+}
+
 extern "C"
 JNIEXPORT jboolean JNICALL
 Java_projects_medicationtracker_Helpers_NativeDbHelper_dbExporter(
@@ -109,38 +130,13 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_update(
         jobjectArray values,
         jobjectArray where
 ) {
-    const jclass pair = env->FindClass("android/util/Pair");
-
     std::string path = env->GetStringUTFChars(db_path, new jboolean(true));
     std::string tbl = env->GetStringUTFChars(table, new jboolean(true));
 
-    std::map<std::string, std::string> vals;
-    std::map<std::string, std::string> whereVals;
-
-    _jfieldID *const firstFieldId = env->GetFieldID(pair, "first", "Ljava/lang/Object;");
-    _jfieldID *const secondFieldId = env->GetFieldID(pair, "second", "Ljava/lang/Object;");
+    std::map<std::string, std::string> vals = getValues(values, env);
+    std::map<std::string, std::string> whereVals = getValues(where, env);
 
     DatabaseController dbController(path);
-
-    for (int i = 0; i < env->GetArrayLength(values); i++) {
-        jstring firstField = (jstring) env->GetObjectField(env->GetObjectArrayElement(values, i), firstFieldId);
-        jstring secondField = (jstring) env->GetObjectField(env->GetObjectArrayElement(values, i), secondFieldId);
-
-        std::string first = env->GetStringUTFChars(firstField, new jboolean(true));
-        std::string second = env->GetStringUTFChars(secondField, new jboolean(true));
-
-        vals.insert({ first, second });
-    }
-
-    for (int i = 0; i < env->GetArrayLength(where); i++) {
-        jstring firstField = (jstring) env->GetObjectField(env->GetObjectArrayElement(where, i), firstFieldId);
-        jstring secondField = (jstring) env->GetObjectField(env->GetObjectArrayElement(where, i), secondFieldId);
-
-        std::string first = env->GetStringUTFChars(firstField, new jboolean(true));
-        std::string second = env->GetStringUTFChars(secondField, new jboolean(true));
-
-        whereVals.insert({ first, second });
-    }
 
     try {
         dbController.update(tbl, vals, whereVals);
@@ -151,4 +147,27 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_update(
     }
 
     return true;
+}
+
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_insert(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jstring table,
+        jobjectArray values
+) {
+    std::string path = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string tbl = env->GetStringUTFChars(table, new jboolean(true));
+
+    DatabaseController dbController(path);
+
+    try {
+        return dbController.insert(tbl, getValues(values, env));
+    } catch (exception &e) {
+        __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
+
+        return -1;
+    }
 }

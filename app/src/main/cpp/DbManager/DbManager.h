@@ -14,6 +14,7 @@
 #include <map>
 #include <vector>
 #include <cstdlib>
+#include <future>
 
 using namespace std;
 
@@ -52,6 +53,12 @@ private:
      */
     void replaceAll(string& str, const string& from, const string& to);
 
+    /**
+     * Checks if a string is or is not a number
+     * @param str string to check if it is a number
+     * @return True if a number, else false
+     */
+    bool isNumber(string str);
 public:
     /**
      * Empty default constructor
@@ -82,7 +89,7 @@ public:
 
     /**
      * Retrieves DB version number
-     * @return
+     * @return Version number stored in DB
      */
     int getVersionNumber();
 
@@ -90,11 +97,23 @@ public:
      * Executes the provided SQL query
      * @param sql  query to execute
      */
-    void execSql(string sql);
+    void execSql(string sql, int (*callback) (void *, int, char**, char **) = nullptr);
 
+    /**
+     * Insert a record into the database
+     * @param table Table in which to add a row
+     * @param values Values to add to new row
+     * @return Row id of added row
+     */
     long insert(string table, map<string, string> values);
 
-    long update(string tabel, string where);
+    /**
+     * Performs an update query
+     * @param table Table in which to update records
+     * @param values Values to change where key is the column name and value is the updated value
+     * @param where Where clause arguments where the key is the column to check and value is the value to match
+     */
+    void update(string table,  map<string, string> values, map<string, string> where);
 
     long deleteRecord(string table, string where);
 
@@ -138,13 +157,6 @@ public:
      * @param importFilePath Path to JSON file storing data to import.
      */
     void importData(const string& importFilePath, const vector<string>& ignoreTables = {});
-
-    /**
-     * Checks if a string is or is not a number
-     * @param str string to check if it is a number
-     * @return True if a number, else false
-     */
-    bool isNumber(string str);
 };
 
 
