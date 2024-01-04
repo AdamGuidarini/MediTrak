@@ -1,6 +1,6 @@
-package projects.medicationtracker.Fragments;
+package projects.medicationtracker.Dialogs;
 
-import android.app.AlertDialog;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,21 +11,22 @@ import android.view.LayoutInflater;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
-import projects.medicationtracker.Helpers.DBHelper;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.MedicationNotes;
 import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Note;
 
-public class EditNoteFragment extends DialogFragment {
-    final DBHelper db;
+public class AddNoteDialog extends DialogFragment {
     final Note note;
-    private EditText alterNote;
+    private EditText noteInput;
 
-    public EditNoteFragment(Note note, DBHelper db) {
+    public AddNoteDialog(Note note) {
         this.note = note;
-        this.db = db;
     }
 
     /**
@@ -37,34 +38,46 @@ public class EditNoteFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         AlertDialog noteDialog;
-        builder.setView(inflater.inflate(R.layout.fragment_edit_note, null));
-        builder.setTitle(getString(R.string.edit_note));
+        int titleResId = note.getNoteId() == -1 ? R.string.add_note : R.string.edit_note;
+
+        builder.setView(inflater.inflate(R.layout.dialog_add_note, null));
+        builder.setTitle(getString(titleResId));
 
         builder.setPositiveButton(getString(R.string.save), ((dialogInterface, i) ->
         {
             save();
-            restartActivity();
+            dismiss();
         }));
 
         builder.setNegativeButton(getString(R.string.cancel), ((dialogInterface, i) -> dismiss()));
 
-        builder.setNeutralButton(getString(R.string.delete), ((dialogInterface, i) ->
-        {
-            db.deleteNote(note);
-            restartActivity();
-        }));
+        if (note.getNoteId() != -1) {
+            builder.setNeutralButton(getString(R.string.delete), ((dialogInterface, i) ->
+            {
+                Activity parent = getActivity();
+
+                if (parent instanceof IDialogCloseListener) {
+                    ((IDialogCloseListener) parent).handleDialogClose(IDialogCloseListener.Action.DELETE, note);
+                }
+                dismiss();
+            }));
+        }
 
         noteDialog = builder.create();
         noteDialog.show();
 
         noteDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
 
-        alterNote = noteDialog.findViewById(R.id.alterNote);
-        alterNote.setText(note.getNote());
-        alterNote.addTextChangedListener(new TextWatcher() {
+        noteInput = noteDialog.findViewById(R.id.noteInput);
+
+        if (note.getNoteId() != -1) {
+            noteInput.setText(note.getNote());
+        }
+
+        noteInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
@@ -74,7 +87,7 @@ public class EditNoteFragment extends DialogFragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 noteDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(
-                        alterNote.getText().length() > 0
+                        editable.toString().length() > 0
                 );
             }
         });
@@ -88,8 +101,15 @@ public class EditNoteFragment extends DialogFragment {
     }
 
     private void save() {
-        alterNote = getDialog().findViewById(R.id.alterNote);
-        db.updateNote(note, alterNote.getText().toString());
+        Activity parent = getActivity();
+        IDialogCloseListener.Action action = note.getNoteId() == -1 ?
+                IDialogCloseListener.Action.ADD : IDialogCloseListener.Action.EDIT;
+
+        note.setNote(noteInput.getText().toString());
+
+        if (parent instanceof IDialogCloseListener) {
+            ((IDialogCloseListener) parent).handleDialogClose(action, note);
+        }
     }
 
     public void restartActivity() {

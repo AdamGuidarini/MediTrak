@@ -75,6 +75,7 @@
     <string name="edit_medication">Edit Medication</string>
     <string name="delete_medication">Delete Medication</string>
     <string name="note_timestamp">Date: %1$s at: %2$s</string>
+    <string name="note_edit_timestamp">Edited: %1$s at: %2$s</string>
     <string name="patient_changed">Patient changed from %1$s to %2$s\n</string>
     <string name="name_changed">Name changed from %1$s to %2$s\n</string>
     <string name="removed_alias">Alias %1$s removed\n</string>

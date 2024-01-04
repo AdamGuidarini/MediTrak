@@ -164,7 +164,7 @@ public class AddAsNeededDoseDialog extends DialogFragment {
 
         if (fragment instanceof IDialogCloseListener) {
             ((IDialogCloseListener) fragment).handleDialogClose(
-                    IDialogCloseListener.Action.ADD, dose
+                    IDialogCloseListener.Action.ADD, (Object) dose
             );
         }
     }
