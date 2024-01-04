@@ -13,7 +13,7 @@ using namespace std;
 
 class DatabaseController {
 private:
-    const int DB_VERSION = 9;
+    const int DB_VERSION = 10;
     const string DATABASE_NAME = "Medications.db";
     vector<string> tablesToIgnore;
     DbManager manager;
