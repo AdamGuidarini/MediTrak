@@ -67,7 +67,7 @@
 
                 <Button
                     android:id="@+id/todayButton"
-                    android:layout_width="45dp"
+                    android:layout_width="50dp"
                     android:layout_height="45dp"
                     android:background="@drawable/calendar"
                     android:onClick="onTodayClick"
