@@ -131,7 +131,7 @@ void DatabaseController::upgrade(int currentVersion) {
         manager.execSql("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0;");
     }
 
-    if (currentVersion < 8) {
+    if (currentVersion < 10) {
         manager.execSql("ALTER TABLE " + NOTES_TABLE + " ADD COLUMN " + TIME_EDITED + " DATETIME;");
     }
 
