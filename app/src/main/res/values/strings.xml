@@ -202,6 +202,9 @@
     <string name="failed_import">Failed to import data</string>
     <string name="could_not_retrieve_file">Could not retrieve import file</string>
     <string name="notifications_already_enabled">Notifications are already enabled</string>
+    <string name="date_format_title">Date Format</string>
+    <string name="date_format_mm_dd_yyyy">MM/DD/YYYY</string>
+    <string name="date_format_dd_mm_yyyy">DD/MM/YYYY</string>
 
     <!-- Dose Info dialog -->
     <string name="not_taken_yet">Not yet taken</string>
