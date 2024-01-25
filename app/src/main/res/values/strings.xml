@@ -37,7 +37,7 @@
 
     <!-- Time formats -->
     <string name="date_format">Mmm dd, yyyy</string>
-    <string name="time_format">hh:mm aa</string>
+    <string name="time_format_hh_mm_aa">hh:mm aa</string>
 
     <!-- Time -->
     <string name="sunday">Sunday</string>
@@ -205,6 +205,9 @@
     <string name="date_format_title">Date Format</string>
     <string name="date_format_mm_dd_yyyy">MM/DD/YYYY</string>
     <string name="date_format_dd_mm_yyyy">DD/MM/YYYY</string>
+    <string name="time_format">Time Format</string>
+    <string name="hour_12">12 Hour</string>
+    <string name="hour_24">24 Hour</string>
 
     <!-- Dose Info dialog -->
     <string name="not_taken_yet">Not yet taken</string>

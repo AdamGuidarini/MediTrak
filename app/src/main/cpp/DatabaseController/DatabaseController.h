@@ -11,9 +11,19 @@
 
 using namespace std;
 
+namespace TimeFormats {
+    const string _12_HOUR = "hh:mm aa";
+    const string _24_HOUR = "HH:mm";
+};
+
+namespace DateFormats {
+    const string MM_DD_YYYY = "MM/dd/yyyy";
+    const string DD_MM_YYYY = "dd/MM/yyyy";
+};
+
 class DatabaseController {
 private:
-    const int DB_VERSION = 10;
+    const int DB_VERSION = 11;
     const string DATABASE_NAME = "Medications.db";
     vector<string> tablesToIgnore;
     DbManager manager;
@@ -60,6 +70,9 @@ private:
     const string LIGHT = "light";
     const string DARK = "dark";
     const string AGREED_TO_TERMS = "AgreedToTerms";
+    const string DATE_FORMAT = "DateFormat";
+    const string TIME_FORMAT = "TimeFormat";
+
     const string ACTIVITY_CHANGE_TABLE = "ActivityChanges";
     const string CHANGE_EVENT_ID = "ChangeId";
     const string CHANGE_DATE = "ChangeDate";
