@@ -5,6 +5,7 @@ import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 
 import android.Manifest;
 import android.content.Intent;
@@ -229,7 +230,7 @@ public class Settings extends AppCompatActivity {
      */
     private void setThemeMenu() {
         MaterialAutoCompleteTextView themeSelector = findViewById(R.id.themeSelector);
-        String savedTheme = preferences.getString(THEME);
+        String savedTheme = preferences.getString(THEME, DEFAULT);
 
         themeSelector.setAdapter(createThemeMenuAdapter());
 
@@ -266,13 +267,8 @@ public class Settings extends AppCompatActivity {
         });
 
         themeSelector.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -286,7 +282,7 @@ public class Settings extends AppCompatActivity {
      */
     private void setDateFormatMenu() {
         MaterialAutoCompleteTextView dateSelector = findViewById(R.id.date_format_selector);
-        String dateFormat = preferences.getString(DATE_FORMAT);
+        String dateFormat = preferences.getString(DATE_FORMAT, DBHelper.DateFormats.DD_MM_YYYY);
 
         dateSelector.setAdapter(createDateFormatMenuAdapter());
 
@@ -298,6 +294,16 @@ public class Settings extends AppCompatActivity {
                 dateSelector.setText(dateSelector.getAdapter().getItem(1).toString(), false);
                 break;
         }
+
+        dateSelector.setOnItemClickListener((parent, view, position, id) -> {
+            switch (position) {
+                case 0:
+                    break;
+                case 1:
+            }
+
+            dateSelector.clearFocus();
+        });
     }
 
     /**
@@ -305,8 +311,28 @@ public class Settings extends AppCompatActivity {
      */
     private void setTimeFormatMenu() {
         MaterialAutoCompleteTextView timeSelector = findViewById(R.id.time_format_selector);
+        String timeFormat = preferences.getString(TIME_FORMAT, DBHelper.TimeFormats._12_HOUR);
 
         timeSelector.setAdapter(createTimeFormatMenuAdapter());
+
+        switch (timeFormat) {
+            case DBHelper.TimeFormats._12_HOUR:
+                timeSelector.setText(timeSelector.getAdapter().getItem(0).toString(), false);
+                break;
+            case DBHelper.TimeFormats._24_HOUR:
+                timeSelector.setText(timeSelector.getAdapter().getItem(1).toString(), false);
+                break;
+        }
+
+        timeSelector.setOnItemClickListener((parent, view, position, id) -> {
+            switch (position) {
+                case 0:
+                    break;
+                case 1:
+            }
+
+            timeSelector.clearFocus();
+        });
     }
 
     /**
