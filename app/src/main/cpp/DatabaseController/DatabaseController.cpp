@@ -81,11 +81,6 @@ void DatabaseController::create() {
             + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0);"
     );
 
-    manager.execSql("INSERT INTO " + SETTINGS_TABLE + "("
-                + ENABLE_NOTIFICATIONS + ", " + TIME_BEFORE_DOSE + ")"
-                + "VALUES (1, 2);"
-    );
-
     manager.execSql(
             "CREATE TABLE IF NOT EXISTS " + ACTIVITY_CHANGE_TABLE + "("
             + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
