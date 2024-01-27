@@ -190,21 +190,23 @@ void DbManager::update(string table,  map<string, string> values, map<string, st
         }
     }
 
-    query << " WHERE ";
+    if (!where.empty()) {
+        query << " WHERE ";
 
-    for (it = where.begin(); it != where.end();) {
-        query << it->first << "=";
+        for (it = where.begin(); it != where.end();) {
+            query << it->first << "=";
 
-        if (isNumber(it->second)) {
-            query << it->second;
-        } else if (it->second .empty()) {
-            query << "NULL";
-        } else {
-            query << "\'" << it->second << "\'";
-        }
+            if (isNumber(it->second)) {
+                query << it->second;
+            } else if (it->second .empty()) {
+                query << "NULL";
+            } else {
+                query << "\'" << it->second << "\'";
+            }
 
-        if (++it != where.end()) {
-            query << " AND ";
+            if (++it != where.end()) {
+                query << " AND ";
+            }
         }
     }
 

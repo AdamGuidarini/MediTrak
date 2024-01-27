@@ -139,7 +139,11 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_update(
     DatabaseController dbController(path);
 
     try {
-        dbController.update(tbl, vals, whereVals);
+        if (tbl == dbController.SETTINGS_TABLE) {
+            dbController.updateSettings(vals);
+        }  else {
+            dbController.update(tbl, vals, whereVals);
+        }
     } catch (exception &e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
 

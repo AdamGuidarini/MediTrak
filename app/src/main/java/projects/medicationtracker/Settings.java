@@ -4,6 +4,7 @@ import static projects.medicationtracker.Helpers.DBHelper.DARK;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
+import static projects.medicationtracker.Helpers.DBHelper.SETTINGS_TABLE;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 
@@ -18,6 +19,7 @@ import android.os.Environment;
 import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -327,6 +329,7 @@ public class Settings extends AppCompatActivity {
         timeSelector.setOnItemClickListener((parent, view, position, id) -> {
             switch (position) {
                 case 0:
+
                     break;
                 case 1:
             }

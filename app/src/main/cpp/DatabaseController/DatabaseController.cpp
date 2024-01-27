@@ -82,6 +82,11 @@ void DatabaseController::create() {
     );
 
     manager.execSql(
+            "INSERT INTO " + SETTINGS_TABLE
+            + " WHERE NOT EXISTS(SELECT 1 FROM " + SETTINGS_TABLE + "rowid = 0);"
+    );
+
+    manager.execSql(
             "CREATE TABLE IF NOT EXISTS " + ACTIVITY_CHANGE_TABLE + "("
             + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + MED_ID + " INT,"
@@ -150,6 +155,10 @@ void DatabaseController::update(string table, map<string, string> values, map<st
 
 void DatabaseController::deleteRecord(string table, map<string, string> where) {
     manager.deleteRecord(table, where);
+}
+
+void DatabaseController::updateSettings(map<std::string, std::string> values) {
+    manager.update(SETTINGS_TABLE, values, {});
 }
 
 void DatabaseController::exportJSON(

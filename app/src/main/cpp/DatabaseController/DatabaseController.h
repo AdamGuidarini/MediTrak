@@ -55,13 +55,13 @@ private:
     const string MEDICATION_STATS_TABLE = "MedicationStats";
     const string START_DATE = "StartDate";
 
-    const string NOTES_TABLE = "Notes";
+    // Notes
     const string NOTE_ID = "NoteID";
     const string NOTE = "Note";
     const string ENTRY_TIME = "EntryTime";
     const string TIME_EDITED = "TimeEdited";
 
-    const string SETTINGS_TABLE = "Settings";
+    // Settings
     const string TIME_BEFORE_DOSE = "TimeBeforeDose";
     const string ENABLE_NOTIFICATIONS = "EnableNotifications";
     const string SEEN_NOTIFICATION_REQUEST = "SeenNotificationRequest";
@@ -73,12 +73,16 @@ private:
     const string DATE_FORMAT = "DateFormat";
     const string TIME_FORMAT = "TimeFormat";
 
-    const string ACTIVITY_CHANGE_TABLE = "ActivityChanges";
+    // Activity Change
     const string CHANGE_EVENT_ID = "ChangeId";
     const string CHANGE_DATE = "ChangeDate";
     const string PAUSED = "Paused";
 
 public:
+    const string NOTES_TABLE = "Notes";
+    const string SETTINGS_TABLE = "Settings";
+    const string ACTIVITY_CHANGE_TABLE = "ActivityChanges";
+
     /**
      * Class constructor
      * @param dbPath
@@ -123,6 +127,13 @@ public:
      * @param values Values to add to new row
      */
     void deleteRecord(string table, map<string, string> where);
+
+    /**
+     * Updates Settings
+     * @param values Values to update
+     * @return true on success
+     */
+    void updateSettings(map<string, string> values);
 
     /**
      * Exports all data stored in DB to provided location as a JSON file.
