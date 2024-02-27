@@ -76,12 +76,14 @@ void DatabaseController::create() {
             + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1, "
             + THEME + " TEXT DEFAULT '" + DEFAULT + "',"
             + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0,"
+            + DATE_FORMAT + " TEXT DEFAULT '" + DateFormats::MM_DD_YYYY + "',"
+            + TIME_FORMAT + " TEXT DEFAULT '" + TimeFormats::_12_HOUR + "',"
             + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0);"
     );
 
-    manager.execSql("INSERT INTO " + SETTINGS_TABLE + "("
-                + ENABLE_NOTIFICATIONS + ", " + TIME_BEFORE_DOSE + ")"
-                + "VALUES (1, 2);"
+    manager.execSql(
+            "INSERT INTO " + SETTINGS_TABLE
+            + " WHERE NOT EXISTS(SELECT 1 FROM " + SETTINGS_TABLE + "rowid = 0);"
     );
 
     manager.execSql(
@@ -135,6 +137,11 @@ void DatabaseController::upgrade(int currentVersion) {
         manager.execSql("ALTER TABLE " + NOTES_TABLE + " ADD COLUMN " + TIME_EDITED + " DATETIME;");
     }
 
+    if (currentVersion < 11) {
+        manager.execSql("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + DATE_FORMAT + " TEXT DEFAULT '" + DateFormats::MM_DD_YYYY + "';");
+        manager.execSql("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + TIME_FORMAT + " TEXT DEFAULT '" + TimeFormats::_12_HOUR + "';");
+    }
+
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
 }
 
@@ -148,6 +155,10 @@ void DatabaseController::update(string table, map<string, string> values, map<st
 
 void DatabaseController::deleteRecord(string table, map<string, string> where) {
     manager.deleteRecord(table, where);
+}
+
+void DatabaseController::updateSettings(map<std::string, std::string> values) {
+    manager.update(SETTINGS_TABLE, values, {});
 }
 
 void DatabaseController::exportJSON(

@@ -1,9 +1,12 @@
 package projects.medicationtracker;
 
 import static projects.medicationtracker.Helpers.DBHelper.DARK;
+import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
+import static projects.medicationtracker.Helpers.DBHelper.SETTINGS_TABLE;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 
 import android.Manifest;
 import android.content.Intent;
@@ -16,6 +19,7 @@ import android.os.Environment;
 import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -49,6 +53,7 @@ public class Settings extends AppCompatActivity {
             isGranted -> {}
     );
     private NativeDbHelper nativeDb;
+    private Bundle preferences;
 
     static {
         System.loadLibrary("medicationtracker");
@@ -83,15 +88,19 @@ public class Settings extends AppCompatActivity {
             notificationToggle.setVisibility(View.VISIBLE);
         }
 
+        preferences = db.getPreferences();
+
         setTimeBeforeDoseRestrictionSwitch();
         setEnableNotificationSwitch();
         setThemeMenu();
+        setDateFormatMenu();
+        setTimeFormatMenu();
 
         chooseFileLauncher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
                 result -> {
                     if (result != null && result.getPath() != null) {
-                        String absPath;
+                        String absPath = "";
                         String name;
                         Cursor cursor = getContentResolver().query(result, null, null, null, null);
 
@@ -110,9 +119,6 @@ public class Settings extends AppCompatActivity {
                             case "com.android.providers.documents.documents":
                                 absPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getPath() + "/" + name;
                                 break;
-                            default:
-                                Toast.makeText(this, "=Invalid import location. Import file must be in Documents or Downloads.", Toast.LENGTH_LONG).show();
-                                return;
                         }
 
                         if (nativeDb.dbImport(absPath, new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE})) {
@@ -226,7 +232,7 @@ public class Settings extends AppCompatActivity {
      */
     private void setThemeMenu() {
         MaterialAutoCompleteTextView themeSelector = findViewById(R.id.themeSelector);
-        String savedTheme = db.getPreferences().getString(THEME);
+        String savedTheme = preferences.getString(THEME, DEFAULT);
 
         themeSelector.setAdapter(createThemeMenuAdapter());
 
@@ -263,27 +269,79 @@ public class Settings extends AppCompatActivity {
         });
 
         themeSelector.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
             @Override
             public void afterTextChanged(Editable s) {
-                ArrayList<String> _availableThemes = new ArrayList<>();
-
-                _availableThemes.add(getString(R.string.match_system_theme));
-                _availableThemes.add(getString(R.string.light_mode));
-                _availableThemes.add(getString(R.string.dark_mode));
-
                 themeSelector.setAdapter(createThemeMenuAdapter());
             }
         });
     }
 
+    /**
+     * Builds date format selector menu
+     */
+    private void setDateFormatMenu() {
+        MaterialAutoCompleteTextView dateSelector = findViewById(R.id.date_format_selector);
+        String dateFormat = preferences.getString(DATE_FORMAT, DBHelper.DateFormats.DD_MM_YYYY);
+
+        dateSelector.setAdapter(createDateFormatMenuAdapter());
+
+        switch(dateFormat) {
+            case DBHelper.DateFormats.DD_MM_YYYY:
+                dateSelector.setText(dateSelector.getAdapter().getItem(0).toString(), false);
+                break;
+            case DBHelper.DateFormats.MM_DD_YYYY:
+                dateSelector.setText(dateSelector.getAdapter().getItem(1).toString(), false);
+                break;
+        }
+
+        dateSelector.setOnItemClickListener((parent, view, position, id) -> {
+            switch (position) {
+                case 0:
+                    break;
+                case 1:
+            }
+
+            dateSelector.clearFocus();
+        });
+    }
+
+    /**
+     * Builds time format selector menu
+     */
+    private void setTimeFormatMenu() {
+        MaterialAutoCompleteTextView timeSelector = findViewById(R.id.time_format_selector);
+        String timeFormat = preferences.getString(TIME_FORMAT, DBHelper.TimeFormats._12_HOUR);
+
+        timeSelector.setAdapter(createTimeFormatMenuAdapter());
+
+        switch (timeFormat) {
+            case DBHelper.TimeFormats._12_HOUR:
+                timeSelector.setText(timeSelector.getAdapter().getItem(0).toString(), false);
+                break;
+            case DBHelper.TimeFormats._24_HOUR:
+                timeSelector.setText(timeSelector.getAdapter().getItem(1).toString(), false);
+                break;
+        }
+
+        timeSelector.setOnItemClickListener((parent, view, position, id) -> {
+            switch (position) {
+                case 0:
+
+                    break;
+                case 1:
+            }
+
+            timeSelector.clearFocus();
+        });
+    }
+
+    /**
+     * Creates array adapter for themes selector
+     * @return ArrayAdapter of theme options
+     */
     private ArrayAdapter<String> createThemeMenuAdapter() {
         ArrayList<String> availableThemes = new ArrayList<>();
 
@@ -293,6 +351,36 @@ public class Settings extends AppCompatActivity {
 
         return new ArrayAdapter<>(
                 this, android.R.layout.simple_dropdown_item_1line, availableThemes
+        );
+    }
+
+    /**
+     * Creates ArrayAdapter for date format options
+     * @return ArrayAdapter of date format options
+     */
+    private ArrayAdapter<String> createDateFormatMenuAdapter() {
+        ArrayList<String> formats = new ArrayList<>();
+
+        formats.add(getString(R.string.date_format_mm_dd_yyyy));
+        formats.add(getString(R.string.date_format_dd_mm_yyyy));
+
+        return new ArrayAdapter<>(
+                this, android.R.layout.simple_dropdown_item_1line, formats
+        );
+    }
+
+    /**
+     * Creates ArrayAdapter for time format options
+     * @return ArrayAdapter of time format options
+     */
+    private ArrayAdapter<String> createTimeFormatMenuAdapter() {
+        ArrayList<String> formats = new ArrayList<>();
+
+        formats.add(getString(R.string.hour_12));
+        formats.add(getString(R.string.hour_24));
+
+        return new ArrayAdapter<>(
+                this, android.R.layout.simple_dropdown_item_1line, formats
         );
     }
 

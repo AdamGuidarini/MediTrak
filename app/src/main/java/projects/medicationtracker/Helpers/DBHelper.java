@@ -27,7 +27,7 @@ import projects.medicationtracker.SimpleClasses.Note;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Medications.db";
-    private final static int DATABASE_VERSION = 10;
+    private final static int DATABASE_VERSION = 11;
 
     public final static String ANDROID_METADATA = "android_metadata";
 
@@ -71,10 +71,23 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String LIGHT = "light";
     public static final String DARK = "dark";
     public static final String AGREED_TO_TERMS = "AgreedToTerms";
+    public static String DATE_FORMAT = "DateFormat";
+    public static String TIME_FORMAT = "TimeFormat";
+
     private static final String ACTIVITY_CHANGE_TABLE = "ActivityChanges";
     private static final String CHANGE_EVENT_ID = "ChangeId";
     private static final String CHANGE_DATE = "ChangeDate";
     private static final String PAUSED = "Paused";
+
+    public class TimeFormats {
+        public static final String _12_HOUR = "hh:mm aa";
+        public static final String _24_HOUR = "HH:mm";
+    }
+
+    public static class DateFormats {
+        public static final String MM_DD_YYYY = "MM/dd/yyyy";
+        public static final String DD_MM_YYYY = "dd/MM/yyyy";
+    }
 
     private NativeDbHelper nativeHelper;
 
@@ -1021,7 +1034,13 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public Bundle getPreferences() {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT " + THEME + "," + AGREED_TO_TERMS + "," + SEEN_NOTIFICATION_REQUEST + " FROM " + SETTINGS_TABLE;
+        String query = "SELECT "
+                + THEME + ","
+                + AGREED_TO_TERMS + ","
+                + SEEN_NOTIFICATION_REQUEST + ","
+                + DATE_FORMAT + ","
+                + TIME_FORMAT
+                + " FROM " + SETTINGS_TABLE;
         Bundle retVal = new Bundle();
 
         Cursor cursor = db.rawQuery(query, null);
@@ -1036,6 +1055,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 SEEN_NOTIFICATION_REQUEST,
                 Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(SEEN_NOTIFICATION_REQUEST))) == 1
         );
+        retVal.putString(DATE_FORMAT, cursor.getString(cursor.getColumnIndexOrThrow(DATE_FORMAT)));
+        retVal.putString(TIME_FORMAT, cursor.getString(cursor.getColumnIndexOrThrow(TIME_FORMAT)));
 
         cursor.close();
 
