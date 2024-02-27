@@ -8,12 +8,10 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Pair;
 
 import androidx.annotation.Nullable;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -1061,6 +1059,20 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return retVal;
+    }
+
+    /**
+     * Updates date/time formats
+     * @param dateFormat User's date format
+     * @param timeFormat User's time format
+     */
+    public void setDateTimeFormat(String dateFormat, String timeFormat) {
+        Pair<String, String>[] formats = new Pair[2];
+
+        formats[0] = new Pair<>(DATE_FORMAT, dateFormat);
+        formats[1] = new Pair<>(TIME_FORMAT, timeFormat);
+
+        nativeHelper.update(SETTINGS_TABLE, formats, null);
     }
 
     /**
