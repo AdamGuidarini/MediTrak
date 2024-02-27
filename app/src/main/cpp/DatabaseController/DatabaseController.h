@@ -78,6 +78,11 @@ private:
     const string CHANGE_DATE = "ChangeDate";
     const string PAUSED = "Paused";
 
+    /**
+     * Handles creation of database - Called when new instance is create & DB version == 0
+     */
+    void create();
+
 public:
     const string NOTES_TABLE = "Notes";
     const string SETTINGS_TABLE = "Settings";
@@ -93,11 +98,6 @@ public:
      * Class destructor
      */
     ~DatabaseController();
-
-    /**
-     * Handles creation of database
-     */
-    void create();
 
     /**
      * Upgrades database to a newer version

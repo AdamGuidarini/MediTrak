@@ -102,7 +102,6 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbCreate(JNIEnv *env, job
 
     try {
         DatabaseController dbController(db);
-        dbController.create();
     } catch (exception &e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
     }

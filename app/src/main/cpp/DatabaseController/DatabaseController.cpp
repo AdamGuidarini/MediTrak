@@ -13,9 +13,7 @@ DatabaseController::DatabaseController(string path) {
 
     if (currentVersion == 0) {
         create();
-    }
-
-    if (DB_VERSION > currentVersion) {
+    } else if (DB_VERSION > currentVersion) {
         upgrade(currentVersion);
     }
 }
@@ -82,8 +80,8 @@ void DatabaseController::create() {
     );
 
     manager.execSql(
-            "INSERT INTO " + SETTINGS_TABLE
-            + " WHERE NOT EXISTS(SELECT 1 FROM " + SETTINGS_TABLE + "rowid = 0);"
+            "INSERT INTO " + SETTINGS_TABLE + " (" + TIME_BEFORE_DOSE + ")"
+            + " VALUES (2);"
     );
 
     manager.execSql(
