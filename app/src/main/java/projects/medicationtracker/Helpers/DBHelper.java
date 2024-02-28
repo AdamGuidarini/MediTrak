@@ -601,61 +601,6 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Sets edited med, parent, grandparent, etc to match new form and creates a new child med.
-     * @param medication edited medication.
-     */
-    public long overrideChildMedications(Medication medication) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ArrayList<Medication> childMeds = new ArrayList<>();
-        long idToSeek = medication.getId();
-
-        db.beginTransaction();
-
-        long newMedId = addMedication(
-                medication.getName(),
-                medication.getPatientName(),
-                String.valueOf(medication.getDosage()),
-                medication.getDosageUnits(),
-                TimeFormatting.localDateTimeToString(medication.getStartDate()),
-                medication.getFrequency(),
-                medication.getAlias()
-        );
-
-        while (true) {
-            Medication parent = getMedication(idToSeek);
-
-            childMeds.add(parent);
-
-            if (parent.getParent() == null) {
-                break;
-            } else {
-                idToSeek = parent.getParent().getId();
-            }
-        }
-
-        ContentValues cv = new ContentValues();
-        ContentValues notesUpdate = new ContentValues();
-
-        cv.put(MED_ID, newMedId);
-        notesUpdate.put(MED_ID, newMedId);
-
-        // copy all data from old meds to new med
-        for (Medication med : childMeds) {
-            db.update(MEDICATION_TRACKER_TABLE, cv, MED_ID + "=?", new String[]{String.valueOf(med.getId())});
-            db.update(NOTES_TABLE, notesUpdate, MED_ID + "=?",  new String[]{String.valueOf(med.getId())});
-
-            deleteMedication(med);
-        }
-
-        cv.clear();
-
-        db.setTransactionSuccessful();
-        db.endTransaction();
-
-        return newMedId;
-    }
-
-    /**
      * Deletes Medication passed to it from database
      *
      * @param medication Medication to delete
