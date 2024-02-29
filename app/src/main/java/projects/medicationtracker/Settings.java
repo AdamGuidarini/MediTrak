@@ -55,10 +55,6 @@ public class Settings extends AppCompatActivity {
     private NativeDbHelper nativeDb;
     private Bundle preferences;
 
-    static {
-        System.loadLibrary("medicationtracker");
-    }
-
     /**
      * Create Settings
      *
@@ -285,6 +281,7 @@ public class Settings extends AppCompatActivity {
     private void setDateFormatMenu() {
         MaterialAutoCompleteTextView dateSelector = findViewById(R.id.date_format_selector);
         String dateFormat = preferences.getString(DATE_FORMAT, DBHelper.DateFormats.DD_MM_YYYY);
+        String timeFormat = preferences.getString(TIME_FORMAT, DBHelper.TimeFormats._12_HOUR);
 
         dateSelector.setAdapter(createDateFormatMenuAdapter());
 
@@ -300,8 +297,14 @@ public class Settings extends AppCompatActivity {
         dateSelector.setOnItemClickListener((parent, view, position, id) -> {
             switch (position) {
                 case 0:
+                    if (!dateFormat.equals(DBHelper.DateFormats.DD_MM_YYYY)) {
+                        db.setDateTimeFormat(DBHelper.DateFormats.DD_MM_YYYY, timeFormat);
+                    }
                     break;
                 case 1:
+                    if (!dateFormat.equals(DBHelper.DateFormats.MM_DD_YYYY)) {
+                        db.setDateTimeFormat(DBHelper.DateFormats.MM_DD_YYYY, timeFormat);
+                    }
             }
 
             dateSelector.clearFocus();
@@ -314,6 +317,7 @@ public class Settings extends AppCompatActivity {
     private void setTimeFormatMenu() {
         MaterialAutoCompleteTextView timeSelector = findViewById(R.id.time_format_selector);
         String timeFormat = preferences.getString(TIME_FORMAT, DBHelper.TimeFormats._12_HOUR);
+        String dateFormat = preferences.getString(DATE_FORMAT, DBHelper.DateFormats.DD_MM_YYYY);
 
         timeSelector.setAdapter(createTimeFormatMenuAdapter());
 
@@ -329,9 +333,14 @@ public class Settings extends AppCompatActivity {
         timeSelector.setOnItemClickListener((parent, view, position, id) -> {
             switch (position) {
                 case 0:
-
+                    if (!timeFormat.equals(DBHelper.TimeFormats._12_HOUR)) {
+                        db.setDateTimeFormat(dateFormat, DBHelper.TimeFormats._12_HOUR);
+                    }
                     break;
                 case 1:
+                    if (!timeFormat.equals(DBHelper.TimeFormats._24_HOUR)) {
+                        db.setDateTimeFormat(dateFormat, DBHelper.TimeFormats._24_HOUR);
+                    }
             }
 
             timeSelector.clearFocus();

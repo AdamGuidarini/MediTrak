@@ -1012,12 +1012,16 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param timeFormat User's time format
      */
     public void setDateTimeFormat(String dateFormat, String timeFormat) {
+        if (nativeHelper == null) {
+            nativeHelper = new NativeDbHelper(MainActivity.dbDir);
+        }
+
         Pair<String, String>[] formats = new Pair[2];
 
         formats[0] = new Pair<>(DATE_FORMAT, dateFormat);
         formats[1] = new Pair<>(TIME_FORMAT, timeFormat);
 
-        nativeHelper.update(SETTINGS_TABLE, formats, null);
+        nativeHelper.update(SETTINGS_TABLE, formats, new Pair[]{});
     }
 
     /**
