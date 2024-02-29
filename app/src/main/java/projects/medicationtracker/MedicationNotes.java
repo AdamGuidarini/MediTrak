@@ -1,5 +1,8 @@
 package projects.medicationtracker;
 
+import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +18,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Objects;
 
 import projects.medicationtracker.Dialogs.AddNoteDialog;
@@ -29,6 +34,7 @@ import projects.medicationtracker.Views.StandardCardView;
 public class MedicationNotes extends AppCompatActivity implements IDialogCloseListener {
     private final DBHelper db = new DBHelper(this);
     private LinearLayout notesLayout;
+    private Bundle preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +44,7 @@ public class MedicationNotes extends AppCompatActivity implements IDialogCloseLi
         getSupportActionBar().setTitle(getString(R.string.notes));
 
         notesLayout = findViewById(R.id.notesLayout);
+        preferences = db.getPreferences();
 
         setCards();
     }
@@ -142,16 +149,27 @@ public class MedicationNotes extends AppCompatActivity implements IDialogCloseLi
         TextViewUtils.setTextViewParams(noteText, note.getNote(), cardLayout);
 
         TextView noteDate = new TextView(context);
+
+        String date = DateTimeFormatter.ofPattern(
+                preferences.getString(DATE_FORMAT),
+                Locale.getDefault()
+        ).format(note.getNoteTime().toLocalDate());
+
         String noteDateLabel = getString(
                 R.string.note_timestamp,
-                TimeFormatting.localDateToString(note.getNoteTime().toLocalDate()),
+                date,
                 TimeFormatting.localTimeToString(note.getNoteTime().toLocalTime())
         );
 
         if (note.getModifiedTime() != null) {
+            String editDate = DateTimeFormatter.ofPattern(
+                    preferences.getString(DATE_FORMAT),
+                    Locale.getDefault()
+            ).format(note.getNoteTime().toLocalDate());
+
             String editedLabel = getString(
                 R.string.note_edit_timestamp,
-                TimeFormatting.localDateToString(note.getModifiedTime().toLocalDate()),
+                editDate,
                 TimeFormatting.localTimeToString(note.getModifiedTime().toLocalTime()
             ));
 

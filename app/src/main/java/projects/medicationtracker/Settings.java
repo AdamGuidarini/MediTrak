@@ -280,16 +280,16 @@ public class Settings extends AppCompatActivity {
      */
     private void setDateFormatMenu() {
         MaterialAutoCompleteTextView dateSelector = findViewById(R.id.date_format_selector);
-        String dateFormat = preferences.getString(DATE_FORMAT, DBHelper.DateFormats.DD_MM_YYYY);
+        String dateFormat = preferences.getString(DATE_FORMAT, DBHelper.DateFormats.MM_DD_YYYY);
         String timeFormat = preferences.getString(TIME_FORMAT, DBHelper.TimeFormats._12_HOUR);
 
         dateSelector.setAdapter(createDateFormatMenuAdapter());
 
         switch(dateFormat) {
-            case DBHelper.DateFormats.DD_MM_YYYY:
+            case DBHelper.DateFormats.MM_DD_YYYY:
                 dateSelector.setText(dateSelector.getAdapter().getItem(0).toString(), false);
                 break;
-            case DBHelper.DateFormats.MM_DD_YYYY:
+            case DBHelper.DateFormats.DD_MM_YYYY:
                 dateSelector.setText(dateSelector.getAdapter().getItem(1).toString(), false);
                 break;
         }
@@ -297,13 +297,13 @@ public class Settings extends AppCompatActivity {
         dateSelector.setOnItemClickListener((parent, view, position, id) -> {
             switch (position) {
                 case 0:
-                    if (!dateFormat.equals(DBHelper.DateFormats.DD_MM_YYYY)) {
-                        db.setDateTimeFormat(DBHelper.DateFormats.DD_MM_YYYY, timeFormat);
+                    if (!dateFormat.equals(DBHelper.DateFormats.MM_DD_YYYY)) {
+                        db.setDateTimeFormat(DBHelper.DateFormats.MM_DD_YYYY, timeFormat);
                     }
                     break;
                 case 1:
-                    if (!dateFormat.equals(DBHelper.DateFormats.MM_DD_YYYY)) {
-                        db.setDateTimeFormat(DBHelper.DateFormats.MM_DD_YYYY, timeFormat);
+                    if (!dateFormat.equals(DBHelper.DateFormats.DD_MM_YYYY)) {
+                        db.setDateTimeFormat(DBHelper.DateFormats.DD_MM_YYYY, timeFormat);
                     }
             }
 

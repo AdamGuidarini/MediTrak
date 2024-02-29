@@ -53,34 +53,6 @@ public class TimeFormatting {
         return time + ":00";
     }
 
-    public static String localDateToString(LocalDate localDate) {
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.getDefault());
-        return dateFormat.format(localDate);
-    }
-
-    /**
-     * Sets chosen current date and time to 2 TextViews and stores datetime for
-     * database in the tag of TextView that will display the date.
-     *
-     * @param date Current date
-     * @param time Current time
-     */
-    public static void getCurrentTimeAndDate(TextView date, TextView time) {
-        String dateForUser;
-        String dateTime;
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
-        SimpleDateFormat dateForDb = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-
-        Date myDate = new Date();
-        dateForUser = dateFormat.format(myDate);
-        dateTime = dateForDb.format(myDate);
-
-        date.setTag(dateTime);
-        date.setText(dateForUser);
-        time.setText(formatTimeForUser(LocalTime.now().getHour(), LocalTime.now().getMinute()));
-    }
-
     /**
      * Converts a String to LocalDateTime
      *

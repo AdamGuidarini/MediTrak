@@ -1,5 +1,8 @@
 package projects.medicationtracker;
 
+import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +36,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
@@ -90,6 +94,7 @@ public class AddMedication extends AppCompatActivity {
     private Button saveButton;
     private boolean createClone = false;
     private LocalDateTime[] startingTimes;
+    private Bundle preferences;
 
     /*
     * Validators
@@ -114,6 +119,8 @@ public class AddMedication extends AppCompatActivity {
         setContentView(R.layout.activity_add_medication);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.add_medication));
+
+        preferences = db.getPreferences();
 
         medId = getIntent().getLongExtra(MED_ID, -1);
 
@@ -695,7 +702,10 @@ public class AddMedication extends AppCompatActivity {
 
             numberOfTimersPerDay.setText(String.valueOf(medTimes.length));
             startDateMultiplePerDay.setText(
-                    TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
+                    DateTimeFormatter.ofPattern(
+                            preferences.getString(DATE_FORMAT),
+                            Locale.getDefault()
+                    ).format(medication.getStartDate().toLocalDate())
             );
             startDateMultiplePerDay.setTag(medication.getStartDate().toLocalDate());
 
@@ -791,7 +801,10 @@ public class AddMedication extends AppCompatActivity {
         if (medId != -1 && selectedFrequencyTypeIndex == 1) {
             dailyMedStartDate.setTag(medication.getStartDate().toLocalDate());
             dailyMedStartDate.setText(
-                    TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
+                    DateTimeFormatter.ofPattern(
+                            preferences.getString(DATE_FORMAT),
+                            Locale.getDefault()
+                    ).format(medication.getStartDate())
             );
 
             dailyMedTime.setTag(medication.getStartDate().toLocalTime());
@@ -941,7 +954,10 @@ public class AddMedication extends AppCompatActivity {
             int index = 0;
 
             customFreqStartDate.setText(
-                    TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
+                    DateTimeFormatter.ofPattern(
+                            preferences.getString(DATE_FORMAT),
+                            Locale.getDefault()
+                    ).format(medication.getStartDate().toLocalDate())
             );
             customFreqStartDate.setTag(medication.getStartDate().toLocalDate());
 
@@ -1026,7 +1042,10 @@ public class AddMedication extends AppCompatActivity {
 
         if (medId != -1) {
             asNeededStartInput.setText(
-                    TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
+                    DateTimeFormatter.ofPattern(
+                            preferences.getString(DATE_FORMAT),
+                            Locale.getDefault()
+                    ).format(medication.getStartDate().toLocalDate())
             );
             asNeededStartInput.setTag(medication.getStartDate().toLocalDate());
         }

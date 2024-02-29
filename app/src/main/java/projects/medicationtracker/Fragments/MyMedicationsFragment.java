@@ -1,6 +1,8 @@
 package projects.medicationtracker.Fragments;
 
 import static projects.medicationtracker.AddMedication.MINUTES_IN_DAY;
+import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import projects.medicationtracker.AddMedication;
@@ -73,6 +76,8 @@ public class MyMedicationsFragment extends Fragment {
         LocalTime[] times = db.getMedicationTimes(medication.getId());
         LocalDateTime[] dateTimes = new LocalDateTime[times.length];
         String dosageVal;
+        Bundle preferences = db.getPreferences();
+
 
         name = v.findViewById(R.id.myMedCardMedicationName);
         dosage = v.findViewById(R.id.myMedCardDosage);
@@ -104,9 +109,12 @@ public class MyMedicationsFragment extends Fragment {
             alias.setText(getString(R.string.alias_lbl, medication.getAlias()));
         }
 
-        String beginning = TimeFormatting.localDateToString(
-                medication.getParent() == null ? medication.getStartDate().toLocalDate() : medication.getParent().getStartDate().toLocalDate()
-        );
+        LocalDateTime start = medication.getParent() == null ? medication.getStartDate() : medication.getParent().getStartDate();
+
+        String beginning = DateTimeFormatter.ofPattern(
+                preferences.getString(DATE_FORMAT),
+                Locale.getDefault()
+        ).format(start);
 
         takenSince.setText(getString(R.string.taken_since, beginning));
 

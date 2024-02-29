@@ -1,5 +1,8 @@
 package projects.medicationtracker.Fragments;
 
+import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -20,6 +23,7 @@ import androidx.fragment.app.Fragment;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
@@ -53,6 +57,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     private static String dayOfWeek;
     private static LocalDate dayInCurrentWeek;
     private static int dayNumber;
+    private Bundle preferences;
 
     /**
      * Required empty constructor
@@ -161,8 +166,15 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         ArrayList<RelativeLayout> asNeededMeds = new ArrayList<>();
         db = new DBHelper(rootView.getContext());
 
+        preferences = db.getPreferences();
+
+        String date = DateTimeFormatter.ofPattern(
+                preferences.getString(DATE_FORMAT),
+                Locale.getDefault()
+        ).format(thisSunday.plusDays(dayNumber));
+
         String dayLabelString =
-                dayOfWeek + " " + TimeFormatting.localDateToString(thisSunday.plusDays(dayNumber));
+                dayOfWeek + " " + date;
         dayLabel.setText(dayLabelString);
 
         for (Medication medication : meds) {

@@ -1,5 +1,8 @@
 package projects.medicationtracker.Dialogs;
 
+import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -19,6 +22,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import kotlin.Triple;
 import projects.medicationtracker.Fragments.SelectDateFragment;
@@ -51,6 +56,8 @@ public class DoseInfoDialog extends DialogFragment {
         Medication med = ((Triple<Medication, Long, LocalDateTime>) textView.getTag()).getFirst();
         AlertDialog infoDialog;
 
+        Bundle preferences = db.getPreferences();
+
         builder.setView(inflater.inflate(R.layout.dialog_dose_info, null));
         builder.setTitle(R.string.this_dose);
 
@@ -78,7 +85,12 @@ public class DoseInfoDialog extends DialogFragment {
             timeTaken.setText(TimeFormatting.localTimeToString(doseDate.toLocalTime()));
             timeTaken.setTag(doseDate.toLocalTime());
 
-            dateTaken.setText(TimeFormatting.localDateToString(doseDate.toLocalDate()));
+            String date = DateTimeFormatter.ofPattern(
+                    preferences.getString(DATE_FORMAT),
+                    Locale.getDefault()
+            ).format(doseDate);
+
+            dateTaken.setText(date);
             dateTaken.setTag(doseDate.toLocalDate());
             TextWatcher tw = new TextWatcher() {
                 @Override
