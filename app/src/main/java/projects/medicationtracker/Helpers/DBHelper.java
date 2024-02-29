@@ -50,8 +50,6 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String MEDICATION_TIMES = "MedicationTimes";
     private static final String TIME_ID = "TimeID";
     private static final String DRUG_TIME = "DrugTime";
-
-    private static final String MEDICATION_STATS_TABLE = "MedicationStats";
     private static final String START_DATE = "StartDate";
 
     private static final String NOTES_TABLE = "Notes";
@@ -73,7 +71,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public static String TIME_FORMAT = "TimeFormat";
 
     private static final String ACTIVITY_CHANGE_TABLE = "ActivityChanges";
-    private static final String CHANGE_EVENT_ID = "ChangeId";
     private static final String CHANGE_DATE = "ChangeDate";
     private static final String PAUSED = "Paused";
 
