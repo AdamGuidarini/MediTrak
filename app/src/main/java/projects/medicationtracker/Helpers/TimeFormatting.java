@@ -1,34 +1,14 @@
 package projects.medicationtracker.Helpers;
 
-import android.icu.text.SimpleDateFormat;
-import android.widget.TextView;
-
 import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Locale;
 
 public class TimeFormatting {
-    /**
-     * Formats time for presentation to user
-     *
-     * @param hour   Hour to be displayed
-     * @param minute The minute to display
-     * @return A string containing the time to display to the user
-     */
-    public static String formatTimeForUser(int hour, int minute) {
-        String minString;
-        String amPm = hour >= 12 ? "PM" : "AM";
-
-        hour = hour > 12 ? hour - 12 : hour == 0 ? 12 : hour;
-        minString = minute < 10 ? "0" + minute : String.valueOf(minute);
-
-        return hour + ":" + minString + " " + amPm;
-    }
 
     /**
      * Formats time to store in database
@@ -51,34 +31,6 @@ public class TimeFormatting {
             time += ":" + minute;
 
         return time + ":00";
-    }
-
-    public static String localDateToString(LocalDate localDate) {
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.getDefault());
-        return dateFormat.format(localDate);
-    }
-
-    /**
-     * Sets chosen current date and time to 2 TextViews and stores datetime for
-     * database in the tag of TextView that will display the date.
-     *
-     * @param date Current date
-     * @param time Current time
-     */
-    public static void getCurrentTimeAndDate(TextView date, TextView time) {
-        String dateForUser;
-        String dateTime;
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
-        SimpleDateFormat dateForDb = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-
-        Date myDate = new Date();
-        dateForUser = dateFormat.format(myDate);
-        dateTime = dateForDb.format(myDate);
-
-        date.setTag(dateTime);
-        date.setText(dateForUser);
-        time.setText(formatTimeForUser(LocalTime.now().getHour(), LocalTime.now().getMinute()));
     }
 
     /**
@@ -107,18 +59,6 @@ public class TimeFormatting {
     public static String localDateTimeToString(LocalDateTime localDateTime) {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         return dateFormat.format(localDateTime);
-    }
-
-    /**
-     * Converts a LocalTime to a String in 12-hour format
-     *
-     * @param time Time to convert
-     * @return A String of the time passed to it in 12-hour format
-     */
-    public static String localTimeToString(LocalTime time) {
-        int hour = time.getHour();
-        int minute = time.getMinute();
-        return formatTimeForUser(hour, minute);
     }
 
     /**

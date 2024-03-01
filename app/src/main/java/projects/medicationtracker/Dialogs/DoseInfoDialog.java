@@ -1,5 +1,9 @@
 package projects.medicationtracker.Dialogs;
 
+import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+import static projects.medicationtracker.MainActivity.preferences;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -19,6 +23,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import kotlin.Triple;
 import projects.medicationtracker.Fragments.SelectDateFragment;
@@ -71,14 +77,23 @@ public class DoseInfoDialog extends DialogFragment {
 
         if (doseId != -1) {
             LocalDateTime doseDate = db.getTimeTaken(doseId);
+            String date = DateTimeFormatter.ofPattern(
+                    preferences.getString(DATE_FORMAT),
+                    Locale.getDefault()
+            ).format(doseDate);
+            String time = DateTimeFormatter.ofPattern(
+                    preferences.getString(TIME_FORMAT),
+                    Locale.getDefault()
+            ).format(doseDate);
+
 
             timeTaken.setShowSoftInputOnFocus(false);
             dateTaken.setShowSoftInputOnFocus(false);
 
-            timeTaken.setText(TimeFormatting.localTimeToString(doseDate.toLocalTime()));
+            timeTaken.setText(time);
             timeTaken.setTag(doseDate.toLocalTime());
 
-            dateTaken.setText(TimeFormatting.localDateToString(doseDate.toLocalDate()));
+            dateTaken.setText(date);
             dateTaken.setTag(doseDate.toLocalDate());
             TextWatcher tw = new TextWatcher() {
                 @Override
@@ -155,7 +170,7 @@ public class DoseInfoDialog extends DialogFragment {
 
         if (fragment instanceof IDialogCloseListener) {
             ((IDialogCloseListener) fragment).handleDialogClose(
-                    IDialogCloseListener.Action.DELETE, (Object) dose
+                    IDialogCloseListener.Action.DELETE, dose
             );
         }
     }

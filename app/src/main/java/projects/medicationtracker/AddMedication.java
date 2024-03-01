@@ -1,5 +1,9 @@
 package projects.medicationtracker;
 
+import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+import static projects.medicationtracker.MainActivity.preferences;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +37,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
@@ -412,8 +417,8 @@ public class AddMedication extends AppCompatActivity {
                 aliasInput.setText(medication.getAlias());
             }
 
-            if (medication.getDosage() == (int) medication.getDosage()) {
-                dosageAmountInput.setText(String.format(Locale.getDefault(), "%d", (int) medication.getDosage()));
+            if (medication.getDosage() == medication.getDosage()) {
+                dosageAmountInput.setText(String.format(Locale.getDefault(), "%d", medication.getDosage()));
             } else {
                 dosageAmountInput.setText(String.valueOf(medication.getDosage()));
             }
@@ -695,7 +700,10 @@ public class AddMedication extends AppCompatActivity {
 
             numberOfTimersPerDay.setText(String.valueOf(medTimes.length));
             startDateMultiplePerDay.setText(
-                    TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
+                    DateTimeFormatter.ofPattern(
+                            preferences.getString(DATE_FORMAT),
+                            Locale.getDefault()
+                    ).format(medication.getStartDate().toLocalDate())
             );
             startDateMultiplePerDay.setTag(medication.getStartDate().toLocalDate());
 
@@ -720,7 +728,12 @@ public class AddMedication extends AppCompatActivity {
                 TextInputLayout childLayout = (TextInputLayout) timesPerDayHolder.getChildAt(i);
                 EditText timeInput = childLayout.getEditText();
 
-                timeInput.setText(TimeFormatting.localTimeToString(time));
+                String formattedTime = DateTimeFormatter.ofPattern(
+                        preferences.getString(TIME_FORMAT),
+                        Locale.getDefault()
+                ).format(time);
+
+                timeInput.setText(formattedTime);
                 timeInput.setTag(time);
             }
         }
@@ -789,15 +802,20 @@ public class AddMedication extends AppCompatActivity {
         });
 
         if (medId != -1 && selectedFrequencyTypeIndex == 1) {
+            String startDate = DateTimeFormatter.ofPattern(
+                    preferences.getString(DATE_FORMAT),
+                    Locale.getDefault()
+            ).format(medication.getStartDate());
+            String startTime = DateTimeFormatter.ofPattern(
+                    preferences.getString(TIME_FORMAT),
+                    Locale.getDefault()
+            ).format(medication.getStartDate());
+
             dailyMedStartDate.setTag(medication.getStartDate().toLocalDate());
-            dailyMedStartDate.setText(
-                    TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
-            );
+            dailyMedStartDate.setText(startDate);
 
             dailyMedTime.setTag(medication.getStartDate().toLocalTime());
-            dailyMedTime.setText(
-                    TimeFormatting.localTimeToString(medication.getStartDate().toLocalTime())
-            );
+            dailyMedTime.setText(startTime);
         }
     }
 
@@ -939,15 +957,19 @@ public class AddMedication extends AppCompatActivity {
             long freq = medication.getFrequency();
             long displayedFreq = 0;
             int index = 0;
+            String startDate = DateTimeFormatter.ofPattern(
+                    preferences.getString(DATE_FORMAT),
+                    Locale.getDefault()
+            ).format(medication.getStartDate());
+            String startTime = DateTimeFormatter.ofPattern(
+                    preferences.getString(TIME_FORMAT),
+                    Locale.getDefault()
+            ).format(medication.getStartDate());
 
-            customFreqStartDate.setText(
-                    TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
-            );
+            customFreqStartDate.setText(startDate);
             customFreqStartDate.setTag(medication.getStartDate().toLocalDate());
 
-            customFreqMedTime.setText(
-                    TimeFormatting.localTimeToString(medication.getStartDate().toLocalTime())
-            );
+            customFreqMedTime.setText(startTime);
             customFreqMedTime.setTag(medication.getStartDate().toLocalTime());
 
             if (freq % (60 * 24 * 7) == 0) {
@@ -1026,7 +1048,10 @@ public class AddMedication extends AppCompatActivity {
 
         if (medId != -1) {
             asNeededStartInput.setText(
-                    TimeFormatting.localDateToString(medication.getStartDate().toLocalDate())
+                    DateTimeFormatter.ofPattern(
+                            preferences.getString(DATE_FORMAT),
+                            Locale.getDefault()
+                    ).format(medication.getStartDate().toLocalDate())
             );
             asNeededStartInput.setTag(medication.getStartDate().toLocalDate());
         }
@@ -1064,7 +1089,7 @@ public class AddMedication extends AppCompatActivity {
                     String.valueOf(medication.getDosage()),
                     medication.getDosageUnits(),
                     TimeFormatting.localDateTimeToString(medication.getStartDate()),
-                    (int) medication.getFrequency(),
+                    medication.getFrequency(),
                     medication.getAlias()
             );
 
@@ -1438,8 +1463,16 @@ public class AddMedication extends AppCompatActivity {
         if (child.getFrequency() != parent.getFrequency() || !Arrays.equals(child.getTimes(), startingTimes)) {
             createClone = true;
 
-            String oldFreq = parent.generateFrequencyLabel(this).toLowerCase();
-            String newFreq = child.generateFrequencyLabel(this).toLowerCase();
+            String oldFreq = parent.generateFrequencyLabel(
+                    this,
+                    preferences.getString(DATE_FORMAT),
+                    preferences.getString(TIME_FORMAT)
+            ).toLowerCase();
+            String newFreq = child.generateFrequencyLabel(
+                    this,
+                    preferences.getString(DATE_FORMAT),
+                    preferences.getString(TIME_FORMAT)
+            ).toLowerCase();
 
             note += getString(R.string.frequency_changed, oldFreq, newFreq);
         }

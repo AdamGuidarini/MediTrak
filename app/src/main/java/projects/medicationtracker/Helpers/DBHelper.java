@@ -8,12 +8,10 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Pair;
 
 import androidx.annotation.Nullable;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -27,7 +25,7 @@ import projects.medicationtracker.SimpleClasses.Note;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Medications.db";
-    private final static int DATABASE_VERSION = 10;
+    private final static int DATABASE_VERSION = 11;
 
     public final static String ANDROID_METADATA = "android_metadata";
 
@@ -52,8 +50,6 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String MEDICATION_TIMES = "MedicationTimes";
     private static final String TIME_ID = "TimeID";
     private static final String DRUG_TIME = "DrugTime";
-
-    private static final String MEDICATION_STATS_TABLE = "MedicationStats";
     private static final String START_DATE = "StartDate";
 
     private static final String NOTES_TABLE = "Notes";
@@ -71,10 +67,22 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String LIGHT = "light";
     public static final String DARK = "dark";
     public static final String AGREED_TO_TERMS = "AgreedToTerms";
+    public static String DATE_FORMAT = "DateFormat";
+    public static String TIME_FORMAT = "TimeFormat";
+
     private static final String ACTIVITY_CHANGE_TABLE = "ActivityChanges";
-    private static final String CHANGE_EVENT_ID = "ChangeId";
     private static final String CHANGE_DATE = "ChangeDate";
     private static final String PAUSED = "Paused";
+
+    public class TimeFormats {
+        public static final String _12_HOUR = "hh:mm a";
+        public static final String _24_HOUR = "HH:mm";
+    }
+
+    public static class DateFormats {
+        public static final String MM_DD_YYYY = "MM/dd/yyyy";
+        public static final String DD_MM_YYYY = "dd/MM/yyyy";
+    }
 
     private NativeDbHelper nativeHelper;
 
@@ -563,7 +571,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 String.valueOf(medication.getDosage()),
                 medication.getDosageUnits(),
                 TimeFormatting.localDateTimeToString(medication.getStartDate()),
-                (int) medication.getFrequency(),
+                medication.getFrequency(),
                 medication.getAlias()
         );
 
@@ -587,61 +595,6 @@ public class DBHelper extends SQLiteOpenHelper {
         db.update(MEDICATION_TABLE, updateParentCv, MED_ID + " = " + medication.getParent().getId(), null);
 
         return row;
-    }
-
-    /**
-     * Sets edited med, parent, grandparent, etc to match new form and creates a new child med.
-     * @param medication edited medication.
-     */
-    public long overrideChildMedications(Medication medication) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ArrayList<Medication> childMeds = new ArrayList<>();
-        long idToSeek = medication.getId();
-
-        db.beginTransaction();
-
-        long newMedId = addMedication(
-                medication.getName(),
-                medication.getPatientName(),
-                String.valueOf(medication.getDosage()),
-                medication.getDosageUnits(),
-                TimeFormatting.localDateTimeToString(medication.getStartDate()),
-                medication.getFrequency(),
-                medication.getAlias()
-        );
-
-        while (true) {
-            Medication parent = getMedication(idToSeek);
-
-            childMeds.add(parent);
-
-            if (parent.getParent() == null) {
-                break;
-            } else {
-                idToSeek = parent.getParent().getId();
-            }
-        }
-
-        ContentValues cv = new ContentValues();
-        ContentValues notesUpdate = new ContentValues();
-
-        cv.put(MED_ID, newMedId);
-        notesUpdate.put(MED_ID, newMedId);
-
-        // copy all data from old meds to new med
-        for (Medication med : childMeds) {
-            db.update(MEDICATION_TRACKER_TABLE, cv, MED_ID + "=?", new String[]{String.valueOf(med.getId())});
-            db.update(NOTES_TABLE, notesUpdate, MED_ID + "=?",  new String[]{String.valueOf(med.getId())});
-
-            deleteMedication(med);
-        }
-
-        cv.clear();
-
-        db.setTransactionSuccessful();
-        db.endTransaction();
-
-        return newMedId;
     }
 
     /**
@@ -1021,7 +974,13 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public Bundle getPreferences() {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT " + THEME + "," + AGREED_TO_TERMS + "," + SEEN_NOTIFICATION_REQUEST + " FROM " + SETTINGS_TABLE;
+        String query = "SELECT "
+                + THEME + ","
+                + AGREED_TO_TERMS + ","
+                + SEEN_NOTIFICATION_REQUEST + ","
+                + DATE_FORMAT + ","
+                + TIME_FORMAT
+                + " FROM " + SETTINGS_TABLE;
         Bundle retVal = new Bundle();
 
         Cursor cursor = db.rawQuery(query, null);
@@ -1036,10 +995,30 @@ public class DBHelper extends SQLiteOpenHelper {
                 SEEN_NOTIFICATION_REQUEST,
                 Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(SEEN_NOTIFICATION_REQUEST))) == 1
         );
+        retVal.putString(DATE_FORMAT, cursor.getString(cursor.getColumnIndexOrThrow(DATE_FORMAT)));
+        retVal.putString(TIME_FORMAT, cursor.getString(cursor.getColumnIndexOrThrow(TIME_FORMAT)));
 
         cursor.close();
 
         return retVal;
+    }
+
+    /**
+     * Updates date/time formats
+     * @param dateFormat User's date format
+     * @param timeFormat User's time format
+     */
+    public void setDateTimeFormat(String dateFormat, String timeFormat) {
+        if (nativeHelper == null) {
+            nativeHelper = new NativeDbHelper(MainActivity.dbDir);
+        }
+
+        Pair<String, String>[] formats = new Pair[2];
+
+        formats[0] = new Pair<>(DATE_FORMAT, dateFormat);
+        formats[1] = new Pair<>(TIME_FORMAT, timeFormat);
+
+        nativeHelper.update(SETTINGS_TABLE, formats, new Pair[]{});
     }
 
     /**

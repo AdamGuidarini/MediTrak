@@ -1,7 +1,9 @@
 package projects.medicationtracker.Fragments;
 
-import android.graphics.Color;
-import android.graphics.Typeface;
+import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+import static projects.medicationtracker.MainActivity.preferences;
+
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -20,9 +22,9 @@ import androidx.fragment.app.Fragment;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import kotlin.Triple;
@@ -161,8 +163,13 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         ArrayList<RelativeLayout> asNeededMeds = new ArrayList<>();
         db = new DBHelper(rootView.getContext());
 
+        String date = DateTimeFormatter.ofPattern(
+                preferences.getString(DATE_FORMAT),
+                Locale.getDefault()
+        ).format(thisSunday.plusDays(dayNumber));
+
         String dayLabelString =
-                dayOfWeek + " " + TimeFormatting.localDateToString(thisSunday.plusDays(dayNumber));
+                dayOfWeek + " " + date;
         dayLabel.setText(dayLabelString);
 
         for (Medication medication : meds) {
@@ -229,7 +236,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         // Set Checkbox label
         String medName = medication.getName();
         String dosage;
-        if (medication.getDosage() == (int) medication.getDosage()) {
+        if (medication.getDosage() == medication.getDosage()) {
             dosage = String.format(Locale.getDefault(), "%d", medication.getDosage());
         } else {
             dosage = String.valueOf(medication.getDosage());
@@ -237,7 +244,10 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
 
         dosage += " " + medication.getDosageUnits();
 
-        String dosageTime = TimeFormatting.formatTimeForUser(time.getHour(), time.getMinute());
+        String dosageTime = DateTimeFormatter.ofPattern(
+                preferences.getString(TIME_FORMAT),
+                Locale.getDefault()
+        ).format(time.toLocalTime());
 
         String thisMedicationLabel = medName + " - " + dosage + " - " + dosageTime;
 

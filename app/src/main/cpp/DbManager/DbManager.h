@@ -114,6 +114,11 @@ public:
      */
     void update(string table,  map<string, string> values, map<string, string> where);
 
+    /**
+     * Delete row in table
+     * @param table Table in which to delete a record
+     * @param where Where args
+     */
     void deleteRecord(string table, map<string, string> where);
 
     /**
