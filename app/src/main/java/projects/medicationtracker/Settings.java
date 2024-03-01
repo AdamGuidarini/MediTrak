@@ -7,6 +7,7 @@ import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.SETTINGS_TABLE;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+import static projects.medicationtracker.MainActivity.preferences;
 
 import android.Manifest;
 import android.content.Intent;
@@ -53,7 +54,6 @@ public class Settings extends AppCompatActivity {
             isGranted -> {}
     );
     private NativeDbHelper nativeDb;
-    private Bundle preferences;
 
     /**
      * Create Settings
@@ -83,8 +83,6 @@ public class Settings extends AppCompatActivity {
             enableNotificationsButton.setVisibility(View.GONE);
             notificationToggle.setVisibility(View.VISIBLE);
         }
-
-        preferences = db.getPreferences();
 
         setTimeBeforeDoseRestrictionSwitch();
         setEnableNotificationSwitch();

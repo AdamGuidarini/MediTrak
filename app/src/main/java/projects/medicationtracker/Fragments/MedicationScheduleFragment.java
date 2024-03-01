@@ -1,10 +1,8 @@
 package projects.medicationtracker.Fragments;
 
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
-import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+import static projects.medicationtracker.MainActivity.preferences;
 
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -26,7 +24,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import kotlin.Triple;
@@ -57,7 +54,6 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     private static String dayOfWeek;
     private static LocalDate dayInCurrentWeek;
     private static int dayNumber;
-    private Bundle preferences;
 
     /**
      * Required empty constructor
@@ -165,8 +161,6 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         ArrayList<RelativeLayout> scheduledMeds = new ArrayList<>();
         ArrayList<RelativeLayout> asNeededMeds = new ArrayList<>();
         db = new DBHelper(rootView.getContext());
-
-        preferences = db.getPreferences();
 
         String date = DateTimeFormatter.ofPattern(
                 preferences.getString(DATE_FORMAT),

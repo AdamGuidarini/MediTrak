@@ -2,6 +2,7 @@ package projects.medicationtracker;
 
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+import static projects.medicationtracker.MainActivity.preferences;
 
 import android.content.Context;
 import android.content.Intent;
@@ -34,7 +35,6 @@ import projects.medicationtracker.Views.StandardCardView;
 public class MedicationNotes extends AppCompatActivity implements IDialogCloseListener {
     private final DBHelper db = new DBHelper(this);
     private LinearLayout notesLayout;
-    private Bundle preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,6 @@ public class MedicationNotes extends AppCompatActivity implements IDialogCloseLi
         getSupportActionBar().setTitle(getString(R.string.notes));
 
         notesLayout = findViewById(R.id.notesLayout);
-        preferences = db.getPreferences();
 
         setCards();
     }

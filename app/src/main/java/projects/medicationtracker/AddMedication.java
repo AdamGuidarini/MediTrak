@@ -2,6 +2,7 @@ package projects.medicationtracker;
 
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+import static projects.medicationtracker.MainActivity.preferences;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -94,7 +95,6 @@ public class AddMedication extends AppCompatActivity {
     private Button saveButton;
     private boolean createClone = false;
     private LocalDateTime[] startingTimes;
-    private Bundle preferences;
 
     /*
     * Validators
@@ -119,8 +119,6 @@ public class AddMedication extends AppCompatActivity {
         setContentView(R.layout.activity_add_medication);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.add_medication));
-
-        preferences = db.getPreferences();
 
         medId = getIntent().getLongExtra(MED_ID, -1);
 

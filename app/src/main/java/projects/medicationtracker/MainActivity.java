@@ -51,6 +51,7 @@ import projects.medicationtracker.Views.StandardCardView;
 
 public class MainActivity extends AppCompatActivity {
     public static String dbDir;
+    public static Bundle preferences;
     private final DBHelper db = new DBHelper(this);
     private NativeDbHelper nativeDb;
     private LinearLayout scheduleLayout;
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         nativeDb = new NativeDbHelper(dbDir);
 
-        Bundle preferences = db.getPreferences();
+        preferences = db.getPreferences();
 
         String theme = preferences.getString(THEME);
 

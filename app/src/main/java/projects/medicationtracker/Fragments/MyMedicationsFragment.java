@@ -3,6 +3,7 @@ package projects.medicationtracker.Fragments;
 import static projects.medicationtracker.AddMedication.MINUTES_IN_DAY;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+import static projects.medicationtracker.MainActivity.preferences;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -76,8 +77,6 @@ public class MyMedicationsFragment extends Fragment {
         LocalTime[] times = db.getMedicationTimes(medication.getId());
         LocalDateTime[] dateTimes = new LocalDateTime[times.length];
         String dosageVal;
-        Bundle preferences = db.getPreferences();
-
 
         name = v.findViewById(R.id.myMedCardMedicationName);
         dosage = v.findViewById(R.id.myMedCardDosage);

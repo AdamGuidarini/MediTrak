@@ -2,6 +2,7 @@ package projects.medicationtracker.Dialogs;
 
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+import static projects.medicationtracker.MainActivity.preferences;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -55,8 +56,6 @@ public class DoseInfoDialog extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         Medication med = ((Triple<Medication, Long, LocalDateTime>) textView.getTag()).getFirst();
         AlertDialog infoDialog;
-
-        Bundle preferences = db.getPreferences();
 
         builder.setView(inflater.inflate(R.layout.dialog_dose_info, null));
         builder.setTitle(R.string.this_dose);
