@@ -1,5 +1,9 @@
 package projects.medicationtracker.Fragments;
 
+import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+import static projects.medicationtracker.MainActivity.preferences;
+
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.icu.util.Calendar;
@@ -11,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class SelectDateFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
     private final TextView tv;
@@ -64,7 +70,10 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
 
         tv.clearFocus();
 
-        String date = month + "/" + day + "/" + year;
+        String date = DateTimeFormatter.ofPattern(
+                preferences.getString(DATE_FORMAT),
+                Locale.getDefault()
+        ).format(localDate);
         tv.setTag(localDate);
         tv.setText(date);
     }

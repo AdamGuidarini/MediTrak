@@ -1,6 +1,8 @@
 package projects.medicationtracker.Fragments;
 
-import static projects.medicationtracker.AddMedication.MINUTES_IN_DAY;
+import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+import static projects.medicationtracker.MainActivity.preferences;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,9 +14,9 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import projects.medicationtracker.AddMedication;
@@ -88,8 +90,8 @@ public class MyMedicationsFragment extends Fragment {
 
         medication.setTimes(dateTimes);
 
-        if (medication.getDosage() == (int) medication.getDosage()) {
-            dosageVal = String.format(Locale.getDefault(), "%d", (int) medication.getDosage());
+        if (medication.getDosage() == medication.getDosage()) {
+            dosageVal = String.format(Locale.getDefault(), "%d", medication.getDosage());
         } else {
             dosageVal = String.valueOf(medication.getDosage());
         }
@@ -97,16 +99,25 @@ public class MyMedicationsFragment extends Fragment {
         name.setText(getString(R.string.med_name, medication.getName()));
         dosage.setText(getString(R.string.dosage, dosageVal, medication.getDosageUnits()));
 
-        frequency.setText(medication.generateFrequencyLabel(getContext()));
+        String label = medication.generateFrequencyLabel(
+                getContext(),
+                preferences.getString(DATE_FORMAT),
+                preferences.getString(TIME_FORMAT)
+        );
+
+        frequency.setText(label);
 
         if (!medication.getAlias().equals("")) {
             alias.setVisibility(View.VISIBLE);
             alias.setText(getString(R.string.alias_lbl, medication.getAlias()));
         }
 
-        String beginning = TimeFormatting.localDateToString(
-                medication.getParent() == null ? medication.getStartDate().toLocalDate() : medication.getParent().getStartDate().toLocalDate()
-        );
+        LocalDateTime start = medication.getParent() == null ? medication.getStartDate() : medication.getParent().getStartDate();
+
+        String beginning = DateTimeFormatter.ofPattern(
+                preferences.getString(DATE_FORMAT),
+                Locale.getDefault()
+        ).format(start);
 
         takenSince.setText(getString(R.string.taken_since, beginning));
 

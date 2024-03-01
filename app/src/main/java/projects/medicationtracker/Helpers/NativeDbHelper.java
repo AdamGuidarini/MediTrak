@@ -59,6 +59,14 @@ public class NativeDbHelper {
         delete(dbPath, table, where);
     }
 
+    public void updateTimeFormat(String format) {
+
+    }
+
+    public void updateDateFormat(String format) {
+        
+    }
+
     /**
      * Exports a database
      * @param exportPath Path where exported file will be created

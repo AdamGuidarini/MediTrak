@@ -1,6 +1,7 @@
 package projects.medicationtracker.Fragments;
 
-import static projects.medicationtracker.Helpers.TimeFormatting.formatTimeForUser;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+import static projects.medicationtracker.MainActivity.preferences;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -14,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
     private final TextView tv;
@@ -54,12 +57,16 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
      */
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         String chosenTime;
+        LocalTime time = LocalTime.of(hourOfDay, minute);
 
-        chosenTime = formatTimeForUser(hourOfDay, minute);
+        chosenTime = DateTimeFormatter.ofPattern(
+                preferences.getString(TIME_FORMAT),
+                Locale.getDefault()
+        ).format(time);
 
         tv.clearFocus();
 
-        tv.setTag(LocalTime.of(hourOfDay, minute));
+        tv.setTag(time);
         tv.setText(chosenTime);
     }
 }
