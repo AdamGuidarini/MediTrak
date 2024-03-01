@@ -75,7 +75,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String PAUSED = "Paused";
 
     public class TimeFormats {
-        public static final String _12_HOUR = "hh:mm aa";
+        public static final String _12_HOUR = "hh:mm a";
         public static final String _24_HOUR = "HH:mm";
     }
 

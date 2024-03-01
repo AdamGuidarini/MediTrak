@@ -12,7 +12,7 @@
 using namespace std;
 
 namespace TimeFormats {
-    const string _12_HOUR = "hh:mm aa";
+    const string _12_HOUR = "hh:mm a";
     const string _24_HOUR = "HH:mm";
 };
 

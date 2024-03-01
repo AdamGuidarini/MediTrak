@@ -247,7 +247,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         String dosageTime = DateTimeFormatter.ofPattern(
                 preferences.getString(TIME_FORMAT),
                 Locale.getDefault()
-        ).format(time);
+        ).format(time.toLocalTime());
 
         String thisMedicationLabel = medName + " - " + dosage + " - " + dosageTime;
 
