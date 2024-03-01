@@ -1,6 +1,7 @@
 package projects.medicationtracker.Fragments;
 
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
 
 import android.content.Intent;
@@ -20,6 +21,7 @@ import java.util.Locale;
 
 import projects.medicationtracker.AddMedication;
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.MedicationNotes;
 import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Medication;
@@ -97,7 +99,13 @@ public class MyMedicationsFragment extends Fragment {
         name.setText(getString(R.string.med_name, medication.getName()));
         dosage.setText(getString(R.string.dosage, dosageVal, medication.getDosageUnits()));
 
-        frequency.setText(medication.generateFrequencyLabel(getContext()));
+        String label = medication.generateFrequencyLabel(
+                getContext(),
+                preferences.getString(DATE_FORMAT),
+                preferences.getString(TIME_FORMAT)
+        );
+
+        frequency.setText(label);
 
         if (!medication.getAlias().equals("")) {
             alias.setVisibility(View.VISIBLE);

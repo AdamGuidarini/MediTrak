@@ -1,6 +1,7 @@
 package projects.medicationtracker;
 
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
 
 import android.content.Context;
@@ -152,11 +153,15 @@ public class MedicationNotes extends AppCompatActivity implements IDialogCloseLi
                 preferences.getString(DATE_FORMAT),
                 Locale.getDefault()
         ).format(note.getNoteTime().toLocalDate());
+        String time = DateTimeFormatter.ofPattern(
+                preferences.getString(TIME_FORMAT),
+                Locale.getDefault()
+        ).format(note.getNoteTime());
 
         String noteDateLabel = getString(
                 R.string.note_timestamp,
                 date,
-                TimeFormatting.localTimeToString(note.getNoteTime().toLocalTime())
+                time
         );
 
         if (note.getModifiedTime() != null) {
@@ -164,12 +169,16 @@ public class MedicationNotes extends AppCompatActivity implements IDialogCloseLi
                     preferences.getString(DATE_FORMAT),
                     Locale.getDefault()
             ).format(note.getNoteTime().toLocalDate());
+            String editTime = DateTimeFormatter.ofPattern(
+                    preferences.getString(TIME_FORMAT),
+                    Locale.getDefault()
+            ).format(note.getModifiedTime());
 
             String editedLabel = getString(
                 R.string.note_edit_timestamp,
                 editDate,
-                TimeFormatting.localTimeToString(note.getModifiedTime().toLocalTime()
-            ));
+                editTime
+            );
 
             noteDateLabel += "\n" + editedLabel;
         }

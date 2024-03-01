@@ -1,6 +1,9 @@
 package projects.medicationtracker.SimpleClasses;
 
 import static projects.medicationtracker.AddMedication.MINUTES_IN_DAY;
+import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+import static projects.medicationtracker.MainActivity.preferences;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -10,6 +13,8 @@ import androidx.annotation.NonNull;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.R;
@@ -320,18 +325,25 @@ public class Medication implements Cloneable, Parcelable {
      * Creates a string formatted for frequency
      * @param applicationContext Context for translations
      */
-    public String generateFrequencyLabel(Context applicationContext) {
+    public String generateFrequencyLabel(Context applicationContext, String dateFormat, String timeFormat) {
         StringBuilder freqLabel;
 
         if (getFrequency() == MINUTES_IN_DAY && (getTimes().length == 1)) {
-            String time = TimeFormatting.localTimeToString(getTimes()[0].toLocalTime());
+            String time = DateTimeFormatter.ofPattern(
+                    timeFormat,
+                    Locale.getDefault()
+            ).format(this.getTimes()[0]);
+
             freqLabel = new StringBuilder(applicationContext.getString(R.string.taken_daily_at) + " " + time);
         } else if (getFrequency() == MINUTES_IN_DAY && (getTimes().length > 1)) {
             freqLabel = new StringBuilder(applicationContext.getString(R.string.taken_daily_at));
 
             for (int i = 0; i < this.getTimes().length; i++) {
-                LocalTime time = getTimes()[i].toLocalTime();
-                freqLabel.append(TimeFormatting.localTimeToString(time));
+                String time = DateTimeFormatter.ofPattern(
+                        timeFormat,
+                        Locale.getDefault()
+                ).format(this.getTimes()[i]);
+                freqLabel.append(time);
 
                 if (i != (getTimes().length - 1))
                     freqLabel.append(", ");

@@ -9,22 +9,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class TimeFormatting {
-    /**
-     * Formats time for presentation to user
-     *
-     * @param hour   Hour to be displayed
-     * @param minute The minute to display
-     * @return A string containing the time to display to the user
-     */
-    public static String formatTimeForUser(int hour, int minute) {
-        String minString;
-        String amPm = hour >= 12 ? "PM" : "AM";
-
-        hour = hour > 12 ? hour - 12 : hour == 0 ? 12 : hour;
-        minString = minute < 10 ? "0" + minute : String.valueOf(minute);
-
-        return hour + ":" + minString + " " + amPm;
-    }
 
     /**
      * Formats time to store in database
@@ -75,18 +59,6 @@ public class TimeFormatting {
     public static String localDateTimeToString(LocalDateTime localDateTime) {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         return dateFormat.format(localDateTime);
-    }
-
-    /**
-     * Converts a LocalTime to a String in 12-hour format
-     *
-     * @param time Time to convert
-     * @return A String of the time passed to it in 12-hour format
-     */
-    public static String localTimeToString(LocalTime time) {
-        int hour = time.getHour();
-        int minute = time.getMinute();
-        return formatTimeForUser(hour, minute);
     }
 
     /**

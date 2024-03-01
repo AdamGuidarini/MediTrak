@@ -1,6 +1,7 @@
 package projects.medicationtracker.Fragments;
 
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
 
 import android.os.Build;
@@ -243,7 +244,10 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
 
         dosage += " " + medication.getDosageUnits();
 
-        String dosageTime = TimeFormatting.formatTimeForUser(time.getHour(), time.getMinute());
+        String dosageTime = DateTimeFormatter.ofPattern(
+                preferences.getString(TIME_FORMAT),
+                Locale.getDefault()
+        ).format(time);
 
         String thisMedicationLabel = medName + " - " + dosage + " - " + dosageTime;
 
