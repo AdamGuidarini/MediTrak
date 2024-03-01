@@ -1,15 +1,11 @@
 package projects.medicationtracker.Helpers;
 
-import android.icu.text.SimpleDateFormat;
-import android.widget.TextView;
-
 import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Locale;
 
 public class TimeFormatting {

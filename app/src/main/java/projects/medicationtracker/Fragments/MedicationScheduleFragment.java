@@ -235,7 +235,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         // Set Checkbox label
         String medName = medication.getName();
         String dosage;
-        if (medication.getDosage() == (int) medication.getDosage()) {
+        if (medication.getDosage() == medication.getDosage()) {
             dosage = String.format(Locale.getDefault(), "%d", medication.getDosage());
         } else {
             dosage = String.valueOf(medication.getDosage());

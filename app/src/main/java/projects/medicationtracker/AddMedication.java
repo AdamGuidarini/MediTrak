@@ -1,7 +1,6 @@
 package projects.medicationtracker;
 
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
-import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
 
 import android.annotation.SuppressLint;
@@ -417,8 +416,8 @@ public class AddMedication extends AppCompatActivity {
                 aliasInput.setText(medication.getAlias());
             }
 
-            if (medication.getDosage() == (int) medication.getDosage()) {
-                dosageAmountInput.setText(String.format(Locale.getDefault(), "%d", (int) medication.getDosage()));
+            if (medication.getDosage() == medication.getDosage()) {
+                dosageAmountInput.setText(String.format(Locale.getDefault(), "%d", medication.getDosage()));
             } else {
                 dosageAmountInput.setText(String.valueOf(medication.getDosage()));
             }
@@ -1081,7 +1080,7 @@ public class AddMedication extends AppCompatActivity {
                     String.valueOf(medication.getDosage()),
                     medication.getDosageUnits(),
                     TimeFormatting.localDateTimeToString(medication.getStartDate()),
-                    (int) medication.getFrequency(),
+                    medication.getFrequency(),
                     medication.getAlias()
             );
 

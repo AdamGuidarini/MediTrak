@@ -1,7 +1,6 @@
 package projects.medicationtracker.Dialogs;
 
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
-import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
 
 import android.app.AlertDialog;
@@ -166,7 +165,7 @@ public class DoseInfoDialog extends DialogFragment {
 
         if (fragment instanceof IDialogCloseListener) {
             ((IDialogCloseListener) fragment).handleDialogClose(
-                    IDialogCloseListener.Action.DELETE, (Object) dose
+                    IDialogCloseListener.Action.DELETE, dose
             );
         }
     }

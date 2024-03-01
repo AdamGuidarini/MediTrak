@@ -18,5 +18,5 @@ public interface IDialogCloseListener {
      * @param action Action performed in dialog
      * @param data Object returned by dialog
      */
-    public void handleDialogClose(Action action, Object data);
+    void handleDialogClose(Action action, Object data);
 }

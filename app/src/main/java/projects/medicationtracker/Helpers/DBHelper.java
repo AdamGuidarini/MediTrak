@@ -571,7 +571,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 String.valueOf(medication.getDosage()),
                 medication.getDosageUnits(),
                 TimeFormatting.localDateTimeToString(medication.getStartDate()),
-                (int) medication.getFrequency(),
+                medication.getFrequency(),
                 medication.getAlias()
         );
 

@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Locale;
 
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.R;
