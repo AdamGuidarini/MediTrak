@@ -75,6 +75,8 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(
     std::vector<std::string> ignoredTbls;
     int len = env->GetArrayLength(ignored_tables);
 
+
+
     for (int i = 0; i < len; i++) {
         auto str = (jstring) (env->GetObjectArrayElement(ignored_tables, i));
         string rawString = env->GetStringUTFChars(str, JNI_FALSE);

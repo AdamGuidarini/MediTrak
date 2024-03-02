@@ -1,7 +1,10 @@
 package projects.medicationtracker.Dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Editable;
@@ -12,6 +15,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
@@ -31,9 +37,7 @@ import projects.medicationtracker.R;
 public class BackupDestinationPicker extends DialogFragment {
     private String exportDir;
     private String exportFile;
-    private MaterialAutoCompleteTextView dirSelector;
     private TextInputLayout fileNameInputLayout;
-    private TextInputEditText fileName;
     private NativeDbHelper nativeDb;
 
     @Override
@@ -62,6 +66,10 @@ public class BackupDestinationPicker extends DialogFragment {
         dialog = builder.create();
         dialog.show();
 
+        MaterialAutoCompleteTextView dirSelector = dialog.findViewById(R.id.export_dir);
+        fileNameInputLayout = dialog.findViewById(R.id.export_file_layout);
+        TextInputEditText fileName = dialog.findViewById(R.id.export_file);
+
         dirs.add(getString(R.string.downloads));
         dirs.add(getString(R.string.documents));
 
@@ -72,24 +80,10 @@ public class BackupDestinationPicker extends DialogFragment {
 
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, dirs);
 
-        dirSelector = dialog.findViewById(R.id.export_dir);
-        fileNameInputLayout = dialog.findViewById(R.id.export_file_layout);
-        fileName = dialog.findViewById(R.id.export_file);
-
         dirSelector.setAdapter(adapter);
-        dirSelector.setText(adapter.getItem(0));
+        dirSelector.setText(dirSelector.getAdapter().getItem(0).toString(), false);
 
-        exportDir = directories[0];
-
-        dirSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                exportDir = directories[position];
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
+        dirSelector.setOnItemClickListener((parent, view, position, id) -> exportDir = directories[position]);
 
         exportFile = "meditrak_"
                 + now.getYear() + "_"
@@ -99,11 +93,8 @@ public class BackupDestinationPicker extends DialogFragment {
         fileName.setText(exportFile);
 
         fileName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -132,40 +123,6 @@ public class BackupDestinationPicker extends DialogFragment {
         });
 
         return dialog;
-    }
-
-    @Override
-    public void onStart() {
-        final String[] directories;
-        ArrayAdapter<String> adapter;
-        ArrayList<String> dirs = new ArrayList<>();
-
-        super.onStart();
-
-        dirs.add(getString(R.string.downloads));
-        dirs.add(getString(R.string.documents));
-
-        directories = new String[] {
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(),
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getPath()
-        };
-
-        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, dirs);
-
-        dirSelector = getDialog().findViewById(R.id.export_dir);
-        fileName = getDialog().findViewById(R.id.export_file);
-
-        dirSelector.setAdapter(adapter);
-
-        dirSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                exportDir = directories[position];
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
     }
 
     private void onExportClick() {

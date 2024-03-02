@@ -210,6 +210,7 @@
     <string name="time_format">Zeitformat</string>
     <string name="hour_12">12 Stunden</string>
     <string name="hour_24">24 Stunden</string>
+    <string name="language">Sprache</string>
 
     <!-- Dose Info dialog -->
     <string name="not_taken_yet">Noch nicht eingenommen</string>

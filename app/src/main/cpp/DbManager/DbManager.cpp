@@ -345,16 +345,24 @@ void DbManager::exportData(const string& exportFilePath, const vector<string>& i
     map<string, vector<map<string, string>>> data = getAllRowFromAllTables(ignoreTables);
     string outData;
 
+    outFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
     try {
         outFile.open(exportFilePath, fstream::trunc);
+    } catch (system_error& error) {
+        const string errMessage = "File failed to open at '"
+                                  + exportFilePath +
+                                  "' with error '"
+                                  + error.code().message()
+                                  + "'";
 
-        if (!outFile.is_open()) {
-            throw runtime_error("Could not open file: " + exportFilePath);
+        cerr << errMessage << endl;
+
+        if (outFile.is_open()) {
+            outFile.close();
         }
-    } catch (exception& e) {
-        cerr << e.what() << endl;
 
-        throw runtime_error("Could not open file: " + exportFilePath);
+        throw runtime_error(errMessage);
     }
 
     outFile << "{";
@@ -401,6 +409,9 @@ void DbManager::importData(const std::string &importFilePath, const vector<strin
     stringstream importQuery;
     char* err;
 
+    fin.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+
     try {
         if (importFilePath.substr(importFilePath.find_last_of('.') + 1) != "json") {
             throw runtime_error("Provided file is not a JSON file");
@@ -408,11 +419,21 @@ void DbManager::importData(const std::string &importFilePath, const vector<strin
 
         fin.open(importFilePath, ios::in);
 
-        if (!fin.is_open()) { throw runtime_error("Import file failed to open"); }
-
         inData = string(istreambuf_iterator<char>{fin}, {});
 
         fin.close();
+    }  catch (system_error& error) {
+        const string errMessage = "File failed to open at '" + importFilePath
+                                  + "' with error '" + error.code().message() + "'"
+                                  + " error number: " + to_string(errno);
+
+        cerr << errMessage << endl;
+
+        if (fin.is_open()) {
+            fin.close();
+        }
+
+        throw runtime_error(errMessage);
     } catch (runtime_error& error) {
         cerr << error.what() << ": " << importFilePath << endl;
 

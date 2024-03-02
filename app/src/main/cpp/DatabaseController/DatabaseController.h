@@ -14,12 +14,12 @@ using namespace std;
 namespace TimeFormats {
     const string _12_HOUR = "hh:mm a";
     const string _24_HOUR = "HH:mm";
-};
+}
 
 namespace DateFormats {
     const string MM_DD_YYYY = "MM/dd/yyyy";
     const string DD_MM_YYYY = "dd/MM/yyyy";
-};
+}
 
 class DatabaseController {
 private:
