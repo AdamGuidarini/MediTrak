@@ -10,7 +10,7 @@ android {
         compileSdk 33
         versionCode 15
         versionName "0.11.4"
-        
+        resConfigs('en', 'de')
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
         }
