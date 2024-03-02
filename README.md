@@ -10,6 +10,11 @@ MediTrak is an Android application designed to make it easier for users to keep 
 + Android 8.0 Oreo or newer
 + 15 MB storage
 
+## Languages
+
+ - English
+ - German
+
 ## Building the App
 
 It is strongly recommended to use [Android Studio](https://developer.android.com/studio) to build and test this application.
