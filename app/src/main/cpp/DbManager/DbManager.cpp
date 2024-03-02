@@ -406,7 +406,7 @@ void DbManager::importData(const std::string &importFilePath, const vector<strin
             throw runtime_error("Provided file is not a JSON file");
         }
 
-        fin.open(importFilePath);
+        fin.open(importFilePath, ios::in);
 
         if (!fin.is_open()) { throw runtime_error("Import file failed to open"); }
 
