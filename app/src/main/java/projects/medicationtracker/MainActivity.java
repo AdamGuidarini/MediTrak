@@ -16,15 +16,15 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -32,6 +32,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentContainerView;
+
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,7 +45,6 @@ import java.util.Objects;
 import projects.medicationtracker.Dialogs.WelcomeDialog;
 import projects.medicationtracker.Fragments.MedicationScheduleFragment;
 import projects.medicationtracker.Helpers.DBHelper;
-import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.SimpleClasses.Medication;
@@ -53,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
     public static String dbDir;
     public static Bundle preferences;
     private final DBHelper db = new DBHelper(this);
-    private NativeDbHelper nativeDb;
     private LinearLayout scheduleLayout;
     private LocalDate aDayThisWeek;
     private final ActivityResultLauncher<String> notificationPermissionLauncher = registerForActivityResult(
@@ -72,8 +72,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         dbDir = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
-
-        nativeDb = new NativeDbHelper(dbDir);
 
         preferences = db.getPreferences();
 
@@ -166,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
     public void createMainActivityViews() {
         TextView noMeds = findViewById(R.id.noMeds);
         ScrollView scheduleScrollView = findViewById(R.id.scheduleScrollView);
-        Spinner patientNames = findViewById(R.id.patientSpinner);
+        MaterialAutoCompleteTextView patientNames = findViewById(R.id.patientSpinner);
         final String you = getString(R.string.you);
 
         // Exit if there are no patients in DB
@@ -199,31 +197,32 @@ public class MainActivity extends AppCompatActivity {
             );
             patientNames.setAdapter(patientAdapter);
 
-            // Select "You" by default
-            if (names.contains(you)) {
-                for (int i = 0; i < names.size(); i++) {
-                    if (names.get(i).equals(you))
-                        patientNames.setSelection(i);
-                }
-            }
+            patientNames.addTextChangedListener(new TextWatcher() {
+                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
-            patientNames.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                public void afterTextChanged(Editable s) {
                     scheduleLayout.removeAllViews();
 
-                    String name = adapterView.getSelectedItem().toString();
+                    String name = s.toString();
 
                     if (name.equals(you))
                         name = "ME!";
 
                     createMedicationSchedule(medications, name);
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
+                    patientNames.clearFocus();
                 }
             });
+
+            // Select "You" by default
+            if (names.contains(you)) {
+                for (int i = 0; i < names.size(); i++) {
+                    if (names.get(i).equals(you)) {
+                        patientNames.setText(names.get(i), false);
+                    }
+                }
+            }
         }
     }
 

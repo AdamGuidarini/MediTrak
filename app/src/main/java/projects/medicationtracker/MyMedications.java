@@ -2,18 +2,20 @@ package projects.medicationtracker;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentContainerView;
+
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +55,7 @@ public class MyMedications extends AppCompatActivity {
             scrollMyMeds.setVisibility(View.VISIBLE);
         }
 
-        final Spinner nameSpinner = findViewById(R.id.nameSpinner);
+        final MaterialAutoCompleteTextView namesSelector = findViewById(R.id.nameSpinner);
         final LinearLayout myMedsLayout = findViewById(R.id.medLayout);
 
         ArrayList<String> patientNames = db.getPatients();
@@ -78,7 +80,9 @@ public class MyMedications extends AppCompatActivity {
                 createMyMedCards(medication, myMedsLayout);
             }
         } else if (allMeds.size() > 1) {
-            String[] patients = allMeds.stream().map(Pair::getFirst).map(p -> Objects.equals(p, "ME!") ? getString(R.string.you) : p).toArray(String[]::new);
+            String[] patients = allMeds.stream().map(Pair::getFirst).map(p ->
+                    Objects.equals(p, "ME!") ? getString(R.string.you) : p).toArray(String[]::new
+            );
 
             if (allMeds.stream().allMatch(m -> m.getFirst().equals("ME!"))) {
                 allMeds = allMeds.stream().map(m -> {
@@ -91,20 +95,26 @@ public class MyMedications extends AppCompatActivity {
             }
 
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, patients);
-            nameSpinner.setAdapter(adapter);
+            namesSelector.setAdapter(adapter);
 
-            nameSpinner.setVisibility(View.VISIBLE);
 
-            if (Arrays.asList(patients).contains(you))
-                nameSpinner.setSelection(adapter.getPosition(you));
+            namesSelector.setVisibility(View.VISIBLE);
+
+            if (Arrays.asList(patients).contains(you)) {
+                namesSelector.setSelection(adapter.getPosition(you));
+            }
 
             final ArrayList<Pair<String, ArrayList<Medication>>> allMedsClone = (ArrayList<Pair<String, ArrayList<Medication>>>) allMeds.clone();
-            nameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            namesSelector.addTextChangedListener(new TextWatcher() {
+                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
                 @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                public void afterTextChanged(Editable s) {
                     myMedsLayout.removeAllViews();
 
-                    String selected = adapterView.getSelectedItem().toString();
+                    String selected = s.toString();
                     final String patient = selected.equals(you) ? "ME!" : selected;
 
                     ArrayList<Medication> patientMeds = allMedsClone.stream().filter(
@@ -116,12 +126,12 @@ public class MyMedications extends AppCompatActivity {
 
                         createMyMedCards(medication, myMedsLayout);
                     }
-                }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
+                    namesSelector.clearFocus();
                 }
             });
+
+            namesSelector.setText(adapter.getItem(0).toString(), false);
         }
     }
 
@@ -170,7 +180,8 @@ public class MyMedications extends AppCompatActivity {
 
         bundle.putParcelable("Medication", medication);
 
-        getSupportFragmentManager().beginTransaction()
+        getSupportFragmentManager()
+                .beginTransaction()
                 .setReorderingAllowed(true)
                 .add((int) medication.getId(), MyMedicationsFragment.class, bundle)
                 .commit();
