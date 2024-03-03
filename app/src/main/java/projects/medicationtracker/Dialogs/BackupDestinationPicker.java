@@ -83,6 +83,8 @@ public class BackupDestinationPicker extends DialogFragment {
         dirSelector.setAdapter(adapter);
         dirSelector.setText(dirSelector.getAdapter().getItem(0).toString(), false);
 
+        exportDir = directories[0];
+
         dirSelector.setOnItemClickListener((parent, view, position, id) -> exportDir = directories[position]);
 
         exportFile = "meditrak_"

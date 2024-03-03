@@ -14,7 +14,6 @@
 #include <map>
 #include <vector>
 #include <cstdlib>
-#include <filesystem>
 
 using namespace std;
 
@@ -161,7 +160,14 @@ public:
      *  column that does not exist in the provided database/table.
      * @param importFilePath Path to JSON file storing data to import.
      */
-    void importData(const string& importFilePath, const vector<string>& ignoreTables = {});
+    void importDataFromFile(const string &importFilePath, const vector<string> &ignoreTables);
+
+    /**
+     * Imports data from a string
+     * @param inData Data to feed to database, must be in JSON format
+     * @param ignoreTables Tables not to ignore that may be referenced indata
+     */
+    void importData(string& inData, const vector<string>& ignoreTables = {});
 };
 
 

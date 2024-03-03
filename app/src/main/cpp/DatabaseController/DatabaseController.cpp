@@ -166,9 +166,16 @@ void DatabaseController::exportJSON(
     manager.exportData(exportFilePath, ignoreTables);
 }
 
-void DatabaseController::importJSON(
+void DatabaseController::importJSONFile(
         const string &importFilePath,
         const vector<string> &ignoreTables
 ) {
-    manager.importData(importFilePath, ignoreTables);
+    manager.importDataFromFile(importFilePath, ignoreTables);
+}
+
+void DatabaseController::importJSONString(
+        string &data,
+        const vector<string> &ignoreTables
+) {
+    manager.importData(data, ignoreTables);
 }

@@ -350,11 +350,9 @@ void DbManager::exportData(const string& exportFilePath, const vector<string>& i
     try {
         outFile.open(exportFilePath, fstream::trunc);
     } catch (system_error& error) {
-        const string errMessage = "File failed to open at '"
-                                  + exportFilePath +
-                                  "' with error '"
-                                  + error.code().message()
-                                  + "'";
+        const string errMessage = "File failed to open at '" + exportFilePath
+                                  + "' with error '" + error.code().message() + "'"
+                                  + " error number: " + to_string(errno);
 
         cerr << errMessage << endl;
 
@@ -401,16 +399,11 @@ void DbManager::exportData(const string& exportFilePath, const vector<string>& i
     outFile.close();
 }
 
-void DbManager::importData(const std::string &importFilePath, const vector<string>& ignoreTables) {
-    fstream fin;
+void DbManager::importDataFromFile(const std::string &importFilePath, const vector<string>& ignoreTables) {
     string inData;
-    map<string, vector<map<string, string>>> data;
-    vector<string> tables = getTables(ignoreTables);
-    stringstream importQuery;
-    char* err;
+    ifstream fin;
 
     fin.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
 
     try {
         if (importFilePath.substr(importFilePath.find_last_of('.') + 1) != "json") {
@@ -439,6 +432,15 @@ void DbManager::importData(const std::string &importFilePath, const vector<strin
 
         throw error;
     }
+
+    importData(inData, ignoreTables);
+}
+
+void DbManager::importData(string& inData, const vector<string>& ignoreTables) {
+    map<string, vector<map<string, string>>> data;
+    vector<string> tables = getTables(ignoreTables);
+    stringstream importQuery;
+    char* err;
 
     // Remove unneeded chars
     inData.erase(
