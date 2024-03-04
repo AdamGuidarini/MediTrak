@@ -208,6 +208,7 @@
     <string name="time_format">Time Format</string>
     <string name="hour_12">12 Hour</string>
     <string name="hour_24">24 Hour</string>
+    <string name="language">Language</string>
 
     <!-- Dose Info dialog -->
     <string name="not_taken_yet">Not yet taken</string>

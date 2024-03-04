@@ -1,0 +1,236 @@
+<resources>
+    <!-- Common -->
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="close">Schließen</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="app_name">MediTrak</string>
+    <string name="edit">Bearbeiten</string>
+    <string name="submit">Übernehmen</string>
+    <string name="save_changes">Änderungen speichern</string>
+    <string name="save">Speichern</string>
+    <string name="you">Ich</string>
+    <string name="your">Dein</string>
+    <string name="ok">OK</string>
+    <string name="delete">Löschen</string>
+    <string name="i_agree">Ich stimme zu</string>
+
+    <!-- Errors -->
+    <string name="invalid_value">Ungültiger Wert angegeben</string>
+    <string name="must_be_positive_int">Der Wert muss eine positive ganze Zahl sein</string>
+    <string name="val_too_big">Der angegebene Wert ist zu groß</string>
+    <string name="cannot_exceed_50">Der angegebene Wert darf 50 nicht überschreiten</string>
+    <string name="must_be_greater_than_0">Der angegebene Wert muss größer als 0 sein</string>
+    <string name="provided_name_invalid">Der angegebene Name ist ungültig</string>
+    <string name="err_provide_name">Bitte gib einen Namen an</string>
+    <string name="err_enter_dosage">Bitte gib die Dosierung ein</string>
+    <string name="err_units_for_med">Bitte gib die Einheiten für dieses Medikament ein</string>
+    <string name="err_select_frequency">Bitte wähle die Häufigkeit aus</string>
+    <string name="err_select_time">Bitte wähle eine Uhrzeit aus</string>
+    <string name="err_select_start_date">Bitte wähle ein Startdatum aus.</string>
+    <string name="err_enter_num_timers_per_day">Bitte gib an, wie oft dieses Medikament täglich eingenommen wird</string>
+    <string name="err_enter_med_freq">Bitte gibt an, wie oft das Medikament eingenommen wird.</string>
+    <string name="err_enter_time_unit">Bitte wähle eine Zeiteinheit aus.</string>
+    <string name="err_name_for_med">Bitte gib einen Namen für dieses Medikament ein</string>
+    <string name="err_missing_file_name">Fehlender Dateiname</string>
+    <string name="err_file_must_be_json">Die Exportdatei muss die Erweiterung .json haben</string>
+
+    <!-- Time formats -->
+    <string name="date_format">Mmm dd, yyyy</string>
+    <string name="time_format_hh_mm_aa">hh:mm aa</string>
+
+    <!-- Time -->
+    <string name="sunday">Sonntag</string>
+    <string name="monday">Montag</string>
+    <string name="tuesday">Dienstag</string>
+    <string name="wednesday">Mittwoch</string>
+    <string name="thursday">Donnerstag</string>
+    <string name="friday">Freitag</string>
+    <string name="saturday">Samstag</string>
+    <string name="minutes">Minuten</string>
+    <string name="hours">Stunden</string>
+    <string name="days">Tage</string>
+    <string name="weeks">Wochen</string>
+
+    <!-- MainActivity -->
+    <string name="no_medications_found">Keine Medikamente gefunden</string>
+    <string name="med_schedule">Medikamentenplan</string>
+    <string name="no_meds_for_day">Keine Medikamente für %1$s</string>
+    <string name="cannot_take_more_than_hours">Medikamente können nicht mehr als %1$d Stunden im Voraus eingenommen werden</string>
+    <string name="as_needed_dose">Nach Bedarf dosieren</string>
+    <string name="welcome">Willkommen zu MediTrak!</string>
+    <string name="warranty_info">
+        Diese Anwendung soll dir dabei helfen, den Überblick über deine Medikamente zu behalten. Es ist 
+        nicht als medizinischer Rat gedacht und die in dieser Anwendung bereitgestellten Informationen 
+        sollten nicht als solche missverstanden werden. Die Ersteller dieser Anwendung haften nicht für 
+        etwaige versäumte Dosen Ihrer Medikamente, aus welchem Grund auch immer. Wenn Du medizinische Hilfe benötigst, 
+        wende dich bitte an einen Arzt.
+        Durch die Nutzung dieser Anwendung stimmst Du den oben genannten Bedingungen sowie denen der GPL2-Lizenz zu, 
+        unter der die App veröffentlicht wird. \n\n
+
+        Diese Anwendung wird unter der GNU Public License Version 2 veröffentlicht. 
+        Weitere Einzelheiten findest Du weiter unten:
+    </string>
+
+    <!-- Add/EditMedication -->
+    <string name="add_medication">Medikamente hinzufügen</string>
+    <string name="edit_medication">Medikamente bearbeiten</string>
+    <string name="delete_medication">Medikamente löschen</string>
+    <string name="note_timestamp">am: %1$s um: %2$s</string>
+    <string name="note_edit_timestamp">Bearbeitet: %1$s um: %2$s</string>
+    <string name="patient_changed">Patient geändert von %1$s zu %2$s\n</string>
+    <string name="name_changed">Name geändert von %1$s zu %2$s\n</string>
+    <string name="removed_alias">Alias %1$s entfernt\n</string>
+    <string name="added_alias">Alias %1$s hinzugefügt\n</string>
+    <string name="changed_alias">Alias geändert von %1$s zu %2$s\n</string>
+    <string name="changed_dosage">Dosierung geändert von %1$s auf %2$s\n</string>
+    <string name="frequency_changed">Häufigkeit geändert von %1$s auf %2$s\n</string>
+    <string name="times_per">Zeiten pro</string>
+    <string name="patientIsMe">Ich</string>
+    <string name="patient">Patient</string>
+    <string name="other">Andere</string>
+    <string name="name">Name</string>
+    <string name="medication_name">Medikamentennamee</string>
+    <string name="medication_dosage">Dosierung</string>
+    <string name="medication_frequency">Häufigkeit</string>
+    <string name="taken_every">Eingenommen jeden</string>
+    <string name="units">Einheiten</string>
+    <string name="taken">Eingenommen</string>
+    <string name="frequency">Häufigkeit</string>
+    <string name="multiple_times_per_day">Mehrmals pro Tag</string>
+    <string name="as_needed">Wie benötigt</string>
+    <string name="daily">Täglich</string>
+    <string name="weekly">Wöchentlich</string>
+    <string name="monthly">Monatlich</string>
+    <string name="medication_name_amp_dosage"><![CDATA[Name und Dosierung des Medikaments]]></string>
+    <string name="who_takes_this_medication">Wer nimmt dieses Medikament??</string>
+    <string name="someone_else">Jemand anderes</string>
+    <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[Wie heißt das Medikament und wie viel wird eingenommen?]]></string>
+    <string name="alias_for_notifications">Alias für Benachrichtigungen</string>
+    <string name="how_often_is_the_medication_taken">Wie oft wird das Medikament eingenommen?</string>
+    <string name="start_date">Startdatum</string>
+    <string name="taken_at">Eingenommen um</string>
+    <string name="unit_of_time">Zeiteinheit</string>
+    <string name="custom_frequency">Benutzerdefinierte Häufigkeit</string>
+    <string name="at_n_n_tap_to_set_time">Hier tippen, um die Uhrzeit einzustellen</string>
+    <string name="times_per_day">Zeiten pro Tag</string>
+    <string name="atThisTime">Hier tippen, um die Uhrzeit einzustellen</string>
+    <string name="starting">Beginnend:</string>
+    <string name="alias_for_medication">Alias für Medikamente</string>
+    <string name="alias_for_medication_displays_notification">Alias für Medikamentenbenachrichtigung</string>
+    <string name="medication_alias_displays_in_notification">Medikamentenalias wird in der Benachrichtigung angezeigt</string>
+    <string name="place_holder_tap_again_then_hit_cancel">PPlatzhalter, tippen Sie erneut und klicken Sie dann auf Abbrechen</string>
+    <string name="yourMedications">Deine Medikamente:</string>
+    <string name="no_notes_for_this_medication">Für dieses Medikament liegen keine Hinweise vor</string>
+    <string name="unitExample">z.B. mg, g, Tropfen</string>
+    <string name="patient_name">Patientenname:</string>
+    <string name="no_alias">Keine Aliase</string>
+    <string name="tap_to_set_date">Tippen, um das Datum einzustellen</string>
+    <string name="at">Um:</string>
+    <string name="tap_to_set_time">Tippen, um die Zeit einzustellen</string>
+    <string name="apply_retroactive">Änderungen rückwirkend anwenden</string>
+    <string name="retroactive_warning">Warnung: Änderungen der Häufigkeit können dazu führen, dass zuvor eingenommene Dosen nicht mehr im Zeitplan sichtbar sind.</string>
+    <string name="would_like_apply_retroactively">Änderungen der Dosierung und Häufigkeit können rückwirkend ab der vorherigen Änderung angewendet werden. Möchten Sie diese Änderungen rückwirkend anwenden?</string>
+    <string name="apply_changes_as_of">Änderungen übernehmen ab:</string>
+    <string name="from_med_last_change">Letzte Bearbeitung</string>
+    <string name="from_med_start">Beginn der Medikamenteneinnahme</string>
+
+    <!-- MyMedications -->
+    <string name="my_medications">Meine Medikamente</string>
+    <string name="med_name">Name des Medikaments: %1$s</string>
+    <string name="dosage">Dosierung: %1$s %2$s</string>
+    <string name="taken_daily_at">Täglich eingenommen um: </string>
+    <string name="taken_every_lbl">Eingenommen, alle: </string>
+    <string name="alias_lbl">Alias: %1$s</string>
+    <string name="taken_since">Eingenommen, seit: %1$s</string>
+    <string name="taken_as_needed">Nach Bedarf eingenommen.</string>
+    <string name="all_previous_edits_overridden">Alle vorherigen Änderungen wurden überschrieben.</string>
+
+    <!-- Notes -->
+    <string name="notes">Notizen</string>
+    <string name="add_note">Notiz hinzufügen</string>
+    <string name="edit_note">Notiz bearbeiten</string>
+
+    <!-- Settings Activity -->
+    <string name="settings">Einstellungen</string>
+    <string name="options">Optionen</string>
+    <string name="license">Lizenz</string>
+    <string name="purpose">MediTrak ist eine kostenlose Open-Source-Anwendung, die dir dabei helfen soll, den Überblick über deine Medikamente zu behalten, damit Du die Frage \"Habe ich gestern meine Medikamente eingenommen?\" einfacher beantworten kannst</string>
+    <string name="copyright">Copyright © 2022 Adam Guidarini</string>
+    <string name="licenseInfo">MediTrak ist freie Software und darf unter den Bedingungen der GNU General Public License, wie von der Free Software Foundation veröffentlicht, entweder Version 2 oder (nach deiner Wahl) später, weitergegeben und/oder geändert werden.</string>
+    <string name="warranty">
+        Dieses Programm ist freie Software; Du kannst es weiterverbreiten und/oder
+        unter den Bedingungen der GNU General Public License, wie von der 
+        Free Software Foundation veröffentlicht, ändern; entweder Version 2
+        der Lizenz oder (nach deiner Wahl) einer späteren Version.
+
+        Dieses Programm wird in der Hoffnung verbreitet, dass es nützlich sein wird,
+        aber OHNE JEGLICHE GARANTIE; ohne die stillschweigende Garantie von
+
+        MARKTGÄNGIGKEIT oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK. Siehe die
+        weiteren Informationen zur GNU General Public License
+    </string>
+    <string name="copyOfGPL2">
+        Sie sollten eine Kopie der GNU General Public License erhalten haben
+        zusammen mit diesem Programm; Wenn nicht, schreiben Sie an die Free Software
+        Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+    </string>
+    <string name="cannot_take_medication_more_than">Kann Medikamente nicht mehr einnehmen als</string>
+    <string name="hours_in_advance">Stunden im Voraus</string>
+    <string name="title_activity_settings">Einstellungen</string>
+    <string name="delete_all">Alles löschen</string>
+    <string name="pause_medication">Medikation pausieren</string>
+    <string name="resume_medication">Medikation fortsetzen</string>
+    <string name="pause_message">Bist Du sicher, dass Du %1$s pausieren möchtest? Es erscheint nicht mehr in deinem Zeitplan, kann aber jederzeit wieder aufgenommen werden.</string>
+    <string name="resume_message">Wenn Du %1$s fortsetzt, wird dein Zeitplan wiederhergestellt. Bist Du sicher, dass Du fortfahren möchtest?</string>
+    <string name="enable_notifications">Benachrichtigungen aktivieren</string>
+    <string name="disable_time_before_dose_requirement">Zeitlimit im Voraus deaktivieren</string>
+    <string name="theme">Thema</string>
+    <string name="light_mode">Hell</string>
+    <string name="dark_mode">Dunkel</string>
+    <string name="match_system_theme">System</string>
+    <string name="number_of_hours_before_dose_can_be_taken">Grenze, bis zu der Medikamente nicht eingenommen werden dürfen:</string>
+    <string name="export">Exportieren</string>
+    <string name="importData">Importieren</string>
+    <string name="data">Daten</string>
+    <string name="export_directory">Export-Verzeichnis</string>
+    <string name="export_file_name">Export-Dateiname</string>
+    <string name="downloads">Downloads</string>
+    <string name="documents">Dokumente</string>
+    <string name="export_data">Daten exportieren</string>
+    <string name="successful_export">Daten erfolgreich nach %1$s exportiert</string>
+    <string name="import_success">Daten erfolgreich importiert</string>
+    <string name="failed_export">Daten konnten nicht exportiert werden</string>
+    <string name="failed_import">Daten konnten nicht importiert werden</string>
+    <string name="could_not_retrieve_file">Die Importdatei konnte nicht abgerufen werden</string>
+    <string name="notifications_already_enabled">Benachrichtigungen sind bereits aktiviert</string>
+    <string name="date_format_title">Datumsformat</string>
+    <string name="date_format_mm_dd_yyyy">MM/TT/JJJJ</string>
+    <string name="date_format_dd_mm_yyyy">TT/MM/JJJJ</string>
+    <string name="time_format">Zeitformat</string>
+    <string name="hour_12">12 Stunden</string>
+    <string name="hour_24">24 Stunden</string>
+    <string name="language">Sprache</string>
+
+    <!-- Dose Info dialog -->
+    <string name="not_taken_yet">Noch nicht eingenommen</string>
+    <string name="not_taken">Nicht eingenommen</string>
+    <string name="marked_taken_at">Als eingenommen markiert</string>
+    <string name="dose_information">Dosisinformationen</string>
+    <string name="time_taken">Eingenommen um</string>
+    <string name="date_taken">Eingenommen am</string>
+    <string name="this_dose">Diese Dosis</string>
+
+    <!-- Delete Everything -->
+    <string name="delete_all_data">Alle gespeicherten Daten löschen</string>
+    <string name="delete_all_data_cannot_be_undone">Alle gespeicherten Daten löschen? Diese Aktion kann nicht rückgängig gemacht werden.</string>
+    <string name="all_data_deleted">Alle Daten wurden gelöscht</string>
+
+    <!-- Notifications -->
+    <string name="mark_as_taken">Eingenommen</string>
+    <string name="snooze_message">Schlummern</string>
+    <string name="its_time_your_med">Es ist Zeit, dein %1$s zu nehmen</string>
+    <string name="time_for_other_med">Es ist Zeit für die %2$s von %1$s</string>
+    <string name="add_dose">Dosis hinzufügen</string>
+
+</resources>
