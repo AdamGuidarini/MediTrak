@@ -16,8 +16,8 @@ android {
         targetSdkVersion 33
         compileSdk 34
 
-        versionCode 16
-        versionName "0.11.5"
+        versionCode 17
+        versionName "0.11.6"
 
         resConfigs('en', 'de')
 
