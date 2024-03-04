@@ -34,6 +34,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentContainerView;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -45,6 +46,7 @@ import java.util.Objects;
 import projects.medicationtracker.Dialogs.WelcomeDialog;
 import projects.medicationtracker.Fragments.MedicationScheduleFragment;
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.SimpleClasses.Medication;
@@ -56,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     private final DBHelper db = new DBHelper(this);
     private LinearLayout scheduleLayout;
     private LocalDate aDayThisWeek;
+    private NativeDbHelper nativeDb;
+    private TextInputLayout namesLayout;
     private final ActivityResultLauncher<String> notificationPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             isGranted -> db.seenPermissionRequest(SEEN_NOTIFICATION_REQUEST)
@@ -72,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         dbDir = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
+
+        nativeDb = new NativeDbHelper(dbDir);
 
         preferences = db.getPreferences();
 
@@ -105,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 33 && !preferences.getBoolean(SEEN_NOTIFICATION_REQUEST) && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
         }
+
+        namesLayout = findViewById(R.id.names_layout_main);
 
         createMainActivityViews();
     }
@@ -171,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         if (db.numberOfRows() == 0) {
             noMeds.setVisibility(View.VISIBLE);
             scheduleScrollView.setVisibility(View.GONE);
-            patientNames.setVisibility(View.GONE);
+            namesLayout.setVisibility(View.GONE);
             this.findViewById(R.id.navButtonLayout).setVisibility(View.GONE);
             return;
         }
@@ -181,14 +189,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Load contents into spinner, or print results for only patient
         if (db.getPatients().size() == 1) {
-            patientNames.setVisibility(View.GONE);
+            namesLayout.setVisibility(View.GONE);
 
             createMedicationSchedule(medications, names.get(0));
         } else {
             patientNames.setVisibility(View.VISIBLE);
 
-            if (names.contains("ME!"))
+            if (names.contains("ME!")) {
                 names.set(names.indexOf("ME!"), you);
+            }
 
             ArrayAdapter<String> patientAdapter = new ArrayAdapter<>(
                     this,
@@ -207,21 +216,19 @@ public class MainActivity extends AppCompatActivity {
 
                     String name = s.toString();
 
-                    if (name.equals(you))
+                    if (name.equals(you)) {
                         name = "ME!";
+                    }
 
                     createMedicationSchedule(medications, name);
                     patientNames.clearFocus();
                 }
             });
 
-            // Select "You" by default
             if (names.contains(you)) {
-                for (int i = 0; i < names.size(); i++) {
-                    if (names.get(i).equals(you)) {
-                        patientNames.setText(names.get(i), false);
-                    }
-                }
+                patientNames.setText(you, false);
+            } else {
+                patientNames.setText(names.get((0)), false);
             }
         }
     }

@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentContainerView;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,6 +56,7 @@ public class MyMedications extends AppCompatActivity {
             scrollMyMeds.setVisibility(View.VISIBLE);
         }
 
+        final TextInputLayout namesLayout = findViewById(R.id.names_layout);
         final MaterialAutoCompleteTextView namesSelector = findViewById(R.id.nameSpinner);
         final LinearLayout myMedsLayout = findViewById(R.id.medLayout);
 
@@ -97,12 +99,7 @@ public class MyMedications extends AppCompatActivity {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, patients);
             namesSelector.setAdapter(adapter);
 
-
-            namesSelector.setVisibility(View.VISIBLE);
-
-            if (Arrays.asList(patients).contains(you)) {
-                namesSelector.setSelection(adapter.getPosition(you));
-            }
+            namesLayout.setVisibility(View.VISIBLE);
 
             final ArrayList<Pair<String, ArrayList<Medication>>> allMedsClone = (ArrayList<Pair<String, ArrayList<Medication>>>) allMeds.clone();
 
@@ -131,7 +128,11 @@ public class MyMedications extends AppCompatActivity {
                 }
             });
 
-            namesSelector.setText(adapter.getItem(0).toString(), false);
+            if (Arrays.asList(patients).contains(you)) {
+                namesSelector.setText(you, false);
+            } else {
+                namesSelector.setText(adapter.getItem(0).toString(), false);
+            }
         }
     }
 
