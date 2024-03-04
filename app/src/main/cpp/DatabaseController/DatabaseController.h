@@ -14,12 +14,12 @@ using namespace std;
 namespace TimeFormats {
     const string _12_HOUR = "hh:mm a";
     const string _24_HOUR = "HH:mm";
-};
+}
 
 namespace DateFormats {
     const string MM_DD_YYYY = "MM/dd/yyyy";
     const string DD_MM_YYYY = "dd/MM/yyyy";
-};
+}
 
 class DatabaseController {
 private:
@@ -148,7 +148,15 @@ public:
      *  column that does not exist in the provided database/table.
      * @param importFilePath Path to JSON file storing data to import.
      */
-    void importJSON(const string& importFilePath, const vector<string>& ignoreTables = {});
+    void importJSONFile(const string& importFilePath, const vector<string>& ignoreTables = {});
+
+    /**
+     * Imports data from JSON file and writes it to database,
+     *  throws an error if attempting to write to a table or
+     *  column that does not exist in the provided database/table.
+     * @param importData JSON formatted string containing data to import
+     */
+    void importJSONString(string& importData, const vector<string>& ignoreTables = {});
 };
 
 

@@ -9,16 +9,16 @@ import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
 
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -36,6 +36,10 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
+import java.io.DataInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -46,7 +50,7 @@ import projects.medicationtracker.Helpers.NativeDbHelper;
 
 public class Settings extends AppCompatActivity {
     private final DBHelper db = new DBHelper(this);
-    private ActivityResultLauncher<String> chooseFileLauncher;
+    private ActivityResultLauncher<Intent> chooseFileLauncher;
     private final ActivityResultLauncher<String> permissionRequester = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             isGranted -> {}
@@ -89,39 +93,66 @@ public class Settings extends AppCompatActivity {
         setTimeFormatMenu();
 
         chooseFileLauncher = registerForActivityResult(
-                new ActivityResultContracts.GetContent(),
+                new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result != null && result.getPath() != null) {
-                        String absPath = "";
-                        String name;
-                        Cursor cursor = getContentResolver().query(result, null, null, null, null);
+                    Uri uri = result.getData().getData();
 
-                        if (cursor != null && cursor.getCount() > 0) {
-                            cursor.moveToFirst();
+                    if (uri != null && uri.getPath() != null) {
+                        ContentResolver contentResolver = getContentResolver();
+                        InputStream inputStream;
+                        int size;
+                        String contents;
+                        boolean success = false;
+                        int length;
+                        byte[] bytes;
 
-                            name = cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME));
-                        } else {
-                            return;
-                        }
+                        try {
+                            try {
+                                inputStream = contentResolver.openInputStream(uri);
+                            } catch (FileNotFoundException e) {
+                                throw new RuntimeException(e);
+                            }
 
-                        switch (Objects.requireNonNull(result.getAuthority())) {
-                            case "com.android.providers.downloads.documents":
-                                absPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + "/" + name;
-                                break;
-                            case "com.android.providers.documents.documents":
-                                absPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getPath() + "/" + name;
-                                break;
-                        }
+                            try {
+                                size = inputStream.available();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
 
-                        if (nativeDb.dbImport(absPath, new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE})) {
-                            Toast.makeText(this, getString(R.string.import_success), Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(this, getString(R.string.failed_import), Toast.LENGTH_SHORT).show();
+                            DataInputStream dis = new DataInputStream(inputStream);
+                            bytes = new byte[size];
+
+                            try {
+                                length = dis.read(bytes, 0, size);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                            inputStream.markSupported();
+
+                            contents = new String(bytes, 0, length);
+
+                            try {
+                                inputStream.close();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                            success = nativeDb.dbImport(contents, new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE});
+                        } catch (Exception e) {
+                            Log.e("Import Error", "Error occurred when reading file");
+                        } finally {
+                            if (success) {
+                                Toast.makeText(this, getString(R.string.import_success), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(this, getString(R.string.failed_import), Toast.LENGTH_SHORT).show();
+                            }
                         }
                     } else {
                         Toast.makeText(this, getString(R.string.could_not_retrieve_file), Toast.LENGTH_SHORT).show();
                     }
-                });
+                }
+        );
     }
 
     /**
@@ -144,7 +175,8 @@ public class Settings extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this,MainActivity.class);
+        super.onBackPressed();
+        Intent intent = new Intent(this, MainActivity.class);
         finish();
         startActivity(intent);
     }
@@ -393,7 +425,7 @@ public class Settings extends AppCompatActivity {
      * Listener for export data button
      */
     public void onExportClick(View view) {
-        if (Build.VERSION.SDK_INT <= 32 && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             permissionRequester.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
 
@@ -403,12 +435,15 @@ public class Settings extends AppCompatActivity {
 
     public void onImportClick(View view) {
         String type= Build.VERSION.SDK_INT >= 30 ? "application/json" : "*/*";
+        Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        i.setType(type);
 
-        if (Build.VERSION.SDK_INT <= 32 && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             permissionRequester.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
         }
 
-        chooseFileLauncher.launch(type);
+        chooseFileLauncher.launch(i);
     }
 
     /**

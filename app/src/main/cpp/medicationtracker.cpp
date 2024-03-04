@@ -5,6 +5,7 @@
 #include <android/log.h>
 #include <string>
 #include <map>
+#include <cstdio>
 
 std::map<std::string, std::string> getValues(jobjectArray arr, JNIEnv *env) {
     const jclass pair = env->FindClass("android/util/Pair");
@@ -67,13 +68,14 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(
         JNIEnv *env,
         jobject thiz,
         jstring db_path,
-        jstring import_path,
+        jstring file_contents,
         jobjectArray ignored_tables
 ) {
     std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
-    std::string importPath = env->GetStringUTFChars(import_path, new jboolean(true));
+    std::string fileContents = env->GetStringUTFChars(file_contents, new jboolean(true));
     std::vector<std::string> ignoredTbls;
     int len = env->GetArrayLength(ignored_tables);
+    bool success = true;
 
     for (int i = 0; i < len; i++) {
         auto str = (jstring) (env->GetObjectArrayElement(ignored_tables, i));
@@ -85,14 +87,16 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(
     DatabaseController controller(db);
 
     try {
-        controller.importJSON(importPath, ignoredTbls);
+        controller.importJSONString(fileContents, ignoredTbls);
     } catch (exception &e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
 
-        return false;
+        success = false;
     }
 
-    return true;
+//    env->ReleaseStringUTFChars(file_contents, fileContents.c_str());
+
+    return success;
 }
 
 extern "C"

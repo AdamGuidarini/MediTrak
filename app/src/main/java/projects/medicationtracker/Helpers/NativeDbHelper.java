@@ -79,12 +79,12 @@ public class NativeDbHelper {
 
     /**
      * Imports a database
-     * @param importPath Where to find import file
+     * @param fileContents Contents of import file
      * @param ignoredTables Tables to ignore while importing
      * @return true if import succeeded
      */
-    public boolean dbImport(String importPath, String[] ignoredTables) {
-        return dbImporter(dbPath, importPath, ignoredTables);
+    public boolean dbImport(String fileContents, String[] ignoredTables) {
+        return dbImporter(dbPath, fileContents, ignoredTables);
     }
 
     private  native void dbCreate(String dbPath);
@@ -93,5 +93,5 @@ public class NativeDbHelper {
     private native boolean update(String dbPath, String table, Pair<String, String>[] values, Pair<String, String >[] where);
     private native long delete(String dbPath, String table, Pair<String, String>[] values);
     private native boolean dbExporter(String databaseName, String exportDirectory, String[] ignoredTables);
-    private native boolean dbImporter(String dbPath, String importPath, String[] ignoredTables);
+    private native boolean dbImporter(String dbPath, String fileContents, String[] ignoredTables);
 }

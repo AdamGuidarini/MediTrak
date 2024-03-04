@@ -16,15 +16,15 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -32,6 +32,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentContainerView;
+
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -53,9 +56,10 @@ public class MainActivity extends AppCompatActivity {
     public static String dbDir;
     public static Bundle preferences;
     private final DBHelper db = new DBHelper(this);
-    private NativeDbHelper nativeDb;
     private LinearLayout scheduleLayout;
     private LocalDate aDayThisWeek;
+    private NativeDbHelper nativeDb;
+    private TextInputLayout namesLayout;
     private final ActivityResultLauncher<String> notificationPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             isGranted -> db.seenPermissionRequest(SEEN_NOTIFICATION_REQUEST)
@@ -107,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 33 && !preferences.getBoolean(SEEN_NOTIFICATION_REQUEST) && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
         }
+
+        namesLayout = findViewById(R.id.names_layout_main);
 
         createMainActivityViews();
     }
@@ -166,14 +172,14 @@ public class MainActivity extends AppCompatActivity {
     public void createMainActivityViews() {
         TextView noMeds = findViewById(R.id.noMeds);
         ScrollView scheduleScrollView = findViewById(R.id.scheduleScrollView);
-        Spinner patientNames = findViewById(R.id.patientSpinner);
+        MaterialAutoCompleteTextView patientNames = findViewById(R.id.patientSpinner);
         final String you = getString(R.string.you);
 
         // Exit if there are no patients in DB
         if (db.numberOfRows() == 0) {
             noMeds.setVisibility(View.VISIBLE);
             scheduleScrollView.setVisibility(View.GONE);
-            patientNames.setVisibility(View.GONE);
+            namesLayout.setVisibility(View.GONE);
             this.findViewById(R.id.navButtonLayout).setVisibility(View.GONE);
             return;
         }
@@ -183,14 +189,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Load contents into spinner, or print results for only patient
         if (db.getPatients().size() == 1) {
-            patientNames.setVisibility(View.GONE);
+            namesLayout.setVisibility(View.GONE);
 
             createMedicationSchedule(medications, names.get(0));
         } else {
             patientNames.setVisibility(View.VISIBLE);
 
-            if (names.contains("ME!"))
+            if (names.contains("ME!")) {
                 names.set(names.indexOf("ME!"), you);
+            }
 
             ArrayAdapter<String> patientAdapter = new ArrayAdapter<>(
                     this,
@@ -199,31 +206,30 @@ public class MainActivity extends AppCompatActivity {
             );
             patientNames.setAdapter(patientAdapter);
 
-            // Select "You" by default
-            if (names.contains(you)) {
-                for (int i = 0; i < names.size(); i++) {
-                    if (names.get(i).equals(you))
-                        patientNames.setSelection(i);
-                }
-            }
+            patientNames.addTextChangedListener(new TextWatcher() {
+                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
-            patientNames.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                public void afterTextChanged(Editable s) {
                     scheduleLayout.removeAllViews();
 
-                    String name = adapterView.getSelectedItem().toString();
+                    String name = s.toString();
 
-                    if (name.equals(you))
+                    if (name.equals(you)) {
                         name = "ME!";
+                    }
 
                     createMedicationSchedule(medications, name);
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
+                    patientNames.clearFocus();
                 }
             });
+
+            if (names.contains(you)) {
+                patientNames.setText(you, false);
+            } else {
+                patientNames.setText(names.get((0)), false);
+            }
         }
     }
 
