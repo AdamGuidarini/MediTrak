@@ -583,3 +583,26 @@ bool DbManager::isNumber(string str) {
 
     return !str.empty() && it == str.end();
 }
+
+vector<map<string, string>> DbManager::execSqlWithReturn(string sql) {
+    sqlite3_stmt *stmt = nullptr;
+    vector<map<string, string>> data;
+
+    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+    sqlite3_step(stmt);
+
+    try {
+        if (rc != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+
+            throw runtime_error("Error reading from SQLite database.");
+        }
+    } catch (runtime_error& error) {
+        cerr << "SQLITE READ ERROR | Return Code: " << rc << endl;
+        throw error;
+    }
+
+    sqlite3_finalize(stmt);
+
+    return data;
+}

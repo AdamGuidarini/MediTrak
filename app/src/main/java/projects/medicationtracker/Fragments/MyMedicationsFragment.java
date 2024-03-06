@@ -22,6 +22,7 @@ import java.util.Locale;
 import projects.medicationtracker.AddMedication;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.MedicationHistory;
 import projects.medicationtracker.MedicationNotes;
 import projects.medicationtracker.R;
 import projects.medicationtracker.SimpleClasses.Medication;
@@ -39,6 +40,7 @@ public class MyMedicationsFragment extends Fragment {
     TextView takenSince;
     Button notesButton;
     Button editButton;
+    Button historyButton;
 
     public MyMedicationsFragment() {
     }
@@ -83,6 +85,7 @@ public class MyMedicationsFragment extends Fragment {
         takenSince = v.findViewById(R.id.myMedCardTakenSince);
         notesButton = v.findViewById(R.id.myMedsNotes);
         editButton = v.findViewById(R.id.myMedsEdit);
+        historyButton = v.findViewById(R.id.history_button);
 
         for (int i = 0; i < times.length; i++) {
             dateTimes[i] = LocalDateTime.of(medication.getStartDate().toLocalDate(), times[i]);
@@ -137,6 +140,13 @@ public class MyMedicationsFragment extends Fragment {
         {
             getActivity().finish();
             getActivity().startActivity(editMedIntent);
+        });
+
+        Intent intent = new Intent(getActivity(), MedicationHistory.class);
+
+        historyButton.setOnClickListener(view -> {
+            getActivity().finish();
+            startActivity(intent);
         });
     }
 }

@@ -8,6 +8,8 @@
 #include <string>
 #include <vector>
 #include "../DbManager/DbManager.h"
+#include "../Medication/Medication.h"
+#include "../Dose/Dose.h"
 
 using namespace std;
 
@@ -157,7 +159,20 @@ public:
      * @param importData JSON formatted string containing data to import
      */
     void importJSONString(string& importData, const vector<string>& ignoreTables = {});
-};
 
+    /**
+     * Retrieves a Medication from the database
+     * @param medicationId ID of medication sought
+     * @return Medication including data on its doses and potential parents/children
+     */
+    Medication getMedication(long medicationId);
+
+    /**
+     * Retrieves Doses for provided Medication
+     * @param medicationId
+     * @return
+     */
+    vector<Dose> getDoses(long medicationId);
+};
 
 #endif //MEDICATIONTRACKER_DATABASECONTROLLER_H

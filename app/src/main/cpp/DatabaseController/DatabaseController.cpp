@@ -179,3 +179,11 @@ void DatabaseController::importJSONString(
 ) {
     manager.importData(data, ignoreTables);
 }
+
+Medication DatabaseController::getMedication(long medicationId) {
+    return Medication();
+}
+
+vector<Dose> DatabaseController::getDoses(long medicationId) {
+    return vector<Dose>();
+}
