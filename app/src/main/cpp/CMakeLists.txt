@@ -16,9 +16,9 @@ if (NOT SQLITE3_PATH)
     message(SEND_ERROR "Missing environment variable: \"SQLITE3_LIB_PATH\".")
 endif ()
 
-include_directories(${SQLITE3_PATH} DbManager DatabaseController Dose Medication)
+include_directories(${SQLITE3_PATH} DatabaseController Dose Medication Sqlite3Database)
 
-add_subdirectory(DbManager)
+add_subdirectory(Sqlite3Database)
 add_subdirectory(DatabaseController)
 add_subdirectory(Medication)
 add_subdirectory(Dose)
@@ -63,16 +63,14 @@ find_library( # Sets the name of the path variable.
 
 target_link_libraries( # Specifies the target library.
         medicationtracker
-        DbManager
         android
         sqlite3
         DatabaseController
         Medication
         Dose
+        DbManager
         # Links the target library to the log library
         # included in the NDK.
         ${log-lib}
 )
-
-target_include_directories(sqlite3 PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 

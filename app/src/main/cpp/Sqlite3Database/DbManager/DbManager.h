@@ -6,7 +6,7 @@
 #define MEDICATIONTRACKER_DBMANAGER_H
 
 #include "sqlite3.h"
-
+#include "Table.h"
 #include <string>
 #include <sstream>
 #include <iostream>
