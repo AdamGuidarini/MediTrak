@@ -16,12 +16,10 @@ if (NOT SQLITE3_PATH)
     message(SEND_ERROR "Missing environment variable: \"SQLITE3_LIB_PATH\".")
 endif ()
 
-include_directories(${SQLITE3_PATH} DatabaseController Dose Medication Sqlite3Database)
+include_directories(${SQLITE3_PATH} MediTrakCore Sqlite3Database)
 
 add_subdirectory(Sqlite3Database)
-add_subdirectory(DatabaseController)
-add_subdirectory(Medication)
-add_subdirectory(Dose)
+add_subdirectory(MediTrakCore)
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.

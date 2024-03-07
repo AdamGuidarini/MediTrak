@@ -8,8 +8,8 @@
 #include <string>
 #include <vector>
 #include "DbManager.h"
-#include "Medication.h"
-#include "Dose.h"
+#include "../Medication/Medication.h"
+#include "../Dose/Dose.h"
 
 using namespace std;
 

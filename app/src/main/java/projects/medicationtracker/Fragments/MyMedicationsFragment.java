@@ -21,7 +21,6 @@ import java.util.Locale;
 
 import projects.medicationtracker.AddMedication;
 import projects.medicationtracker.Helpers.DBHelper;
-import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.MedicationHistory;
 import projects.medicationtracker.MedicationNotes;
 import projects.medicationtracker.R;
@@ -63,7 +62,7 @@ public class MyMedicationsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Medication med = requireArguments().getParcelable("Medication");
+        Medication med = requireArguments().getParcelable("MediTrakCore/Medication");
 
         final View rootView = inflater.inflate(R.layout.fragment_my_medications, container, false);
 

@@ -179,7 +179,7 @@ public class MyMedications extends AppCompatActivity {
 
         thisMedLayout.setId((int) medication.getId());
 
-        bundle.putParcelable("Medication", medication);
+        bundle.putParcelable("MediTrakCore/Medication", medication);
 
         getSupportFragmentManager()
                 .beginTransaction()
