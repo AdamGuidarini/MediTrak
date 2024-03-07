@@ -584,9 +584,10 @@ bool DbManager::isNumber(string str) {
     return !str.empty() && it == str.end();
 }
 
-vector<map<string, string>> DbManager::execSqlWithReturn(string sql) {
+Table DbManager::execSqlWithReturn(string sql) {
     sqlite3_stmt *stmt = nullptr;
-    vector<map<string, string>> data;
+    Table table;
+    map<string, vector<string>> data;
 
     int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
     sqlite3_step(stmt);
@@ -604,5 +605,5 @@ vector<map<string, string>> DbManager::execSqlWithReturn(string sql) {
 
     sqlite3_finalize(stmt);
 
-    return data;
+    return table;
 }

@@ -103,7 +103,7 @@ public:
      * @param sql query to execute
      * @return
      */
-    vector<map<string, string>> execSqlWithReturn(string sql);
+    Table execSqlWithReturn(string sql);
 
     /**
      * Insert a record into the database
