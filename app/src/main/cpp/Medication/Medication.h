@@ -7,7 +7,7 @@
 
 #include <string>
 #include <vector>
-#include "../Dose/Dose.h"
+#include "Dose.h"
 
 using namespace std;
 

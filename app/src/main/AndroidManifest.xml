@@ -49,7 +49,7 @@
 
         <receiver
             android:name=".Receivers.NotificationReceiver"
-            android:process=":remote"></receiver>
+            android:process=":remote" />
         <receiver
             android:name=".Receivers.EventReceiver"
             android:exported="true">
@@ -72,5 +72,4 @@
                 android:value="true" />
         </service>
     </application>
-
 </manifest>

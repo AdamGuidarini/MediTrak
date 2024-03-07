@@ -7,9 +7,9 @@
 
 #include <string>
 #include <vector>
-#include "../DbManager/DbManager.h"
-#include "../Medication/Medication.h"
-#include "../Dose/Dose.h"
+#include "DbManager.h"
+#include "Medication.h"
+#include "Dose.h"
 
 using namespace std;
 

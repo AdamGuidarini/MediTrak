@@ -16,7 +16,8 @@ if (NOT SQLITE3_PATH)
     message(SEND_ERROR "Missing environment variable: \"SQLITE3_LIB_PATH\".")
 endif ()
 
-include_directories(${SQLITE3_PATH})
+include_directories(${SQLITE3_PATH} DbManager DatabaseController Dose Medication)
+
 add_subdirectory(DbManager)
 add_subdirectory(DatabaseController)
 add_subdirectory(Medication)
@@ -67,6 +68,7 @@ target_link_libraries( # Specifies the target library.
         sqlite3
         DatabaseController
         Medication
+        Dose
         # Links the target library to the log library
         # included in the NDK.
         ${log-lib}
