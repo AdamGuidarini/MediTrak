@@ -313,7 +313,7 @@ vector<map<string, string>> DbManager::readAllValuesInTable(const string& table)
                     colText = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, i)));
                 }
 
-                m.insert({ string(sqlite3_column_name(stmt, i)),string(colText) });
+                m.insert({ string(sqlite3_column_name(stmt, i)), colText });
             }
 
             results.push_back(m);
@@ -584,13 +584,12 @@ bool DbManager::isNumber(string str) {
     return !str.empty() && it == str.end();
 }
 
-Table DbManager::execSqlWithReturn(string sql) {
+Table* DbManager::execSqlWithReturn(string sql) {
     sqlite3_stmt *stmt = nullptr;
-    Table table;
+    Table* table;
     map<string, vector<string>> data;
 
     int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
-    sqlite3_step(stmt);
 
     try {
         if (rc != SQLITE_OK) {
@@ -603,7 +602,7 @@ Table DbManager::execSqlWithReturn(string sql) {
         throw error;
     }
 
-    sqlite3_finalize(stmt);
+    table = new Table(stmt);
 
     return table;
 }

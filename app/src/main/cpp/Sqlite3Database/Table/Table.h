@@ -8,6 +8,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include "sqlite3.h"
 
 using namespace std;
 
@@ -23,7 +24,7 @@ public:
     /**
      * Class constructor - Initializes table
      */
-    Table(map<string, vector<string>> data);
+    Table(sqlite3_stmt* stmt);
 
     /**
      * Set current row to first

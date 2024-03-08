@@ -4,10 +4,36 @@
 
 #include "Table.h"
 
-Table::Table(map<string, vector<string>> data) {
-    table = std::move(data);
+Table::Table(sqlite3_stmt* stmt) {
     currentRow = 0;
     rowCount = table.begin()->second.size();
+    table = map<string, vector<string>>();
+
+    if (stmt == nullptr) {
+        throw runtime_error("Table received nullptr statement");
+    }
+
+    // GetRows
+    while (sqlite3_column_text(stmt, 0)) {
+        for (int i = 0; i < sqlite3_column_count(stmt); i++) {
+            string colText = "";
+            string colName = string(sqlite3_column_name(stmt, i));
+
+            if (sqlite3_column_text(stmt, i) != nullptr) {
+                colText = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, i)));
+            }
+
+            if (table.count(colName) != 0) {
+                table.at(colName).push_back(colText);
+            } else {
+                table.insert({ colName, { colText } });
+            }
+        }
+
+        sqlite3_step(stmt);
+    }
+
+    sqlite3_finalize(stmt);
 }
 
 void Table::moveToFirst() {
