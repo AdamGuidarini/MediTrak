@@ -2,6 +2,8 @@ package projects.medicationtracker.Helpers;
 
 import android.util.Pair;
 
+import projects.medicationtracker.SimpleClasses.Medication;
+
 public class NativeDbHelper {
     static {
         System.loadLibrary("medicationtracker");
@@ -59,14 +61,6 @@ public class NativeDbHelper {
         delete(dbPath, table, where);
     }
 
-    public void updateTimeFormat(String format) {
-
-    }
-
-    public void updateDateFormat(String format) {
-        
-    }
-
     /**
      * Exports a database
      * @param exportPath Path where exported file will be created
@@ -87,6 +81,15 @@ public class NativeDbHelper {
         return dbImporter(dbPath, fileContents, ignoredTables);
     }
 
+    /**
+     * Retrieves medication and all past doses
+     * @param medId ID of medication
+     * @return Medication with all doses - Includes any parents/children
+     */
+    public Medication getMedicationHistory(long medId) {
+        return getMedHistory(dbPath, medId);
+    }
+
     private  native void dbCreate(String dbPath);
     private native void dbUpgrade(String dbPath, int version);
     private native long insert(String dbPath, String table, Pair<String, String>[] values);
@@ -94,4 +97,5 @@ public class NativeDbHelper {
     private native long delete(String dbPath, String table, Pair<String, String>[] values);
     private native boolean dbExporter(String databaseName, String exportDirectory, String[] ignoredTables);
     private native boolean dbImporter(String dbPath, String fileContents, String[] ignoredTables);
+    private native Medication getMedHistory(String dbPath, long medId);
 }

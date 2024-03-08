@@ -201,3 +201,14 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_delete(
         return false;
     }
 }
+
+extern "C"
+JNIEXPORT jobject JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_getMedHistory(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jlong med_id
+) {
+    return nullptr;
+}
