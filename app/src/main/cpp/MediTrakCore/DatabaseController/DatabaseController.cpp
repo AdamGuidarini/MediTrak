@@ -187,3 +187,15 @@ Medication DatabaseController::getMedication(long medicationId) {
 vector<Dose> DatabaseController::getDoses(long medicationId) {
     return vector<Dose>();
 }
+
+Medication DatabaseController::getMedicationHistory(long medId) {
+    string query = "SELECT * FROM " + MEDICATION_TABLE
+            + " WHERE " + MED_ID + "=" + to_string(medId);
+    Medication med;
+
+    Table* table = manager.execSqlWithReturn(query);
+
+    // Process table
+
+    return med;
+}

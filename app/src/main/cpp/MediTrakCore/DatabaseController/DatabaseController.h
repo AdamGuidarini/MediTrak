@@ -173,6 +173,13 @@ public:
      * @return
      */
     vector<Dose> getDoses(long medicationId);
+
+    /**
+     * Retrieves a medication, all its doses, and its lineage (parents, children, etc...)
+     * @param medId ID of medication
+     * @return A medication with all its recorded doses, parent/children and all their doses.
+     */
+    Medication getMedicationHistory(long medId);
 };
 
 #endif //MEDICATIONTRACKER_DATABASECONTROLLER_H
