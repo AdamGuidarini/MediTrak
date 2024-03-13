@@ -231,6 +231,13 @@ Medication DatabaseController::getMedicationHistory(long medicationId) {
 
     Table* table = manager.execSqlWithReturn(query);
 
+    while (!table->isAfterLast()) {
+        auto row = table->getItem(MED_ID);
+
+        cout << row;
+
+        table->moveToNext();
+    }
 
     delete table;
 

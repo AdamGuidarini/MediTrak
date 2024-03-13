@@ -6,12 +6,13 @@
 
 Table::Table(sqlite3_stmt* stmt) {
     currentRow = 0;
-    rowCount = table.begin()->second.size();
     table = map<string, vector<string>>();
 
     if (stmt == nullptr) {
         throw runtime_error("Table received nullptr statement");
     }
+
+    sqlite3_step(stmt);
 
     // GetRows
     while (sqlite3_column_text(stmt, 0)) {
@@ -34,6 +35,7 @@ Table::Table(sqlite3_stmt* stmt) {
     }
 
     sqlite3_finalize(stmt);
+    rowCount = table.begin()->second.size();
 }
 
 void Table::moveToFirst() {
@@ -42,6 +44,10 @@ void Table::moveToFirst() {
 
 void Table::moveToNext() {
     currentRow++;
+
+    if (currentRow >= rowCount - 1) {
+        currentRow = -1;
+    }
 }
 
 void Table::moveToLast() {
@@ -61,9 +67,9 @@ string Table::getItem(string columnName) {
 }
 
 bool Table::isFirst() {
-    return rowCount == 0;
+    return currentRow == 0;
 }
 
 bool Table::isAfterLast() {
-    return rowCount == -1;
+    return currentRow == -1;
 }
