@@ -181,21 +181,58 @@ void DatabaseController::importJSONString(
 }
 
 Medication DatabaseController::getMedication(long medicationId) {
-    return Medication();
+    string query = "SELECT * FROM " + MEDICATION_TABLE + " m "
+            + " INNER JOIN " + MEDICATION_TIMES + " t ON "
+            + " m." + MED_ID + "= t." + MED_ID
+            + " WHERE m." + MED_ID + "=" + to_string(medicationId);
+    struct Medication med;
+    Table* table = manager.execSqlWithReturn(query);
+    vector<string> times;
+
+    table->moveToFirst();
+
+    med = Medication(
+            table->getItem(MED_NAME),
+            table->getItem(PATIENT_NAME),
+            table->getItem(MED_UNITS),
+            {},
+            table->getItem(START_DATE),
+            stol(table->getItem(MED_ID)),
+            stoi(table->getItem(MED_DOSAGE)),
+            stoi(table->getItem(MED_FREQUENCY)),
+            table->getItem(ACTIVE) == "1",
+            table->getItem(ALIAS)
+    );
+
+    while (!table->isAfterLast()) {
+        times.push_back(table->getItem(DRUG_TIME));
+
+        table->moveToNext();
+    }
+
+    med.times = times;
+
+    delete table;
+
+    return med;
 }
 
 vector<Dose> DatabaseController::getDoses(long medicationId) {
     return vector<Dose>();
 }
 
-Medication DatabaseController::getMedicationHistory(long medId) {
-    string query = "SELECT * FROM " + MEDICATION_TABLE
-            + " WHERE " + MED_ID + "=" + to_string(medId);
+Medication DatabaseController::getMedicationHistory(long medicationId) {
+    string query = "SELECT * FROM " + MEDICATION_TABLE + " m "
+                   + " INNER JOIN " + MEDICATION_TIMES + " t ON "
+                   + " m." + MED_ID + "= t." + MED_ID
+                   + " WHERE m." + MED_ID + "=" + to_string(medicationId);
     Medication med;
+
 
     Table* table = manager.execSqlWithReturn(query);
 
-    // Process table
+
+    delete table;
 
     return med;
 }

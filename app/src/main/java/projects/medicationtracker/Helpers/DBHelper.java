@@ -97,7 +97,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        nativeHelper = new NativeDbHelper(MainActivity.dbDir);
+        nativeHelper = new NativeDbHelper(MainActivity.DATABASE_DIR);
     }
 
     /**
@@ -122,7 +122,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         if (nativeHelper == null) {
-            nativeHelper = new NativeDbHelper(MainActivity.dbDir);
+            nativeHelper = new NativeDbHelper(MainActivity.DATABASE_DIR);
         }
     }
 
@@ -775,7 +775,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public long addNote(String note, long medId) {
         if (nativeHelper == null) {
-            nativeHelper = new NativeDbHelper(MainActivity.dbDir);
+            nativeHelper = new NativeDbHelper(MainActivity.DATABASE_DIR);
         }
 
         Pair<String, String>[] values = new Pair[3];
@@ -794,7 +794,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public void deleteNote(Note note) {
         if (nativeHelper == null) {
-            nativeHelper = new NativeDbHelper(MainActivity.dbDir);
+            nativeHelper = new NativeDbHelper(MainActivity.DATABASE_DIR);
         }
 
         Pair<String, String>[] values = new Pair[1];
@@ -819,7 +819,7 @@ public class DBHelper extends SQLiteOpenHelper {
         where[0] = new Pair<>(NOTE_ID, String.valueOf(note.getNoteId()));
 
         if (nativeHelper == null) {
-            nativeHelper = new NativeDbHelper(MainActivity.dbDir);
+            nativeHelper = new NativeDbHelper(MainActivity.DATABASE_DIR);
         }
 
         nativeHelper.update(
@@ -1010,7 +1010,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public void setDateTimeFormat(String dateFormat, String timeFormat) {
         if (nativeHelper == null) {
-            nativeHelper = new NativeDbHelper(MainActivity.dbDir);
+            nativeHelper = new NativeDbHelper(MainActivity.DATABASE_DIR);
         }
 
         Pair<String, String>[] formats = new Pair[2];

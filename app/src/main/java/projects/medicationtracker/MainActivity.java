@@ -53,7 +53,7 @@ import projects.medicationtracker.SimpleClasses.Medication;
 import projects.medicationtracker.Views.StandardCardView;
 
 public class MainActivity extends AppCompatActivity {
-    public static String dbDir;
+    public static String DATABASE_DIR;
     public static Bundle preferences;
     private final DBHelper db = new DBHelper(this);
     private LinearLayout scheduleLayout;
@@ -75,9 +75,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dbDir = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
+        DATABASE_DIR = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
 
-        nativeDb = new NativeDbHelper(dbDir);
+        nativeDb = new NativeDbHelper(DATABASE_DIR);
 
         preferences = db.getPreferences();
 

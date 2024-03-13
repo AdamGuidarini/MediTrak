@@ -23,8 +23,8 @@ struct Medication {
         int dosage;
         int frequency;
         bool active;
-        Medication* parent;
-        Medication* child;
+        Medication* parent = nullptr;
+        Medication* child = nullptr;
 
         /**
          * Default constructor
@@ -61,6 +61,12 @@ struct Medication {
          * Destructor
          */
         ~Medication();
+
+private:
+    /**
+     * Recursively delete parent and its parents
+     */
+    void deleteParents();
 };
 
 #endif //MEDICATIONTRACKER_MEDICATION_H

@@ -10,12 +10,29 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Objects;
 
+import projects.medicationtracker.Helpers.NativeDbHelper;
+import projects.medicationtracker.SimpleClasses.Medication;
+
 public class MedicationHistory extends AppCompatActivity {
+    long medId;
+    NativeDbHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medication_history);
+
+        medId = getIntent().getLongExtra("ID", -1);
+
+        if (medId == -1) {
+            Intent returnToMyMeds = new Intent(this, MyMedications.class);
+            finish();
+            startActivity(returnToMyMeds);
+        }
+
+        db = new NativeDbHelper(MainActivity.DATABASE_DIR);
+
+        Medication med = db.getMedicationHistory(medId);
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.history);
