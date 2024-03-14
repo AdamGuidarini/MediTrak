@@ -218,28 +218,8 @@ Medication DatabaseController::getMedication(long medicationId) {
 }
 
 vector<Dose> DatabaseController::getDoses(long medicationId) {
+    string query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE
+            + " WHERE " + MED_ID + "=" + to_string(medicationId);
+
     return vector<Dose>();
-}
-
-Medication DatabaseController::getMedicationHistory(long medicationId) {
-    string query = "SELECT * FROM " + MEDICATION_TABLE + " m "
-                   + " INNER JOIN " + MEDICATION_TIMES + " t ON "
-                   + " m." + MED_ID + "= t." + MED_ID
-                   + " WHERE m." + MED_ID + "=" + to_string(medicationId);
-    Medication med;
-
-
-    Table* table = manager.execSqlWithReturn(query);
-
-    while (!table->isAfterLast()) {
-        auto row = table->getItem(MED_ID);
-
-        cout << row;
-
-        table->moveToNext();
-    }
-
-    delete table;
-
-    return med;
 }

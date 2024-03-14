@@ -215,7 +215,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getMedHistory(
 
     DatabaseController dbController(path);
 
-    dbController.getMedicationHistory(med_id);
+    dbController.getMedication(med_id);
 
     return nullptr;
 }
