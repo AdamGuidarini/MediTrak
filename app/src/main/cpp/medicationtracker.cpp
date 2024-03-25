@@ -211,11 +211,15 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getMedHistory(
         jlong med_id
 ) {
     std::string path = env->GetStringUTFChars(db_path, new jboolean(true));
-    Medication m;
+    Medication med;
+    jobject medication;
+    jclass lMedClass = env->FindClass("projects/medicationtracker/SimpleClasses$Medication");
 
     DatabaseController dbController(path);
 
-    dbController.getMedication(med_id);
+    med = dbController.getMedication(med_id);
+
+
 
     return nullptr;
 }

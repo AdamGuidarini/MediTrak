@@ -7,6 +7,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 #include "../Dose/Dose.h"
 
 using namespace std;
@@ -23,8 +24,8 @@ struct Medication {
         int dosage;
         int frequency;
         bool active;
-        Medication* parent = nullptr;
-        Medication* child = nullptr;
+        shared_ptr<Medication> parent = nullptr;
+        shared_ptr<Medication> child = nullptr;
 
         /**
          * Default constructor
@@ -56,17 +57,6 @@ struct Medication {
             bool active,
             string alias = ""
         );
-
-        /**
-         * Destructor
-         */
-        ~Medication();
-
-private:
-    /**
-     * Recursively delete parent and its parents
-     */
-    void deleteParents();
 };
 
 #endif //MEDICATIONTRACKER_MEDICATION_H

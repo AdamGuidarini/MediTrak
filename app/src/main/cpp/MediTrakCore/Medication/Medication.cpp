@@ -17,10 +17,6 @@ Medication::Medication() {
     active = false;
 }
 
-Medication::~Medication() {
-    deleteParents();
-}
-
 Medication::Medication(
         string medicationName,
         string patientName,
@@ -43,21 +39,4 @@ Medication::Medication(
     this->frequency = frequency;
     this->active = active;
     this->alias = alias;
-}
-
-void Medication::deleteParents() {
-    if (parent == nullptr) {
-        return;
-    }
-
-    if (parent->parent == nullptr) {
-        delete parent;
-    } else {
-        Medication* temp = parent->parent;
-        delete parent;
-
-        parent = temp;
-
-        deleteParents();
-    }
 }

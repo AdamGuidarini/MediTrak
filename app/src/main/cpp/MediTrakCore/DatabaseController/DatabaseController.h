@@ -7,6 +7,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 #include "DbManager.h"
 #include "../Medication/Medication.h"
 #include "../Dose/Dose.h"

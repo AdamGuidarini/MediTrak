@@ -181,17 +181,15 @@ void DatabaseController::importJSONString(
 }
 
 Medication DatabaseController::getMedication(long medicationId) {
-    string query = "SELECT * FROM " + MEDICATION_TABLE + " m "
-            + " INNER JOIN " + MEDICATION_TIMES + " t ON "
-            + " m." + MED_ID + "= t." + MED_ID
-            + " WHERE m." + MED_ID + "=" + to_string(medicationId);
-    struct Medication med;
+    string query = "SELECT * FROM " + MEDICATION_TABLE
+            + " WHERE " + MED_ID + "=" + to_string(medicationId);
+    Medication medication;
     Table* table = manager.execSqlWithReturn(query);
-    vector<string> times;
+    long parentId = 0;
 
     table->moveToFirst();
 
-    med = Medication(
+    medication = Medication(
             table->getItem(MED_NAME),
             table->getItem(PATIENT_NAME),
             table->getItem(MED_UNITS),
@@ -204,17 +202,19 @@ Medication DatabaseController::getMedication(long medicationId) {
             table->getItem(ALIAS)
     );
 
-    while (!table->isAfterLast()) {
-        times.push_back(table->getItem(DRUG_TIME));
-
-        table->moveToNext();
+    if (!table->getItem(PARENT_ID).empty()) {
+        parentId = stol(table->getItem(PARENT_ID));
     }
-
-    med.times = times;
 
     delete table;
 
-    return med;
+    if (parentId > 0) {
+        Medication parent = getMedication(parentId);
+        medication.parent = make_shared<Medication>(parent);
+        medication.parent->child = make_shared<Medication>(medication);
+    }
+
+    return medication;
 }
 
 vector<Dose> DatabaseController::getDoses(long medicationId) {
