@@ -28,6 +28,28 @@ std::map<std::string, std::string> getValues(jobjectArray arr, JNIEnv *env) {
     return vals;
 }
 
+jobject medicationToJavaConverter(Medication med, JNIEnv* env) {
+    jobject medication;
+    jclass medClass = env->FindClass("projects/medicationtracker/SimpleClassesMedication");
+    jclass localDateTimeClass = env->FindClass("java/time/LocalDateTime");
+    jclass medicationGlobalClass = reinterpret_cast<jclass>(env->NewGlobalRef(medClass));
+    jmethodID medConstructor = env->GetMethodID(
+            medClass,
+            "<init>",
+            "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/time/LocalDateTime;Ljava/time/LocalDateTime;JIILjava/lang/String;)V"
+    );
+
+    // javaMed = ??
+
+//    if (med.parent != nullptr) {
+//        // javaMed.parent = medicationToJavaConverter(med.parent, env);
+//    }
+//
+//    medication = env->NewObject(medClass, medConstructor, jstring(""), jstring(""), jstring(""), jarray(), jarray(), jlong(-1), jint(-1), jint(-1), jstring(""));
+
+    return nullptr;
+}
+
 extern "C"
 JNIEXPORT jboolean JNICALL
 Java_projects_medicationtracker_Helpers_NativeDbHelper_dbExporter(
@@ -212,14 +234,8 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getMedHistory(
 ) {
     std::string path = env->GetStringUTFChars(db_path, new jboolean(true));
     Medication med;
-    jobject medication;
-    jclass lMedClass = env->FindClass("projects/medicationtracker/SimpleClasses$Medication");
 
     DatabaseController dbController(path);
 
-    med = dbController.getMedication(med_id);
-
-
-
-    return nullptr;
+    return medicationToJavaConverter(dbController.getMedication(med_id), env);
 }
