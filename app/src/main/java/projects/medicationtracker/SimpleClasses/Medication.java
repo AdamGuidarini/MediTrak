@@ -1,9 +1,6 @@
 package projects.medicationtracker.SimpleClasses;
 
 import static projects.medicationtracker.AddMedication.MINUTES_IN_DAY;
-import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
-import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
-import static projects.medicationtracker.MainActivity.preferences;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -12,7 +9,6 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 

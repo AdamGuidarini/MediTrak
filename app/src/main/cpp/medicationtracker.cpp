@@ -28,26 +28,145 @@ std::map<std::string, std::string> getValues(jobjectArray arr, JNIEnv *env) {
     return vals;
 }
 
-jobject medicationToJavaConverter(Medication med, JNIEnv* env) {
-    jobject medication;
-    jclass medClass = env->FindClass("projects/medicationtracker/SimpleClassesMedication");
-    jclass localDateTimeClass = env->FindClass("java/time/LocalDateTime");
-    jclass medicationGlobalClass = reinterpret_cast<jclass>(env->NewGlobalRef(medClass));
-    jmethodID medConstructor = env->GetMethodID(
-            medClass,
-            "<init>",
-            "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/time/LocalDateTime;Ljava/time/LocalDateTime;JIILjava/lang/String;)V"
+jobject parseLocalDateTime(std::string dateString, JNIEnv* env) {
+    jclass LocalDateTime = env->FindClass("java/time/LocalDateTime");
+    jmethodID of = env->GetStaticMethodID(LocalDateTime, "of", "(IIIII)Ljava/time/LocalDateTime;");
+    int dateParts[5];
+    int i = 0;
+
+    char* t = strtok(dateString.data(), ": -");
+
+    while(t) {
+        dateParts[i] = atoi(t);
+        t = strtok(NULL, ": -");
+
+        i++;
+    }
+
+    return env->CallStaticObjectMethod(
+            LocalDateTime,
+            of,
+            dateParts[0],
+            dateParts[1],
+            dateParts[2],
+            dateParts[3],
+            dateParts[4]
+    );
+}
+
+void medicationToJavaConverter(Medication med, JNIEnv* env, jobject &jMedicationInstance) {
+    jclass jmedication = env->GetObjectClass(jMedicationInstance);
+    jmethodID setId = env->GetMethodID(
+        jmedication,
+        "setId",
+        "(J)V"
+    );
+    jmethodID setName = env->GetMethodID(
+        jmedication,
+        "setName",
+        "(Ljava/lang/String;)V"
+    );
+    jmethodID setFrequency = env->GetMethodID(
+        jmedication,
+        "setFrequency",
+        "(I)V"
+    );
+    jmethodID setDosage = env->GetMethodID(
+        jmedication,
+        "setDosage",
+        "(I)V"
+    );
+    jmethodID setDosageUnits = env->GetMethodID(
+        jmedication,
+        "setDosageUnits",
+        "(Ljava/lang/String;)V"
+    );
+    jmethodID setTimes = env->GetMethodID(
+        jmedication,
+        "setTimes",
+        "([Ljava/time/LocalDateTime;)V"
+    );
+    jmethodID setPatientName = env->GetMethodID(
+        jmedication,
+        "setPatientName",
+        "(Ljava/lang/String;)V"
+    );
+    jmethodID setStartDate = env->GetMethodID(
+        jmedication,
+        "setStartDate",
+        "(Ljava/time/LocalDateTime;)V"
+    );
+    jmethodID setAlias = env->GetMethodID(
+        jmedication,
+        "setAlias",
+        "(Ljava/lang/String;)V"
+    );
+    jmethodID setActiveStatus = env->GetMethodID(
+        jmedication,
+        "setActiveStatus",
+        "(Z)V"
+    );
+    jmethodID setParent = env->GetMethodID(
+        jmedication,
+        "setParent",
+        "(Lprojects/medicationtracker/SimpleClasses/Medication;)V"
+    );
+    jmethodID setChild = env->GetMethodID(
+        jmedication,
+        "setChild",
+        "(Lprojects/medicationtracker/SimpleClasses/Medication;)V"
+    );
+    jmethodID setDoses = env->GetMethodID(
+        jmedication,
+        "setDoses",
+        "([Lprojects/medicationtracker/SimpleClasses/Dose;)V"
     );
 
-    // javaMed = ??
-
-//    if (med.parent != nullptr) {
-//        // javaMed.parent = medicationToJavaConverter(med.parent, env);
-//    }
-//
-//    medication = env->NewObject(medClass, medConstructor, jstring(""), jstring(""), jstring(""), jarray(), jarray(), jlong(-1), jint(-1), jint(-1), jstring(""));
-
-    return nullptr;
+    env->CallVoidMethod(
+        jMedicationInstance,
+        setId,
+        med.id
+    );
+    env->CallVoidMethod(
+        jMedicationInstance,
+        setName,
+        env->NewStringUTF(med.medicationName.c_str())
+    );
+    env->CallVoidMethod(
+        jMedicationInstance,
+        setFrequency,
+        jint(med.frequency)
+    );
+    env->CallVoidMethod(
+        jMedicationInstance,
+        setDosage,
+        jint(med.dosage)
+    );
+    env->CallVoidMethod(
+        jMedicationInstance,
+        setDosageUnits,
+        env->NewStringUTF(med.dosageUnit.c_str())
+    );
+    env->CallVoidMethod(
+        jMedicationInstance,
+        setPatientName,
+        env->NewStringUTF(med.patientName.c_str())
+    );
+    env->CallVoidMethod(
+        jMedicationInstance,
+        setStartDate,
+        parseLocalDateTime(med.startDate, env)
+    );
+    env->CallVoidMethod(
+        jMedicationInstance,
+        setAlias,
+        env->NewStringUTF(med.alias.c_str())
+    );
+    env->CallVoidMethod(
+        jMedicationInstance,
+        setActiveStatus,
+        med.active
+    );
 }
 
 extern "C"
@@ -115,8 +234,6 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(
 
         success = false;
     }
-
-//    env->ReleaseStringUTFChars(file_contents, fileContents.c_str());
 
     return success;
 }
@@ -225,17 +342,17 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_delete(
 }
 
 extern "C"
-JNIEXPORT jobject JNICALL
+JNIEXPORT void JNICALL
 Java_projects_medicationtracker_Helpers_NativeDbHelper_getMedHistory(
         JNIEnv *env,
         jobject thiz,
         jstring db_path,
-        jlong med_id
+        jlong med_id,
+        jobject medInstance
 ) {
     std::string path = env->GetStringUTFChars(db_path, new jboolean(true));
-    Medication med;
 
     DatabaseController dbController(path);
 
-    return medicationToJavaConverter(dbController.getMedication(med_id), env);
+    medicationToJavaConverter(dbController.getMedication(med_id), env, medInstance);
 }

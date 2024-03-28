@@ -181,11 +181,14 @@ void DatabaseController::importJSONString(
 }
 
 Medication DatabaseController::getMedication(long medicationId) {
-    string query = "SELECT * FROM " + MEDICATION_TABLE
-            + " WHERE " + MED_ID + "=" + to_string(medicationId);
+    string query = "SELECT * FROM " + MEDICATION_TABLE + " m "
+            + " INNER JOIN " + MEDICATION_TIMES + " mt "
+            + " ON " + "m." + MED_ID + "= mt." + MED_ID
+            + " WHERE m." + MED_ID + "=" + to_string(medicationId);
     Medication medication;
     Table* table = manager.execSqlWithReturn(query);
     long parentId = 0;
+    vector<string> times;
 
     table->moveToFirst();
 
@@ -205,6 +208,14 @@ Medication DatabaseController::getMedication(long medicationId) {
     if (!table->getItem(PARENT_ID).empty()) {
         parentId = stol(table->getItem(PARENT_ID));
     }
+
+    while (!table->isAfterLast()) {
+        times.push_back(table->getItem(DRUG_TIME));
+
+        table->moveToNext();
+    }
+
+    medication.times = std::move(times);
 
     delete table;
 

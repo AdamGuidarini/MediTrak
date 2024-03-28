@@ -87,7 +87,11 @@ public class NativeDbHelper {
      * @return Medication with all doses - Includes any parents/children
      */
     public Medication getMedicationHistory(long medId) {
-        return getMedHistory(dbPath, medId);
+        Medication m = new Medication();
+
+        getMedHistory(dbPath, medId, m);
+
+        return m;
     }
 
     private  native void dbCreate(String dbPath);
@@ -97,5 +101,5 @@ public class NativeDbHelper {
     private native long delete(String dbPath, String table, Pair<String, String>[] values);
     private native boolean dbExporter(String databaseName, String exportDirectory, String[] ignoredTables);
     private native boolean dbImporter(String dbPath, String fileContents, String[] ignoredTables);
-    private native Medication getMedHistory(String dbPath, long medId);
+    private native void getMedHistory(String dbPath, long medId, Medication medInstance);
 }
