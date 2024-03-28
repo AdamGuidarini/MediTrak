@@ -5,16 +5,17 @@
 #ifndef MEDICATIONTRACKER_DOSE_H
 #define MEDICATIONTRACKER_DOSE_H
 
-#include <cstring>
+#include <string>
 
 struct Dose {
     long id;
     long medicationId;
     bool taken;
-    char* doseTime;
+    std::string doseTime;
+    std::string timeTaken;
 
     Dose();
-    Dose(long id, long medicationId, bool taken, char* doseTime);
+    Dose(long id, long medicationId, bool taken, std::string doseTime, std::string timeTaken);
 };
 
 

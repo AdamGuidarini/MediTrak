@@ -344,10 +344,10 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
                 ArrayList<RelativeLayout> asNeededList = new ArrayList<>();
                 final int childCount;
 
-                ll.addView(buildCheckbox(med, dose.getDoseTime()));
+                ll.addView(buildCheckbox(med, dose.getTimeTaken()));
                 childCount = ll.getChildCount();
 
-                ll.addView(buildCheckbox(med, dose.getDoseTime()));
+                ll.addView(buildCheckbox(med, dose.getTimeTaken()));
 
                 for (int i = 0; i < childCount; i++) {
                     asNeededList.add((RelativeLayout) ll.getChildAt(i));

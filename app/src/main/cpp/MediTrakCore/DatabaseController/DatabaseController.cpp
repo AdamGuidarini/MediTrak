@@ -228,9 +228,52 @@ Medication DatabaseController::getMedication(long medicationId) {
     return medication;
 }
 
-vector<Dose> DatabaseController::getDoses(long medicationId) {
-    string query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE
-            + " WHERE " + MED_ID + "=" + to_string(medicationId);
+vector<Dose> DatabaseController::getDoses(Medication medication) {
+    shared_ptr<Medication> nextMed = medication.parent;
+    vector<long> ids = {medication.id};
+    vector<Dose> doses;
 
-    return vector<Dose>();
+    while (nextMed != nullptr) {
+        ids.push_back(nextMed->id);
+
+        nextMed = nextMed->parent;
+    }
+
+    return getDoses(ids);
+}
+
+vector<Dose> DatabaseController::getDoses(long medId) {
+    vector<long> ids = {medId};
+
+    return getDoses(ids);
+}
+
+vector<Dose> DatabaseController::getDoses(vector<long> medicationIds) {
+    string query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE
+                   + " WHERE " + MED_ID + "=" + to_string(medicationIds.at(0));
+    vector<Dose> doses;
+
+    for (int i = 1; i < medicationIds.size(); i++) {
+        query += " OR " + MED_ID + "=" + to_string(medicationIds.at(i));
+    }
+
+    Table* table = manager.execSqlWithReturn(query);
+
+    while (!table->isAfterLast() && table->getCount() > 0) {
+        doses.push_back(
+            Dose(
+                stol(table->getItem(DOSE_ID)),
+                stol(table->getItem(MED_ID)),
+                table->getItem(TAKEN) == "1",
+                table->getItem(DOSE_TIME),
+                table->getItem(TIME_TAKEN)
+            )
+        );
+
+        table->moveToNext();
+    }
+
+    delete table;
+
+    return doses;
 }

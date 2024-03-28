@@ -86,6 +86,7 @@ private:
      */
     void create();
 
+    vector<Dose> getDoses(vector<long> medicationIds);
 public:
     const string NOTES_TABLE = "Notes";
     const string SETTINGS_TABLE = "Settings";
@@ -170,10 +171,17 @@ public:
 
     /**
      * Retrieves Doses for provided Medication
-     * @param medicationId
-     * @return
+     * @param medication Medication whose doses are sought
+     * @return all doses for given medication and its lineage (parents, grandparents, tec...)
      */
-    vector<Dose> getDoses(long medicationId);
+    vector<Dose> getDoses(Medication medication);
+
+    /**
+     * Retrieves all does for medication whose ID matches medId
+     * @param medId ID of medication whose doses are sought
+     * @return all doses for given medication
+     */
+    vector<Dose> getDoses(long medId);
 };
 
 #endif //MEDICATIONTRACKER_DATABASECONTROLLER_H

@@ -166,7 +166,7 @@ public class DoseInfoDialog extends DialogFragment {
 
         Fragment fragment = getParentFragment();
 
-        Dose dose = new Dose(doseId, -1, true, LocalDateTime.of((LocalDate) dateTaken.getTag(), (LocalTime) timeTaken.getTag()));
+        Dose dose = new Dose(doseId, -1, true, LocalDateTime.of((LocalDate) dateTaken.getTag(), (LocalTime) timeTaken.getTag()), null);
 
         if (fragment instanceof IDialogCloseListener) {
             ((IDialogCloseListener) fragment).handleDialogClose(

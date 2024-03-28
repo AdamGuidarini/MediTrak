@@ -160,7 +160,7 @@ public class AddAsNeededDoseDialog extends DialogFragment {
 
         db.updateDoseStatus(doseId, TimeFormatting.localDateTimeToString(dateTimeTaken), true);
 
-        Dose dose = new Dose(doseId, med.getId(), true, dateTimeTaken);
+        Dose dose = new Dose(doseId, med.getId(), true, dateTimeTaken, null);
 
         if (fragment instanceof IDialogCloseListener) {
             ((IDialogCloseListener) fragment).handleDialogClose(

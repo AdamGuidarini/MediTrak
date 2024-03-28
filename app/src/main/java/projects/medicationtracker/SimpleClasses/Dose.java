@@ -11,6 +11,7 @@ public class Dose {
     private long doseId;
     private boolean taken;
     private long medId;
+    private LocalDateTime timeTaken;
     private LocalDateTime doseTime;
 
     /**
@@ -20,11 +21,12 @@ public class Dose {
      * @param isTaken Whether or not medication is taken
      * @param timeTaken Time when medication was taken or null
      */
-    public Dose(long id, long medicationId, boolean isTaken, @Nullable LocalDateTime timeTaken) {
+    public Dose(long id, long medicationId, boolean isTaken, @Nullable LocalDateTime timeTaken, @Nullable LocalDateTime doseTime) {
         doseId = id;
         medId = medicationId;
         taken = isTaken;
-        doseTime = timeTaken;
+        this.timeTaken = timeTaken;
+        this.doseTime = doseTime;
     }
 
     /**
@@ -65,14 +67,22 @@ public class Dose {
      * Get time dose was taken
      * @return Time medication was taken
      */
-    public LocalDateTime getDoseTime() { return doseTime; }
+    public LocalDateTime getTimeTaken() { return timeTaken; }
 
     /**
      * Set time medication was taken, also sets taken to true
      * @param timeTaken Time medication was taken
      */
     public void siteDoseTime(LocalDateTime timeTaken) {
-        this.doseTime = timeTaken;
+        this.timeTaken = timeTaken;
         this.taken = true;
+    }
+
+    public LocalDateTime getDoseTime() {
+        return doseTime;
+    }
+
+    public void setDoseTime(LocalDateTime doseTime) {
+        this.doseTime = doseTime;
     }
 }

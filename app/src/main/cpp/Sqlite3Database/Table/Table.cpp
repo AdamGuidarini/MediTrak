@@ -45,13 +45,13 @@ void Table::moveToFirst() {
 void Table::moveToNext() {
     currentRow++;
 
-    if (currentRow >= rowCount - 1) {
+    if (currentRow > rowCount - 1) {
         currentRow = -1;
     }
 }
 
 void Table::moveToLast() {
-    currentRow = -1;
+    currentRow = rowCount - 1;
 }
 
 void Table::moveToRow(int row) {
