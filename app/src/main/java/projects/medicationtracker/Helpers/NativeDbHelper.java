@@ -2,6 +2,7 @@ package projects.medicationtracker.Helpers;
 
 import android.util.Pair;
 
+import projects.medicationtracker.SimpleClasses.Dose;
 import projects.medicationtracker.SimpleClasses.Medication;
 
 public class NativeDbHelper {
@@ -88,6 +89,7 @@ public class NativeDbHelper {
      */
     public Medication getMedicationHistory(long medId) {
         Medication m = new Medication();
+        m.setDoses(new Dose[]{ new Dose() });
 
         getMedHistory(dbPath, medId, m);
 

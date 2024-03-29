@@ -54,6 +54,36 @@ jobject parseLocalDateTime(std::string dateString, JNIEnv* env) {
     );
 }
 
+jobjectArray doseToJavaConverter(vector<Dose> doses, JNIEnv* env, jobject &jMedication) {
+    jfieldID medDoses = env->GetFieldID(env->GetObjectClass(jMedication), "doses", "[Lprojects/medicationtracker/SimpleClasses/Dose;");
+    jobjectArray jDoses = static_cast<jobjectArray>(env->GetObjectField(jMedication, medDoses));
+    jclass jDose = env->GetObjectClass(env->GetObjectArrayElement(jDoses, 0));
+
+    jDoses = env->NewObjectArray(doses.size(), jDose, NULL);
+
+    jmethodID constructor = env->GetMethodID(
+        jDose,
+        "<init>",
+        "(JJZLjava/time/LocalDateTime;Ljava/time/LocalDateTime;)V"
+    );
+
+    for (int i = 0; i < doses.size(); i++) {
+        jobject dose = env->NewObject(
+            jDose,
+            constructor,
+            doses.at(i).id,
+            doses.at(i).medicationId,
+            doses.at(i).taken,
+            parseLocalDateTime(doses.at(i).timeTaken, env),
+            parseLocalDateTime(doses.at(i).doseTime, env)
+        );
+
+        env->SetObjectArrayElement(jDoses, i, dose);
+    }
+
+    return jDoses;
+}
+
 void medicationToJavaConverter(Medication med, JNIEnv* env, jobject &jMedicationInstance) {
     jclass jMedication = env->GetObjectClass(jMedicationInstance);
     jclass LocalDateTime = env->FindClass("java/time/LocalDateTime");
@@ -85,11 +115,7 @@ void medicationToJavaConverter(Medication med, JNIEnv* env, jobject &jMedication
     for (int i = 0; i < med.times.size(); i++) {
         std::string dateString = med.startDate.substr(0, med.startDate.find(" ")) + " " + med.times.at(i);
 
-        env->SetObjectArrayElement(
-            medTimes,
-            i,
-            parseLocalDateTime(dateString, env)
-        );
+        env->SetObjectArrayElement(medTimes, i, parseLocalDateTime(dateString, env));
     }
 
     env->CallVoidMethod(jMedicationInstance, setTimes, medTimes);
@@ -103,7 +129,11 @@ void medicationToJavaConverter(Medication med, JNIEnv* env, jobject &jMedication
         env->CallVoidMethod(cloneMed, setChild, jMedicationInstance);
 
         medicationToJavaConverter(*med.parent, env, cloneMed);
+
+        env->CallVoidMethod(jMedicationInstance, setParent, cloneMed);
     }
+
+    env->CallVoidMethod(jMedicationInstance, setDoses, doseToJavaConverter(med.doses, env, jMedicationInstance));
 }
 
 extern "C"

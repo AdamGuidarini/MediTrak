@@ -29,6 +29,14 @@ public class Dose {
         this.doseTime = doseTime;
     }
 
+    public Dose() {
+        doseId = -1;
+        medId = -1;
+        taken = false;
+        timeTaken = null;
+        doseTime = null;
+    }
+
     /**
      * Dose ID getter
      */
@@ -69,13 +77,8 @@ public class Dose {
      */
     public LocalDateTime getTimeTaken() { return timeTaken; }
 
-    /**
-     * Set time medication was taken, also sets taken to true
-     * @param timeTaken Time medication was taken
-     */
-    public void siteDoseTime(LocalDateTime timeTaken) {
+    public void setTimeTaken(LocalDateTime timeTaken) {
         this.timeTaken = timeTaken;
-        this.taken = true;
     }
 
     public LocalDateTime getDoseTime() {
