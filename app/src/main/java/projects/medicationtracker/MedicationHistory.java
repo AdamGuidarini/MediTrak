@@ -16,6 +16,7 @@ import projects.medicationtracker.SimpleClasses.Medication;
 public class MedicationHistory extends AppCompatActivity {
     long medId;
     NativeDbHelper db;
+    Medication medication;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +33,7 @@ public class MedicationHistory extends AppCompatActivity {
 
         db = new NativeDbHelper(MainActivity.DATABASE_DIR);
 
-        Medication med = db.getMedicationHistory(medId);
+        medication = db.getMedicationHistory(medId);
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.history);
