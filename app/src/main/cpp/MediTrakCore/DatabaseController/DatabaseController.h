@@ -86,7 +86,6 @@ private:
      */
     void create();
 
-    vector<Dose> getDoses(vector<long> medicationIds);
 public:
     const string NOTES_TABLE = "Notes";
     const string SETTINGS_TABLE = "Settings";
@@ -168,13 +167,6 @@ public:
      * @return Medication including data on its doses and potential parents/children
      */
     Medication getMedication(long medicationId);
-
-    /**
-     * Retrieves Doses for provided Medication
-     * @param medication Medication whose doses are sought
-     * @return all doses for given medication and its lineage (parents, grandparents, tec...)
-     */
-    vector<Dose> getDoses(Medication medication);
 
     /**
      * Retrieves all does for medication whose ID matches medId

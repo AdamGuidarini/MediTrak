@@ -225,37 +225,15 @@ Medication DatabaseController::getMedication(long medicationId) {
         medication.parent->child = make_shared<Medication>(medication);
     }
 
+    medication.doses = getDoses(medication.id);
+
     return medication;
 }
 
-vector<Dose> DatabaseController::getDoses(Medication medication) {
-    shared_ptr<Medication> nextMed = medication.parent;
-    vector<long> ids = {medication.id};
-    vector<Dose> doses;
-
-    while (nextMed != nullptr) {
-        ids.push_back(nextMed->id);
-
-        nextMed = nextMed->parent;
-    }
-
-    return getDoses(ids);
-}
-
-vector<Dose> DatabaseController::getDoses(long medId) {
-    vector<long> ids = {medId};
-
-    return getDoses(ids);
-}
-
-vector<Dose> DatabaseController::getDoses(vector<long> medicationIds) {
+vector<Dose> DatabaseController::getDoses(long medicationId) {
     string query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE
-                   + " WHERE " + MED_ID + "=" + to_string(medicationIds.at(0));
+                   + " WHERE " + MED_ID + "=" + to_string(medicationId);
     vector<Dose> doses;
-
-    for (int i = 1; i < medicationIds.size(); i++) {
-        query += " OR " + MED_ID + "=" + to_string(medicationIds.at(i));
-    }
 
     Table* table = manager.execSqlWithReturn(query);
 

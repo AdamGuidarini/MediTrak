@@ -133,7 +133,9 @@ void medicationToJavaConverter(Medication med, JNIEnv* env, jobject &jMedication
         env->CallVoidMethod(jMedicationInstance, setParent, cloneMed);
     }
 
-    env->CallVoidMethod(jMedicationInstance, setDoses, doseToJavaConverter(med.doses, env, jMedicationInstance));
+    auto jDoses = doseToJavaConverter(med.doses, env, jMedicationInstance);
+
+    env->CallVoidMethod(jMedicationInstance, setDoses, jDoses);
 }
 
 extern "C"
@@ -321,8 +323,5 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getMedHistory(
 
     DatabaseController dbController(path);
 
-    auto med = dbController.getMedication(med_id);
-    med.doses = dbController.getDoses(med);
-
-    medicationToJavaConverter(med, env, medInstance);
+    medicationToJavaConverter(dbController.getMedication(med_id), env, medInstance);
 }
