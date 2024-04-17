@@ -7,9 +7,12 @@ import android.view.MenuItem;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Objects;
 
+import projects.medicationtracker.Adapters.HistoryAdapter;
 import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.SimpleClasses.Medication;
 
@@ -17,6 +20,8 @@ public class MedicationHistory extends AppCompatActivity {
     long medId;
     NativeDbHelper db;
     Medication medication;
+    HistoryAdapter historyAdapter;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,11 @@ public class MedicationHistory extends AppCompatActivity {
                 handleBackPressed();
             }
         });
+
+        recyclerView = findViewById(R.id.history_view);
+        historyAdapter = new HistoryAdapter(medication.getDoses()[0]);
+        recyclerView.setAdapter(historyAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     /**
