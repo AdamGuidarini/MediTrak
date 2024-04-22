@@ -1,5 +1,8 @@
 package projects.medicationtracker;
 
+import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -50,7 +53,11 @@ public class MedicationHistory extends AppCompatActivity {
         });
 
         recyclerView = findViewById(R.id.history_view);
-        historyAdapter = new HistoryAdapter(medication.getDoses()[0]);
+        historyAdapter = new HistoryAdapter(
+                medication.getDoses(),
+                MainActivity.preferences.getString(DATE_FORMAT),
+                MainActivity.preferences.getString(TIME_FORMAT)
+        );
         recyclerView.setAdapter(historyAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }

@@ -230,6 +230,10 @@
     <string name="its_time_your_med">It\'s time to take your %1$s</string>
     <string name="time_for_other_med">It\'s time for %1$s\'s %2$s</string>
     <string name="add_dose">Add Dose</string>
+
+    <!-- Med History -->
     <string name="history">History</string>
+    <string name="scheduled_time">Scheduled Time: %1$s</string>
+    <string name="time_taken_hist">Time Taken: %1$s</string>
 
 </resources>
