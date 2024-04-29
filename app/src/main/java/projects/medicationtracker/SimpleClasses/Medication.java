@@ -67,6 +67,7 @@ public class Medication implements Cloneable, Parcelable {
         startDate = LocalDateTime.now();
         medDosage = 0;
         alias = "";
+        doses = new Dose[]{ new Dose() };
     }
 
     protected Medication(Parcel in) {

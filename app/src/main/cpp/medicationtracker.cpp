@@ -84,10 +84,11 @@ jobjectArray doseToJavaConverter(vector<Dose> doses, JNIEnv* env, jobject &jMedi
     return jDoses;
 }
 
-void medicationToJavaConverter(Medication med, JNIEnv* env, jobject &jMedicationInstance) {
-    jclass jMedication = env->GetObjectClass(jMedicationInstance);
+jobject medicationToJavaConverter(Medication med, JNIEnv* env, jclass jMedication) {
     jclass LocalDateTime = env->FindClass("java/time/LocalDateTime");
     jobjectArray medTimes = env->NewObjectArray(med.times.size(), LocalDateTime, NULL);
+    jmethodID medConstructor = env->GetMethodID(jMedication, "<init>", "()V");
+    jobject jMedicationInstance = env->NewObject(jMedication, medConstructor);
 
     jmethodID setId = env->GetMethodID(jMedication, "setId", "(J)V");
     jmethodID setName = env->GetMethodID(jMedication, "setName", "(Ljava/lang/String;)V");
@@ -121,21 +122,18 @@ void medicationToJavaConverter(Medication med, JNIEnv* env, jobject &jMedication
     env->CallVoidMethod(jMedicationInstance, setTimes, medTimes);
 
     if (med.parent != nullptr) {
-        jmethodID clone = env->GetMethodID(jMedication, "clone", "()Ljava/lang/Object;");
         jmethodID setChild = env->GetMethodID(jMedication, "setChild", "(Lprojects/medicationtracker/SimpleClasses/Medication;)V");
-        jobject cloneMed = env->CallObjectMethod(jMedicationInstance, clone);
+        jobject medParent = medicationToJavaConverter(*med.parent, env, jMedication);
 
-        env->CallVoidMethod(cloneMed, setId, med.id);
-        env->CallVoidMethod(cloneMed, setChild, jMedicationInstance);
-
-        medicationToJavaConverter(*med.parent, env, cloneMed);
-
-        env->CallVoidMethod(jMedicationInstance, setParent, cloneMed);
+        env->CallVoidMethod(medParent, setChild, jMedicationInstance);
+        env->CallVoidMethod(jMedicationInstance, setParent, medParent);
     }
 
     auto jDoses = doseToJavaConverter(med.doses, env, jMedicationInstance);
 
     env->CallVoidMethod(jMedicationInstance, setDoses, jDoses);
+
+    return jMedicationInstance;
 }
 
 extern "C"
@@ -311,17 +309,17 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_delete(
 }
 
 extern "C"
-JNIEXPORT void JNICALL
+JNIEXPORT jobject JNICALL
 Java_projects_medicationtracker_Helpers_NativeDbHelper_getMedHistory(
         JNIEnv *env,
         jobject thiz,
         jstring db_path,
         jlong med_id,
-        jobject medInstance
+        jclass medClass
 ) {
     std::string path = env->GetStringUTFChars(db_path, new jboolean(true));
 
     DatabaseController dbController(path);
 
-    medicationToJavaConverter(dbController.getMedication(med_id), env, medInstance);
+    return medicationToJavaConverter(dbController.getMedication(med_id), env, medClass);
 }
