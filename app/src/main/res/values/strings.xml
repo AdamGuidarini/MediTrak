@@ -233,7 +233,7 @@
 
     <!-- Med History -->
     <string name="history">History</string>
-    <string name="scheduled_time">Scheduled Time: %1$s</string>
-    <string name="time_taken_hist">Time Taken: %1$s</string>
+    <string name="scheduled_time">Scheduled Time: %1$s %2$s</string>
+    <string name="time_taken_hist">Time Taken: %1$s  %2$s</string>
 
 </resources>

@@ -74,11 +74,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
         String schedTime = context.getString(
                 R.string.scheduled_time,
-                scheduleDate + " " + scheduleTime
+                scheduleDate,
+                scheduleTime
         );
         String timeTaken = context.getString(
                 R.string.time_taken_hist,
-                takenDate + " " + takenTime
+                takenDate,
+                takenTime
         );
 
         holder.scheduledDateLabel.setText(schedTime);
