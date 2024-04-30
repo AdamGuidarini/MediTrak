@@ -20,6 +20,6 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep public class projects.medicationtracker.SimpleClasses.Medication{
+-keep public class projects.medicationtracker.Models.Medication{
     *;
 }

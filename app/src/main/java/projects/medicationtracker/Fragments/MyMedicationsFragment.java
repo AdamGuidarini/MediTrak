@@ -24,7 +24,7 @@ import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.MedicationHistory;
 import projects.medicationtracker.MedicationNotes;
 import projects.medicationtracker.R;
-import projects.medicationtracker.SimpleClasses.Medication;
+import projects.medicationtracker.Models.Medication;
 
 /**
  * A simple {@link Fragment} subclass.

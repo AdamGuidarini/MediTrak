@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import projects.medicationtracker.MainActivity;
-import projects.medicationtracker.SimpleClasses.Medication;
-import projects.medicationtracker.SimpleClasses.Note;
+import projects.medicationtracker.Models.Medication;
+import projects.medicationtracker.Models.Note;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Medications.db";

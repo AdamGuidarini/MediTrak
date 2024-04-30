@@ -33,8 +33,8 @@ import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
-import projects.medicationtracker.SimpleClasses.Dose;
-import projects.medicationtracker.SimpleClasses.Medication;
+import projects.medicationtracker.Models.Dose;
+import projects.medicationtracker.Models.Medication;
 
 public class DoseInfoDialog extends DialogFragment {
     private final long doseId;

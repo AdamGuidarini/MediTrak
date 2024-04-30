@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.R;
-import projects.medicationtracker.SimpleClasses.Medication;
+import projects.medicationtracker.Models.Medication;
 
 public class ConfirmDeleteAllFragment extends DialogFragment {
     private final DBHelper db;

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Services.NotificationService;
-import projects.medicationtracker.SimpleClasses.Medication;
+import projects.medicationtracker.Models.Medication;
 
 public class EventReceiver extends BroadcastReceiver {
     @Override

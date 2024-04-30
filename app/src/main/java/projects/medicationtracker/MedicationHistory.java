@@ -17,7 +17,7 @@ import java.util.Objects;
 
 import projects.medicationtracker.Adapters.HistoryAdapter;
 import projects.medicationtracker.Helpers.NativeDbHelper;
-import projects.medicationtracker.SimpleClasses.Medication;
+import projects.medicationtracker.Models.Medication;
 
 public class MedicationHistory extends AppCompatActivity {
     long medId;

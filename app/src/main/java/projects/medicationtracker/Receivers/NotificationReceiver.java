@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.Services.NotificationService;
-import projects.medicationtracker.SimpleClasses.Medication;
+import projects.medicationtracker.Models.Medication;
 
 public class NotificationReceiver extends BroadcastReceiver {
     /**

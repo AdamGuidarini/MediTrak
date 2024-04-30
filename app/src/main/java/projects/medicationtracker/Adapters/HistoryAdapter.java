@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import projects.medicationtracker.R;
-import projects.medicationtracker.SimpleClasses.Dose;
+import projects.medicationtracker.Models.Dose;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
     Dose[] doses;

@@ -2,8 +2,7 @@ package projects.medicationtracker.Helpers;
 
 import android.util.Pair;
 
-import projects.medicationtracker.SimpleClasses.Dose;
-import projects.medicationtracker.SimpleClasses.Medication;
+import projects.medicationtracker.Models.Medication;
 
 public class NativeDbHelper {
     static {
