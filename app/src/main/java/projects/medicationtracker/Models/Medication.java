@@ -55,6 +55,7 @@ public class Medication implements Cloneable, Parcelable {
         startDate = firstDate;
         medDosage = dosage;
         alias = medAlias != null ? medAlias : "";
+        doses = new Dose[]{ new Dose() };
     }
 
     public Medication() {

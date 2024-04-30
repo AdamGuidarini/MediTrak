@@ -87,31 +87,11 @@ jobjectArray doseToJavaConverter(vector<Dose> doses, JNIEnv* env, jobject &jMedi
 jobject medicationToJavaConverter(Medication med, JNIEnv* env, jclass jMedication) {
     jclass LocalDateTime = env->FindClass("java/time/LocalDateTime");
     jobjectArray medTimes = env->NewObjectArray(med.times.size(), LocalDateTime, NULL);
-    jmethodID medConstructor = env->GetMethodID(jMedication, "<init>", "()V");
-    jobject jMedicationInstance = env->NewObject(jMedication, medConstructor);
-
-    jmethodID setId = env->GetMethodID(jMedication, "setId", "(J)V");
-    jmethodID setName = env->GetMethodID(jMedication, "setName", "(Ljava/lang/String;)V");
-    jmethodID setFrequency = env->GetMethodID(jMedication, "setFrequency", "(I)V");
-    jmethodID setDosage = env->GetMethodID(jMedication, "setDosage", "(I)V");
-    jmethodID setDosageUnits = env->GetMethodID(jMedication, "setDosageUnits", "(Ljava/lang/String;)V");
-    jmethodID setPatientName = env->GetMethodID(jMedication, "setPatientName", "(Ljava/lang/String;)V");
-    jmethodID setStartDate = env->GetMethodID(jMedication, "setStartDate", "(Ljava/time/LocalDateTime;)V");
-    jmethodID setAlias = env->GetMethodID(jMedication, "setAlias", "(Ljava/lang/String;)V");
-    jmethodID setActiveStatus = env->GetMethodID(jMedication, "setActiveStatus", "(Z)V");
-    jmethodID setParent = env->GetMethodID(jMedication, "setParent", "(Lprojects/medicationtracker/Models/Medication;)V");
-    jmethodID setDoses = env->GetMethodID(jMedication, "setDoses", "([Lprojects/medicationtracker/Models/Dose;)V");
-    jmethodID setTimes = env->GetMethodID(jMedication, "setTimes", "([Ljava/time/LocalDateTime;)V");
-
-    env->CallVoidMethod(jMedicationInstance, setId, med.id);
-    env->CallVoidMethod(jMedicationInstance, setName, env->NewStringUTF(med.medicationName.c_str()));
-    env->CallVoidMethod(jMedicationInstance, setFrequency, jint(med.frequency));
-    env->CallVoidMethod(jMedicationInstance, setDosage, jint(med.dosage));
-    env->CallVoidMethod(jMedicationInstance, setDosageUnits, env->NewStringUTF(med.dosageUnit.c_str()));
-    env->CallVoidMethod(jMedicationInstance, setPatientName, env->NewStringUTF(med.patientName.c_str()));
-    env->CallVoidMethod(jMedicationInstance, setStartDate, parseLocalDateTime(med.startDate, env));
-    env->CallVoidMethod(jMedicationInstance, setAlias, env->NewStringUTF(med.alias.c_str()));
-    env->CallVoidMethod(jMedicationInstance, setActiveStatus, med.active);
+    jmethodID medConstructor = env->GetMethodID(
+        jMedication,
+        "<init>",
+        "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/time/LocalDateTime;Ljava/time/LocalDateTime;JIILjava/lang/String;)V"
+    );
 
     for (int i = 0; i < med.times.size(); i++) {
         std::string dateString = med.startDate.substr(0, med.startDate.find(" ")) + " " + med.times.at(i);
@@ -119,7 +99,25 @@ jobject medicationToJavaConverter(Medication med, JNIEnv* env, jclass jMedicatio
         env->SetObjectArrayElement(medTimes, i, parseLocalDateTime(dateString, env));
     }
 
-    env->CallVoidMethod(jMedicationInstance, setTimes, medTimes);
+    jobject jMedicationInstance = env->NewObject(
+        jMedication,
+        medConstructor,
+        env->NewStringUTF(med.medicationName.c_str()),
+        env->NewStringUTF(med.patientName.c_str()),
+        env->NewStringUTF(med.dosageUnit.c_str()),
+        medTimes,
+        parseLocalDateTime(med.startDate, env),
+        med.id,
+        jint(med.frequency),
+        jint(med.dosage),
+        env->NewStringUTF(med.alias.c_str())
+    );
+
+    jmethodID setActiveStatus = env->GetMethodID(jMedication, "setActiveStatus", "(Z)V");
+    jmethodID setParent = env->GetMethodID(jMedication, "setParent", "(Lprojects/medicationtracker/Models/Medication;)V");
+    jmethodID setDoses = env->GetMethodID(jMedication, "setDoses", "([Lprojects/medicationtracker/Models/Dose;)V");
+
+    env->CallVoidMethod(jMedicationInstance, setActiveStatus, med.active);
 
     if (med.parent != nullptr) {
         jmethodID setChild = env->GetMethodID(jMedication, "setChild", "(Lprojects/medicationtracker/Models/Medication;)V");
