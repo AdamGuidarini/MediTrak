@@ -18,8 +18,8 @@ android {
 
         versionCode 17
         versionName "0.11.6"
+        resourceConfigurations += ['en', 'de']
 
-        resConfigs('en', 'de')
 
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'

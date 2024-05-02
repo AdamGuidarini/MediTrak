@@ -56,7 +56,8 @@ public class MedicationHistory extends AppCompatActivity {
         historyAdapter = new HistoryAdapter(
                 medication.getDoses(),
                 MainActivity.preferences.getString(DATE_FORMAT),
-                MainActivity.preferences.getString(TIME_FORMAT)
+                MainActivity.preferences.getString(TIME_FORMAT),
+                medication
         );
         recyclerView.setAdapter(historyAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

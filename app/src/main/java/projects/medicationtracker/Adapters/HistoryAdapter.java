@@ -13,10 +13,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Models.Dose;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
+    Medication medication;
     Dose[] doses;
     String timeFormat;
     String dateFormat;
@@ -37,10 +39,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         }
     }
 
-    public HistoryAdapter(Dose[] doses, String dateFormat, String timeFormat) {
+    public HistoryAdapter(Dose[] doses, String dateFormat, String timeFormat, Medication medication) {
         this.doses = doses;
         this.timeFormat = timeFormat;
         this.dateFormat = dateFormat;
+        this.medication = medication;
     }
 
     @NonNull
@@ -57,6 +60,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         Context context = holder.scheduledDateLabel.getContext();
 
         LocalDateTime scheduledDateTime = doses[position].getDoseTime();
+        LocalDateTime takenDateTime = doses[position].getTimeTaken();
 
         String scheduleDate = DateTimeFormatter.ofPattern(
                 dateFormat, Locale.getDefault()
@@ -67,10 +71,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
         String takenDate = DateTimeFormatter.ofPattern(
                 dateFormat, Locale.getDefault()
-        ).format(scheduledDateTime.toLocalDate());
+        ).format(takenDateTime.toLocalDate());
         String takenTime = DateTimeFormatter.ofPattern(
                 timeFormat, Locale.getDefault()
-        ).format(scheduledDateTime.toLocalTime());
+        ).format(takenDateTime.toLocalTime());
 
         String schedTime = context.getString(
                 R.string.scheduled_time,
@@ -85,6 +89,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
         holder.scheduledDateLabel.setText(schedTime);
         holder.takenDateLabel.setText(timeTaken);
+        holder.dosageAmount.setText(context.getString(R.string.dosage, String.valueOf(medication.getDosage()), medication.getDosageUnits()));
     }
 
     @Override
