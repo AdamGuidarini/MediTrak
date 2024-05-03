@@ -429,7 +429,7 @@ public class Settings extends AppCompatActivity {
             permissionRequester.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
 
-        BackupDestinationPicker picker = new BackupDestinationPicker();
+        BackupDestinationPicker picker = new BackupDestinationPicker("json");
         picker.show(getSupportFragmentManager(), null);
     }
 

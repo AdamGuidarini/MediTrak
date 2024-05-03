@@ -42,7 +42,8 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/export_file_layout"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:hint="@string/export_file_name"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
@@ -53,6 +54,12 @@
                     android:layout_height="match_parent"
                     android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/file_extension"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

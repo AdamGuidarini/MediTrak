@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -39,6 +40,11 @@ public class BackupDestinationPicker extends DialogFragment {
     private String exportFile;
     private TextInputLayout fileNameInputLayout;
     private NativeDbHelper nativeDb;
+    private String fileExtension;
+
+    public BackupDestinationPicker(String fileExtension) {
+        this.fileExtension = fileExtension;
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstances) {
@@ -69,6 +75,7 @@ public class BackupDestinationPicker extends DialogFragment {
         MaterialAutoCompleteTextView dirSelector = dialog.findViewById(R.id.export_dir);
         fileNameInputLayout = dialog.findViewById(R.id.export_file_layout);
         TextInputEditText fileName = dialog.findViewById(R.id.export_file);
+        ((TextView) dialog.findViewById(R.id.file_extension)).setText("." + fileExtension);
 
         dirs.add(getString(R.string.downloads));
         dirs.add(getString(R.string.documents));
@@ -90,7 +97,7 @@ public class BackupDestinationPicker extends DialogFragment {
         exportFile = "meditrak_"
                 + now.getYear() + "_"
                 + now.getMonthValue() + "_"
-                + now.getDayOfMonth() + ".json";
+                + now.getDayOfMonth();
 
         fileName.setText(exportFile);
 
@@ -130,7 +137,7 @@ public class BackupDestinationPicker extends DialogFragment {
     private void onExportClick() {
         String resMessage;
         boolean res = nativeDb.dbExport(
-                exportDir + '/' + exportFile,
+                exportDir + '/' + exportFile + "." + fileExtension,
                 new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE}
         );
 
