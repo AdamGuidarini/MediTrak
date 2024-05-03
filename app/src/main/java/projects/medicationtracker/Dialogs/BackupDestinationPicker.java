@@ -33,6 +33,7 @@ import java.util.Optional;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
+import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
 
 public class BackupDestinationPicker extends DialogFragment {
@@ -135,15 +136,22 @@ public class BackupDestinationPicker extends DialogFragment {
     }
 
     private void onExportClick() {
-        String resMessage;
-        boolean res = nativeDb.dbExport(
-                exportDir + '/' + exportFile + "." + fileExtension,
-                new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE}
-        );
+        if (getActivity() instanceof IDialogCloseListener) {
+            ((IDialogCloseListener) getActivity()).handleDialogClose(
+                IDialogCloseListener.Action.CREATE,
+                new String[] { exportDir, exportFile, fileExtension }
+            );
+        }
 
-        resMessage = res ? getString(R.string.successful_export, exportDir + '/' + exportFile)
-                : getString(R.string.failed_export);
-
-        Toast.makeText(getContext(), resMessage, Toast.LENGTH_SHORT).show();
+//        String resMessage;
+//        boolean res = nativeDb.dbExport(
+//                exportDir + '/' + exportFile + "." + fileExtension,
+//                new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE}
+//        );
+//
+//        resMessage = res ? getString(R.string.successful_export, exportDir + '/' + exportFile)
+//                : getString(R.string.failed_export);
+//
+//        Toast.makeText(getContext(), resMessage, Toast.LENGTH_SHORT).show();
     }
 }
