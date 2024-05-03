@@ -28,7 +28,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         TextView scheduledDateLabel;
         TextView takenDateLabel;
         TextView dosageAmount;
-        TextView dosageUnits;
         LinearLayout barrier;
 
         public ViewHolder(@NonNull View itemView) {
@@ -37,7 +36,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             scheduledDateLabel = itemView.findViewById(R.id.scheduled_date);
             takenDateLabel = itemView.findViewById(R.id.taken_date);
             dosageAmount = itemView.findViewById(R.id.dosage);
-            dosageUnits = itemView.findViewById(R.id.units);
             barrier = itemView.findViewById(R.id.barrier);
         }
     }
