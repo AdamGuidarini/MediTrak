@@ -6,6 +6,7 @@ import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;

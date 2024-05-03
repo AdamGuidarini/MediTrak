@@ -235,5 +235,7 @@
     <string name="history">History</string>
     <string name="scheduled_time">Scheduled Time: %1$s %2$s</string>
     <string name="time_taken_hist">Time Taken: %1$s  %2$s</string>
+    <string name="filter">Filter</string>
+    <string name="export_csv">Export CSV</string>
 
 </resources>

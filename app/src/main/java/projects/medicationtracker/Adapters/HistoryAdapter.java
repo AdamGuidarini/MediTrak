@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,6 +29,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         TextView takenDateLabel;
         TextView dosageAmount;
         TextView dosageUnits;
+        LinearLayout barrier;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -36,6 +38,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             takenDateLabel = itemView.findViewById(R.id.taken_date);
             dosageAmount = itemView.findViewById(R.id.dosage);
             dosageUnits = itemView.findViewById(R.id.units);
+            barrier = itemView.findViewById(R.id.barrier);
         }
     }
 
@@ -90,6 +93,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         holder.scheduledDateLabel.setText(schedTime);
         holder.takenDateLabel.setText(timeTaken);
         holder.dosageAmount.setText(context.getString(R.string.dosage, String.valueOf(medication.getDosage()), medication.getDosageUnits()));
+
+        if (position == doses.length - 1) {
+            holder.barrier.setVisibility(View.GONE);
+        } else {
+            holder.barrier.setBackgroundColor(holder.scheduledDateLabel.getCurrentTextColor());
+        }
     }
 
     @Override
