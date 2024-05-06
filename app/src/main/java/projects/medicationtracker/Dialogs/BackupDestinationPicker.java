@@ -40,7 +40,6 @@ public class BackupDestinationPicker extends DialogFragment {
     private String exportDir;
     private String exportFile;
     private TextInputLayout fileNameInputLayout;
-    private NativeDbHelper nativeDb;
     private String fileExtension;
 
     public BackupDestinationPicker(String fileExtension) {
@@ -65,10 +64,6 @@ public class BackupDestinationPicker extends DialogFragment {
             dismiss();
         }));
         builder.setNegativeButton(R.string.cancel, ((dialogInterface, i) -> dismiss()));
-
-        nativeDb = new NativeDbHelper(
-                getContext().getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath()
-        );
 
         dialog = builder.create();
         dialog.show();
@@ -142,16 +137,5 @@ public class BackupDestinationPicker extends DialogFragment {
                 new String[] { exportDir, exportFile, fileExtension }
             );
         }
-
-//        String resMessage;
-//        boolean res = nativeDb.dbExport(
-//                exportDir + '/' + exportFile + "." + fileExtension,
-//                new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE}
-//        );
-//
-//        resMessage = res ? getString(R.string.successful_export, exportDir + '/' + exportFile)
-//                : getString(R.string.failed_export);
-//
-//        Toast.makeText(getContext(), resMessage, Toast.LENGTH_SHORT).show();
     }
 }

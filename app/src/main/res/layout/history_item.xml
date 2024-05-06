@@ -4,28 +4,35 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
+    <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:orientation="vertical"
-        android:layout_marginTop="15dp">
-
-        <TextView
-            android:id="@+id/scheduled_date"
+        app:layout_constraintTop_toTopOf="parent">
+        <TableRow
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:stretchColumns="0,1,2"
+            android:layout_marginTop="15dp">
 
-        <TextView
-            android:id="@+id/taken_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/scheduled_date"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_width="0dp"/>
 
-        <TextView
-            android:id="@+id/dosage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/taken_date"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_width="0dp"/>
+
+            <TextView
+                android:id="@+id/dosage"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_width="0dp"/>
+        </TableRow>
 
         <LinearLayout
             android:id="@+id/barrier"
@@ -34,6 +41,7 @@
             android:orientation="vertical"
             android:layout_marginTop="15dp">
         </LinearLayout>
-    </LinearLayout>
+    </TableLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

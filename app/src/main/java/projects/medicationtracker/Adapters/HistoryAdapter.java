@@ -88,9 +88,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                 takenTime
         );
 
-        holder.scheduledDateLabel.setText(schedTime);
-        holder.takenDateLabel.setText(timeTaken);
-        holder.dosageAmount.setText(context.getString(R.string.dosage, String.valueOf(medication.getDosage()), medication.getDosageUnits()));
+        holder.scheduledDateLabel.setText(scheduleDate + "\n" + scheduleTime);
+        holder.takenDateLabel.setText(takenDate + "\n" + takenTime);
+        holder.dosageAmount.setText(
+                medication.getDosage() + " " + medication.getDosageUnits()
+//                context.getString(R.string.dosage, String.valueOf(medication.getDosage()), medication.getDosageUnits())
+        );
 
         if (position == doses.length - 1) {
             holder.barrier.setVisibility(View.GONE);

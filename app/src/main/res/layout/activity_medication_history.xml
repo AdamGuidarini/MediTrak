@@ -25,7 +25,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/export_csv"
                 app:cornerRadius="30dp"
-                android:layout_marginEnd="10dp"/>
+                android:layout_marginEnd="10dp"
+                android:onClick="onExportClick"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/filter_button"
@@ -51,7 +52,42 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                android:layout_marginBottom="15dp">
+                android:layout_marginBottom="15dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Scheduled"
+                        android:layout_weight="1"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:textSize="18sp"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Taken"
+                        android:layout_weight="1"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:textSize="18sp"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Dosage"
+                        android:layout_weight="1"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:textSize="18sp"/>
+
+                </LinearLayout>
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/history_view"
                     android:layout_width="match_parent"

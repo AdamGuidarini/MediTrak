@@ -6,6 +6,7 @@ import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.activity.OnBackPressedCallback;
@@ -14,9 +15,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
+
 import java.util.Objects;
 
 import projects.medicationtracker.Adapters.HistoryAdapter;
+import projects.medicationtracker.Dialogs.BackupDestinationPicker;
 import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Models.Medication;
 
@@ -26,6 +30,8 @@ public class MedicationHistory extends AppCompatActivity {
     Medication medication;
     HistoryAdapter historyAdapter;
     RecyclerView recyclerView;
+    MaterialButton exportCsvButton;
+    MaterialButton filterButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +68,9 @@ public class MedicationHistory extends AppCompatActivity {
         );
         recyclerView.setAdapter(historyAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        exportCsvButton = findViewById(R.id.export_history);
+        filterButton = findViewById(R.id.filter_button);
     }
 
     /**
@@ -87,5 +96,10 @@ public class MedicationHistory extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onExportClick(View view) {
+        BackupDestinationPicker backupDestinationPicker = new BackupDestinationPicker("csv");
+        backupDestinationPicker.show(getSupportFragmentManager(), null);
     }
 }
