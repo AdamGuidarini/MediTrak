@@ -40,7 +40,7 @@ public class BackupDestinationPicker extends DialogFragment {
     private String exportDir;
     private String exportFile;
     private TextInputLayout fileNameInputLayout;
-    private String fileExtension;
+    private final String fileExtension;
 
     public BackupDestinationPicker(String fileExtension) {
         this.fileExtension = fileExtension;

@@ -1,6 +1,5 @@
 package projects.medicationtracker.Adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +9,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.stream.Stream;
 
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.R;
@@ -40,11 +43,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         }
     }
 
-    public HistoryAdapter(Dose[] doses, String dateFormat, String timeFormat, Medication medication) {
-        this.doses = doses;
+    public HistoryAdapter(String dateFormat, String timeFormat, Medication medication) {
         this.timeFormat = timeFormat;
         this.dateFormat = dateFormat;
         this.medication = medication;
+
+        this.doses = new Dose[]{};
+
+        combineDoses(this.medication);
     }
 
     @NonNull
@@ -58,7 +64,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull HistoryAdapter.ViewHolder holder, int position) {
-        Context context = holder.scheduledDateLabel.getContext();
+        Medication currentMed = getDoseMed(doses[position], medication);
 
         LocalDateTime scheduledDateTime = doses[position].getDoseTime();
         LocalDateTime takenDateTime = doses[position].getTimeTaken();
@@ -77,23 +83,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                 timeFormat, Locale.getDefault()
         ).format(takenDateTime.toLocalTime());
 
-        String schedTime = context.getString(
-                R.string.scheduled_time,
-                scheduleDate,
-                scheduleTime
-        );
-        String timeTaken = context.getString(
-                R.string.time_taken_hist,
-                takenDate,
-                takenTime
-        );
-
         holder.scheduledDateLabel.setText(scheduleDate + "\n" + scheduleTime);
         holder.takenDateLabel.setText(takenDate + "\n" + takenTime);
-        holder.dosageAmount.setText(
-                medication.getDosage() + " " + medication.getDosageUnits()
-//                context.getString(R.string.dosage, String.valueOf(medication.getDosage()), medication.getDosageUnits())
-        );
+        holder.dosageAmount.setText(currentMed.getDosage() + " " + currentMed.getDosageUnits());
 
         if (position == doses.length - 1) {
             holder.barrier.setVisibility(View.GONE);
@@ -105,5 +97,20 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @Override
     public int getItemCount() {
         return doses.length;
+    }
+
+    Medication getDoseMed(Dose dose, Medication med) {
+        return dose.getMedId() == med.getId() ? med : getDoseMed(dose, med.getChild());
+    }
+
+    void combineDoses(Medication currentMed) {
+        this.doses = Stream.concat(
+                Arrays.stream(this.doses),
+                Arrays.stream(currentMed.getDoses())
+        ).toArray(Dose[]::new);
+
+        if (currentMed.getChild() != null) {
+            combineDoses(currentMed.getChild());
+        }
     }
 }
