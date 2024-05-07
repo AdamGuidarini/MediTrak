@@ -321,3 +321,43 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getMedHistory(
 
     return medicationToJavaConverter(dbController.getMedication(med_id), env, medClass);
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_exportMedHistory(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jstring export_path,
+        jobjectArray data
+) {
+    const jclass pair = env->FindClass("android/util/Pair");
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string path = env->GetStringUTFChars(export_path, new jboolean(true));
+
+    DatabaseController controller(dbPath);
+
+    std::map<std::string, std::vector<std::string>> exportData;
+
+    _jfieldID *const firstFieldId = env->GetFieldID(pair, "first", "Ljava/lang/Object;");
+    _jfieldID *const secondFieldId = env->GetFieldID(pair, "second", "Ljava/lang/Object;");
+
+    for (int i = 0; i < env->GetArrayLength(data); i++) {
+        jstring key = (jstring) env->GetObjectField(env->GetObjectArrayElement(data, i), firstFieldId);
+        jarray values = (jarray) env->GetObjectField(env->GetObjectArrayElement(data, i), secondFieldId);
+        std::vector<std::string> vals;
+
+        for (int j = 0; j < env->GetArrayLength(values); j++) {
+            std::string val = env->GetStringUTFChars(
+                (jstring) env->GetObjectArrayElement(static_cast<jobjectArray>(values), j),
+                new jboolean(true)
+            );
+
+            vals.push_back(val);
+        }
+
+        exportData.insert({ env->GetStringUTFChars(key, new jboolean (true)), vals });
+    }
+
+    controller.exportCsv(path, exportData);
+}

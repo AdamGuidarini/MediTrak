@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 import projects.medicationtracker.Adapters.HistoryAdapter;
@@ -111,7 +113,19 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
     }
 
     public void onExportClick(View view) {
-        BackupDestinationPicker backupDestinationPicker = new BackupDestinationPicker("csv");
+        String defaultName = Objects.equals(medication.getPatientName(), "ME!") ?
+                getString(R.string.your) : medication.getPatientName();
+        LocalDate now = LocalDate.now();
+
+        defaultName += "_" + medication.getName()
+                + "_" + now.getYear()
+                + "_" + now.getMonthValue()
+                + "_" + now.getDayOfMonth();
+
+        BackupDestinationPicker backupDestinationPicker = new BackupDestinationPicker(
+                "csv",
+                defaultName
+        );
         backupDestinationPicker.show(getSupportFragmentManager(), null);
     }
 
@@ -124,6 +138,7 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
     public void handleDialogClose(Action action, Object data) {
         switch (action) {
             case CREATE: // Create CSV file
+
                 break;
             case EDIT: // Modify filters
                 break;

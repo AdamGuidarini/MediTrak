@@ -1,24 +1,15 @@
 package projects.medicationtracker.Dialogs;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
@@ -31,8 +22,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import projects.medicationtracker.Helpers.DBHelper;
-import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
 
@@ -42,8 +31,19 @@ public class BackupDestinationPicker extends DialogFragment {
     private TextInputLayout fileNameInputLayout;
     private final String fileExtension;
 
-    public BackupDestinationPicker(String fileExtension) {
+    public BackupDestinationPicker(String fileExtension, String defaultName) {
         this.fileExtension = fileExtension;
+        exportFile = defaultName;
+    }
+
+    public BackupDestinationPicker(String fileExtension) {
+        LocalDate now = LocalDate.now();
+
+        this.fileExtension = fileExtension;
+        exportFile = "meditrak_"
+                + now.getYear() + "_"
+                + now.getMonthValue() + "_"
+                + now.getDayOfMonth();
     }
 
     @Override
@@ -54,7 +54,6 @@ public class BackupDestinationPicker extends DialogFragment {
         final String[] directories;
         ArrayAdapter<String> adapter;
         ArrayList<String> dirs = new ArrayList<>();
-        LocalDate now = LocalDate.now();
 
         builder.setView(inflater.inflate(R.layout.dialog_backup_destination_picker, null));
 
@@ -89,11 +88,6 @@ public class BackupDestinationPicker extends DialogFragment {
         exportDir = directories[0];
 
         dirSelector.setOnItemClickListener((parent, view, position, id) -> exportDir = directories[position]);
-
-        exportFile = "meditrak_"
-                + now.getYear() + "_"
-                + now.getMonthValue() + "_"
-                + now.getDayOfMonth();
 
         fileName.setText(exportFile);
 

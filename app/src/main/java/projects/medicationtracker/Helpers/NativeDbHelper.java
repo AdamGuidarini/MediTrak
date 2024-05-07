@@ -90,7 +90,11 @@ public class NativeDbHelper {
         return getMedHistory(dbPath, medId, Medication.class);
     }
 
-    private  native void dbCreate(String dbPath);
+    public void exportMedicationHistory(String filePath, Pair<String, String[]>[] data) {
+        exportMedHistory(dbPath, filePath, data);
+    }
+
+    private native void dbCreate(String dbPath);
     private native void dbUpgrade(String dbPath, int version);
     private native long insert(String dbPath, String table, Pair<String, String>[] values);
     private native boolean update(String dbPath, String table, Pair<String, String>[] values, Pair<String, String >[] where);
@@ -98,4 +102,5 @@ public class NativeDbHelper {
     private native boolean dbExporter(String databaseName, String exportDirectory, String[] ignoredTables);
     private native boolean dbImporter(String dbPath, String fileContents, String[] ignoredTables);
     private native Medication getMedHistory(String dbPath, long medId, Class<Medication> medicationClass);
+    private native void exportMedHistory(String dbPath, String exportPath, Pair<String, String[]>[] data);
 }
