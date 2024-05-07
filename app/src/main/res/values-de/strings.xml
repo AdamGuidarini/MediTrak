@@ -233,4 +233,10 @@
     <string name="time_for_other_med">Es ist Zeit für die %2$s von %1$s</string>
     <string name="add_dose">Dosis hinzufügen</string>
 
+    <!-- Med History -->
+    <string name="history">Geschichte</string>
+    <string name="scheduled">Geplant</string>
+    <string name="dosage_hist">Dosis</string>
+    <string name="filter">Filtern</string>
+    <string name="export_csv">CSV Exportieren</string>
 </resources>

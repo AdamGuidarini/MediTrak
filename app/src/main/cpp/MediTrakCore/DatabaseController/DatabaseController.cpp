@@ -180,6 +180,38 @@ void DatabaseController::importJSONString(
     manager.importData(data, ignoreTables);
 }
 
+void DatabaseController::exportCsv(string exportPath, map<string, vector<string>> data) {
+    ofstream file(exportPath, std::fstream::trunc);
+    stringstream fileContents;
+    int longestValue = 0;
+
+    for (auto& item : data) {
+        fileContents << item.first << ',';
+        if (item.second.size() > longestValue) {
+            longestValue = item.second.size();
+        }
+    }
+
+    fileContents.seekp(-1, std::ios_base::end);
+
+    for (int i = 0; i < longestValue; i++) {
+        for (auto& item : data) {
+            if (!item.second.at(i).empty()) {
+                fileContents << item.second.at(i);
+            } else {
+                fileContents << "";
+            }
+
+            fileContents << ',';
+        }
+
+        fileContents.seekp(-1, std::ios_base::end);
+        fileContents << '\n';
+    }
+
+    file << fileContents.rdbuf();
+}
+
 Medication DatabaseController::getMedication(long medicationId) {
     string query = "SELECT * FROM " + MEDICATION_TABLE + " m "
             + " INNER JOIN " + MEDICATION_TIMES + " mt "
