@@ -323,7 +323,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getMedHistory(
 }
 
 extern "C"
-JNIEXPORT void JNICALL
+JNIEXPORT jboolean JNICALL
 Java_projects_medicationtracker_Helpers_NativeDbHelper_exportMedHistory(
         JNIEnv *env,
         jobject thiz,
@@ -359,5 +359,13 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_exportMedHistory(
         exportData.insert({ env->GetStringUTFChars(key, new jboolean (true)), vals });
     }
 
-    controller.exportCsv(path, exportData);
+    try {
+        controller.exportCsv(path, exportData);
+    } catch (exception& e) {
+        __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
+
+        return false;
+    }
+
+    return true;
 }

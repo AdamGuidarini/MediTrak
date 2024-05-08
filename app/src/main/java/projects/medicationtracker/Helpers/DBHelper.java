@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import projects.medicationtracker.MainActivity;
+import projects.medicationtracker.Models.Dose;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Note;
 
@@ -1184,5 +1185,11 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(permission, true);
 
         db.update(SETTINGS_TABLE, cv, null, null);
+    }
+
+    public boolean exportHistoryCSV(String path, Medication med, Dose[] doses) {
+        
+
+        return false;
     }
 }

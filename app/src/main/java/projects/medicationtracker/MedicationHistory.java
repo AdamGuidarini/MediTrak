@@ -5,6 +5,7 @@ import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -20,6 +21,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
 import java.util.Objects;
 
 import projects.medicationtracker.Adapters.HistoryAdapter;
@@ -27,6 +33,7 @@ import projects.medicationtracker.Dialogs.BackupDestinationPicker;
 import projects.medicationtracker.Dialogs.FilterDialog;
 import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
+import projects.medicationtracker.Models.Dose;
 import projects.medicationtracker.Models.Medication;
 
 public class MedicationHistory extends AppCompatActivity implements IDialogCloseListener {
@@ -39,6 +46,8 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
     MaterialButton filterButton;
     LinearLayout barrier;
     TextView headerText;
+    String dateFormat;
+    String timeFormat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,10 +77,13 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
             }
         });
 
+        dateFormat = MainActivity.preferences.getString(DATE_FORMAT);
+        timeFormat = MainActivity.preferences.getString(TIME_FORMAT);
+
         recyclerView = findViewById(R.id.history_view);
         historyAdapter = new HistoryAdapter(
-                MainActivity.preferences.getString(DATE_FORMAT),
-                MainActivity.preferences.getString(TIME_FORMAT),
+                dateFormat,
+                timeFormat,
                 getUltimateParent(medication)
         );
         recyclerView.setAdapter(historyAdapter);
@@ -138,12 +150,81 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
     public void handleDialogClose(Action action, Object data) {
         switch (action) {
             case CREATE: // Create CSV file
+                String message = db.exportMedicationHistory((String) data, getTableData()) ?
+                        getString(R.string.successful_export, data) : getString(R.string.failed_export);
 
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                 break;
             case EDIT: // Modify filters
                 break;
             case DELETE: // Clear filters
                 break;
         }
+    }
+
+    private Pair<String, String[]>[] getTableData() {
+        ArrayList<Dose> doses = new ArrayList<>();
+        Medication currentMed = getUltimateParent(medication);
+        Pair<String, String[]>[] tableData = new Pair[3];
+        String[] scheduledTimes, takenTimes, dosages;
+
+        while (currentMed.getParent() != null) {
+            doses.addAll(Arrays.asList(currentMed.getDoses()));
+
+            currentMed = currentMed.getParent();
+        }
+
+        scheduledTimes = new String[doses.size()];
+        takenTimes = new String[doses.size()];
+        dosages = new String[doses.size()];
+
+        for (int i = 0; i < doses.size(); i++) {
+            LocalDateTime scheduledDateTime = doses.get(i).getDoseTime();
+            LocalDateTime takenDateTime = doses.get(i).getTimeTaken();
+            Medication med = getDoseMedication(doses.get(i).getMedId());
+
+            String scheduleDate = DateTimeFormatter.ofPattern(
+                    dateFormat, Locale.getDefault()
+            ).format(scheduledDateTime.toLocalDate());
+            String scheduleTime = DateTimeFormatter.ofPattern(
+                    timeFormat, Locale.getDefault()
+            ).format(scheduledDateTime.toLocalTime());
+
+            String takenDate = DateTimeFormatter.ofPattern(
+                    dateFormat, Locale.getDefault()
+            ).format(takenDateTime.toLocalDate());
+            String takenTime = DateTimeFormatter.ofPattern(
+                    timeFormat, Locale.getDefault()
+            ).format(takenDateTime.toLocalTime());
+
+            scheduledTimes[i] = scheduleDate + " " + scheduleTime;
+            takenTimes[i] = takenDate + " " + takenTime;
+
+            if (med != null) {
+                dosages[i] = currentMed.getDosage() + " " + currentMed.getDosageUnits();
+            } else {
+                dosages[i] = "N/A";
+            }
+        }
+
+        tableData[0] = new Pair<>(getString(R.string.scheduled), scheduledTimes);
+        tableData[1] = new Pair<>(getString(R.string.taken), takenTimes);
+        tableData[2] = new Pair<>(getString(R.string.dosage_hist), dosages);
+
+        return tableData;
+    }
+
+    private Medication getDoseMedication(long medId) {
+        Medication currentMed = medication;
+
+        while (currentMed.getChild() != null) {
+            if (currentMed.getId() == medId) {
+                return currentMed;
+            }
+
+            currentMed = currentMed.getChild();
+        }
+
+        return null;
     }
 }
