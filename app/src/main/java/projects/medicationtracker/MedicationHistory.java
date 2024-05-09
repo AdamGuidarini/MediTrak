@@ -150,8 +150,15 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
     public void handleDialogClose(Action action, Object data) {
         switch (action) {
             case CREATE: // Create CSV file
-                String message = db.exportMedicationHistory((String) data, getTableData()) ?
-                        getString(R.string.successful_export, data) : getString(R.string.failed_export);
+                final String[] dialogRes = (String[]) data;
+
+                String exportDir = dialogRes[0];
+                String exportFile = dialogRes[1];
+                String fileExtension = dialogRes[2];
+
+                boolean exportRes =  db.exportMedicationHistory(exportDir + '/' + exportFile + "." + fileExtension, getTableData());
+
+                String message = exportRes ? getString(R.string.successful_export, data) : getString(R.string.failed_export);
 
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                 break;

@@ -101,7 +101,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         return dose.getMedId() == med.getId() ? med : getDoseMed(dose, med.getChild());
     }
 
-    void combineDoses(Medication currentMed) {
+    private void combineDoses(Medication currentMed) {
         this.doses = Stream.concat(
                 Arrays.stream(this.doses),
                 Arrays.stream(currentMed.getDoses())
