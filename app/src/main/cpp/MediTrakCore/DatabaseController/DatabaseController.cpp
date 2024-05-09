@@ -193,6 +193,7 @@ void DatabaseController::exportCsv(string exportPath, map<string, vector<string>
     }
 
     fileContents.seekp(-1, std::ios_base::end);
+    fileContents << '\n';
 
     for (int i = 0; i < longestValue; i++) {
         for (auto& item : data) {

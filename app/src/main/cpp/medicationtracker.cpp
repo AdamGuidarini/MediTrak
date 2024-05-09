@@ -344,12 +344,14 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_exportMedHistory(
 
     for (int i = 0; i < env->GetArrayLength(data); i++) {
         jstring key = (jstring) env->GetObjectField(env->GetObjectArrayElement(data, i), firstFieldId);
-        jarray values = (jarray) env->GetObjectField(env->GetObjectArrayElement(data, i), secondFieldId);
+        jobjectArray values = (jobjectArray) env->GetObjectField(env->GetObjectArrayElement(data, i), secondFieldId);
         std::vector<std::string> vals;
+
+        auto len2 = env->GetArrayLength(values);
 
         for (int j = 0; j < env->GetArrayLength(values); j++) {
             std::string val = env->GetStringUTFChars(
-                (jstring) env->GetObjectArrayElement(static_cast<jobjectArray>(values), j),
+                (jstring) env->GetObjectArrayElement(values, j),
                 new jboolean(true)
             );
 

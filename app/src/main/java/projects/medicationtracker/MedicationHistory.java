@@ -175,7 +175,7 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
         Pair<String, String[]>[] tableData = new Pair[3];
         String[] scheduledTimes, takenTimes, dosages;
 
-        while (currentMed.getParent() != null) {
+        while (currentMed != null) {
             doses.addAll(Arrays.asList(currentMed.getDoses()));
 
             currentMed = currentMed.getParent();
@@ -208,7 +208,7 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
             takenTimes[i] = takenDate + " " + takenTime;
 
             if (med != null) {
-                dosages[i] = currentMed.getDosage() + " " + currentMed.getDosageUnits();
+                dosages[i] = med.getDosage() + " " + med.getDosageUnits();
             } else {
                 dosages[i] = "N/A";
             }
@@ -224,7 +224,7 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
     private Medication getDoseMedication(long medId) {
         Medication currentMed = medication;
 
-        while (currentMed.getChild() != null) {
+        while (currentMed != null) {
             if (currentMed.getId() == medId) {
                 return currentMed;
             }
