@@ -142,7 +142,7 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
     }
 
     public void onFilterClick(View view) {
-        FilterDialog filterDialog = new FilterDialog();
+        FilterDialog filterDialog = new FilterDialog(true);
         filterDialog.show(getSupportFragmentManager(), null);
     }
 

@@ -18,6 +18,12 @@ import projects.medicationtracker.R;
 
 public class FilterDialog extends DialogFragment {
 
+    private boolean singlePerson;
+
+    public FilterDialog(boolean onePerson) {
+        singlePerson = onePerson;
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
