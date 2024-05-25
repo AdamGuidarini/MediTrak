@@ -44,7 +44,6 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
     private Medication medication;
     private HistoryAdapter historyAdapter;
     private RecyclerView recyclerView;
-    private MaterialButton filterButton;
     private LinearLayout barrier;
     private TextView headerText;
     private String dateFormat;
@@ -93,8 +92,6 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
         );
         recyclerView.setAdapter(historyAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        filterButton = findViewById(R.id.filter_button);
 
         barrier.setBackgroundColor(headerText.getCurrentTextColor());
     }

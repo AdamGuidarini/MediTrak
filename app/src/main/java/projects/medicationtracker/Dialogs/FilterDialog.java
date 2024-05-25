@@ -106,9 +106,9 @@ public class FilterDialog extends DialogFragment {
             filter.value = (LocalDate) scheduledDateSelector.getTag();
 
             if (scheduledBeforeAfter.getText().toString().equals(opts[0])) {
-                filter.option = FilterField.FilterOptions.AFTER;
+                filter.option = FilterField.FilterOptions.GREATER_THAN;
             } else if (scheduledBeforeAfter.getText().toString().equals(opts[1])) {
-                filter.option = FilterField.FilterOptions.BEFORE;
+                filter.option = FilterField.FilterOptions.LESS_THAN;
             } else {
                 filter.option = FilterField.FilterOptions.EQUALS;
             }
@@ -123,9 +123,9 @@ public class FilterDialog extends DialogFragment {
             filter.value = (LocalDate) takenFilterSelector.getTag();
 
             if (takenBeforeAfter.getText().toString().equals(opts[0])) {
-                filter.option = FilterField.FilterOptions.AFTER;
+                filter.option = FilterField.FilterOptions.GREATER_THAN;
             } else if (takenBeforeAfter.getText().toString().equals(opts[1])) {
-                filter.option = FilterField.FilterOptions.BEFORE;
+                filter.option = FilterField.FilterOptions.LESS_THAN;
             } else {
                 filter.option = FilterField.FilterOptions.EQUALS;
             }
