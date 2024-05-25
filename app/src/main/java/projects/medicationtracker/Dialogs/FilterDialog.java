@@ -100,34 +100,34 @@ public class FilterDialog extends DialogFragment {
         ArrayList<FilterField<LocalDate>> filters = new ArrayList<>();
 
         if (!scheduledDateSelector.getText().toString().isEmpty()) {
-            FilterField<LocalDate> filter = new FilterField<>();
+            FilterField<LocalDate> filter = new FilterField<LocalDate>();
 
-            filter.field = "SCHEDULED";
-            filter.value = (LocalDate) scheduledDateSelector.getTag();
+            filter.setField("SCHEDULED");
+            filter.setValue((LocalDate) scheduledDateSelector.getTag());
 
             if (scheduledBeforeAfter.getText().toString().equals(opts[0])) {
-                filter.option = FilterField.FilterOptions.GREATER_THAN;
+                filter.setOption(FilterField.FilterOptions.GREATER_THAN);
             } else if (scheduledBeforeAfter.getText().toString().equals(opts[1])) {
-                filter.option = FilterField.FilterOptions.LESS_THAN;
+                filter.setOption(FilterField.FilterOptions.LESS_THAN);
             } else {
-                filter.option = FilterField.FilterOptions.EQUALS;
+                filter.setOption(FilterField.FilterOptions.EQUALS);
             }
 
             filters.add(filter);
         }
 
         if (!takenFilterSelector.getText().toString().isEmpty()) {
-            FilterField<LocalDate> filter = new FilterField<>();
+            FilterField<LocalDate> filter = new FilterField<LocalDate>();
 
-            filter.field = "TAKEN";
-            filter.value = (LocalDate) takenFilterSelector.getTag();
+            filter.setField("TAKEN");
+            filter.setValue((LocalDate) takenFilterSelector.getTag());
 
             if (takenBeforeAfter.getText().toString().equals(opts[0])) {
-                filter.option = FilterField.FilterOptions.GREATER_THAN;
+                filter.setOption(FilterField.FilterOptions.GREATER_THAN);
             } else if (takenBeforeAfter.getText().toString().equals(opts[1])) {
-                filter.option = FilterField.FilterOptions.LESS_THAN;
+                filter.setOption(FilterField.FilterOptions.LESS_THAN);
             } else {
-                filter.option = FilterField.FilterOptions.EQUALS;
+                filter.setOption(FilterField.FilterOptions.EQUALS);
             }
 
             filters.add(filter);
