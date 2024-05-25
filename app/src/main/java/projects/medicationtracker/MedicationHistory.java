@@ -127,12 +127,15 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
     public void onExportClick(View view) {
         String defaultName = Objects.equals(medication.getPatientName(), "ME!") ?
                 getString(R.string.your) : medication.getPatientName();
-        LocalDate now = LocalDate.now();
+        LocalDateTime now = LocalDateTime.now();
 
         defaultName += "_" + medication.getName()
                 + "_" + now.getYear()
                 + "_" + now.getMonthValue()
-                + "_" + now.getDayOfMonth();
+                + "_" + now.getDayOfMonth()
+                + "_" + now.getHour()
+                + "_" + now.getMinute()
+                + "_" + now.getSecond();
 
         BackupDestinationPicker backupDestinationPicker = new BackupDestinationPicker(
                 "csv",
@@ -142,7 +145,7 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
     }
 
     public void onFilterClick(View view) {
-        FilterDialog filterDialog = new FilterDialog(true);
+        FilterDialog filterDialog = new FilterDialog();
         filterDialog.show(getSupportFragmentManager(), null);
     }
 

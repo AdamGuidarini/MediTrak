@@ -19,6 +19,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -37,13 +38,16 @@ public class BackupDestinationPicker extends DialogFragment {
     }
 
     public BackupDestinationPicker(String fileExtension) {
-        LocalDate now = LocalDate.now();
+        LocalDateTime now = LocalDateTime.now();
 
         this.fileExtension = fileExtension;
         exportFile = "meditrak_"
-                + now.getYear() + "_"
-                + now.getMonthValue() + "_"
-                + now.getDayOfMonth();
+                + "_" + now.getYear()
+                + "_" + now.getMonthValue()
+                + "_" + now.getDayOfMonth()
+                + "_" + now.getHour()
+                + "_" + now.getMinute()
+                + "_" + now.getSecond();
     }
 
     @Override

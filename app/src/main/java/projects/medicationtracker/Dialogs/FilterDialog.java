@@ -2,7 +2,6 @@ package projects.medicationtracker.Dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 
@@ -10,19 +9,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import java.time.LocalDateTime;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.android.material.textfield.TextInputEditText;
 
-import kotlin.Triple;
-import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.R;
 
 public class FilterDialog extends DialogFragment {
 
-    private boolean singlePerson;
-
-    public FilterDialog(boolean onePerson) {
-        singlePerson = onePerson;
-    }
+    private MaterialAutoCompleteTextView personSelect;
+    private TextInputEditText scheduledDateSelector;
+    private MaterialAutoCompleteTextView scheduledBeforeAfter;
+    private TextInputEditText takenFilterSelector;
+    private MaterialAutoCompleteTextView takenBeforeAfter;
 
     @NonNull
     @Override
@@ -31,7 +29,7 @@ public class FilterDialog extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         AlertDialog filterDialog;
 
-        builder.setView(R.layout.dialog_filter);
+        builder.setView(inflater.inflate(R.layout.dialog_filter, null));
         builder.setTitle(R.string.filter);
 
         builder.setPositiveButton(
@@ -48,7 +46,21 @@ public class FilterDialog extends DialogFragment {
         );
 
         filterDialog = builder.create();
+        filterDialog.show();
+
+        scheduledDateSelector = filterDialog.findViewById(R.id.scheduled_filter);
+        scheduledBeforeAfter = filterDialog.findViewById(R.id.sched_before_after);
+
+        takenFilterSelector = filterDialog.findViewById(R.id.taken_filter);
+        takenBeforeAfter = filterDialog.findViewById(R.id.taken_before_after);
+
+        setDateSelectListeners(scheduledDateSelector);
+        setDateSelectListeners(takenFilterSelector);
 
         return filterDialog;
+    }
+
+    private void setDateSelectListeners(TextInputEditText editText) {
+        editText.setShowSoftInputOnFocus(false);
     }
 }
