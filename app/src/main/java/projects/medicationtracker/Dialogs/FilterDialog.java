@@ -119,7 +119,7 @@ public class FilterDialog extends DialogFragment {
         if (!takenFilterSelector.getText().toString().isEmpty()) {
             FilterField<LocalDate> filter = new FilterField<>();
 
-            filter.field = "SCHEDULED";
+            filter.field = "TAKEN";
             filter.value = (LocalDate) takenFilterSelector.getTag();
 
             if (takenBeforeAfter.getText().toString().equals(opts[0])) {
