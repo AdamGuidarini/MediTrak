@@ -363,7 +363,7 @@ public class Medication implements Cloneable, Parcelable {
      */
     @NonNull
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         Medication clone = null;
         try {
             clone = (Medication) super.clone();

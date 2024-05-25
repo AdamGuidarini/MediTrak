@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import projects.medicationtracker.Adapters.HistoryAdapter;
 import projects.medicationtracker.Dialogs.BackupDestinationPicker;
@@ -34,21 +35,22 @@ import projects.medicationtracker.Dialogs.FilterDialog;
 import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.Models.Dose;
+import projects.medicationtracker.Models.FilterField;
 import projects.medicationtracker.Models.Medication;
 
 public class MedicationHistory extends AppCompatActivity implements IDialogCloseListener {
-    long medId;
-    NativeDbHelper db;
-    Medication medication;
-    HistoryAdapter historyAdapter;
-    RecyclerView recyclerView;
-    MaterialButton exportCsvButton;
-    MaterialButton filterButton;
-    LinearLayout barrier;
-    TextView headerText;
-    String dateFormat;
-    String timeFormat;
-
+    private long medId;
+    private NativeDbHelper db;
+    private Medication medication;
+    private HistoryAdapter historyAdapter;
+    private RecyclerView recyclerView;
+    private MaterialButton filterButton;
+    private LinearLayout barrier;
+    private TextView headerText;
+    private String dateFormat;
+    private String timeFormat;
+    private FilterField<LocalDateTime>[] filters = new FilterField[]{};
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,16 +82,18 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
         dateFormat = MainActivity.preferences.getString(DATE_FORMAT);
         timeFormat = MainActivity.preferences.getString(TIME_FORMAT);
 
+        Medication ultimateParent = getUltimateParent(medication);
+
         recyclerView = findViewById(R.id.history_view);
         historyAdapter = new HistoryAdapter(
                 dateFormat,
                 timeFormat,
-                getUltimateParent(medication)
+                ultimateParent,
+                combineDoses(ultimateParent, new Dose[]{})
         );
         recyclerView.setAdapter(historyAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        exportCsvButton = findViewById(R.id.export_history);
         filterButton = findViewById(R.id.filter_button);
 
         barrier.setBackgroundColor(headerText.getCurrentTextColor());
@@ -148,6 +152,19 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
         FilterDialog filterDialog = new FilterDialog();
         filterDialog.show(getSupportFragmentManager(), null);
     }
+    
+    private void onFiltersChanged() {
+        ArrayList<Dose> filteredDoses = new ArrayList<>();
+        Dose[] dosesArr = new Dose[filteredDoses.size()];
+
+        historyAdapter = new HistoryAdapter(
+                dateFormat,
+                timeFormat,
+                getUltimateParent(medication),
+                filteredDoses.toArray(dosesArr)
+        );
+        recyclerView.setAdapter(historyAdapter);
+    }
 
     @Override
     public void handleDialogClose(Action action, Object data) {
@@ -165,9 +182,17 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
 
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                 break;
-            case EDIT: // Modify filters
-                break;
-            case DELETE: // Clear filters
+            case FILTERS_APPLIED: // Modify filters
+                System.out.print(data);
+                if (data == null) {
+                    filters = new FilterField[]{};
+                    onFiltersChanged();
+                    
+                    break;
+                } 
+                
+                // Apply filters
+                
                 break;
         }
     }
@@ -236,5 +261,18 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
         }
 
         return null;
+    }
+
+    private Dose[] combineDoses(Medication currentMed, Dose[] doses) {
+        doses = Stream.concat(
+                Arrays.stream(doses),
+                Arrays.stream(currentMed.getDoses())
+        ).toArray(Dose[]::new);
+
+        if (currentMed.getChild() != null) {
+            return combineDoses(currentMed.getChild(), doses);
+        }
+
+        return doses;
     }
 }

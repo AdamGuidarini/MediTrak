@@ -15,6 +15,13 @@
     <string name="delete">Delete</string>
     <string name="i_agree">I agree</string>
 
+    <!-- Filters -->
+    <string name="clear">Clear</string>
+    <string name="apply">Apply</string>
+    <string name="before">Before</string>
+    <string name="after">After</string>
+    <string name="on">On</string>
+
     <!-- Errors -->
     <string name="invalid_value">Invalid value entered</string>
     <string name="must_be_positive_int">Value must be a positive integer</string>

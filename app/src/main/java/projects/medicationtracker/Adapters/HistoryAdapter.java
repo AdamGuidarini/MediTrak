@@ -41,14 +41,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         }
     }
 
-    public HistoryAdapter(String dateFormat, String timeFormat, Medication medication) {
+    public HistoryAdapter(String dateFormat, String timeFormat, Medication medication, Dose[] doses) {
         this.timeFormat = timeFormat;
         this.dateFormat = dateFormat;
         this.medication = medication;
 
-        this.doses = new Dose[]{};
-
-        combineDoses(this.medication);
+        this.doses = doses;
     }
 
     @NonNull
@@ -99,16 +97,5 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     Medication getDoseMed(Dose dose, Medication med) {
         return dose.getMedId() == med.getId() ? med : getDoseMed(dose, med.getChild());
-    }
-
-    private void combineDoses(Medication currentMed) {
-        this.doses = Stream.concat(
-                Arrays.stream(this.doses),
-                Arrays.stream(currentMed.getDoses())
-        ).toArray(Dose[]::new);
-
-        if (currentMed.getChild() != null) {
-            combineDoses(currentMed.getChild());
-        }
     }
 }

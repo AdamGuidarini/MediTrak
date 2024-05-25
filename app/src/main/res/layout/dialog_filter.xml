@@ -45,11 +45,12 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/barrier_2"
+            android:id="@+id/barrier"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:orientation="vertical"
             android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
             android:background="@color/white">
         </LinearLayout>
 

@@ -11,7 +11,8 @@ public interface IDialogCloseListener {
         ADD,
         EDIT,
         DELETE,
-        CREATE
+        CREATE,
+        FILTERS_APPLIED
     }
 
     /**
