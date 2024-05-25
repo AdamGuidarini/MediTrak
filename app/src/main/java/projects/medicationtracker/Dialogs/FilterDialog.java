@@ -93,14 +93,15 @@ public class FilterDialog extends DialogFragment {
 
         tv.setAdapter(adapter);
 
-        tv.setText(R.string.after);
+        tv.setText(tv.getAdapter().getItem(0).toString(), false);
     }
 
     private void applyFilters() {
         ArrayList<FilterField<LocalDate>> filters = new ArrayList<>();
+        FilterField<LocalDate>[] filts;
 
         if (!scheduledDateSelector.getText().toString().isEmpty()) {
-            FilterField<LocalDate> filter = new FilterField<LocalDate>();
+            FilterField<LocalDate> filter = new FilterField();
 
             filter.setField("SCHEDULED");
             filter.setValue((LocalDate) scheduledDateSelector.getTag());
@@ -134,9 +135,11 @@ public class FilterDialog extends DialogFragment {
         }
 
         if (getActivity() instanceof IDialogCloseListener) {
+            filts = new FilterField[filters.size()];
+
             ((IDialogCloseListener) getActivity()).handleDialogClose(
                     IDialogCloseListener.Action.FILTERS_APPLIED,
-                    filters
+                    filters.toArray(filts)
             );
         }
 
@@ -146,7 +149,7 @@ public class FilterDialog extends DialogFragment {
     private void filtersCleared() {
         if (getActivity() instanceof IDialogCloseListener) {
             ((IDialogCloseListener) getActivity()).handleDialogClose(
-                    IDialogCloseListener.Action.FILTERS_APPLIED, null
+                    IDialogCloseListener.Action.FILTERS_APPLIED, new FilterField[] {}
             );
 
             scheduledDateSelector.setText("");

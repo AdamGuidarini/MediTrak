@@ -347,8 +347,6 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_exportMedHistory(
         jobjectArray values = (jobjectArray) env->GetObjectField(env->GetObjectArrayElement(data, i), secondFieldId);
         std::vector<std::string> vals;
 
-        auto len2 = env->GetArrayLength(values);
-
         for (int j = 0; j < env->GetArrayLength(values); j++) {
             std::string val = env->GetStringUTFChars(
                 (jstring) env->GetObjectArrayElement(values, j),

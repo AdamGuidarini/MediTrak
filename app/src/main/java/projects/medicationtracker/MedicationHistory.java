@@ -48,7 +48,7 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
     private TextView headerText;
     private String dateFormat;
     private String timeFormat;
-    private FilterField<LocalDateTime>[] filters = new FilterField[]{};
+    private FilterField<LocalDate>[] filters = new FilterField[]{};
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,20 +151,51 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
     }
     
     private void onFiltersChanged() {
-        ArrayList<Dose> filteredDoses = new ArrayList<>();
-        Dose[] dosesArr = new Dose[filteredDoses.size()];
+        Medication trueParent = getUltimateParent(medication);
+        Dose[] dosesArr = Arrays.stream(combineDoses(trueParent, new Dose[]{})).filter(
+            d -> {
+                for (FilterField<LocalDate> f : this.filters) {
+
+                    if (f.getField().equals("SCHEDULED")) {
+                        switch (f.getOption()) {
+                            case GREATER_THAN:
+                                return d.getDoseTime().toLocalDate().isAfter(f.getValue());
+                            case LESS_THAN:
+                                return d.getDoseTime().toLocalDate().isBefore(f.getValue());
+                            case EQUALS:
+                                return d.getDoseTime().toLocalDate().isEqual(f.getValue());
+                        }
+                    }
+
+                    if (f.getField().equals("TAKEN")) {
+                        switch (f.getOption()) {
+                            case GREATER_THAN:
+                                return d.getTimeTaken().toLocalDate().isAfter(f.getValue());
+                            case LESS_THAN:
+                                return d.getTimeTaken().toLocalDate().isBefore(f.getValue());
+                            case EQUALS:
+                                return d.getTimeTaken().toLocalDate().isEqual(f.getValue());
+                        }
+                    }
+                }
+
+                return true;
+            }
+        ).toArray(Dose[]::new);
 
         historyAdapter = new HistoryAdapter(
                 dateFormat,
                 timeFormat,
-                getUltimateParent(medication),
-                filteredDoses.toArray(dosesArr)
+                trueParent,
+                dosesArr
         );
         recyclerView.setAdapter(historyAdapter);
     }
 
     @Override
     public void handleDialogClose(Action action, Object data) {
+        FilterField<LocalDate>[] filtersApplied = (FilterField<LocalDate>[]) data;
+
         switch (action) {
             case CREATE: // Create CSV file
                 final String[] dialogRes = (String[]) data;
@@ -180,16 +211,9 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                 break;
             case FILTERS_APPLIED: // Modify filters
-                System.out.print(data);
-                if (data == null) {
-                    filters = new FilterField[]{};
-                    onFiltersChanged();
-                    
-                    break;
-                } 
-                
-                // Apply filters
-                
+                this.filters = filtersApplied;
+                onFiltersChanged();
+
                 break;
         }
     }
