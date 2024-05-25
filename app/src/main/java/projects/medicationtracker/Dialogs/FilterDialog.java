@@ -30,8 +30,12 @@ public class FilterDialog extends DialogFragment {
     private MaterialAutoCompleteTextView scheduledBeforeAfter;
     private TextInputEditText takenFilterSelector;
     private MaterialAutoCompleteTextView takenBeforeAfter;
-    private LinearLayout barrier;
     private String[] opts;
+    private FilterField<LocalDate>[] filters;
+
+    public FilterDialog(FilterField<LocalDate>[] existingFilters) {
+        filters = existingFilters;
+    }
 
     @NonNull
     @Override
@@ -64,8 +68,11 @@ public class FilterDialog extends DialogFragment {
         setTimeFilterArrayAdapters(takenBeforeAfter);
         setTimeFilterArrayAdapters(scheduledBeforeAfter);
 
-        barrier = filterDialog.findViewById(R.id.barrier);
+        if (filters != null) {
+            // TODO apply existing filters
+        }
 
+        LinearLayout barrier = filterDialog.findViewById(R.id.barrier);
         barrier.setBackgroundColor(scheduledDateSelector.getCurrentTextColor());
 
         return filterDialog;

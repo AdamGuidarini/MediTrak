@@ -18,8 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.button.MaterialButton;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -146,15 +144,15 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
     }
 
     public void onFilterClick(View view) {
-        FilterDialog filterDialog = new FilterDialog();
+        FilterDialog filterDialog = new FilterDialog(filters);
         filterDialog.show(getSupportFragmentManager(), null);
     }
     
-    private void onFiltersChanged() {
+    private Dose[] filterDoses() {
         Medication trueParent = getUltimateParent(medication);
-        Dose[] dosesArr = Arrays.stream(combineDoses(trueParent, new Dose[]{})).filter(
+        return Arrays.stream(combineDoses(trueParent, new Dose[]{})).filter(
             d -> {
-                for (FilterField<LocalDate> f : this.filters) {
+                for (FilterField<LocalDate> f : filters) {
 
                     if (f.getField().equals("SCHEDULED")) {
                         switch (f.getOption()) {
@@ -182,20 +180,10 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
                 return true;
             }
         ).toArray(Dose[]::new);
-
-        historyAdapter = new HistoryAdapter(
-                dateFormat,
-                timeFormat,
-                trueParent,
-                dosesArr
-        );
-        recyclerView.setAdapter(historyAdapter);
     }
 
     @Override
     public void handleDialogClose(Action action, Object data) {
-        FilterField<LocalDate>[] filtersApplied = (FilterField<LocalDate>[]) data;
-
         switch (action) {
             case CREATE: // Create CSV file
                 final String[] dialogRes = (String[]) data;
@@ -211,33 +199,34 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                 break;
             case FILTERS_APPLIED: // Modify filters
+                FilterField<LocalDate>[] filtersApplied = (FilterField<LocalDate>[]) data;
                 this.filters = filtersApplied;
-                onFiltersChanged();
+
+                historyAdapter = new HistoryAdapter(
+                        dateFormat,
+                        timeFormat,
+                        getUltimateParent(medication),
+                        filterDoses()
+                );
+                recyclerView.setAdapter(historyAdapter);
 
                 break;
         }
     }
 
     private Pair<String, String[]>[] getTableData() {
-        ArrayList<Dose> doses = new ArrayList<>();
-        Medication currentMed = getUltimateParent(medication);
+        Dose[] doses = filterDoses();
         Pair<String, String[]>[] tableData = new Pair[3];
         String[] scheduledTimes, takenTimes, dosages;
 
-        while (currentMed != null) {
-            doses.addAll(Arrays.asList(currentMed.getDoses()));
+        scheduledTimes = new String[doses.length];
+        takenTimes = new String[doses.length];
+        dosages = new String[doses.length];
 
-            currentMed = currentMed.getParent();
-        }
-
-        scheduledTimes = new String[doses.size()];
-        takenTimes = new String[doses.size()];
-        dosages = new String[doses.size()];
-
-        for (int i = 0; i < doses.size(); i++) {
-            LocalDateTime scheduledDateTime = doses.get(i).getDoseTime();
-            LocalDateTime takenDateTime = doses.get(i).getTimeTaken();
-            Medication med = getDoseMedication(doses.get(i).getMedId());
+        for (int i = 0; i < doses.length; i++) {
+            LocalDateTime scheduledDateTime = doses[i].getDoseTime();
+            LocalDateTime takenDateTime = doses[i].getTimeTaken();
+            Medication med = getDoseMedication(doses[i].getMedId());
 
             String scheduleDate = DateTimeFormatter.ofPattern(
                     dateFormat, Locale.getDefault()
