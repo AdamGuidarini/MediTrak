@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
@@ -152,32 +151,38 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
         Medication trueParent = getUltimateParent(medication);
         return Arrays.stream(combineDoses(trueParent, new Dose[]{})).filter(
             d -> {
-                for (FilterField<LocalDate> f : filters) {
+                boolean meetsScheduledFilter = true;
+                boolean meetsTakenFilter = true;
 
+                for (FilterField<LocalDate> f : filters) {
                     if (f.getField().equals("SCHEDULED")) {
                         switch (f.getOption()) {
                             case GREATER_THAN:
-                                return d.getDoseTime().toLocalDate().isAfter(f.getValue());
+                                meetsScheduledFilter = d.getDoseTime().toLocalDate().isAfter(f.getValue());
+                                break;
                             case LESS_THAN:
-                                return d.getDoseTime().toLocalDate().isBefore(f.getValue());
+                                meetsScheduledFilter = d.getDoseTime().toLocalDate().isBefore(f.getValue());
+                                break;
                             case EQUALS:
-                                return d.getDoseTime().toLocalDate().isEqual(f.getValue());
+                                meetsScheduledFilter = d.getDoseTime().toLocalDate().isEqual(f.getValue());
                         }
                     }
 
                     if (f.getField().equals("TAKEN")) {
                         switch (f.getOption()) {
                             case GREATER_THAN:
-                                return d.getTimeTaken().toLocalDate().isAfter(f.getValue());
+                                meetsTakenFilter = d.getTimeTaken().toLocalDate().isAfter(f.getValue());
+                                break;
                             case LESS_THAN:
-                                return d.getTimeTaken().toLocalDate().isBefore(f.getValue());
+                                meetsTakenFilter = d.getTimeTaken().toLocalDate().isBefore(f.getValue());
+                                break;
                             case EQUALS:
-                                return d.getTimeTaken().toLocalDate().isEqual(f.getValue());
+                                meetsTakenFilter = d.getTimeTaken().toLocalDate().isEqual(f.getValue());
                         }
                     }
                 }
 
-                return true;
+                return meetsTakenFilter && meetsScheduledFilter;
             }
         ).toArray(Dose[]::new);
     }

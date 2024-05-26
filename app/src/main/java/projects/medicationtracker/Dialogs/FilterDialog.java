@@ -1,8 +1,10 @@
 package projects.medicationtracker.Dialogs;
 
+import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
+import static projects.medicationtracker.MainActivity.preferences;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
@@ -16,7 +18,9 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Objects;
 
 import projects.medicationtracker.Fragments.SelectDateFragment;
@@ -69,7 +73,13 @@ public class FilterDialog extends DialogFragment {
         setTimeFilterArrayAdapters(scheduledBeforeAfter);
 
         if (filters != null) {
-            // TODO apply existing filters
+            for (FilterField<LocalDate> f : filters) {
+                if (f.getField().equals("TAKEN")) {
+                    setExistingFilter(takenBeforeAfter, takenFilterSelector, f);
+                } else if (f.getField().equals("SCHEDULED")) {
+                    setExistingFilter(scheduledBeforeAfter, scheduledDateSelector, f);
+                }
+            }
         }
 
         LinearLayout barrier = filterDialog.findViewById(R.id.barrier);
@@ -162,5 +172,35 @@ public class FilterDialog extends DialogFragment {
             scheduledDateSelector.setText("");
             takenFilterSelector.setText("");
         }
+    }
+
+    private void setExistingFilter(
+            MaterialAutoCompleteTextView autoCompleteTextView,
+            TextInputEditText editText,
+            FilterField<LocalDate> filterField
+    ) {
+        String opt = "";
+        LocalDate date = filterField.getValue();
+
+        switch (filterField.getOption()) {
+            case GREATER_THAN:
+                opt = getString(R.string.after);
+                break;
+            case LESS_THAN:
+                opt = getString(R.string.before);
+                break;
+            case EQUALS:
+                opt = getString(R.string.on);
+        }
+
+        autoCompleteTextView.setText(opt, false);
+        editText.setTag(date);
+
+        String formattedDate = DateTimeFormatter.ofPattern(
+                preferences.getString(DATE_FORMAT),
+                Locale.getDefault()
+        ).format(date);
+
+        editText.setText(formattedDate);
     }
 }
