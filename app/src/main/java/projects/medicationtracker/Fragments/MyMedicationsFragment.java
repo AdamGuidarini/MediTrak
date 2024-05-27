@@ -5,6 +5,7 @@ import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -141,12 +142,16 @@ public class MyMedicationsFragment extends Fragment {
             getActivity().startActivity(editMedIntent);
         });
 
-        Intent intent = new Intent(getActivity(), MedicationHistory.class);
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            historyButton.setVisibility(View.GONE);
+        } else {
+            Intent intent = new Intent(getActivity(), MedicationHistory.class);
 
-        historyButton.setOnClickListener(view -> {
-            intent.putExtra("ID", medication.getId());
-            getActivity().finish();
-            startActivity(intent);
-        });
+            historyButton.setOnClickListener(view -> {
+                intent.putExtra("ID", medication.getId());
+                getActivity().finish();
+                startActivity(intent);
+            });
+        }
     }
 }

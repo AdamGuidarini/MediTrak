@@ -133,10 +133,18 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Recursively searches a medication's lineage for it's original parent
+     * @param m Medication whose parent is sought
+     * @return Oldest parent in medication's lineage
+     */
     private Medication getUltimateParent(Medication m) {
         return m.getParent() == null ? m : getUltimateParent(m.getParent());
     }
 
+    /**
+     * Handles exporting medication history as a csv file
+     */
     public void onExportClick(View view) {
         String defaultName = Objects.equals(medication.getPatientName(), "ME!") ?
                 getString(R.string.your) : medication.getPatientName();
@@ -157,11 +165,18 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
         backupDestinationPicker.show(getSupportFragmentManager(), null);
     }
 
+    /**
+     * Opens filter dialog
+     */
     public void onFilterClick(View view) {
         FilterDialog filterDialog = new FilterDialog(filters);
         filterDialog.show(getSupportFragmentManager(), null);
     }
-    
+
+    /**
+     * Applies this.filters to medication's doses
+     * @return Filtered doses
+     */
     private Dose[] filterDoses() {
         Medication trueParent = getUltimateParent(medication);
         return Arrays.stream(combineDoses(trueParent, new Dose[]{})).filter(
@@ -202,6 +217,11 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
         ).toArray(Dose[]::new);
     }
 
+    /**
+     * Handle response from a dialog
+     * @param action Action performed in dialog
+     * @param data Object returned by dialog
+     */
     @Override
     public void handleDialogClose(Action action, Object data) {
         switch (action) {
@@ -244,6 +264,10 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
         }
     }
 
+    /**
+     * Format dosage history for export
+     * @return Formatted dosage history
+     */
     private Pair<String, String[]>[] getTableData() {
         Dose[] doses = filterDoses();
         Pair<String, String[]>[] tableData = new Pair[3];
@@ -289,6 +313,11 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
         return tableData;
     }
 
+    /**
+     * Get the medication in lineage corresponding to the provided ID
+     * @param medId ID of medication to find
+     * @return Medication with medId or null
+     */
     private Medication getDoseMedication(long medId) {
         Medication currentMed = medication;
 
@@ -303,6 +332,12 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
         return null;
     }
 
+    /**
+     * Combines doses from medication lineage into a single array
+     * @param currentMed Medication in lineage whose doses are to be entered into the array
+     * @param doses Array in which to store medications
+     * @return Doses from all medications in lineage
+     */
     private Dose[] combineDoses(Medication currentMed, Dose[] doses) {
         doses = Stream.concat(
                 Arrays.stream(doses),

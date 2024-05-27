@@ -2,6 +2,8 @@ package projects.medicationtracker.Helpers;
 
 import android.util.Pair;
 
+import java.time.LocalDateTime;
+
 import projects.medicationtracker.Models.Medication;
 
 public class NativeDbHelper {
@@ -90,10 +92,19 @@ public class NativeDbHelper {
         return getMedHistory(dbPath, medId, Medication.class);
     }
 
+    /**
+     * Exports history to a csv file
+     * @param filePath Where the file will be stored
+     * @param data Medication history data
+     * @return true on success, false on failure
+     */
     public boolean exportMedicationHistory(String filePath, Pair<String, String[]>[] data) {
         return exportMedHistory(dbPath, filePath, data);
     }
 
+    /**
+     * Native methods
+     */
     private native void dbCreate(String dbPath);
     private native void dbUpgrade(String dbPath, int version);
     private native long insert(String dbPath, String table, Pair<String, String>[] values);
