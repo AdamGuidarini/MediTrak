@@ -197,9 +197,11 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
                 String exportFile = dialogRes[1];
                 String fileExtension = dialogRes[2];
 
+                String exportPath = exportDir + "/" + exportFile + "." + fileExtension;
+
                 boolean exportRes =  db.exportMedicationHistory(exportDir + '/' + exportFile + "." + fileExtension, getTableData());
 
-                String message = exportRes ? getString(R.string.successful_export, data) : getString(R.string.failed_export);
+                String message = exportRes ? getString(R.string.successful_export, exportPath) : getString(R.string.failed_export);
 
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                 break;

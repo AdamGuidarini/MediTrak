@@ -209,7 +209,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ArrayList<Medication> medications = new ArrayList<>();
 
         String query = "SELECT * FROM " + MEDICATION_TABLE
-                + " WHERE " + PATIENT_NAME + " = \"" + patient + "\""
+                + " WHERE " + PATIENT_NAME + " = '" + patient + "'"
                 + " AND " + CHILD_ID + " IS NULL";
 
         Cursor cursor = db.rawQuery(query, null);
