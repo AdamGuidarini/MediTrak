@@ -271,7 +271,7 @@ vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
 
     Table* table = manager.execSqlWithReturn(query);
 
-    while (!table->isAfterLast() && table->getCount() > 0) {
+    while (table->getCount() > 0 && !table->isAfterLast()) {
         doses.push_back(
             Dose(
                 stol(table->getItem(DOSE_ID)),

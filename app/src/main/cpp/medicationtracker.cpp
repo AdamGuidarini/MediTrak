@@ -319,7 +319,13 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getMedHistory(
 
     DatabaseController dbController(path);
 
-    return medicationToJavaConverter(dbController.getMedication(med_id), env, medClass);
+    try {
+        return medicationToJavaConverter(dbController.getMedication(med_id), env, medClass);
+    } catch (exception e) {
+        __android_log_write(ANDROID_LOG_ERROR, nullptr, "Error retrieving history");
+
+        return nullptr;
+    }
 }
 
 extern "C"
