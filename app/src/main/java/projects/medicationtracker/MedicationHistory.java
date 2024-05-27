@@ -46,6 +46,7 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
     private String dateFormat;
     private String timeFormat;
     private FilterField<LocalDate>[] filters = new FilterField[]{};
+    private TextView noRecords;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,14 +82,23 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
         Medication ultimateParent = getUltimateParent(medication);
 
         recyclerView = findViewById(R.id.history_view);
+
+        Dose[] combinedDoses = combineDoses(ultimateParent, new Dose[]{});
+
         historyAdapter = new HistoryAdapter(
                 dateFormat,
                 timeFormat,
                 ultimateParent,
-                combineDoses(ultimateParent, new Dose[]{})
+                combinedDoses
         );
         recyclerView.setAdapter(historyAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        noRecords = findViewById(R.id.no_records);
+
+        if (combinedDoses.length == 0) {
+            noRecords.setVisibility(View.VISIBLE);
+        }
 
         barrier.setBackgroundColor(headerText.getCurrentTextColor());
     }
@@ -209,13 +219,21 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
                 FilterField<LocalDate>[] filtersApplied = (FilterField<LocalDate>[]) data;
                 this.filters = filtersApplied;
 
+                Dose[] filteredDoses = filterDoses();
+
                 historyAdapter = new HistoryAdapter(
                         dateFormat,
                         timeFormat,
                         getUltimateParent(medication),
-                        filterDoses()
+                        filteredDoses
                 );
                 recyclerView.setAdapter(historyAdapter);
+
+                if (filteredDoses.length > 0) {
+                    noRecords.setVisibility(View.GONE);
+                } else {
+                    noRecords.setVisibility(View.VISIBLE);
+                }
 
                 break;
         }

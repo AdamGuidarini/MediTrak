@@ -105,6 +105,15 @@
                     android:scrollbars="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/no_records"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_records"
+                    android:visibility="gone"
+                    android:gravity="center"
+                    android:padding="20dp"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </LinearLayout>

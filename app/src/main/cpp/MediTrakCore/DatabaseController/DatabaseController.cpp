@@ -258,14 +258,15 @@ Medication DatabaseController::getMedication(long medicationId) {
         medication.parent->child = make_shared<Medication>(medication);
     }
 
-    medication.doses = getDoses(medication.id);
+    medication.doses = getTakenDoses(medication.id);
 
     return medication;
 }
 
-vector<Dose> DatabaseController::getDoses(long medicationId) {
+vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
     string query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE
-                   + " WHERE " + MED_ID + "=" + to_string(medicationId);
+                   + " WHERE " + MED_ID + "=" + to_string(medicationId)
+                   + " AND " + TAKEN + "=" + "TRUE";
     vector<Dose> doses;
 
     Table* table = manager.execSqlWithReturn(query);

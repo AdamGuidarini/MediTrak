@@ -177,10 +177,10 @@ public:
 
     /**
      * Retrieves all does for medication whose ID matches medId
-     * @param medId ID of medication whose doses are sought
+     * @param medicationId ID of medication whose doses are sought
      * @return all doses for given medication
      */
-    vector<Dose> getDoses(long medId);
+    vector<Dose> getTakenDoses(long medId);
 };
 
 #endif //MEDICATIONTRACKER_DATABASECONTROLLER_H

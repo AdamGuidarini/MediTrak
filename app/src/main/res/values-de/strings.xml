@@ -246,4 +246,5 @@
     <string name="dosage_hist">Dosis</string>
     <string name="filter">Filtern</string>
     <string name="export_csv">CSV Exportieren</string>
+    <string name="no_records">Keine Datensätze</string>
 </resources>
