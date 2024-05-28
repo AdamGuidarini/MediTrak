@@ -47,8 +47,9 @@ import projects.medicationtracker.Dialogs.BackupDestinationPicker;
 import projects.medicationtracker.Fragments.ConfirmDeleteAllFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
+import projects.medicationtracker.Interfaces.IDialogCloseListener;
 
-public class Settings extends AppCompatActivity {
+public class Settings extends AppCompatActivity implements IDialogCloseListener {
     private final DBHelper db = new DBHelper(this);
     private ActivityResultLauncher<Intent> chooseFileLauncher;
     private final ActivityResultLauncher<String> permissionRequester = registerForActivityResult(
@@ -429,7 +430,7 @@ public class Settings extends AppCompatActivity {
             permissionRequester.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
 
-        BackupDestinationPicker picker = new BackupDestinationPicker();
+        BackupDestinationPicker picker = new BackupDestinationPicker("json");
         picker.show(getSupportFragmentManager(), null);
     }
 
@@ -488,5 +489,25 @@ public class Settings extends AppCompatActivity {
 
         enableNotificationsSwitch.setOnCheckedChangeListener(((compoundButton, b) ->
                 db.setNotificationEnabled(enableNotificationsSwitch.isChecked())));
+    }
+
+    @Override
+    public void handleDialogClose(Action action, Object data) {
+        final String[] dialogRes = (String[]) data;
+
+        String exportDir = dialogRes[0];
+        String exportFile = dialogRes[1];
+        String fileExtension = dialogRes[2];
+
+        String resMessage;
+        boolean res = nativeDb.dbExport(
+                exportDir + '/' + exportFile + "." + fileExtension,
+                new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE}
+        );
+
+        resMessage = res ? getString(R.string.successful_export, exportDir + '/' + exportFile)
+                : getString(R.string.failed_export);
+
+        Toast.makeText(this, resMessage, Toast.LENGTH_SHORT).show();
     }
 }

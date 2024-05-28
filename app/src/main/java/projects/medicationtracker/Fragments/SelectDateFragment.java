@@ -1,7 +1,6 @@
 package projects.medicationtracker.Fragments;
 
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
-import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
 
 import android.app.DatePickerDialog;

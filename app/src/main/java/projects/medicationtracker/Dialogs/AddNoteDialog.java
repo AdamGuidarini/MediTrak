@@ -19,7 +19,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.MedicationNotes;
 import projects.medicationtracker.R;
-import projects.medicationtracker.SimpleClasses.Note;
+import projects.medicationtracker.Models.Note;
 
 public class AddNoteDialog extends DialogFragment {
     final Note note;

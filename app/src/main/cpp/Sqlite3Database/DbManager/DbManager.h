@@ -6,7 +6,7 @@
 #define MEDICATIONTRACKER_DBMANAGER_H
 
 #include "sqlite3.h"
-
+#include "Table.h"
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -93,10 +93,17 @@ public:
     int getVersionNumber();
 
     /**
-     * Executes the provided SQL query
+     * Executes the provided SQL query - returns nothing
      * @param sql  query to execute
      */
     void execSql(string sql, int (*callback) (void *, int, char**, char **) = nullptr);
+
+    /**
+     * Executes SQL query and returns a result
+     * @param sql query to execute
+     * @return
+     */
+    Table* execSqlWithReturn(string sql);
 
     /**
      * Insert a record into the database

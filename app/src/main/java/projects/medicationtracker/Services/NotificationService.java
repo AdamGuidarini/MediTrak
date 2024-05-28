@@ -100,7 +100,7 @@ public class NotificationService extends IntentService {
                 new NotificationCompat.Builder(this, CHANNEL_ID)
                         .setContentTitle(getString(R.string.app_name))
                         .setContentText(message)
-                        .setSmallIcon(R.drawable.mt_icon)
+                        .setSmallIcon(R.drawable.pill)
                         .setAutoCancel(true)
                         .setGroup(GROUP_KEY)
                         .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)

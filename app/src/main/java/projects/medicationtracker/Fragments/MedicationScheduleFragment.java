@@ -35,8 +35,8 @@ import projects.medicationtracker.Helpers.TextViewUtils;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
-import projects.medicationtracker.SimpleClasses.Dose;
-import projects.medicationtracker.SimpleClasses.Medication;
+import projects.medicationtracker.Models.Dose;
+import projects.medicationtracker.Models.Medication;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -344,10 +344,10 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
                 ArrayList<RelativeLayout> asNeededList = new ArrayList<>();
                 final int childCount;
 
-                ll.addView(buildCheckbox(med, dose.getDoseTime()));
+                ll.addView(buildCheckbox(med, dose.getTimeTaken()));
                 childCount = ll.getChildCount();
 
-                ll.addView(buildCheckbox(med, dose.getDoseTime()));
+                ll.addView(buildCheckbox(med, dose.getTimeTaken()));
 
                 for (int i = 0; i < childCount; i++) {
                     asNeededList.add((RelativeLayout) ll.getChildAt(i));

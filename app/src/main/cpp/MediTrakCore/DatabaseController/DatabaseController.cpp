@@ -179,3 +179,113 @@ void DatabaseController::importJSONString(
 ) {
     manager.importData(data, ignoreTables);
 }
+
+void DatabaseController::exportCsv(string exportPath, map<string, vector<string>> data) {
+    ofstream file(exportPath, std::fstream::trunc);
+    stringstream fileContents;
+    int longestValue = 0;
+
+    for (auto& item : data) {
+        fileContents << item.first << ',';
+        if (item.second.size() > longestValue) {
+            longestValue = item.second.size();
+        }
+    }
+
+    fileContents.seekp(-1, std::ios_base::end);
+    fileContents << '\n';
+
+    for (int i = 0; i < longestValue; i++) {
+        for (auto& item : data) {
+            if (!item.second.at(i).empty()) {
+                fileContents << item.second.at(i);
+            } else {
+                fileContents << "";
+            }
+
+            fileContents << ',';
+        }
+
+        fileContents.seekp(-1, std::ios_base::end);
+        fileContents << '\n';
+    }
+
+    file << fileContents.rdbuf();
+}
+
+Medication DatabaseController::getMedication(long medicationId) {
+    string query = "SELECT * FROM " + MEDICATION_TABLE + " m "
+            + " INNER JOIN " + MEDICATION_TIMES + " mt "
+            + " ON " + "m." + MED_ID + "= mt." + MED_ID
+            + " WHERE m." + MED_ID + "=" + to_string(medicationId);
+    Medication medication;
+    Table* table = manager.execSqlWithReturn(query);
+    long parentId = 0;
+    vector<string> times;
+
+    table->moveToFirst();
+
+    medication = Medication(
+            table->getItem(MED_NAME),
+            table->getItem(PATIENT_NAME),
+            table->getItem(MED_UNITS),
+            {},
+            table->getItem(START_DATE),
+            stol(table->getItem(MED_ID)),
+            stoi(table->getItem(MED_DOSAGE)),
+            stoi(table->getItem(MED_FREQUENCY)),
+            table->getItem(ACTIVE) == "1",
+            table->getItem(ALIAS)
+    );
+
+    if (!table->getItem(PARENT_ID).empty()) {
+        parentId = stol(table->getItem(PARENT_ID));
+    }
+
+    while (!table->isAfterLast()) {
+        times.push_back(table->getItem(DRUG_TIME));
+
+        table->moveToNext();
+    }
+
+    medication.times = std::move(times);
+
+    delete table;
+
+    if (parentId > 0) {
+        Medication parent = getMedication(parentId);
+        medication.parent = make_shared<Medication>(parent);
+        medication.parent->child = make_shared<Medication>(medication);
+    }
+
+    medication.doses = getTakenDoses(medication.id);
+
+    return medication;
+}
+
+vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
+    string query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE
+                   + " WHERE " + MED_ID + "=" + to_string(medicationId)
+                   + " AND " + TAKEN + "=" + "TRUE";
+    vector<Dose> doses;
+
+    Table* table = manager.execSqlWithReturn(query);
+
+    while (table->getCount() > 0 && !table->isAfterLast()) {
+        doses.push_back(
+            Dose(
+                stol(table->getItem(DOSE_ID)),
+                stol(table->getItem(MED_ID)),
+                table->getItem(TAKEN) == "1",
+                table->getItem(DOSE_TIME),
+                table->getItem(TIME_TAKEN)
+            )
+        );
+
+        table->moveToNext();
+    }
+
+    delete table;
+
+    return doses;
+}

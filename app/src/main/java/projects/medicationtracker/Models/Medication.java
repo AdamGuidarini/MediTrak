@@ -1,9 +1,6 @@
-package projects.medicationtracker.SimpleClasses;
+package projects.medicationtracker.Models;
 
 import static projects.medicationtracker.AddMedication.MINUTES_IN_DAY;
-import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
-import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
-import static projects.medicationtracker.MainActivity.preferences;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -12,7 +9,6 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
@@ -59,6 +55,7 @@ public class Medication implements Cloneable, Parcelable {
         startDate = firstDate;
         medDosage = dosage;
         alias = medAlias != null ? medAlias : "";
+        doses = new Dose[]{ new Dose() };
     }
 
     public Medication() {
@@ -71,6 +68,7 @@ public class Medication implements Cloneable, Parcelable {
         startDate = LocalDateTime.now();
         medDosage = 0;
         alias = "";
+        doses = new Dose[]{ new Dose() };
     }
 
     protected Medication(Parcel in) {
@@ -365,7 +363,7 @@ public class Medication implements Cloneable, Parcelable {
      */
     @NonNull
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         Medication clone = null;
         try {
             clone = (Medication) super.clone();

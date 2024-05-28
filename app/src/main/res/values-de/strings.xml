@@ -15,6 +15,13 @@
     <string name="delete">Löschen</string>
     <string name="i_agree">Ich stimme zu</string>
 
+    <!-- Filters -->
+    <string name="clear">Löschen</string>
+    <string name="apply">Anwenden</string>
+    <string name="before">Bevor</string>
+    <string name="after">Nach</string>
+    <string name="on">Am</string>
+
     <!-- Errors -->
     <string name="invalid_value">Ungültiger Wert angegeben</string>
     <string name="must_be_positive_int">Der Wert muss eine positive ganze Zahl sein</string>
@@ -233,4 +240,11 @@
     <string name="time_for_other_med">Es ist Zeit für die %2$s von %1$s</string>
     <string name="add_dose">Dosis hinzufügen</string>
 
+    <!-- Med History -->
+    <string name="history">Geschichte</string>
+    <string name="scheduled">Geplant</string>
+    <string name="dosage_hist">Dosis</string>
+    <string name="filter">Filtern</string>
+    <string name="export_csv">CSV Exportieren</string>
+    <string name="no_records">Keine Datensätze</string>
 </resources>

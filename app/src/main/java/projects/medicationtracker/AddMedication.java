@@ -50,7 +50,7 @@ import projects.medicationtracker.Fragments.TimePickerFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
-import projects.medicationtracker.SimpleClasses.Medication;
+import projects.medicationtracker.Models.Medication;
 
 public class AddMedication extends AppCompatActivity {
     final public static String MED_ID = "medId";

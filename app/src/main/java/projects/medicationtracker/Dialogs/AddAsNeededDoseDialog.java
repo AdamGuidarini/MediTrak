@@ -28,8 +28,8 @@ import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
-import projects.medicationtracker.SimpleClasses.Dose;
-import projects.medicationtracker.SimpleClasses.Medication;
+import projects.medicationtracker.Models.Dose;
+import projects.medicationtracker.Models.Medication;
 
 public class AddAsNeededDoseDialog extends DialogFragment {
     private final ArrayList<Medication> medications;
@@ -160,7 +160,7 @@ public class AddAsNeededDoseDialog extends DialogFragment {
 
         db.updateDoseStatus(doseId, TimeFormatting.localDateTimeToString(dateTimeTaken), true);
 
-        Dose dose = new Dose(doseId, med.getId(), true, dateTimeTaken);
+        Dose dose = new Dose(doseId, med.getId(), true, dateTimeTaken, null);
 
         if (fragment instanceof IDialogCloseListener) {
             ((IDialogCloseListener) fragment).handleDialogClose(

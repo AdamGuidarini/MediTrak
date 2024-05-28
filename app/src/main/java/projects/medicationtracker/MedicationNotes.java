@@ -27,9 +27,8 @@ import java.util.Objects;
 import projects.medicationtracker.Dialogs.AddNoteDialog;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TextViewUtils;
-import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
-import projects.medicationtracker.SimpleClasses.Note;
+import projects.medicationtracker.Models.Note;
 import projects.medicationtracker.Views.StandardCardView;
 
 public class MedicationNotes extends AppCompatActivity implements IDialogCloseListener {

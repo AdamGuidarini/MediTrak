@@ -16,9 +16,10 @@ if (NOT SQLITE3_PATH)
     message(SEND_ERROR "Missing environment variable: \"SQLITE3_LIB_PATH\".")
 endif ()
 
-include_directories(${SQLITE3_PATH})
-add_subdirectory(DbManager)
-add_subdirectory(DatabaseController)
+include_directories(${SQLITE3_PATH} MediTrakCore Sqlite3Database)
+
+add_subdirectory(Sqlite3Database)
+add_subdirectory(MediTrakCore)
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
@@ -26,14 +27,14 @@ add_subdirectory(DatabaseController)
 # Gradle automatically packages shared libraries with your APK.
 
 add_library( # Sets the name of the library.
-             medicationtracker
+        medicationtracker
 
-             # Sets the library as a shared library.
-             SHARED
+        # Sets the library as a shared library.
+        SHARED
 
-             # Provides a relative path to your source file(s).
-             medicationtracker.cpp
-        )
+        # Provides a relative path to your source file(s).
+        medicationtracker.cpp
+)
 
 add_library(
         sqlite3 SHARED ${SQLITE3_PATH}/sqlite3.h ${SQLITE3_PATH}/sqlite3.c
@@ -47,25 +48,27 @@ add_definitions( -DSQLITE_ENABLE_JSON1 )
 # you want to add. CMake verifies that the library exists before
 # completing its build.
 find_library( # Sets the name of the path variable.
-              log-lib
+        log-lib
 
-              # Specifies the name of the NDK library that
-              # you want CMake to locate.
-              log )
+        # Specifies the name of the NDK library that
+        # you want CMake to locate.
+        log
+)
 
 # Specifies libraries CMake should link to your target library. You
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
 
 target_link_libraries( # Specifies the target library.
-                       medicationtracker
-                       DbManager
-                       android
-                       sqlite3
-                       DatabaseController
-                       # Links the target library to the log library
-                       # included in the NDK.
-                       ${log-lib} )
-
-target_include_directories(sqlite3 PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+        medicationtracker
+        android
+        sqlite3
+        DatabaseController
+        Medication
+        Dose
+        DbManager
+        # Links the target library to the log library
+        # included in the NDK.
+        ${log-lib}
+)
 

@@ -11,7 +11,7 @@ import androidx.fragment.app.DialogFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.MyMedications;
-import projects.medicationtracker.SimpleClasses.Medication;
+import projects.medicationtracker.Models.Medication;
 
 public class ConfirmMedicationDeleteFragment extends DialogFragment {
     final DBHelper db;
