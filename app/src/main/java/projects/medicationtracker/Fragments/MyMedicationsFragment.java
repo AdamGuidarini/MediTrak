@@ -5,6 +5,7 @@ import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +22,10 @@ import java.util.Locale;
 
 import projects.medicationtracker.AddMedication;
 import projects.medicationtracker.Helpers.DBHelper;
-import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.MedicationHistory;
 import projects.medicationtracker.MedicationNotes;
 import projects.medicationtracker.R;
-import projects.medicationtracker.SimpleClasses.Medication;
+import projects.medicationtracker.Models.Medication;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +40,7 @@ public class MyMedicationsFragment extends Fragment {
     TextView takenSince;
     Button notesButton;
     Button editButton;
+    Button historyButton;
 
     public MyMedicationsFragment() {
     }
@@ -61,7 +63,7 @@ public class MyMedicationsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Medication med = requireArguments().getParcelable("Medication");
+        Medication med = requireArguments().getParcelable("MediTrakCore/Medication");
 
         final View rootView = inflater.inflate(R.layout.fragment_my_medications, container, false);
 
@@ -83,6 +85,7 @@ public class MyMedicationsFragment extends Fragment {
         takenSince = v.findViewById(R.id.myMedCardTakenSince);
         notesButton = v.findViewById(R.id.myMedsNotes);
         editButton = v.findViewById(R.id.myMedsEdit);
+        historyButton = v.findViewById(R.id.history_button);
 
         for (int i = 0; i < times.length; i++) {
             dateTimes[i] = LocalDateTime.of(medication.getStartDate().toLocalDate(), times[i]);
@@ -138,5 +141,17 @@ public class MyMedicationsFragment extends Fragment {
             getActivity().finish();
             getActivity().startActivity(editMedIntent);
         });
+
+        if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
+            historyButton.setVisibility(View.GONE);
+        } else {
+            Intent intent = new Intent(getActivity(), MedicationHistory.class);
+
+            historyButton.setOnClickListener(view -> {
+                intent.putExtra("ID", medication.getId());
+                getActivity().finish();
+                startActivity(intent);
+            });
+        }
     }
 }

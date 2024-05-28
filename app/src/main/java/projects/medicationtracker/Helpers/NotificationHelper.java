@@ -18,7 +18,7 @@ import java.time.ZonedDateTime;
 
 import projects.medicationtracker.R;
 import projects.medicationtracker.Receivers.NotificationReceiver;
-import projects.medicationtracker.SimpleClasses.Medication;
+import projects.medicationtracker.Models.Medication;
 
 public class NotificationHelper {
     private final static int SNOOZE_TIME_MINUTES = 15;

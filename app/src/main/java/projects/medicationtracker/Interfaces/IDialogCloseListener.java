@@ -10,7 +10,9 @@ public interface IDialogCloseListener {
     enum Action {
         ADD,
         EDIT,
-        DELETE
+        DELETE,
+        CREATE,
+        FILTERS_APPLIED
     }
 
     /**

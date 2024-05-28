@@ -7,7 +7,10 @@
 
 #include <string>
 #include <vector>
-#include "../DbManager/DbManager.h"
+#include <memory>
+#include "DbManager.h"
+#include "../Medication/Medication.h"
+#include "../Dose/Dose.h"
 
 using namespace std;
 
@@ -157,7 +160,27 @@ public:
      * @param importData JSON formatted string containing data to import
      */
     void importJSONString(string& importData, const vector<string>& ignoreTables = {});
-};
 
+    /**
+     * Exports provided data in CSV format. Keys are treated as headers and will be the first row.
+     * One element from each record will be added to the row corresponding to its key
+     * @param data Data to export - The first row of the file will consist of the keys of the data map
+     */
+    void exportCsv(string exportPath, map<string, vector<string>> data);
+
+    /**
+     * Retrieves a Medication from the database
+     * @param medicationId ID of medication sought
+     * @return Medication including data on its doses and potential parents/children
+     */
+    Medication getMedication(long medicationId);
+
+    /**
+     * Retrieves all does for medication whose ID matches medId
+     * @param medicationId ID of medication whose doses are sought
+     * @return all doses for given medication
+     */
+    vector<Dose> getTakenDoses(long medId);
+};
 
 #endif //MEDICATIONTRACKER_DATABASECONTROLLER_H

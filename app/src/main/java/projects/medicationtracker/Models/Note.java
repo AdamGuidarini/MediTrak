@@ -1,4 +1,4 @@
-package projects.medicationtracker.SimpleClasses;
+package projects.medicationtracker.Models;
 
 import java.time.LocalDateTime;
 

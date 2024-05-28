@@ -313,7 +313,7 @@ vector<map<string, string>> DbManager::readAllValuesInTable(const string& table)
                     colText = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, i)));
                 }
 
-                m.insert({ string(sqlite3_column_name(stmt, i)),string(colText) });
+                m.insert({ string(sqlite3_column_name(stmt, i)), colText });
             }
 
             results.push_back(m);
@@ -582,4 +582,27 @@ bool DbManager::isNumber(string str) {
     while (it != str.end() && std::isdigit(*it)) ++it;
 
     return !str.empty() && it == str.end();
+}
+
+Table* DbManager::execSqlWithReturn(string sql) {
+    sqlite3_stmt *stmt = nullptr;
+    Table* table;
+    map<string, vector<string>> data;
+
+    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+
+    try {
+        if (rc != SQLITE_OK) {
+            sqlite3_finalize(stmt);
+
+            throw runtime_error("Error reading from SQLite database.");
+        }
+    } catch (runtime_error& error) {
+        cerr << "SQLITE READ ERROR | Return Code: " << rc << endl;
+        throw error;
+    }
+
+    table = new Table(stmt);
+
+    return table;
 }

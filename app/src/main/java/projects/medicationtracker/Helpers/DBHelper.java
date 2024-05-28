@@ -20,8 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import projects.medicationtracker.MainActivity;
-import projects.medicationtracker.SimpleClasses.Medication;
-import projects.medicationtracker.SimpleClasses.Note;
+import projects.medicationtracker.Models.Dose;
+import projects.medicationtracker.Models.Medication;
+import projects.medicationtracker.Models.Note;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Medications.db";
@@ -97,7 +98,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        nativeHelper = new NativeDbHelper(MainActivity.dbDir);
+        nativeHelper = new NativeDbHelper(MainActivity.DATABASE_DIR);
     }
 
     /**
@@ -122,7 +123,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         if (nativeHelper == null) {
-            nativeHelper = new NativeDbHelper(MainActivity.dbDir);
+            nativeHelper = new NativeDbHelper(MainActivity.DATABASE_DIR);
         }
     }
 
@@ -208,7 +209,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ArrayList<Medication> medications = new ArrayList<>();
 
         String query = "SELECT * FROM " + MEDICATION_TABLE
-                + " WHERE " + PATIENT_NAME + " = \"" + patient + "\""
+                + " WHERE " + PATIENT_NAME + " = '" + patient + "'"
                 + " AND " + CHILD_ID + " IS NULL";
 
         Cursor cursor = db.rawQuery(query, null);
@@ -775,7 +776,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public long addNote(String note, long medId) {
         if (nativeHelper == null) {
-            nativeHelper = new NativeDbHelper(MainActivity.dbDir);
+            nativeHelper = new NativeDbHelper(MainActivity.DATABASE_DIR);
         }
 
         Pair<String, String>[] values = new Pair[3];
@@ -794,7 +795,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public void deleteNote(Note note) {
         if (nativeHelper == null) {
-            nativeHelper = new NativeDbHelper(MainActivity.dbDir);
+            nativeHelper = new NativeDbHelper(MainActivity.DATABASE_DIR);
         }
 
         Pair<String, String>[] values = new Pair[1];
@@ -819,7 +820,7 @@ public class DBHelper extends SQLiteOpenHelper {
         where[0] = new Pair<>(NOTE_ID, String.valueOf(note.getNoteId()));
 
         if (nativeHelper == null) {
-            nativeHelper = new NativeDbHelper(MainActivity.dbDir);
+            nativeHelper = new NativeDbHelper(MainActivity.DATABASE_DIR);
         }
 
         nativeHelper.update(
@@ -1010,7 +1011,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public void setDateTimeFormat(String dateFormat, String timeFormat) {
         if (nativeHelper == null) {
-            nativeHelper = new NativeDbHelper(MainActivity.dbDir);
+            nativeHelper = new NativeDbHelper(MainActivity.DATABASE_DIR);
         }
 
         Pair<String, String>[] formats = new Pair[2];
@@ -1184,5 +1185,11 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(permission, true);
 
         db.update(SETTINGS_TABLE, cv, null, null);
+    }
+
+    public boolean exportHistoryCSV(String path, Medication med, Dose[] doses) {
+        
+
+        return false;
     }
 }

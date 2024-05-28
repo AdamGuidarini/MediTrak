@@ -2,6 +2,10 @@ package projects.medicationtracker.Helpers;
 
 import android.util.Pair;
 
+import java.time.LocalDateTime;
+
+import projects.medicationtracker.Models.Medication;
+
 public class NativeDbHelper {
     static {
         System.loadLibrary("medicationtracker");
@@ -59,14 +63,6 @@ public class NativeDbHelper {
         delete(dbPath, table, where);
     }
 
-    public void updateTimeFormat(String format) {
-
-    }
-
-    public void updateDateFormat(String format) {
-        
-    }
-
     /**
      * Exports a database
      * @param exportPath Path where exported file will be created
@@ -87,11 +83,35 @@ public class NativeDbHelper {
         return dbImporter(dbPath, fileContents, ignoredTables);
     }
 
-    private  native void dbCreate(String dbPath);
+    /**
+     * Retrieves medication and all past doses
+     * @param medId ID of medication
+     * @return Medication with all doses - Includes any parents/children
+     */
+    public Medication getMedicationHistory(long medId) {
+        return getMedHistory(dbPath, medId, Medication.class);
+    }
+
+    /**
+     * Exports history to a csv file
+     * @param filePath Where the file will be stored
+     * @param data Medication history data
+     * @return true on success, false on failure
+     */
+    public boolean exportMedicationHistory(String filePath, Pair<String, String[]>[] data) {
+        return exportMedHistory(dbPath, filePath, data);
+    }
+
+    /**
+     * Native methods
+     */
+    private native void dbCreate(String dbPath);
     private native void dbUpgrade(String dbPath, int version);
     private native long insert(String dbPath, String table, Pair<String, String>[] values);
     private native boolean update(String dbPath, String table, Pair<String, String>[] values, Pair<String, String >[] where);
     private native long delete(String dbPath, String table, Pair<String, String>[] values);
     private native boolean dbExporter(String databaseName, String exportDirectory, String[] ignoredTables);
     private native boolean dbImporter(String dbPath, String fileContents, String[] ignoredTables);
+    private native Medication getMedHistory(String dbPath, long medId, Class<Medication> medicationClass);
+    private native boolean exportMedHistory(String dbPath, String exportPath, Pair<String, String[]>[] data);
 }

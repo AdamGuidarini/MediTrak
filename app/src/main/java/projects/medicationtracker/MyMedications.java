@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import kotlin.Pair;
 import projects.medicationtracker.Fragments.MyMedicationsFragment;
 import projects.medicationtracker.Helpers.DBHelper;
-import projects.medicationtracker.SimpleClasses.Medication;
+import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Views.StandardCardView;
 
 public class MyMedications extends AppCompatActivity {
@@ -179,7 +179,7 @@ public class MyMedications extends AppCompatActivity {
 
         thisMedLayout.setId((int) medication.getId());
 
-        bundle.putParcelable("Medication", medication);
+        bundle.putParcelable("MediTrakCore/Medication", medication);
 
         getSupportFragmentManager()
                 .beginTransaction()
