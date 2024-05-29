@@ -142,9 +142,9 @@ public class MyMedicationsFragment extends Fragment {
             getActivity().startActivity(editMedIntent);
         });
 
-        if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
-            historyButton.setVisibility(View.GONE);
-        } else {
+//        if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
+//            historyButton.setVisibility(View.GONE);
+//        } else {
             Intent intent = new Intent(getActivity(), MedicationHistory.class);
 
             historyButton.setOnClickListener(view -> {
@@ -152,6 +152,6 @@ public class MyMedicationsFragment extends Fragment {
                 getActivity().finish();
                 startActivity(intent);
             });
-        }
+//        }
     }
 }

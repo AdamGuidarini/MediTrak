@@ -3,6 +3,9 @@ package projects.medicationtracker.Models;
 import androidx.annotation.Nullable;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * A simple class representing a Medication dose
@@ -27,6 +30,17 @@ public class Dose {
         taken = isTaken;
         this.timeTaken = timeTaken;
         this.doseTime = doseTime;
+    }
+
+    public Dose(long id, long medicationId, boolean isTaken, @Nullable String timeTaken, @Nullable String doseTime) {
+        Integer[] takenToks = Arrays.stream(timeTaken.split("[:\\-\\s]")).map(s -> Integer.parseInt(s)).toArray(Integer[]::new);
+        Integer[] doseTimeToks = Arrays.stream(doseTime.split("[:\\-\\s]")).map(s -> Integer.parseInt(s)).toArray(Integer[]::new);
+
+        doseId = id;
+        medId = medicationId;
+        taken = isTaken;
+        this.timeTaken = LocalDateTime.of(takenToks[0], takenToks[1], takenToks[2], takenToks[3], takenToks[4]);
+        this.doseTime = LocalDateTime.of(doseTimeToks[0], doseTimeToks[1], doseTimeToks[2], doseTimeToks[3], doseTimeToks[4]);
     }
 
     public Dose() {

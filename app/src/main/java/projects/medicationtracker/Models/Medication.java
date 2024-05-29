@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Arrays;
 import java.util.Locale;
 
 import projects.medicationtracker.Helpers.TimeFormatting;
@@ -53,6 +55,45 @@ public class Medication implements Cloneable, Parcelable {
         medId = id;
         medFrequency = frequency;
         startDate = firstDate;
+        medDosage = dosage;
+        alias = medAlias != null ? medAlias : "";
+        doses = new Dose[]{ new Dose() };
+    }
+
+    public Medication(String thisMed, String patient, String units, String[] time,
+                      String firstDate, long id, int frequency, int dosage, String medAlias) {
+        LocalDateTime[] medTimes = new LocalDateTime[time.length];
+        LocalDateTime start;
+
+        Integer[] startDateTokens = Arrays.stream(firstDate.split("[:\\-\\s]")).map(s -> Integer.parseInt(s)).toArray(Integer[]::new);
+
+        start = LocalDateTime.of(
+                startDateTokens[0],
+                startDateTokens[1],
+                startDateTokens[2],
+                startDateTokens[3],
+                startDateTokens[4]
+        );
+
+        for (int i = 0; i < time.length; i++) {
+            Integer[] timeParts = Arrays.stream(time[i].split("[:\\-\\s]")).map(s -> Integer.parseInt(s)).toArray(Integer[]::new);
+
+            medTimes[i] = LocalDateTime.of(
+                    timeParts[0],
+                    timeParts[1],
+                    timeParts[2],
+                    timeParts[3],
+                    timeParts[4]
+            );
+        }
+
+        medName = thisMed;
+        patientName = patient;
+        medDosageUnits = units;
+        times = medTimes;
+        medId = id;
+        medFrequency = frequency;
+        startDate = start;
         medDosage = dosage;
         alias = medAlias != null ? medAlias : "";
         doses = new Dose[]{ new Dose() };
