@@ -60,40 +60,33 @@ public class Medication implements Cloneable, Parcelable {
         doses = new Dose[]{ new Dose() };
     }
 
-    public Medication(String thisMed, String patient, String units, String[] time,
+    public Medication(String thisMed, String patient, String units, String[] times,
                       String firstDate, long id, int frequency, int dosage, String medAlias) {
-        LocalDateTime[] medTimes = new LocalDateTime[time.length];
-        LocalDateTime start;
+        final String dateFormat = "yyyy-MM-dd HH:mm:ss";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat, Locale.getDefault());
+        LocalDateTime[] medTimes = new LocalDateTime[times.length];
 
-        Integer[] startDateTokens = Arrays.stream(firstDate.split("[:\\-\\s]")).map(s -> Integer.parseInt(s)).toArray(Integer[]::new);
+        // Some times seem to be 1 character short, this protects against that
+        if (firstDate.length() < dateFormat.length()) {
+            firstDate += "0";
+        }
 
-        start = LocalDateTime.of(
-                startDateTokens[0],
-                startDateTokens[1],
-                startDateTokens[2],
-                startDateTokens[3],
-                startDateTokens[4]
-        );
+        for (int i = 0; i < times.length; i++) {
+            // Some times seem to be 1 character short, this protects against that
+            if (times[i].length() < dateFormat.length()) {
+                times[i] += "0";
+            }
 
-        for (int i = 0; i < time.length; i++) {
-            Integer[] timeParts = Arrays.stream(time[i].split("[:\\-\\s]")).map(s -> Integer.parseInt(s)).toArray(Integer[]::new);
-
-            medTimes[i] = LocalDateTime.of(
-                    timeParts[0],
-                    timeParts[1],
-                    timeParts[2],
-                    timeParts[3],
-                    timeParts[4]
-            );
+            medTimes[i] = LocalDateTime.parse(times[i], formatter);
         }
 
         medName = thisMed;
         patientName = patient;
         medDosageUnits = units;
-        times = medTimes;
+        this.times = medTimes;
         medId = id;
         medFrequency = frequency;
-        startDate = start;
+        startDate = LocalDateTime.parse(firstDate, formatter);
         medDosage = dosage;
         alias = medAlias != null ? medAlias : "";
         doses = new Dose[]{ new Dose() };

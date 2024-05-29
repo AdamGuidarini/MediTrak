@@ -33,14 +33,23 @@ public class Dose {
     }
 
     public Dose(long id, long medicationId, boolean isTaken, @Nullable String timeTaken, @Nullable String doseTime) {
-        Integer[] takenToks = Arrays.stream(timeTaken.split("[:\\-\\s]")).map(s -> Integer.parseInt(s)).toArray(Integer[]::new);
-        Integer[] doseTimeToks = Arrays.stream(doseTime.split("[:\\-\\s]")).map(s -> Integer.parseInt(s)).toArray(Integer[]::new);
+        final String dateFormat = "yyyy-MM-dd HH:mm:ss";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat, Locale.getDefault());
+
+        // Some times seem to be 1 character short, this protects against that
+        if (timeTaken.length() < dateFormat.length()) {
+          timeTaken += "0";
+        }
+
+        if (doseTime.length() < dateFormat.length()) {
+            doseTime += "0";
+        }
 
         doseId = id;
         medId = medicationId;
         taken = isTaken;
-        this.timeTaken = LocalDateTime.of(takenToks[0], takenToks[1], takenToks[2], takenToks[3], takenToks[4]);
-        this.doseTime = LocalDateTime.of(doseTimeToks[0], doseTimeToks[1], doseTimeToks[2], doseTimeToks[3], doseTimeToks[4]);
+        this.timeTaken = LocalDateTime.parse(timeTaken, formatter);
+        this.doseTime = LocalDateTime.parse(doseTime, formatter);
     }
 
     public Dose() {
