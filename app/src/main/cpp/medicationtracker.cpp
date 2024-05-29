@@ -28,32 +28,6 @@ std::map<std::string, std::string> getValues(jobjectArray arr, JNIEnv *env) {
     return vals;
 }
 
-jobject parseLocalDateTime(std::string dateString, JNIEnv* env) {
-    jclass LocalDateTime = env->FindClass("java/time/LocalDateTime");
-    jmethodID of = env->GetStaticMethodID(LocalDateTime, "of", "(IIIII)Ljava/time/LocalDateTime;");
-    int dateParts[5];
-    int i = 0;
-
-    char* t = strtok(dateString.data(), ": -");
-
-    while(t) {
-        dateParts[i] = atoi(t);
-        t = strtok(NULL, ": -");
-
-        i++;
-    }
-
-    return env->CallStaticObjectMethod(
-            LocalDateTime,
-            of,
-            dateParts[0],
-            dateParts[1],
-            dateParts[2],
-            dateParts[3],
-            dateParts[4]
-    );
-}
-
 jobjectArray doseToJavaConverter(vector<Dose> doses, JNIEnv* env, jobject &jMedication) {
     jfieldID medDoses = env->GetFieldID(env->GetObjectClass(jMedication), "doses", "[Lprojects/medicationtracker/Models/Dose;");
     jobjectArray jDoses = static_cast<jobjectArray>(env->GetObjectField(jMedication, medDoses));
@@ -64,7 +38,7 @@ jobjectArray doseToJavaConverter(vector<Dose> doses, JNIEnv* env, jobject &jMedi
     jmethodID constructor = env->GetMethodID(
         jDose,
         "<init>",
-        "(JJZLjava/time/LocalDateTime;Ljava/time/LocalDateTime;)V"
+        "(JJZLjava/lang/String;Ljava/lang/String;)V"
     );
 
     for (int i = 0; i < doses.size(); i++) {
@@ -74,8 +48,8 @@ jobjectArray doseToJavaConverter(vector<Dose> doses, JNIEnv* env, jobject &jMedi
             doses.at(i).id,
             doses.at(i).medicationId,
             doses.at(i).taken,
-            parseLocalDateTime(doses.at(i).timeTaken, env),
-            parseLocalDateTime(doses.at(i).doseTime, env)
+            env->NewStringUTF(doses.at(i).timeTaken.c_str()),
+            env->NewStringUTF(doses.at(i).doseTime.c_str())
         );
 
         env->SetObjectArrayElement(jDoses, i, dose);
@@ -85,18 +59,18 @@ jobjectArray doseToJavaConverter(vector<Dose> doses, JNIEnv* env, jobject &jMedi
 }
 
 jobject medicationToJavaConverter(Medication med, JNIEnv* env, jclass jMedication) {
-    jclass LocalDateTime = env->FindClass("java/time/LocalDateTime");
-    jobjectArray medTimes = env->NewObjectArray(med.times.size(), LocalDateTime, NULL);
+    jclass String = env->FindClass("java/lang/String");
+    jobjectArray medTimes = env->NewObjectArray(med.times.size(), String, NULL);
     jmethodID medConstructor = env->GetMethodID(
         jMedication,
         "<init>",
-        "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/time/LocalDateTime;Ljava/time/LocalDateTime;JIILjava/lang/String;)V"
+        "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;JIILjava/lang/String;)V"
     );
 
     for (int i = 0; i < med.times.size(); i++) {
         std::string dateString = med.startDate.substr(0, med.startDate.find(" ")) + " " + med.times.at(i);
 
-        env->SetObjectArrayElement(medTimes, i, parseLocalDateTime(dateString, env));
+        env->SetObjectArrayElement(medTimes, i, env->NewStringUTF(dateString.c_str()));
     }
 
     jobject jMedicationInstance = env->NewObject(
@@ -106,7 +80,7 @@ jobject medicationToJavaConverter(Medication med, JNIEnv* env, jclass jMedicatio
         env->NewStringUTF(med.patientName.c_str()),
         env->NewStringUTF(med.dosageUnit.c_str()),
         medTimes,
-        parseLocalDateTime(med.startDate, env),
+        env->NewStringUTF(med.startDate.c_str()),
         med.id,
         jint(med.frequency),
         jint(med.dosage),
