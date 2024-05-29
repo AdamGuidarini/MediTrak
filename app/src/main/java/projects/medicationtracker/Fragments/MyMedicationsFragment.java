@@ -142,16 +142,13 @@ public class MyMedicationsFragment extends Fragment {
             getActivity().startActivity(editMedIntent);
         });
 
-//        if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
-//            historyButton.setVisibility(View.GONE);
-//        } else {
-            Intent intent = new Intent(getActivity(), MedicationHistory.class);
 
-            historyButton.setOnClickListener(view -> {
-                intent.putExtra("ID", medication.getId());
-                getActivity().finish();
-                startActivity(intent);
-            });
-//        }
+        Intent intent = new Intent(getActivity(), MedicationHistory.class);
+
+        historyButton.setOnClickListener(view -> {
+            intent.putExtra("ID", medication.getId());
+            getActivity().finish();
+            startActivity(intent);
+        });
     }
 }
