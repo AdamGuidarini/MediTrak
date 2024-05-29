@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Arrays;
 import java.util.Locale;
 
 import projects.medicationtracker.Helpers.TimeFormatting;
@@ -53,6 +55,38 @@ public class Medication implements Cloneable, Parcelable {
         medId = id;
         medFrequency = frequency;
         startDate = firstDate;
+        medDosage = dosage;
+        alias = medAlias != null ? medAlias : "";
+        doses = new Dose[]{ new Dose() };
+    }
+
+    public Medication(String thisMed, String patient, String units, String[] times,
+                      String firstDate, long id, int frequency, int dosage, String medAlias) {
+        final String dateFormat = "yyyy-MM-dd HH:mm:ss";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat, Locale.getDefault());
+        LocalDateTime[] medTimes = new LocalDateTime[times.length];
+
+        // Some times seem to be 1 character short, this protects against that
+        if (firstDate.length() < dateFormat.length()) {
+            firstDate += "0";
+        }
+
+        for (int i = 0; i < times.length; i++) {
+            // Some times seem to be 1 character short, this protects against that
+            if (times[i].length() < dateFormat.length()) {
+                times[i] += "0";
+            }
+
+            medTimes[i] = LocalDateTime.parse(times[i], formatter);
+        }
+
+        medName = thisMed;
+        patientName = patient;
+        medDosageUnits = units;
+        this.times = medTimes;
+        medId = id;
+        medFrequency = frequency;
+        startDate = LocalDateTime.parse(firstDate, formatter);
         medDosage = dosage;
         alias = medAlias != null ? medAlias : "";
         doses = new Dose[]{ new Dose() };

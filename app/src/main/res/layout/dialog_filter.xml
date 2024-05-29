@@ -12,6 +12,13 @@
         android:orientation="vertical"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textStyle="bold"
+            android:text="@string/scheduled"/>
         
         <LinearLayout
             android:id="@+id/scheduled_date_filter"
@@ -38,7 +45,6 @@
                 >
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/scheduled_filter"
-                    android:hint="@string/scheduled"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </com.google.android.material.textfield.TextInputLayout>
@@ -53,6 +59,12 @@
             android:layout_marginBottom="15dp"
             android:background="@color/white">
         </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="@string/taken"/>
 
         <LinearLayout
             android:id="@+id/taken_date_filter"
@@ -78,7 +90,6 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/taken_filter"
-                    android:hint="@string/taken"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </com.google.android.material.textfield.TextInputLayout>
