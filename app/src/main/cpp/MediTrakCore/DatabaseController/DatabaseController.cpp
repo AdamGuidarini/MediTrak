@@ -94,6 +94,17 @@ void DatabaseController::create() {
             + ");"
     );
 
+    manager.execSql(
+            "CREATE TABLE WHERE IF NOT EXISTS " + NOTIFICATIONS + "("
+            + MED_ID + " INT, "
+            + DOSE_ID + " INT, "
+            + SCHEDULED_TIME + " DATETIME "
+            + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE,"
+            + "FOREIGN KEY (" + DOSE_ID + ") REFERENCES " + MEDICATION_TRACKER_TABLE + "(" + DOSE_ID + ") ON DELETE CASCADE,"
+            + "FOREIGN KEY (" + SCHEDULED_TIME + ") REFERENCES " + MEDICATION_TIMES + "(" + DRUG_TIME + ") ON DELETE CASCADE"
+            + ");"
+    );
+
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
 }
 
@@ -138,6 +149,19 @@ void DatabaseController::upgrade(int currentVersion) {
     if (currentVersion < 11) {
         manager.execSql("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + DATE_FORMAT + " TEXT DEFAULT '" + DateFormats::MM_DD_YYYY + "';");
         manager.execSql("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + TIME_FORMAT + " TEXT DEFAULT '" + TimeFormats::_12_HOUR + "';");
+    }
+
+    if (currentVersion < 12) {
+        manager.execSql(
+                "CREATE TABLE WHERE IF NOT EXISTS " + NOTIFICATIONS + "("
+                + MED_ID + " INT, "
+                + DOSE_ID + " INT, "
+                + SCHEDULED_TIME + " DATETIME "
+                + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE,"
+                + "FOREIGN KEY (" + DOSE_ID + ") REFERENCES " + MEDICATION_TRACKER_TABLE + "(" + DOSE_ID + ") ON DELETE CASCADE,"
+                + "FOREIGN KEY (" + SCHEDULED_TIME + ") REFERENCES " + MEDICATION_TIMES + "(" + DRUG_TIME + ") ON DELETE CASCADE"
+                + ");"
+        );
     }
 
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
