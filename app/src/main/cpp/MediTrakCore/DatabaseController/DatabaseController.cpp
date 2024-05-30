@@ -97,10 +97,10 @@ void DatabaseController::create() {
     );
 
     manager.execSql(
-            "CREATE TABLE WHERE IF NOT EXISTS " + NOTIFICATIONS + "("
+            "CREATE TABLE IF NOT EXISTS " + NOTIFICATIONS + "("
             + MED_ID + " INT, "
             + DOSE_ID + " INT, "
-            + SCHEDULED_TIME + " DATETIME "
+            + SCHEDULED_TIME + " DATETIME, "
             + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE,"
             + "FOREIGN KEY (" + DOSE_ID + ") REFERENCES " + MEDICATION_TRACKER_TABLE + "(" + DOSE_ID + ") ON DELETE CASCADE,"
             + "FOREIGN KEY (" + SCHEDULED_TIME + ") REFERENCES " + MEDICATION_TIMES + "(" + DRUG_TIME + ") ON DELETE CASCADE"
@@ -155,10 +155,10 @@ void DatabaseController::upgrade(int currentVersion) {
 
     if (currentVersion < 12) {
         manager.execSql(
-                "CREATE TABLE WHERE IF NOT EXISTS " + NOTIFICATIONS + "("
+                "CREATE TABLE IF NOT EXISTS " + NOTIFICATIONS + "("
                 + MED_ID + " INT, "
                 + DOSE_ID + " INT, "
-                + SCHEDULED_TIME + " DATETIME "
+                + SCHEDULED_TIME + " DATETIME, "
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE,"
                 + "FOREIGN KEY (" + DOSE_ID + ") REFERENCES " + MEDICATION_TRACKER_TABLE + "(" + DOSE_ID + ") ON DELETE CASCADE,"
                 + "FOREIGN KEY (" + SCHEDULED_TIME + ") REFERENCES " + MEDICATION_TIMES + "(" + DRUG_TIME + ") ON DELETE CASCADE"

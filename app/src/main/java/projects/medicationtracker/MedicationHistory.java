@@ -73,7 +73,7 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
         }
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(R.string.history);
+        getSupportActionBar().setTitle(getString(R.string.history) + " - " + medication.getName());
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
