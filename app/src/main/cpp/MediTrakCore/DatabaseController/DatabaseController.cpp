@@ -44,6 +44,8 @@ void DatabaseController::create() {
         + DOSE_TIME + " DATETIME,"
         + TAKEN + " BOOLEAN,"
         + TIME_TAKEN + " DATETIME,"
+        + OVERRIDE_DOSE_AMOUNT + " INT,"
+        + OVERRIDE_DOSE_UNIT + " TEXT,"
         + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
         + ");"
     );
@@ -161,6 +163,11 @@ void DatabaseController::upgrade(int currentVersion) {
                 + "FOREIGN KEY (" + DOSE_ID + ") REFERENCES " + MEDICATION_TRACKER_TABLE + "(" + DOSE_ID + ") ON DELETE CASCADE,"
                 + "FOREIGN KEY (" + SCHEDULED_TIME + ") REFERENCES " + MEDICATION_TIMES + "(" + DRUG_TIME + ") ON DELETE CASCADE"
                 + ");"
+        );
+
+        manager.execSql(
+                + "ALTER TABLE " + MEDICATION_TRACKER_TABLE + " ADD COLUMN " + OVERRIDE_DOSE_AMOUNT + " INT;"
+                + "ALTER TABLE " + MEDICATION_TRACKER_TABLE + " ADD COLUMN " + OVERRIDE_DOSE_UNIT + " TEXT;"
         );
     }
 
@@ -296,13 +303,26 @@ vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
     Table* table = manager.execSqlWithReturn(query);
 
     while (table->getCount() > 0 && !table->isAfterLast()) {
+        int overrideDose = -1;
+        string overrideUnit = "";
+
+        if (!empty(table->getItem(OVERRIDE_DOSE_AMOUNT))) {
+            overrideDose = stoi(table->getItem(OVERRIDE_DOSE_AMOUNT));
+        }
+
+        if (!empty(table->getItem(OVERRIDE_DOSE_UNIT))) {
+            overrideUnit = table->getItem(OVERRIDE_DOSE_UNIT);
+        }
+
         doses.push_back(
             Dose(
                 stol(table->getItem(DOSE_ID)),
                 stol(table->getItem(MED_ID)),
                 table->getItem(TAKEN) == "1",
                 table->getItem(DOSE_TIME),
-                table->getItem(TIME_TAKEN)
+                table->getItem(TIME_TAKEN),
+                overrideDose,
+                overrideUnit
             )
         );
 

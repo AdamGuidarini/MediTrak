@@ -12,10 +12,12 @@ Dose::Dose() {
     doseTime = {};
 }
 
-Dose::Dose(long id, long medicationId, bool taken, std::string doseTime, std::string timeTaken) {
+Dose::Dose(long id, long medicationId, bool taken, std::string doseTime, std::string timeTaken, int overrideDoseAmount, std::string overrideDoseUnit) {
     this->id = id;
     this->medicationId = medicationId;
     this->taken = taken;
     this->doseTime = doseTime;
     this->timeTaken = timeTaken;
+    this->overrideDoseAmount = overrideDoseAmount;
+    this->overrideDoseUnit = overrideDoseUnit;
 }

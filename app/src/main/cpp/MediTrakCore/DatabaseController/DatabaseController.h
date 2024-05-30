@@ -43,13 +43,15 @@ private:
     const string ACTIVE = "Active";
     const string PARENT_ID = "ParentId";
     const string CHILD_ID = "ChildId";
+    const string MED_FREQUENCY = "DrugFrequency";
 
     const string MEDICATION_TRACKER_TABLE = "MedicationTracker";
     const string DOSE_TIME = "DoseTime";
     const string TAKEN = "Taken";
     const string TIME_TAKEN = "TimeTaken";
     const string DOSE_ID = "DoseID";
-    const string MED_FREQUENCY = "DrugFrequency";
+    const string OVERRIDE_DOSE_AMOUNT = "OverrideDoseAmount";
+    const string OVERRIDE_DOSE_UNIT = "OverrideDoseUnit";
 
     const string MEDICATION_TIMES = "MedicationTimes";
     const string TIME_ID = "TimeID";
