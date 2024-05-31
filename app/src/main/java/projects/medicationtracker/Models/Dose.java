@@ -4,7 +4,6 @@ import androidx.annotation.Nullable;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Locale;
 
 /**
@@ -16,6 +15,8 @@ public class Dose {
     private long medId;
     private LocalDateTime timeTaken;
     private LocalDateTime doseTime;
+    private int overrideDoseAmount;
+    private String overrideDoseUnit;
 
     /**
      * Class constructor
@@ -50,6 +51,38 @@ public class Dose {
         taken = isTaken;
         this.timeTaken = LocalDateTime.parse(timeTaken, formatter);
         this.doseTime = LocalDateTime.parse(doseTime, formatter);
+    }
+
+    public Dose(long id, long medicationId, boolean isTaken, @Nullable LocalDateTime timeTaken, @Nullable LocalDateTime doseTime, int overrideAmount, String overrideUnit) {
+        doseId = id;
+        medId = medicationId;
+        taken = isTaken;
+        this.timeTaken = timeTaken;
+        this.doseTime = doseTime;
+        overrideDoseAmount = overrideAmount;
+        overrideDoseUnit = overrideUnit;
+    }
+
+    public Dose(long id, long medicationId, boolean isTaken, String timeTaken, String doseTime, int overrideAmount, String overrideUnit) {
+        final String dateFormat = "yyyy-MM-dd HH:mm:ss";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat, Locale.getDefault());
+
+        // Some times seem to be 1 character short, this protects against that
+        if (timeTaken.length() < dateFormat.length()) {
+            timeTaken += "0";
+        }
+
+        if (doseTime.length() < dateFormat.length()) {
+            doseTime += "0";
+        }
+
+        doseId = id;
+        medId = medicationId;
+        taken = isTaken;
+        this.timeTaken = LocalDateTime.parse(timeTaken, formatter);
+        this.doseTime = LocalDateTime.parse(doseTime, formatter);
+        overrideDoseAmount = overrideAmount;
+        overrideDoseUnit = overrideUnit;
     }
 
     public Dose() {
@@ -110,5 +143,21 @@ public class Dose {
 
     public void setDoseTime(LocalDateTime doseTime) {
         this.doseTime = doseTime;
+    }
+
+    public int getOverrideDoseValue() {
+        return overrideDoseAmount;
+    }
+
+    public void setOverrideDoseValue(int overrideDoseValue) {
+        this.overrideDoseAmount = overrideDoseValue;
+    }
+
+    public void setOverrideDoseAmount(String overrideUnit) {
+        this.overrideDoseUnit = overrideUnit;
+    }
+
+    public String getOverrideDoseAmount() {
+        return overrideDoseUnit;
     }
 }

@@ -465,7 +465,7 @@ void DbManager::importData(string& inData, const vector<string>& ignoreTables) {
             size_t endTblData = inData.find(']', tblStart + string(tbl + ":[").size());
 
             if (tblStart == string::npos) {
-                throw runtime_error("Table \"" + tbl + "\" not found in input file");
+                continue;
             }
 
             tblStr = inData.substr(tblStart, endTblData - tblStart);

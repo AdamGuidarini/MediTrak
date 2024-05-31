@@ -13,9 +13,11 @@ struct Dose {
     bool taken;
     std::string doseTime;
     std::string timeTaken;
+    int overrideDoseAmount;
+    std::string overrideDoseUnit;
 
     Dose();
-    Dose(long id, long medicationId, bool taken, std::string doseTime, std::string timeTaken);
+    Dose(long id, long medicationId, bool taken, std::string doseTime, std::string timeTaken, int overrideDose = -1, std::string overrideDoseUnit = "");
 };
 
 
