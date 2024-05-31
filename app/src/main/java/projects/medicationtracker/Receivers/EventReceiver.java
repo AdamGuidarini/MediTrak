@@ -7,11 +7,13 @@ import static projects.medicationtracker.Helpers.NotificationHelper.clearPending
 import static projects.medicationtracker.Helpers.NotificationHelper.createNotifications;
 import static projects.medicationtracker.Helpers.NotificationHelper.scheduleIn15Minutes;
 import static projects.medicationtracker.Services.NotificationService.SNOOZE_ACTION;
+import static projects.medicationtracker.Services.NotificationService.SUMMARY_ID;
 
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.service.notification.StatusBarNotification;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -37,8 +39,6 @@ public class EventReceiver extends BroadcastReceiver {
                     intent.getStringExtra(DOSE_TIME + medId),
                     db
             );
-
-            return;
         } else if (intent.getAction().contains(SNOOZE_ACTION)) {
             String medId = "_" + intent.getAction().split("_")[1];
 
@@ -49,12 +49,17 @@ public class EventReceiver extends BroadcastReceiver {
                     intent.getStringExtra(DOSE_TIME + medId),
                     db
             );
-
-            return;
+        } else {
+            for (final Medication medication : medications) {
+                prepareNotification(context, medication);
+            }
         }
 
-        for (final Medication medication : medications) {
-            prepareNotification(context, db, medication);
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        StatusBarNotification[] notifications = manager.getActiveNotifications();
+
+        if (notifications.length == 1 && notifications[0].getId() == SUMMARY_ID) {
+            manager.cancel(SUMMARY_ID);
         }
 
         db.close();
@@ -64,10 +69,9 @@ public class EventReceiver extends BroadcastReceiver {
      * Prepares pending notifications on boot
      *
      * @param context    Notification context
-     * @param db         DBHelper containing medication data
      * @param medication Medication in need of a notification
      */
-    private void prepareNotification(Context context, DBHelper db, Medication medication) {
+    private void prepareNotification(Context context, Medication medication) {
         clearPendingNotifications(medication, context);
         createNotifications(medication, context);
     }
@@ -93,7 +97,7 @@ public class EventReceiver extends BroadcastReceiver {
                 db.addToMedicationTracker(med, doseTime);
 
         db.updateDoseStatus(
-                doseId, TimeFormatting.localDateTimeToString(LocalDateTime.now()), true
+                doseId, TimeFormatting.localDateTimeToString(LocalDateTime.now().withSecond(0)), true
         );
 
         notificationManager.cancel((int) notificationId);

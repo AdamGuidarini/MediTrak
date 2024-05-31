@@ -25,7 +25,7 @@ import projects.medicationtracker.R;
 import projects.medicationtracker.Receivers.EventReceiver;
 
 public class NotificationService extends IntentService {
-    private final int SUMMARY_ID = -1;
+    public static final int SUMMARY_ID = -1;
     public static String MARK_AS_TAKEN_ACTION = "markAsTaken";
     public static String SNOOZE_ACTION = "snooze15";
 
@@ -57,6 +57,7 @@ public class NotificationService extends IntentService {
                 .setStyle(new NotificationCompat.InboxStyle())
                 .setGroup(GROUP_KEY)
                 .setGroupSummary(true)
+                .setAutoCancel(true)
                 .build();
 
         notificationManager.notify(SUMMARY_ID, notificationSummary);

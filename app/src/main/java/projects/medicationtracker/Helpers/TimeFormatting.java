@@ -40,8 +40,13 @@ public class TimeFormatting {
      * @return LocalDateTime with date seen in String
      */
     public static LocalDateTime stringToLocalDateTime(String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss",
-                Locale.getDefault());
+        final String pattern = "yyyy-MM-dd HH:mm:ss";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern, Locale.getDefault());
+
+        // Handle bug where seconds < 10 were sorted as 1 digit
+        if (date.length() < pattern.length()) {
+            date += "0";
+        }
 
         LocalDateTime dateTime;
 

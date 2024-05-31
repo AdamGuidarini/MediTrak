@@ -281,7 +281,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
             }
 
 
-            String now = TimeFormatting.localDateTimeToString(LocalDateTime.now());
+            String now = TimeFormatting.localDateTimeToString(LocalDateTime.now().withSecond(0));
 
             if (doseId != -1) {
                 db.updateDoseStatus(doseId, now, ((CheckBox) thisMedication).isChecked());
@@ -293,7 +293,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
 
                 db.updateDoseStatus(
                         id,
-                        TimeFormatting.localDateTimeToString(LocalDateTime.now()),
+                        TimeFormatting.localDateTimeToString(LocalDateTime.now().withSecond(0)),
                         true
                 );
             }
