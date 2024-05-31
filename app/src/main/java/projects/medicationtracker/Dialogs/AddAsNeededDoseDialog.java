@@ -158,7 +158,7 @@ public class AddAsNeededDoseDialog extends DialogFragment {
         Fragment fragment = getParentFragment();
         long doseId = db.addToMedicationTracker(med, dateTimeTaken);
 
-        db.updateDoseStatus(doseId, TimeFormatting.localDateTimeToString(dateTimeTaken), true);
+        db.updateDoseStatus(doseId, TimeFormatting.localDateTimeToString(dateTimeTaken.withSecond(0)), true);
 
         Dose dose = new Dose(doseId, med.getId(), true, dateTimeTaken, null);
 
