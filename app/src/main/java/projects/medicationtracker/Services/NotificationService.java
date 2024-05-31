@@ -57,6 +57,7 @@ public class NotificationService extends IntentService {
                 .setStyle(new NotificationCompat.InboxStyle())
                 .setGroup(GROUP_KEY)
                 .setGroupSummary(true)
+                .setAutoCancel(true)
                 .build();
 
         notificationManager.notify(SUMMARY_ID, notificationSummary);

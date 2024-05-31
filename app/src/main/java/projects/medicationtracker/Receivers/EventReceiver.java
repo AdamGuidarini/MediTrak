@@ -54,7 +54,7 @@ public class EventReceiver extends BroadcastReceiver {
         }
 
         for (final Medication medication : medications) {
-            prepareNotification(context, db, medication);
+            prepareNotification(context, medication);
         }
 
         db.close();
@@ -64,10 +64,9 @@ public class EventReceiver extends BroadcastReceiver {
      * Prepares pending notifications on boot
      *
      * @param context    Notification context
-     * @param db         DBHelper containing medication data
      * @param medication Medication in need of a notification
      */
-    private void prepareNotification(Context context, DBHelper db, Medication medication) {
+    private void prepareNotification(Context context, Medication medication) {
         clearPendingNotifications(medication, context);
         createNotifications(medication, context);
     }
