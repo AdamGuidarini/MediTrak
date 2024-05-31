@@ -59,8 +59,8 @@ public class NotificationService extends IntentService {
                 .setGroupSummary(true)
                 .build();
 
-        notificationManager.notify((int) notificationId, notification);
         notificationManager.notify(SUMMARY_ID, notificationSummary);
+        notificationManager.notify((int) notificationId, notification);
     }
 
     /**
@@ -94,7 +94,7 @@ public class NotificationService extends IntentService {
                         0,
                         markTakenIntent,
                         SDK_INT >= Build.VERSION_CODES.S ?
-                                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
+                                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
         PendingIntent snoozePendingIntent =
@@ -103,7 +103,7 @@ public class NotificationService extends IntentService {
                         0,
                         snoozeIntent,
                         SDK_INT >= Build.VERSION_CODES.S ?
-                                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
+                                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
         NotificationCompat.Builder builder =
@@ -112,6 +112,7 @@ public class NotificationService extends IntentService {
                         .setContentText(message)
                         .setSmallIcon(R.drawable.pill)
                         .setGroup(GROUP_KEY)
+                        .setAutoCancel(false)
                         .addAction(
                                 0,
                                 getString(R.string.mark_as_taken),
