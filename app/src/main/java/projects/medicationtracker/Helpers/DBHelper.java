@@ -40,15 +40,18 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String ACTIVE = "Active";
     private static final String PARENT_ID = "ParentId";
     private static final String CHILD_ID = "ChildId";
+    private static final String INSTRUCTIONS = "Instructions";
+    private static final String MED_FREQUENCY = "DrugFrequency";
+    private static final String MEDICATION_TIMES = "MedicationTimes";
 
     private static final String MEDICATION_TRACKER_TABLE = "MedicationTracker";
     private static final String DOSE_TIME = "DoseTime";
     private static final String TAKEN = "Taken";
     private static final String TIME_TAKEN = "TimeTaken";
     private static final String DOSE_ID = "DoseID";
-    private static final String MED_FREQUENCY = "DrugFrequency";
+    private static final String OVERRIDE_DOSE_AMOUNT = "OverrideDoseAmount";
+    private static final String OVERRIDE_DOSE_UNIT = "OverrideDoseUnit";
 
-    private static final String MEDICATION_TIMES = "MedicationTimes";
     private static final String TIME_ID = "TimeID";
     private static final String DRUG_TIME = "DrugTime";
     private static final String START_DATE = "StartDate";
