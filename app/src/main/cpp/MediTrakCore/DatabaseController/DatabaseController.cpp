@@ -33,6 +33,7 @@ void DatabaseController::create() {
         + ACTIVE + " BOOLEAN DEFAULT 1,"
         + PARENT_ID + " INTEGER,"
         + CHILD_ID + " INTEGER,"
+        + INSTRUCTIONS + " TEXT,"
         + "FOREIGN KEY (" + PARENT_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE,"
         + "FOREIGN KEY (" + CHILD_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
         + ");"
@@ -168,6 +169,7 @@ void DatabaseController::upgrade(int currentVersion) {
         manager.execSql(
                 + "ALTER TABLE " + MEDICATION_TRACKER_TABLE + " ADD COLUMN " + OVERRIDE_DOSE_AMOUNT + " INT;"
                 + "ALTER TABLE " + MEDICATION_TRACKER_TABLE + " ADD COLUMN " + OVERRIDE_DOSE_UNIT + " TEXT;"
+                + "ALTER TABLE " + MEDICATION_TABLE + "ADD COLUMN " + INSTRUCTIONS + " TEXT;"
         );
     }
 

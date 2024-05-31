@@ -44,6 +44,7 @@ private:
     const string PARENT_ID = "ParentId";
     const string CHILD_ID = "ChildId";
     const string MED_FREQUENCY = "DrugFrequency";
+    const string INSTRUCTIONS = "Instructions";
 
     const string MEDICATION_TRACKER_TABLE = "MedicationTracker";
     const string DOSE_TIME = "DoseTime";
