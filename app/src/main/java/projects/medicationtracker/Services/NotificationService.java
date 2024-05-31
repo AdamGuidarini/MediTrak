@@ -25,6 +25,7 @@ import projects.medicationtracker.R;
 import projects.medicationtracker.Receivers.EventReceiver;
 
 public class NotificationService extends IntentService {
+    private final int SUMMARY_ID = -1;
     public static String MARK_AS_TAKEN_ACTION = "markAsTaken";
     public static String SNOOZE_ACTION = "snooze15";
 
@@ -50,7 +51,16 @@ public class NotificationService extends IntentService {
                 message, doseTime, notificationId, intent.getLongExtra(MEDICATION_ID, 0)
         );
 
+        Notification notificationSummary = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle(getString(R.string.app_name))
+                .setSmallIcon(R.drawable.pill)
+                .setStyle(new NotificationCompat.InboxStyle())
+                .setGroup(GROUP_KEY)
+                .setGroupSummary(true)
+                .build();
+
         notificationManager.notify((int) notificationId, notification);
+        notificationManager.notify(SUMMARY_ID, notificationSummary);
     }
 
     /**
@@ -101,9 +111,7 @@ public class NotificationService extends IntentService {
                         .setContentTitle(getString(R.string.app_name))
                         .setContentText(message)
                         .setSmallIcon(R.drawable.pill)
-                        .setAutoCancel(true)
                         .setGroup(GROUP_KEY)
-                        .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
                         .addAction(
                                 0,
                                 getString(R.string.mark_as_taken),
@@ -126,7 +134,7 @@ public class NotificationService extends IntentService {
                 stackBuilder.getPendingIntent(
                         0,
                         SDK_INT >= Build.VERSION_CODES.S ?
-                                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_CANCEL_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
+                                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
                 );
         builder.setContentIntent(resPendingIntent);
 

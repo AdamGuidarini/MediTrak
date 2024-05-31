@@ -86,6 +86,7 @@ private:
 
     // Notifications
     const string NOTIFICATIONS = "Notifications";
+    const string NOTIFICATION_ID = "NotificationId";
     const string SCHEDULED_TIME = "ScheduledTime";
 
     /**
