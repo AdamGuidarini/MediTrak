@@ -32,6 +32,7 @@ public class Medication implements Cloneable, Parcelable {
     private boolean active;
     private Medication parent = null;
     private Medication child = null;
+    private String instructions;
 
     /**
      * Creates a new object of type Medication
@@ -352,6 +353,14 @@ public class Medication implements Cloneable, Parcelable {
      * @param doses Doses for this medication
      */
     public void setDoses(Dose[] doses) { this.doses = doses; }
+
+    public String getInstructions() {
+        return instructions;
+    }
+
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
+    }
 
     /**
      * Creates a string formatted for frequency

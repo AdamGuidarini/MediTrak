@@ -150,7 +150,7 @@ public class DoseInfoDialog extends DialogFragment {
     private void save() {
         LocalDate date = (LocalDate) dateTaken.getTag();
         LocalTime time = (LocalTime) timeTaken.getTag();
-        LocalDateTime dateTime = LocalDateTime.of(date, time);
+        LocalDateTime dateTime = LocalDateTime.of(date, time).withSecond(0);
 
         db.updateDoseStatus(
                 doseId,

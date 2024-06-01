@@ -26,7 +26,7 @@ namespace DateFormats {
 
 class DatabaseController {
 private:
-    const int DB_VERSION = 11;
+    const int DB_VERSION = 12;
     const string DATABASE_NAME = "Medications.db";
     vector<string> tablesToIgnore;
     DbManager manager;
@@ -43,13 +43,16 @@ private:
     const string ACTIVE = "Active";
     const string PARENT_ID = "ParentId";
     const string CHILD_ID = "ChildId";
+    const string MED_FREQUENCY = "DrugFrequency";
+    const string INSTRUCTIONS = "Instructions";
 
     const string MEDICATION_TRACKER_TABLE = "MedicationTracker";
     const string DOSE_TIME = "DoseTime";
     const string TAKEN = "Taken";
     const string TIME_TAKEN = "TimeTaken";
     const string DOSE_ID = "DoseID";
-    const string MED_FREQUENCY = "DrugFrequency";
+    const string OVERRIDE_DOSE_AMOUNT = "OverrideDoseAmount";
+    const string OVERRIDE_DOSE_UNIT = "OverrideDoseUnit";
 
     const string MEDICATION_TIMES = "MedicationTimes";
     const string TIME_ID = "TimeID";
@@ -80,6 +83,11 @@ private:
     const string CHANGE_EVENT_ID = "ChangeId";
     const string CHANGE_DATE = "ChangeDate";
     const string PAUSED = "Paused";
+
+    // Notifications
+    const string NOTIFICATIONS = "Notifications";
+    const string NOTIFICATION_ID = "NotificationId";
+    const string SCHEDULED_TIME = "ScheduledTime";
 
     /**
      * Handles creation of database - Called when new instance is create & DB version == 0

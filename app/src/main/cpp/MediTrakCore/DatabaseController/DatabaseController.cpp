@@ -33,6 +33,7 @@ void DatabaseController::create() {
         + ACTIVE + " BOOLEAN DEFAULT 1,"
         + PARENT_ID + " INTEGER,"
         + CHILD_ID + " INTEGER,"
+        + INSTRUCTIONS + " TEXT,"
         + "FOREIGN KEY (" + PARENT_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE,"
         + "FOREIGN KEY (" + CHILD_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
         + ");"
@@ -44,6 +45,8 @@ void DatabaseController::create() {
         + DOSE_TIME + " DATETIME,"
         + TAKEN + " BOOLEAN,"
         + TIME_TAKEN + " DATETIME,"
+        + OVERRIDE_DOSE_AMOUNT + " INT,"
+        + OVERRIDE_DOSE_UNIT + " TEXT,"
         + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
         + ");"
     );
@@ -94,6 +97,15 @@ void DatabaseController::create() {
             + ");"
     );
 
+    manager.execSql(
+            "CREATE TABLE IF NOT EXISTS " + NOTIFICATIONS + "("
+            + NOTIFICATION_ID + " INT PRIMARY KEY,"
+            + MED_ID + " INT, "
+            + DOSE_ID + " INT, "
+            + SCHEDULED_TIME + " DATETIME"
+            + ");"
+    );
+
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
 }
 
@@ -138,6 +150,23 @@ void DatabaseController::upgrade(int currentVersion) {
     if (currentVersion < 11) {
         manager.execSql("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + DATE_FORMAT + " TEXT DEFAULT '" + DateFormats::MM_DD_YYYY + "';");
         manager.execSql("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + TIME_FORMAT + " TEXT DEFAULT '" + TimeFormats::_12_HOUR + "';");
+    }
+
+    if (currentVersion < 12) {
+        manager.execSql(
+                "CREATE TABLE IF NOT EXISTS " + NOTIFICATIONS + "("
+                + NOTIFICATION_ID + " INT PRIMARY KEY,"
+                + MED_ID + " INT, "
+                + DOSE_ID + " INT, "
+                + SCHEDULED_TIME + " DATETIME"
+                + ");"
+        );
+
+        manager.execSql(
+                + "ALTER TABLE " + MEDICATION_TRACKER_TABLE + " ADD COLUMN " + OVERRIDE_DOSE_AMOUNT + " INT;"
+                + "ALTER TABLE " + MEDICATION_TRACKER_TABLE + " ADD COLUMN " + OVERRIDE_DOSE_UNIT + " TEXT;"
+                + "ALTER TABLE " + MEDICATION_TABLE + "ADD COLUMN " + INSTRUCTIONS + " TEXT;"
+        );
     }
 
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
@@ -272,13 +301,26 @@ vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
     Table* table = manager.execSqlWithReturn(query);
 
     while (table->getCount() > 0 && !table->isAfterLast()) {
+        int overrideDose = -1;
+        string overrideUnit = "";
+
+        if (!empty(table->getItem(OVERRIDE_DOSE_AMOUNT))) {
+            overrideDose = stoi(table->getItem(OVERRIDE_DOSE_AMOUNT));
+        }
+
+        if (!empty(table->getItem(OVERRIDE_DOSE_UNIT))) {
+            overrideUnit = table->getItem(OVERRIDE_DOSE_UNIT);
+        }
+
         doses.push_back(
             Dose(
                 stol(table->getItem(DOSE_ID)),
                 stol(table->getItem(MED_ID)),
                 table->getItem(TAKEN) == "1",
                 table->getItem(DOSE_TIME),
-                table->getItem(TIME_TAKEN)
+                table->getItem(TIME_TAKEN),
+                overrideDose,
+                overrideUnit
             )
         );
 

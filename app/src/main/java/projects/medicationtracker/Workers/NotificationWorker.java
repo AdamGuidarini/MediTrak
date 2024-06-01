@@ -1,4 +1,4 @@
-package projects.medicationtracker.Services;
+package projects.medicationtracker.Workers;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static projects.medicationtracker.Helpers.NotificationHelper.CHANNEL_ID;
@@ -8,7 +8,6 @@ import static projects.medicationtracker.Helpers.NotificationHelper.MEDICATION_I
 import static projects.medicationtracker.Helpers.NotificationHelper.MESSAGE;
 import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION_ID;
 
-import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -17,40 +16,51 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 
 import projects.medicationtracker.MainActivity;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Receivers.EventReceiver;
 
-public class NotificationService extends IntentService {
+public class NotificationWorker extends Worker {
+    private final Context context;
+    public static final int SUMMARY_ID = -1;
     public static String MARK_AS_TAKEN_ACTION = "markAsTaken";
     public static String SNOOZE_ACTION = "snooze15";
 
-    public NotificationService() {
-        super("NotificationService");
+    NotificationWorker(Context context, WorkerParameters params) {
+        super(context, params);
+
+        this.context = context;
     }
 
-    /**
-     * Handles intent sent from NotificationReceiver and issues notification.
-     *
-     * @param intent Intent sent from NotificationReceiver.
-     */
+    @NonNull
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
+    public Result doWork() {
         NotificationManager notificationManager =
-                (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        final String message = getInputData().getString(MESSAGE);
+        final String doseTime = getInputData().getString(DOSE_TIME);
+        final long notificationId = getInputData().getLong(NOTIFICATION_ID, System.currentTimeMillis());
+        final long medId = getInputData().getLong(MEDICATION_ID, -1);
 
-        String message = intent.getStringExtra(MESSAGE);
-        String doseTime = intent.getStringExtra(DOSE_TIME);
-        long notificationId = intent.getLongExtra(NOTIFICATION_ID, System.currentTimeMillis());
+        Notification notification = createNotification(message, doseTime, notificationId, medId);
+        Notification notificationSummary = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setContentTitle(context.getString(R.string.app_name))
+                .setSmallIcon(R.drawable.pill)
+                .setStyle(new NotificationCompat.InboxStyle())
+                .setGroup(GROUP_KEY)
+                .setGroupSummary(true)
+                .setAutoCancel(true)
+                .build();
 
-        Notification notification = createNotification(
-                message, doseTime, notificationId, intent.getLongExtra(MEDICATION_ID, 0)
-        );
-
+        notificationManager.notify(SUMMARY_ID, notificationSummary);
         notificationManager.notify((int) notificationId, notification);
+
+        return Result.success();
     }
 
     /**
@@ -60,7 +70,11 @@ public class NotificationService extends IntentService {
      * @return A built notification.
      */
     private Notification createNotification(
-            String message, String doseTime, long notificationId, long medId) {
+            String message,
+            String doseTime,
+            long notificationId,
+            long medId
+    ) {
         Intent markTakenIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
         Intent snoozeIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
         String embeddedMedId = "_" + medId;
@@ -84,7 +98,7 @@ public class NotificationService extends IntentService {
                         0,
                         markTakenIntent,
                         SDK_INT >= Build.VERSION_CODES.S ?
-                                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
+                                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
         PendingIntent snoozePendingIntent =
@@ -93,32 +107,31 @@ public class NotificationService extends IntentService {
                         0,
                         snoozeIntent,
                         SDK_INT >= Build.VERSION_CODES.S ?
-                                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
+                                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
         NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this, CHANNEL_ID)
-                        .setContentTitle(getString(R.string.app_name))
+                new NotificationCompat.Builder(context, CHANNEL_ID)
+                        .setContentTitle(context.getString(R.string.app_name))
                         .setContentText(message)
                         .setSmallIcon(R.drawable.pill)
-                        .setAutoCancel(true)
                         .setGroup(GROUP_KEY)
-                        .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
+                        .setAutoCancel(false)
                         .addAction(
                                 0,
-                                getString(R.string.mark_as_taken),
+                                context.getString(R.string.mark_as_taken),
                                 markAsTakenPendingIntent
                         )
                         .addAction(
                                 0,
-                                getString(R.string.snooze_message),
+                                context.getString(R.string.snooze_message),
                                 snoozePendingIntent
                         );
 
         Intent resIntent =
-                new Intent(this.getApplicationContext(), MainActivity.class);
+                new Intent(context, MainActivity.class);
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(resIntent);
 
@@ -126,7 +139,7 @@ public class NotificationService extends IntentService {
                 stackBuilder.getPendingIntent(
                         0,
                         SDK_INT >= Build.VERSION_CODES.S ?
-                                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_CANCEL_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
+                                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
                 );
         builder.setContentIntent(resPendingIntent);
 
