@@ -31,7 +31,6 @@ public class NotificationReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-//        Intent service = new Intent(context, NotificationService.class);
         Bundle extras = intent.getExtras();
         DBHelper db = new DBHelper(context);
         long medicationId = extras.getLong(MEDICATION_ID);
@@ -48,11 +47,6 @@ public class NotificationReceiver extends BroadcastReceiver {
                 .setInputData(workerData)
                 .build();
 
-//        service.putExtra(NOTIFICATION_ID, extras.getLong(NOTIFICATION_ID, 0));
-//        service.putExtra(MESSAGE, extras.getString(MESSAGE));
-//        service.putExtra(DOSE_TIME, doseTime.toString());
-//        service.putExtra(MEDICATION_ID, medicationId);
-
         // Set new Intent for a new notification
         NotificationHelper.scheduleNotification(
                 context,
@@ -61,9 +55,8 @@ public class NotificationReceiver extends BroadcastReceiver {
                 extras.getLong(NOTIFICATION_ID, System.currentTimeMillis())
         );
 
-        // Fire notification if enabled, or fire and let the OS block it in Android 13+
+        // Fire notification if enabled or fire and let the OS block it in Android 13+
         if (db.getNotificationEnabled() || Build.VERSION.SDK_INT >= 33) {
-//            context.startService(service);
             WorkManager.getInstance(context).enqueue(workRequest);
         }
 

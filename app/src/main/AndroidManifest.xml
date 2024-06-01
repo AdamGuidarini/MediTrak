@@ -68,9 +68,6 @@
         </provider>
 
         <service
-            android:name=".Services.NotificationService"
-            android:exported="false" />
-        <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
             android:enabled="false"
             android:exported="false">
