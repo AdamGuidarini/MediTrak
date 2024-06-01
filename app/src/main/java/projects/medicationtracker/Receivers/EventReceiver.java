@@ -6,8 +6,8 @@ import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION
 import static projects.medicationtracker.Helpers.NotificationHelper.clearPendingNotifications;
 import static projects.medicationtracker.Helpers.NotificationHelper.createNotifications;
 import static projects.medicationtracker.Helpers.NotificationHelper.scheduleIn15Minutes;
-import static projects.medicationtracker.Services.NotificationService.SNOOZE_ACTION;
-import static projects.medicationtracker.Services.NotificationService.SUMMARY_ID;
+import static projects.medicationtracker.Workers.NotificationWorker.SNOOZE_ACTION;
+import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
 
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -20,8 +20,8 @@ import java.util.ArrayList;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
-import projects.medicationtracker.Services.NotificationService;
 import projects.medicationtracker.Models.Medication;
+import projects.medicationtracker.Workers.NotificationWorker;
 
 public class EventReceiver extends BroadcastReceiver {
     @Override
@@ -29,7 +29,7 @@ public class EventReceiver extends BroadcastReceiver {
         final DBHelper db = new DBHelper(context);
         ArrayList<Medication> medications = db.getMedications();
 
-        if (intent.getAction().contains(NotificationService.MARK_AS_TAKEN_ACTION)) {
+        if (intent.getAction().contains(NotificationWorker.MARK_AS_TAKEN_ACTION)) {
             String medId = "_" + intent.getAction().split("_")[1];
 
             markDoseTaken(
