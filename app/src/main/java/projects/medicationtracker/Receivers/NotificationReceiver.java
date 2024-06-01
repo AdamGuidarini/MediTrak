@@ -11,12 +11,16 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+
 import java.time.LocalDateTime;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
-import projects.medicationtracker.Services.NotificationService;
 import projects.medicationtracker.Models.Medication;
+import projects.medicationtracker.Workers.NotificationWorker;
 
 public class NotificationReceiver extends BroadcastReceiver {
     /**
@@ -27,30 +31,41 @@ public class NotificationReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent service = new Intent(context, NotificationService.class);
+//        Intent service = new Intent(context, NotificationService.class);
         Bundle extras = intent.getExtras();
         DBHelper db = new DBHelper(context);
-
         long medicationId = extras.getLong(MEDICATION_ID);
         Medication medication = db.getMedication(medicationId);
         LocalDateTime doseTime = (LocalDateTime) extras.get(DOSE_TIME);
 
-        service.putExtra(NOTIFICATION_ID, extras.getLong(NOTIFICATION_ID, 0));
-        service.putExtra(MESSAGE, extras.getString(MESSAGE));
-        service.putExtra(DOSE_TIME, doseTime.toString());
-        service.putExtra(MEDICATION_ID, medicationId);
+        Data workerData = new Data.Builder()
+                .putLong(NOTIFICATION_ID, extras.getLong(NOTIFICATION_ID, System.currentTimeMillis()))
+                .putString(MESSAGE, extras.getString(MESSAGE))
+                .putString(DOSE_TIME, doseTime.toString())
+                .putLong(MEDICATION_ID, medicationId)
+                .build();
+        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(NotificationWorker.class)
+                .setInputData(workerData)
+                .build();
+
+//        service.putExtra(NOTIFICATION_ID, extras.getLong(NOTIFICATION_ID, 0));
+//        service.putExtra(MESSAGE, extras.getString(MESSAGE));
+//        service.putExtra(DOSE_TIME, doseTime.toString());
+//        service.putExtra(MEDICATION_ID, medicationId);
 
         // Set new Intent for a new notification
         NotificationHelper.scheduleNotification(
                 context,
                 medication,
                 doseTime,
-                extras.getLong(NOTIFICATION_ID, 0)
+                extras.getLong(NOTIFICATION_ID, System.currentTimeMillis())
         );
 
         // Fire notification if enabled, or fire and let the OS block it in Android 13+
-        if (db.getNotificationEnabled() || Build.VERSION.SDK_INT >= 33)
-            context.startService(service);
+        if (db.getNotificationEnabled() || Build.VERSION.SDK_INT >= 33) {
+//            context.startService(service);
+            WorkManager.getInstance(context).enqueue(workRequest);
+        }
 
         db.close();
     }
