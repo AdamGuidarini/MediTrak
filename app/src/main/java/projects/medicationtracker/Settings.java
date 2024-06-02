@@ -96,9 +96,9 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
         chooseFileLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    Uri uri = result.getData().getData();
+                    if (result.getData() != null && result.getData().getData() != null && result.getData().getData().getPath() != null) {
+                        Uri uri = result.getData().getData();
 
-                    if (uri != null && uri.getPath() != null) {
                         ContentResolver contentResolver = getContentResolver();
                         InputStream inputStream;
                         int size;
@@ -115,6 +115,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
                             }
 
                             try {
+                                assert inputStream != null;
                                 size = inputStream.available();
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
