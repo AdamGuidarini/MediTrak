@@ -49,6 +49,8 @@ public class NotificationReceiver extends BroadcastReceiver {
                 extras.getLong(NOTIFICATION_ID, System.currentTimeMillis())
         );
 
+        System.out.println("Database Path: " + DATABASE_PATH);
+
         try {
             NativeDbHelper nativeDbHelper = new NativeDbHelper(DATABASE_PATH);
 
