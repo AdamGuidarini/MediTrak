@@ -1,5 +1,7 @@
 package projects.medicationtracker;
 
+import static projects.medicationtracker.MediTrak.DATABASE_PATH;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -18,6 +20,7 @@ import androidx.fragment.app.FragmentContainerView;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -26,6 +29,7 @@ import java.util.stream.Collectors;
 import kotlin.Pair;
 import projects.medicationtracker.Fragments.MyMedicationsFragment;
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Views.StandardCardView;
 
@@ -67,6 +71,10 @@ public class MyMedications extends AppCompatActivity {
             ArrayList<Medication> meds = db.getMedicationsForPatient(patient).stream().filter(
                     m -> m.getChild() == null
             ).collect(Collectors.toCollection(ArrayList::new));
+
+            NativeDbHelper ndb = new NativeDbHelper(DATABASE_PATH);
+
+            ndb.findDose(meds.get(0).getId(), LocalDateTime.now());
 
             if (meds.size() > 0) {
                 allMeds.add(new Pair<>(patient, meds));

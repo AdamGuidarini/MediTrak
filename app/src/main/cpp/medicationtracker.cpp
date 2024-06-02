@@ -349,3 +349,24 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_exportMedHistory(
 
     return true;
 }
+extern "C"
+JNIEXPORT jobject JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_findDose(
+        JNIEnv *env, jobject thiz, jstring db_path, jlong medication_id, jstring dose_time, jobject medication
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    DatabaseController controller(dbPath);
+    std::string doseTime = env->GetStringUTFChars(dose_time, new jboolean(true));
+
+    Dose* dose = controller.findDose(medication_id, doseTime);
+
+    if (dose == nullptr) {
+        dose = new Dose();
+    }
+
+    jobjectArray jDose = doseToJavaConverter({ *dose }, env, medication);
+
+    delete dose;
+
+    return env->GetObjectArrayElement(jDose, 0);
+}

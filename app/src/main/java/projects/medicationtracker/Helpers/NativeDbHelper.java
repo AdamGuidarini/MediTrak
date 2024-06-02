@@ -4,6 +4,7 @@ import android.util.Pair;
 
 import java.time.LocalDateTime;
 
+import projects.medicationtracker.Models.Dose;
 import projects.medicationtracker.Models.Medication;
 
 public class NativeDbHelper {
@@ -102,6 +103,10 @@ public class NativeDbHelper {
         return exportMedHistory(dbPath, filePath, data);
     }
 
+    public Dose findDose(long medicationId, LocalDateTime doseTime) {
+        return findDose(dbPath, medicationId, TimeFormatting.localDateTimeToDbString(doseTime), new Medication());
+    }
+
     /**
      * Native methods
      */
@@ -114,4 +119,5 @@ public class NativeDbHelper {
     private native boolean dbImporter(String dbPath, String fileContents, String[] ignoredTables);
     private native Medication getMedHistory(String dbPath, long medId, Class<Medication> medicationClass);
     private native boolean exportMedHistory(String dbPath, String exportPath, Pair<String, String[]>[] data);
+    private native Dose findDose(String dbPath, long medicationId, String doseTime, Medication med);
 }

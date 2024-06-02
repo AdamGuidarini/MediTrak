@@ -93,11 +93,11 @@ public class EventReceiver extends BroadcastReceiver {
         med = db.getMedication(medId);
 
         long doseId = db.isInMedicationTracker(med, doseTime) ?
-                db.getDoseId(med.getId(), TimeFormatting.localDateTimeToString(doseTime)) :
+                db.getDoseId(med.getId(), TimeFormatting.localDateTimeToDbString(doseTime)) :
                 db.addToMedicationTracker(med, doseTime);
 
         db.updateDoseStatus(
-                doseId, TimeFormatting.localDateTimeToString(LocalDateTime.now().withSecond(0)), true
+                doseId, TimeFormatting.localDateTimeToDbString(LocalDateTime.now().withSecond(0)), true
         );
 
         notificationManager.cancel((int) notificationId);
