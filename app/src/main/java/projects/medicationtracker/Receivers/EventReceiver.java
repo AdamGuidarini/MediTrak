@@ -6,6 +6,7 @@ import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION
 import static projects.medicationtracker.Helpers.NotificationHelper.clearPendingNotifications;
 import static projects.medicationtracker.Helpers.NotificationHelper.createNotifications;
 import static projects.medicationtracker.Helpers.NotificationHelper.scheduleIn15Minutes;
+import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 import static projects.medicationtracker.Workers.NotificationWorker.SNOOZE_ACTION;
 import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
 
@@ -14,11 +15,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Workers.NotificationWorker;
@@ -28,6 +31,7 @@ public class EventReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         final DBHelper db = new DBHelper(context);
         ArrayList<Medication> medications = db.getMedications();
+        String dbPath = "UNKNOWN";
 
         if (intent.getAction().contains(NotificationWorker.MARK_AS_TAKEN_ACTION)) {
             String medId = "_" + intent.getAction().split("_")[1];
@@ -63,6 +67,14 @@ public class EventReceiver extends BroadcastReceiver {
         }
 
         db.close();
+        
+        try {
+            dbPath = context.getDatabasePath("Medications.db").getAbsolutePath();
+            NativeDbHelper nativeDbHelper = new NativeDbHelper(dbPath);
+            nativeDbHelper.create();   
+        } catch (Exception e) {
+            Log.e("MediTrak", "Failed to update database at " + dbPath);
+        }
     }
 
     /**

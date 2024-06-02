@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
@@ -49,14 +50,12 @@ public class NotificationReceiver extends BroadcastReceiver {
                 extras.getLong(NOTIFICATION_ID, System.currentTimeMillis())
         );
 
-        System.out.println("Database Path: " + DATABASE_PATH);
-
         try {
             NativeDbHelper nativeDbHelper = new NativeDbHelper(DATABASE_PATH);
 
             dose = nativeDbHelper.findDose(medicationId, doseTime);
         } catch (Exception e) {
-            System.err.println("An error occurred while retrieving a Dose for notifications");
+            Log.e("MediTrak", "An error occurred while retrieving a Dose for notifications");
 
             dose = new Dose();
         }
