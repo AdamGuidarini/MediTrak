@@ -1088,7 +1088,7 @@ public class AddMedication extends AppCompatActivity {
                     medication.getPatientName(),
                     String.valueOf(medication.getDosage()),
                     medication.getDosageUnits(),
-                    TimeFormatting.localDateTimeToString(medication.getStartDate()),
+                    TimeFormatting.localDateTimeToDbString(medication.getStartDate()),
                     medication.getFrequency(),
                     medication.getAlias()
             );

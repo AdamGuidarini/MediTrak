@@ -49,8 +49,8 @@ public class Dose {
         doseId = id;
         medId = medicationId;
         taken = isTaken;
-        this.timeTaken = LocalDateTime.parse(timeTaken, formatter);
-        this.doseTime = LocalDateTime.parse(doseTime, formatter);
+        this.timeTaken = timeTaken.length() == dateFormat.length() ? LocalDateTime.parse(timeTaken, formatter) : null;
+        this.doseTime = doseTime.length() == dateFormat.length() ? LocalDateTime.parse(doseTime, formatter) : null;
     }
 
     public Dose(long id, long medicationId, boolean isTaken, @Nullable LocalDateTime timeTaken, @Nullable LocalDateTime doseTime, int overrideAmount, String overrideUnit) {

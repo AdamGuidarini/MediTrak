@@ -154,7 +154,7 @@ public class DoseInfoDialog extends DialogFragment {
 
         db.updateDoseStatus(
                 doseId,
-                TimeFormatting.localDateTimeToString(dateTime),
+                TimeFormatting.localDateTimeToDbString(dateTime),
                 true
         );
 

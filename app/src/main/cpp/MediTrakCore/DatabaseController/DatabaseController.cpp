@@ -295,7 +295,7 @@ Medication DatabaseController::getMedication(long medicationId) {
 vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
     string query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE
                    + " WHERE " + MED_ID + "=" + to_string(medicationId)
-                   + " AND " + TAKEN + "=" + "TRUE";
+                   + " AND " + TAKEN + " = TRUE";
     vector<Dose> doses;
 
     Table* table = manager.execSqlWithReturn(query);
@@ -330,4 +330,43 @@ vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
     delete table;
 
     return doses;
+}
+
+Dose* DatabaseController::findDose(long medicationId, std::string scheduledTime) {
+    Table* result = manager.execSqlWithReturn(
+        "SELECT * FROM " + MEDICATION_TRACKER_TABLE
+        + " WHERE " + MED_ID + "=" + to_string(medicationId)
+        + " AND " + DOSE_TIME + "='" + scheduledTime +"'"
+        + " AND " + TAKEN + " = TRUE"
+    );
+    Dose* dose = nullptr;
+
+    if (result->getCount() > 0) {
+        result->moveToFirst();
+
+        int overrideDose = -1;
+        string overrideUnit = "";
+
+        if (!empty(result->getItem(OVERRIDE_DOSE_AMOUNT))) {
+            overrideDose = stoi(result->getItem(OVERRIDE_DOSE_AMOUNT));
+        }
+
+        if (!empty(result->getItem(OVERRIDE_DOSE_UNIT))) {
+            overrideUnit = result->getItem(OVERRIDE_DOSE_UNIT);
+        }
+
+        dose = new Dose(
+            stol(result->getItem(DOSE_ID)),
+            stol(result->getItem(MED_ID)),
+            result->getItem(TAKEN) == "1",
+            result->getItem(DOSE_TIME),
+            result->getItem(TIME_TAKEN),
+            overrideDose,
+            overrideUnit
+        );
+    }
+
+    delete result;
+
+    return dose;
 }

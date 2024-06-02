@@ -189,6 +189,14 @@ public:
      * @return all doses for given medication
      */
     vector<Dose> getTakenDoses(long medId);
+
+    /**
+     * Uses a medication ID and dose's scheduled time to determine if a dose exists
+     * @param medicationId ID of dose's medication
+     * @param scheduledTime Time dose should be taken
+     * @return The dose for the given med ID & scheduled time or nullptr
+     */
+    Dose* findDose(long medicationId, string scheduledTime);
 };
 
 #endif //MEDICATIONTRACKER_DATABASECONTROLLER_H
