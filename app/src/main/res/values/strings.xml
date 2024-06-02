@@ -139,6 +139,9 @@
     <string name="apply_changes_as_of">Apply changes as of:</string>
     <string name="from_med_last_change">Last change</string>
     <string name="from_med_start">Start of medication</string>
+    <string name="instructions">Instructions</string>
+    <string name="instructions_optional">Instructions (Optional)</string>
+    <string name="instrucations_added">Added instructions: %1$s</string>
 
     <!-- MyMedications -->
     <string name="my_medications">My Medications</string>

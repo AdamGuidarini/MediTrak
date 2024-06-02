@@ -24,7 +24,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:importantForAutofill="no"
-                android:inputType="text"
+                android:inputType="textMultiLine"
+                android:lines="5"
+                android:minLines="5"
+                android:maxLines="10"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 tools:ignore="LabelFor" />

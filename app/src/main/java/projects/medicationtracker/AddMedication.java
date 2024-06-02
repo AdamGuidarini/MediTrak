@@ -95,6 +95,7 @@ public class AddMedication extends AppCompatActivity {
     private Button saveButton;
     private boolean createClone = false;
     private LocalDateTime[] startingTimes;
+    private EditText instructions;
 
     /*
     * Validators
@@ -163,6 +164,7 @@ public class AddMedication extends AppCompatActivity {
             pauseButton = menu.findItem(R.id.pause_button);
             resumeButton = menu.findItem(R.id.resume_button);
 
+            // TODO fix crashing when creating med
             if (db.isMedicationActive(medication)) {
                 pauseButton.setVisible(true);
             } else {
@@ -193,6 +195,7 @@ public class AddMedication extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         Intent intent = new Intent(this, medId > -1 ? MyMedications.class : MainActivity.class);
         finish();
         startActivity(intent);
@@ -318,6 +321,7 @@ public class AddMedication extends AppCompatActivity {
         dosageAmountInput = this.findViewById(R.id.dosageAmount);
         dosageUnitsInputLayout = this.findViewById(R.id.dosageUnitsInputLayout);
         dosageUnitsInput = this.findViewById(R.id.dosageUnits);
+        instructions = this.findViewById(R.id.enter_instructions);
 
         aliasSwitch.setChecked(medId != -1 && !medication.getAlias().isEmpty());
 
@@ -411,6 +415,19 @@ public class AddMedication extends AppCompatActivity {
             }
         });
 
+        instructions.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                validateForm();
+            }
+        });
+
         if (medId != -1) {
             medNameInput.setText(medication.getName());
             if (!medication.getAlias().isEmpty()) {
@@ -424,6 +441,10 @@ public class AddMedication extends AppCompatActivity {
             }
 
             dosageUnitsInput.setText(medication.getDosageUnits());
+
+            if (medication.getInstructions() != null && !medication.getInstructions().isEmpty()) {
+                instructions.setText(medication.getInstructions());
+            }
         }
     }
 
@@ -1090,10 +1111,9 @@ public class AddMedication extends AppCompatActivity {
                     medication.getDosageUnits(),
                     TimeFormatting.localDateTimeToDbString(medication.getStartDate()),
                     medication.getFrequency(),
-                    medication.getAlias()
+                    medication.getAlias(),
+                    medication.getInstructions()
             );
-
-            medication.setId(id);
 
             for (LocalDateTime time : medication.getTimes()) {
                 db.addDoseTime(
@@ -1215,6 +1235,10 @@ public class AddMedication extends AppCompatActivity {
             isValid = false;
         } else {
             medication.setDosageUnits(dosageUnitsInput.getText().toString());
+        }
+
+        if (!instructions.getText().toString().isEmpty()) {
+            medication.setInstructions(instructions.getText().toString());
         }
 
         return isValid;
@@ -1475,6 +1499,10 @@ public class AddMedication extends AppCompatActivity {
             ).toLowerCase();
 
             note += getString(R.string.frequency_changed, oldFreq, newFreq);
+        }
+
+        if (!medication.getInstructions().isEmpty()) {
+            note += getString(R.string.instrucations_added, medication.getInstructions());
         }
 
         return note;
