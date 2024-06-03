@@ -110,13 +110,18 @@ public class NotificationHelper {
         String message;
         String patientName = medication.getPatientName();
         String medicationName = medication.getName();
+        String dosage = medication.getDosage() + " " + medication.getDosageUnits();
 
         if (medication.getAlias() != null && !medication.getAlias().isEmpty())
             medicationName = medication.getAlias();
 
         message = patientName.equals("ME!") ?
-                context.getString(R.string.its_time_your_med, medicationName) :
-                context.getString(R.string.time_for_other_med, patientName, medicationName);
+                context.getString(R.string.its_time_your_med, dosage, medicationName) :
+                context.getString(R.string.time_for_other_med, patientName, dosage, medicationName);
+
+        if (medication.getInstructions() != null && !medication.getInstructions().isEmpty()) {
+            message += "\n\n" + medication.getInstructions();
+        }
 
         return message;
     }
@@ -135,8 +140,6 @@ public class NotificationHelper {
         channel.enableVibration(false);
         channel.setShowBadge(true);
 
-        // Register the channel with the system; you can't change the importance
-        // or other notification behaviors after this
         NotificationManager notificationManager
                 = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.createNotificationChannel(channel);

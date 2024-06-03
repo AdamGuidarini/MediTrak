@@ -239,8 +239,8 @@
     <!-- Notifications -->
     <string name="mark_as_taken">Eingenommen</string>
     <string name="snooze_message">Schlummern</string>
-    <string name="its_time_your_med">Es ist Zeit, dein %1$s zu nehmen</string>
-    <string name="time_for_other_med">Es ist Zeit für die %2$s von %1$s</string>
+    <string name="its_time_your_med">Es ist Zeit, dein %1$s %2$s zu nehmen</string>
+    <string name="time_for_other_med">Es ist Zeit für die %2$s %3$s von %1$s</string>
     <string name="add_dose">Dosis hinzufügen</string>
 
     <!-- Med History -->

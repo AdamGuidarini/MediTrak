@@ -1239,9 +1239,7 @@ public class AddMedication extends AppCompatActivity {
             medication.setDosageUnits(dosageUnitsInput.getText().toString());
         }
 
-        if (!instructions.getText().toString().isEmpty()) {
-            medication.setInstructions(instructions.getText().toString());
-        }
+        medication.setInstructions(instructions.getText().toString());
 
         return isValid;
     }

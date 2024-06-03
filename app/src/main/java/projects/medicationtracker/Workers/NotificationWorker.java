@@ -124,6 +124,7 @@ public class NotificationWorker extends Worker {
                         .setSmallIcon(R.drawable.pill)
                         .setGroup(GROUP_KEY)
                         .setAutoCancel(false)
+                        .setStyle(new NotificationCompat.BigTextStyle())
                         .addAction(
                                 0,
                                 context.getString(R.string.mark_as_taken),
