@@ -29,7 +29,7 @@ import projects.medicationtracker.Receivers.EventReceiver;
 
 public class NotificationWorker extends Worker {
     private final Context context;
-    public static final int SUMMARY_ID = -1;
+    public static final int SUMMARY_ID = Integer.MAX_VALUE;
     public static String MARK_AS_TAKEN_ACTION = "markAsTaken";
     public static String SNOOZE_ACTION = "snooze15";
 
