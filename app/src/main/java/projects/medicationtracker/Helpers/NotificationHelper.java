@@ -192,7 +192,7 @@ public class NotificationHelper {
         long[] medicationTimeIds = db.getMedicationTimeIds(medication);
         LocalTime[] medTimes = db.getMedicationTimes(medication.getId());
 
-        if (!db.isMedicationActive(medication)) {
+        if (!db.isMedicationActive(medication) && medication.getId() != -1) {
             return;
         }
 

@@ -1093,6 +1093,7 @@ public class DBHelper extends SQLiteOpenHelper {
         addStatusChangeCv.put(MED_ID, medication.getId());
 
         db.insert(ACTIVITY_CHANGE_TABLE, "", addStatusChangeCv);
+        db.close();
     }
 
     /**
@@ -1113,6 +1114,7 @@ public class DBHelper extends SQLiteOpenHelper {
         active = cursor.getString(cursor.getColumnIndexOrThrow(ACTIVE)).equals("1");
 
         cursor.close();
+        db.close();
 
         return active;
     }
@@ -1163,6 +1165,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         cursor.close();
+        db.close();
 
         if (timesPaused.size() == 0 && timesResumed.size() == 1) {
             intervals.add(new Pair<>(null, timesResumed.get(0)));

@@ -1115,6 +1115,8 @@ public class AddMedication extends AppCompatActivity {
                     medication.getInstructions()
             );
 
+            medication.setId(id);
+
             for (LocalDateTime time : medication.getTimes()) {
                 db.addDoseTime(
                         id, TimeFormatting.formatTimeForDB(time.getHour(), time.getMinute())
