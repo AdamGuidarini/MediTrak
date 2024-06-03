@@ -1501,7 +1501,7 @@ public class AddMedication extends AppCompatActivity {
             note += getString(R.string.frequency_changed, oldFreq, newFreq);
         }
 
-        if (!medication.getInstructions().isEmpty()) {
+        if (medication.getInstructions() != null && !medication.getInstructions().isEmpty()) {
             note += getString(R.string.instrucations_added, medication.getInstructions());
         }
 
