@@ -6,7 +6,6 @@ import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION
 import static projects.medicationtracker.Helpers.NotificationHelper.clearPendingNotifications;
 import static projects.medicationtracker.Helpers.NotificationHelper.createNotifications;
 import static projects.medicationtracker.Helpers.NotificationHelper.scheduleIn15Minutes;
-import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 import static projects.medicationtracker.Workers.NotificationWorker.SNOOZE_ACTION;
 import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
 
@@ -31,7 +30,6 @@ public class EventReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         final DBHelper db = new DBHelper(context);
         ArrayList<Medication> medications = db.getMedications();
-        String dbPath = "UNKNOWN";
 
         if (intent.getAction().contains(NotificationWorker.MARK_AS_TAKEN_ACTION)) {
             String medId = "_" + intent.getAction().split("_")[1];
@@ -59,7 +57,9 @@ public class EventReceiver extends BroadcastReceiver {
             }
         }
 
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager manager = (NotificationManager) context.getSystemService(
+                Context.NOTIFICATION_SERVICE
+        );
         StatusBarNotification[] notifications = manager.getActiveNotifications();
 
         if (notifications.length == 1 && notifications[0].getId() == SUMMARY_ID) {
@@ -67,14 +67,6 @@ public class EventReceiver extends BroadcastReceiver {
         }
 
         db.close();
-        
-        try {
-            dbPath = context.getDatabasePath("Medications.db").getAbsolutePath();
-            NativeDbHelper nativeDbHelper = new NativeDbHelper(dbPath);
-            nativeDbHelper.create();   
-        } catch (Exception e) {
-            Log.e("MediTrak", "Failed to update database at " + dbPath);
-        }
     }
 
     /**
@@ -109,7 +101,9 @@ public class EventReceiver extends BroadcastReceiver {
                 db.addToMedicationTracker(med, doseTime);
 
         db.updateDoseStatus(
-                doseId, TimeFormatting.localDateTimeToDbString(LocalDateTime.now().withSecond(0)), true
+                doseId,
+                TimeFormatting.localDateTimeToDbString(LocalDateTime.now().withSecond(0)),
+                true
         );
 
         notificationManager.cancel((int) notificationId);
