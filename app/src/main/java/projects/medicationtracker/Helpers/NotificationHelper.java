@@ -120,7 +120,7 @@ public class NotificationHelper {
                 context.getString(R.string.time_for_other_med, patientName, dosage, medicationName);
 
         if (medication.getInstructions() != null && !medication.getInstructions().isEmpty()) {
-            message += "\n\n" + medication.getInstructions();
+            message += "\n\n" + context.getString(R.string.instructions) + ": " + medication.getInstructions();
         }
 
         return message;
