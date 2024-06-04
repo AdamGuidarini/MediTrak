@@ -164,7 +164,6 @@ public class AddMedication extends AppCompatActivity {
             pauseButton = menu.findItem(R.id.pause_button);
             resumeButton = menu.findItem(R.id.resume_button);
 
-            // TODO fix crashing when creating med
             if (db.isMedicationActive(medication)) {
                 pauseButton.setVisible(true);
             } else {
@@ -1395,7 +1394,8 @@ public class AddMedication extends AppCompatActivity {
         if (!Objects.requireNonNull(asNeededStartInput.getText()).toString().isEmpty()) {
             asNeededStart.setErrorEnabled(false);
 
-            medication.setStartDate(LocalDateTime.of((LocalDate) asNeededStartInput.getTag(), LocalTime.of(0, 0)));
+            medication.setStartDate(LocalDateTime.of(
+                    (LocalDate) asNeededStartInput.getTag(), LocalTime.of(0, 0)));
             medication.setFrequency(0);
             medication.setTimes(new LocalDateTime[0]);
 
