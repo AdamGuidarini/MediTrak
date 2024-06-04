@@ -144,7 +144,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * @return rowid on success, -1 on failure
      */
     public long addMedication(String medName, String patientName, String dosage, String units,
-                              String startDate, int frequency, String alias) {
+                              String startDate, int frequency, String alias, String instructions) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues medTableValues = new ContentValues();
         long row;
@@ -156,6 +156,7 @@ public class DBHelper extends SQLiteOpenHelper {
         medTableValues.put(START_DATE, startDate);
         medTableValues.put(MED_FREQUENCY, frequency);
         medTableValues.put(ALIAS, alias);
+        medTableValues.put(INSTRUCTIONS, instructions);
 
         row = db.insert(MEDICATION_TABLE, null, medTableValues);
 
@@ -417,12 +418,15 @@ public class DBHelper extends SQLiteOpenHelper {
         int frequency = cursor.getInt(cursor.getColumnIndexOrThrow(MED_FREQUENCY));
         int dosage = cursor.getInt(cursor.getColumnIndexOrThrow(MED_DOSAGE));
         String alias = cursor.getString(cursor.getColumnIndexOrThrow(ALIAS));
+        String instructions = cursor.getString(cursor.getColumnIndexOrThrow(INSTRUCTIONS));
 
         LocalDateTime[] times = new LocalDateTime[0];
 
         medication = new Medication(
                 medName, patient, units, times, startDate, medId, frequency, dosage, alias
         );
+
+        medication.setInstructions(instructions);
 
         cursor.close();
 
@@ -487,6 +491,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(START_DATE, TimeFormatting.localDateTimeToDbString(medication.getStartDate()));
         cv.put(PATIENT_NAME, medication.getPatientName());
         cv.put(ALIAS, medication.getAlias());
+        cv.put(INSTRUCTIONS, medication.getInstructions());
 
         if (medication.getChild() != null) {
             cv.put(CHILD_ID, medication.getChild().getId());
@@ -577,7 +582,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 medication.getDosageUnits(),
                 TimeFormatting.localDateTimeToDbString(medication.getStartDate()),
                 medication.getFrequency(),
-                medication.getAlias()
+                medication.getAlias(),
+                medication.getInstructions()
         );
 
         updateChildMedContent.put(PARENT_ID, medication.getParent().getId());
@@ -1087,6 +1093,7 @@ public class DBHelper extends SQLiteOpenHelper {
         addStatusChangeCv.put(MED_ID, medication.getId());
 
         db.insert(ACTIVITY_CHANGE_TABLE, "", addStatusChangeCv);
+        db.close();
     }
 
     /**
@@ -1107,6 +1114,7 @@ public class DBHelper extends SQLiteOpenHelper {
         active = cursor.getString(cursor.getColumnIndexOrThrow(ACTIVE)).equals("1");
 
         cursor.close();
+        db.close();
 
         return active;
     }
@@ -1157,6 +1165,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         cursor.close();
+        db.close();
 
         if (timesPaused.size() == 0 && timesResumed.size() == 1) {
             intervals.add(new Pair<>(null, timesResumed.get(0)));
