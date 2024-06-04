@@ -102,8 +102,7 @@ void DatabaseController::create() {
             + NOTIFICATION_ID + " INT PRIMARY KEY,"
             + MED_ID + " INT, "
             + DOSE_ID + " INT, "
-            + SCHEDULED_TIME + " DATETIME"
-            + ");"
+            + SCHEDULED_TIME + " DATETIME);"
     );
 
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
@@ -158,14 +157,13 @@ void DatabaseController::upgrade(int currentVersion) {
                 + NOTIFICATION_ID + " INT PRIMARY KEY,"
                 + MED_ID + " INT, "
                 + DOSE_ID + " INT, "
-                + SCHEDULED_TIME + " DATETIME"
-                + ");"
+                + SCHEDULED_TIME + " DATETIME);"
         );
 
         manager.execSql(
-                + "ALTER TABLE " + MEDICATION_TRACKER_TABLE + " ADD COLUMN " + OVERRIDE_DOSE_AMOUNT + " INT;"
+                "ALTER TABLE " + MEDICATION_TRACKER_TABLE + " ADD COLUMN " + OVERRIDE_DOSE_AMOUNT + " INT;"
                 + "ALTER TABLE " + MEDICATION_TRACKER_TABLE + " ADD COLUMN " + OVERRIDE_DOSE_UNIT + " TEXT;"
-                + "ALTER TABLE " + MEDICATION_TABLE + "ADD COLUMN " + INSTRUCTIONS + " TEXT;"
+                + "ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + INSTRUCTIONS + " TEXT;"
         );
     }
 

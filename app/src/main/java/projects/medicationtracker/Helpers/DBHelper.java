@@ -103,6 +103,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         nativeHelper = new NativeDbHelper(DATABASE_PATH);
+        nativeHelper.create();
     }
 
     /**
@@ -129,6 +130,8 @@ public class DBHelper extends SQLiteOpenHelper {
         if (nativeHelper == null) {
             nativeHelper = new NativeDbHelper(DATABASE_PATH);
         }
+
+        nativeHelper.upgrade(i);
     }
 
     /**
