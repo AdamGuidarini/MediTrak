@@ -6,17 +6,11 @@ import androidx.annotation.NonNull;
 import androidx.work.Configuration;
 
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 
 public class MediTrak extends Application implements Configuration.Provider {
 
     public static String DATABASE_PATH;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        DATABASE_PATH = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
-    }
 
     @NonNull
     @Override

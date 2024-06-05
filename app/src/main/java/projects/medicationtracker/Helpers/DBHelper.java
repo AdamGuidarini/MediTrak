@@ -21,13 +21,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import projects.medicationtracker.Models.Dose;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Note;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Medications.db";
-    private final static int DATABASE_VERSION = 12;
+    private final static int DATABASE_VERSION = 13;
 
     public final static String ANDROID_METADATA = "android_metadata";
 
@@ -79,7 +78,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CHANGE_DATE = "ChangeDate";
     private static final String PAUSED = "Paused";
 
-    public class TimeFormats {
+    public static class TimeFormats {
         public static final String _12_HOUR = "hh:mm a";
         public static final String _24_HOUR = "HH:mm";
     }
@@ -103,6 +102,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         nativeHelper = new NativeDbHelper(DATABASE_PATH);
+        nativeHelper.create();
     }
 
     /**
@@ -129,6 +129,8 @@ public class DBHelper extends SQLiteOpenHelper {
         if (nativeHelper == null) {
             nativeHelper = new NativeDbHelper(DATABASE_PATH);
         }
+
+        nativeHelper.upgrade(i);
     }
 
     /**

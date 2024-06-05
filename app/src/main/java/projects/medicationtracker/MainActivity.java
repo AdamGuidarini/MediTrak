@@ -75,7 +75,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        DATABASE_PATH = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
+
         nativeDb = new NativeDbHelper(DATABASE_PATH);
+        nativeDb.create();
 
         preferences = db.getPreferences();
 
