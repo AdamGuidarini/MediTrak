@@ -11,10 +11,14 @@ DatabaseController::DatabaseController(string path) {
 
     int currentVersion = manager.getVersionNumber();
 
-    if (currentVersion == 0) {
+    if (currentVersion <= 1) {
         create();
     } else if (DB_VERSION > currentVersion) {
         upgrade(currentVersion);
+    }
+
+    if (currentVersion != DB_VERSION) {
+        manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
     }
 }
 
@@ -102,8 +106,7 @@ void DatabaseController::create() {
             + NOTIFICATION_ID + " INT PRIMARY KEY,"
             + MED_ID + " INT, "
             + DOSE_ID + " INT, "
-            + SCHEDULED_TIME + " DATETIME"
-            + ");"
+            + SCHEDULED_TIME + " DATETIME);"
     );
 
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
@@ -152,21 +155,19 @@ void DatabaseController::upgrade(int currentVersion) {
         manager.execSql("ALTER TABLE " + SETTINGS_TABLE + " ADD COLUMN " + TIME_FORMAT + " TEXT DEFAULT '" + TimeFormats::_12_HOUR + "';");
     }
 
-    if (currentVersion < 12) {
+    if (currentVersion < 13) {
         manager.execSql(
                 "CREATE TABLE IF NOT EXISTS " + NOTIFICATIONS + "("
                 + NOTIFICATION_ID + " INT PRIMARY KEY,"
                 + MED_ID + " INT, "
                 + DOSE_ID + " INT, "
-                + SCHEDULED_TIME + " DATETIME"
-                + ");"
+                + SCHEDULED_TIME + " DATETIME);"
         );
 
-        manager.execSql(
-                + "ALTER TABLE " + MEDICATION_TRACKER_TABLE + " ADD COLUMN " + OVERRIDE_DOSE_AMOUNT + " INT;"
-                + "ALTER TABLE " + MEDICATION_TRACKER_TABLE + " ADD COLUMN " + OVERRIDE_DOSE_UNIT + " TEXT;"
-                + "ALTER TABLE " + MEDICATION_TABLE + "ADD COLUMN " + INSTRUCTIONS + " TEXT;"
-        );
+
+        manager.execSql("ALTER TABLE " + MEDICATION_TRACKER_TABLE + " ADD COLUMN " + OVERRIDE_DOSE_AMOUNT + " INT;");
+        manager.execSql("ALTER TABLE " + MEDICATION_TRACKER_TABLE + " ADD COLUMN " + OVERRIDE_DOSE_UNIT + " TEXT;");
+        manager.execSql("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + INSTRUCTIONS + " TEXT;");
     }
 
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
@@ -295,7 +296,7 @@ Medication DatabaseController::getMedication(long medicationId) {
 vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
     string query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE
                    + " WHERE " + MED_ID + "=" + to_string(medicationId)
-                   + " AND " + TAKEN + "=" + "TRUE";
+                   + " AND " + TAKEN + " = TRUE";
     vector<Dose> doses;
 
     Table* table = manager.execSqlWithReturn(query);
@@ -330,4 +331,43 @@ vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
     delete table;
 
     return doses;
+}
+
+Dose* DatabaseController::findDose(long medicationId, std::string scheduledTime) {
+    Table* result = manager.execSqlWithReturn(
+        "SELECT * FROM " + MEDICATION_TRACKER_TABLE
+        + " WHERE " + MED_ID + "=" + to_string(medicationId)
+        + " AND " + DOSE_TIME + "='" + scheduledTime +"'"
+        + " AND " + TAKEN + " = TRUE"
+    );
+    Dose* dose = nullptr;
+
+    if (result->getCount() > 0) {
+        result->moveToFirst();
+
+        int overrideDose = -1;
+        string overrideUnit = "";
+
+        if (!empty(result->getItem(OVERRIDE_DOSE_AMOUNT))) {
+            overrideDose = stoi(result->getItem(OVERRIDE_DOSE_AMOUNT));
+        }
+
+        if (!empty(result->getItem(OVERRIDE_DOSE_UNIT))) {
+            overrideUnit = result->getItem(OVERRIDE_DOSE_UNIT);
+        }
+
+        dose = new Dose(
+            stol(result->getItem(DOSE_ID)),
+            stol(result->getItem(MED_ID)),
+            result->getItem(TAKEN) == "1",
+            result->getItem(DOSE_TIME),
+            result->getItem(TIME_TAKEN),
+            overrideDose,
+            overrideUnit
+        );
+    }
+
+    delete result;
+
+    return dose;
 }

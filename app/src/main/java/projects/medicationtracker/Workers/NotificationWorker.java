@@ -21,13 +21,15 @@ import androidx.core.app.NotificationCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import java.util.Arrays;
+
 import projects.medicationtracker.MainActivity;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Receivers.EventReceiver;
 
 public class NotificationWorker extends Worker {
     private final Context context;
-    public static final int SUMMARY_ID = -1;
+    public static final int SUMMARY_ID = Integer.MAX_VALUE;
     public static String MARK_AS_TAKEN_ACTION = "markAsTaken";
     public static String SNOOZE_ACTION = "snooze15";
 
@@ -53,12 +55,17 @@ public class NotificationWorker extends Worker {
                 .setSmallIcon(R.drawable.pill)
                 .setStyle(new NotificationCompat.InboxStyle())
                 .setGroup(GROUP_KEY)
+                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
                 .setGroupSummary(true)
                 .setAutoCancel(true)
                 .build();
 
         notificationManager.notify(SUMMARY_ID, notificationSummary);
-        notificationManager.notify((int) notificationId, notification);
+
+        // Only fire notification if not other active notification has the same ID
+        if (Arrays.stream(notificationManager.getActiveNotifications()).filter(n -> n.getId() == notificationId).toArray().length == 0) {
+            notificationManager.notify((int) notificationId, notification);
+        }
 
         return Result.success();
     }
@@ -117,6 +124,7 @@ public class NotificationWorker extends Worker {
                         .setSmallIcon(R.drawable.pill)
                         .setGroup(GROUP_KEY)
                         .setAutoCancel(false)
+                        .setStyle(new NotificationCompat.BigTextStyle())
                         .addAction(
                                 0,
                                 context.getString(R.string.mark_as_taken),

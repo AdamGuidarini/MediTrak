@@ -207,7 +207,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
                 ? new CheckBox(rootView.getContext()) : new TextView(rootView.getContext());
         long medId = medication.getId();
         Triple<Medication, Long, LocalDateTime> tag;
-        long doseRowId = db.getDoseId(medId, TimeFormatting.localDateTimeToString(time));
+        long doseRowId = db.getDoseId(medId, TimeFormatting.localDateTimeToDbString(time));
         ImageButton button = new ImageButton(rootView.getContext());
 
         button.setBackgroundResource(android.R.drawable.ic_menu_info_details);
@@ -228,7 +228,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         button.setOnClickListener(v ->
         {
             DoseInfoDialog doseInfo = new DoseInfoDialog(
-                    db.getDoseId(medId, TimeFormatting.localDateTimeToString(time)), db, thisMedication
+                    db.getDoseId(medId, TimeFormatting.localDateTimeToDbString(time)), db, thisMedication
             );
             doseInfo.show(getChildFragmentManager(), null);
         });
@@ -281,7 +281,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
             }
 
 
-            String now = TimeFormatting.localDateTimeToString(LocalDateTime.now().withSecond(0));
+            String now = TimeFormatting.localDateTimeToDbString(LocalDateTime.now().withSecond(0));
 
             if (doseId != -1) {
                 db.updateDoseStatus(doseId, now, ((CheckBox) thisMedication).isChecked());
@@ -293,7 +293,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
 
                 db.updateDoseStatus(
                         id,
-                        TimeFormatting.localDateTimeToString(LocalDateTime.now().withSecond(0)),
+                        TimeFormatting.localDateTimeToDbString(LocalDateTime.now().withSecond(0)),
                         true
                 );
             }

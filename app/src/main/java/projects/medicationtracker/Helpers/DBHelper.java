@@ -1,5 +1,7 @@
 package projects.medicationtracker.Helpers;
 
+import static projects.medicationtracker.MediTrak.DATABASE_PATH;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -19,14 +21,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import projects.medicationtracker.MainActivity;
-import projects.medicationtracker.Models.Dose;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Note;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Medications.db";
-    private final static int DATABASE_VERSION = 12;
+    private final static int DATABASE_VERSION = 13;
 
     public final static String ANDROID_METADATA = "android_metadata";
 
@@ -78,7 +78,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CHANGE_DATE = "ChangeDate";
     private static final String PAUSED = "Paused";
 
-    public class TimeFormats {
+    public static class TimeFormats {
         public static final String _12_HOUR = "hh:mm a";
         public static final String _24_HOUR = "HH:mm";
     }
@@ -101,7 +101,8 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        nativeHelper = new NativeDbHelper(MainActivity.DATABASE_DIR);
+        nativeHelper = new NativeDbHelper(DATABASE_PATH);
+        nativeHelper.create();
     }
 
     /**
@@ -126,8 +127,10 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         if (nativeHelper == null) {
-            nativeHelper = new NativeDbHelper(MainActivity.DATABASE_DIR);
+            nativeHelper = new NativeDbHelper(DATABASE_PATH);
         }
+
+        nativeHelper.upgrade(i);
     }
 
     /**
@@ -143,7 +146,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * @return rowid on success, -1 on failure
      */
     public long addMedication(String medName, String patientName, String dosage, String units,
-                              String startDate, int frequency, String alias) {
+                              String startDate, int frequency, String alias, String instructions) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues medTableValues = new ContentValues();
         long row;
@@ -155,6 +158,7 @@ public class DBHelper extends SQLiteOpenHelper {
         medTableValues.put(START_DATE, startDate);
         medTableValues.put(MED_FREQUENCY, frequency);
         medTableValues.put(ALIAS, alias);
+        medTableValues.put(INSTRUCTIONS, instructions);
 
         row = db.insert(MEDICATION_TABLE, null, medTableValues);
 
@@ -416,12 +420,15 @@ public class DBHelper extends SQLiteOpenHelper {
         int frequency = cursor.getInt(cursor.getColumnIndexOrThrow(MED_FREQUENCY));
         int dosage = cursor.getInt(cursor.getColumnIndexOrThrow(MED_DOSAGE));
         String alias = cursor.getString(cursor.getColumnIndexOrThrow(ALIAS));
+        String instructions = cursor.getString(cursor.getColumnIndexOrThrow(INSTRUCTIONS));
 
         LocalDateTime[] times = new LocalDateTime[0];
 
         medication = new Medication(
                 medName, patient, units, times, startDate, medId, frequency, dosage, alias
         );
+
+        medication.setInstructions(instructions);
 
         cursor.close();
 
@@ -483,9 +490,10 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(MED_DOSAGE, medication.getDosage());
         cv.put(MED_FREQUENCY, medication.getFrequency());
         cv.put(MED_UNITS, medication.getDosageUnits());
-        cv.put(START_DATE, TimeFormatting.localDateTimeToString(medication.getStartDate()));
+        cv.put(START_DATE, TimeFormatting.localDateTimeToDbString(medication.getStartDate()));
         cv.put(PATIENT_NAME, medication.getPatientName());
         cv.put(ALIAS, medication.getAlias());
+        cv.put(INSTRUCTIONS, medication.getInstructions());
 
         if (medication.getChild() != null) {
             cv.put(CHILD_ID, medication.getChild().getId());
@@ -561,7 +569,7 @@ public class DBHelper extends SQLiteOpenHelper {
         long row;
 
         pauseOldMedContent.put(PAUSED, 1);
-        pauseOldMedContent.put(CHANGE_DATE, TimeFormatting.localDateTimeToString(medication.getStartDate()));
+        pauseOldMedContent.put(CHANGE_DATE, TimeFormatting.localDateTimeToDbString(medication.getStartDate()));
         pauseOldMedContent.put(MED_ID, medication.getId());
 
         updateActivityStatusCv.put(ACTIVE, 0);
@@ -574,9 +582,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 medication.getPatientName(),
                 String.valueOf(medication.getDosage()),
                 medication.getDosageUnits(),
-                TimeFormatting.localDateTimeToString(medication.getStartDate()),
+                TimeFormatting.localDateTimeToDbString(medication.getStartDate()),
                 medication.getFrequency(),
-                medication.getAlias()
+                medication.getAlias(),
+                medication.getInstructions()
         );
 
         updateChildMedContent.put(PARENT_ID, medication.getParent().getId());
@@ -622,7 +631,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public boolean isInMedicationTracker(Medication medication, LocalDateTime time) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String dateTime = TimeFormatting.localDateTimeToString(time);
+        String dateTime = TimeFormatting.localDateTimeToDbString(time);
 
         String query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE + " WHERE " + MED_ID + " = " +
                 medication.getId() + " AND " + DOSE_TIME + " = '" + dateTime + "'";
@@ -779,13 +788,13 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public long addNote(String note, long medId) {
         if (nativeHelper == null) {
-            nativeHelper = new NativeDbHelper(MainActivity.DATABASE_DIR);
+            nativeHelper = new NativeDbHelper(DATABASE_PATH);
         }
 
         Pair<String, String>[] values = new Pair[3];
 
         values[0] = new Pair<>(NOTE, note);
-        values[1] = new Pair<>(ENTRY_TIME, TimeFormatting.localDateTimeToString(LocalDateTime.now()));
+        values[1] = new Pair<>(ENTRY_TIME, TimeFormatting.localDateTimeToDbString(LocalDateTime.now()));
         values[2] = new Pair<>(MED_ID, String.valueOf(medId));
 
         return nativeHelper.insert(NOTES_TABLE, values);
@@ -798,7 +807,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public void deleteNote(Note note) {
         if (nativeHelper == null) {
-            nativeHelper = new NativeDbHelper(MainActivity.DATABASE_DIR);
+            nativeHelper = new NativeDbHelper(DATABASE_PATH);
         }
 
         Pair<String, String>[] values = new Pair[1];
@@ -818,12 +827,12 @@ public class DBHelper extends SQLiteOpenHelper {
         Pair<String, String>[] where = new Pair[1];
 
         values[0] = new Pair<>(NOTE, note.getNote());
-        values[1] = new Pair<>(TIME_EDITED, TimeFormatting.localDateTimeToString(LocalDateTime.now()));
+        values[1] = new Pair<>(TIME_EDITED, TimeFormatting.localDateTimeToDbString(LocalDateTime.now()));
 
         where[0] = new Pair<>(NOTE_ID, String.valueOf(note.getNoteId()));
 
         if (nativeHelper == null) {
-            nativeHelper = new NativeDbHelper(MainActivity.DATABASE_DIR);
+            nativeHelper = new NativeDbHelper(DATABASE_PATH);
         }
 
         nativeHelper.update(
@@ -1014,7 +1023,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public void setDateTimeFormat(String dateFormat, String timeFormat) {
         if (nativeHelper == null) {
-            nativeHelper = new NativeDbHelper(MainActivity.DATABASE_DIR);
+            nativeHelper = new NativeDbHelper(DATABASE_PATH);
         }
 
         Pair<String, String>[] formats = new Pair[2];
@@ -1082,10 +1091,11 @@ public class DBHelper extends SQLiteOpenHelper {
         db.update(MEDICATION_TABLE, updateActivityStatusCv, where, new String[]{String.valueOf(medication.getId())});
 
         addStatusChangeCv.put(PAUSED, active ? 0 : 1);
-        addStatusChangeCv.put(CHANGE_DATE, TimeFormatting.localDateTimeToString(LocalDateTime.now()));
+        addStatusChangeCv.put(CHANGE_DATE, TimeFormatting.localDateTimeToDbString(LocalDateTime.now()));
         addStatusChangeCv.put(MED_ID, medication.getId());
 
         db.insert(ACTIVITY_CHANGE_TABLE, "", addStatusChangeCv);
+        db.close();
     }
 
     /**
@@ -1106,6 +1116,7 @@ public class DBHelper extends SQLiteOpenHelper {
         active = cursor.getString(cursor.getColumnIndexOrThrow(ACTIVE)).equals("1");
 
         cursor.close();
+        db.close();
 
         return active;
     }
@@ -1156,6 +1167,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         cursor.close();
+        db.close();
 
         if (timesPaused.size() == 0 && timesResumed.size() == 1) {
             intervals.add(new Pair<>(null, timesResumed.get(0)));
@@ -1188,11 +1200,5 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(permission, true);
 
         db.update(SETTINGS_TABLE, cv, null, null);
-    }
-
-    public boolean exportHistoryCSV(String path, Medication med, Dose[] doses) {
-        
-
-        return false;
     }
 }

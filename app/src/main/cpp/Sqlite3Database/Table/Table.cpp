@@ -35,7 +35,7 @@ Table::Table(sqlite3_stmt* stmt) {
     }
 
     sqlite3_finalize(stmt);
-    rowCount = table.begin()->second.size();
+    rowCount = table.begin()->second.size() >= 0 ? table.begin()->second.size() : 0;
 }
 
 void Table::moveToFirst() {

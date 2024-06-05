@@ -9,6 +9,7 @@ import static projects.medicationtracker.Helpers.DBHelper.DARK;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.SEEN_NOTIFICATION_REQUEST;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
+import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 
 import android.app.NotificationManager;
 import android.content.Context;
@@ -53,7 +54,6 @@ import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Views.StandardCardView;
 
 public class MainActivity extends AppCompatActivity {
-    public static String DATABASE_DIR;
     public static Bundle preferences;
     private final DBHelper db = new DBHelper(this);
     private LinearLayout scheduleLayout;
@@ -75,9 +75,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DATABASE_DIR = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
+        DATABASE_PATH = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
 
-        nativeDb = new NativeDbHelper(DATABASE_DIR);
+        nativeDb = new NativeDbHelper(DATABASE_PATH);
+        nativeDb.create();
 
         preferences = db.getPreferences();
 

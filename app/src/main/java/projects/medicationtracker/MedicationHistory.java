@@ -2,6 +2,7 @@ package projects.medicationtracker;
 
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -63,7 +64,7 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
             startActivity(returnToMyMeds);
         }
 
-        db = new NativeDbHelper(MainActivity.DATABASE_DIR);
+        db = new NativeDbHelper(DATABASE_PATH);
 
         medication = db.getMedicationHistory(medId);
 

@@ -190,6 +190,25 @@
                             </com.google.android.material.textfield.TextInputLayout>
                         </RelativeLayout>
                     </LinearLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/instructions_input"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:gravity="center">
+
+                        <EditText
+                            android:id="@+id/enter_instructions"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="@string/instructions_optional"
+                            android:lines="3"
+                            android:minLines="3"
+                            android:maxLines="5"
+                            android:inputType="textMultiLine" />
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

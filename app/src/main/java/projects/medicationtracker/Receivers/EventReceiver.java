@@ -14,11 +14,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Workers.NotificationWorker;
@@ -55,7 +57,9 @@ public class EventReceiver extends BroadcastReceiver {
             }
         }
 
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager manager = (NotificationManager) context.getSystemService(
+                Context.NOTIFICATION_SERVICE
+        );
         StatusBarNotification[] notifications = manager.getActiveNotifications();
 
         if (notifications.length == 1 && notifications[0].getId() == SUMMARY_ID) {
@@ -93,11 +97,13 @@ public class EventReceiver extends BroadcastReceiver {
         med = db.getMedication(medId);
 
         long doseId = db.isInMedicationTracker(med, doseTime) ?
-                db.getDoseId(med.getId(), TimeFormatting.localDateTimeToString(doseTime)) :
+                db.getDoseId(med.getId(), TimeFormatting.localDateTimeToDbString(doseTime)) :
                 db.addToMedicationTracker(med, doseTime);
 
         db.updateDoseStatus(
-                doseId, TimeFormatting.localDateTimeToString(LocalDateTime.now().withSecond(0)), true
+                doseId,
+                TimeFormatting.localDateTimeToDbString(LocalDateTime.now().withSecond(0)),
+                true
         );
 
         notificationManager.cancel((int) notificationId);

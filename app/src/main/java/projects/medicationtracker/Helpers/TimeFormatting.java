@@ -4,7 +4,6 @@ import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
@@ -61,7 +60,7 @@ public class TimeFormatting {
      * @param localDateTime The time to be converted to String
      * @return String containing value of the LocalDateTime
      */
-    public static String localDateTimeToString(LocalDateTime localDateTime) {
+    public static String localDateTimeToDbString(LocalDateTime localDateTime) {
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         return dateFormat.format(localDateTime);
     }
