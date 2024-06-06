@@ -51,7 +51,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         );
 
         try {
-            NativeDbHelper nativeDbHelper = new NativeDbHelper(DATABASE_PATH);
+            NativeDbHelper nativeDbHelper = new NativeDbHelper(context.getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath());
 
             dose = nativeDbHelper.findDose(medicationId, doseTime);
         } catch (Exception e) {
