@@ -151,7 +151,7 @@
     <string name="dosage">Dosierung: %1$s %2$s</string>
     <string name="taken_daily_at">Täglich eingenommen um: </string>
     <string name="taken_every_lbl">Eingenommen, alle: </string>
-    <string name="alias_lbl">Alias: %1$s</string>
+    <string name="alias_lbl">Alias</string>
     <string name="taken_since">Eingenommen, seit: %1$s</string>
     <string name="taken_as_needed">Nach Bedarf eingenommen.</string>
     <string name="all_previous_edits_overridden">Alle vorherigen Änderungen wurden überschrieben.</string>

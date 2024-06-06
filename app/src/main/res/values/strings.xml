@@ -147,9 +147,9 @@
     <string name="my_medications">My Medications</string>
     <string name="med_name">Medication name: %1$s</string>
     <string name="dosage">Dosage: %1$s %2$s</string>
-    <string name="taken_daily_at">Taken daily at: </string>
-    <string name="taken_every_lbl">Taken every: </string>
-    <string name="alias_lbl">Alias: %1$s</string>
+    <string name="taken_daily_at">Taken daily at </string>
+    <string name="taken_every_lbl">Taken every </string>
+    <string name="alias_lbl">Alias</string>
     <string name="taken_since">Taken since: %1$s</string>
     <string name="taken_as_needed">Taken as needed.</string>
     <string name="all_previous_edits_overridden">All previous changes overridden.</string>
