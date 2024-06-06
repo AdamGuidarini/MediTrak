@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -35,9 +36,11 @@ import projects.medicationtracker.Models.Medication;
 public class MyMedicationsFragment extends Fragment {
     TextView name;
     TextView dosage;
+    TextView doseUnit;
     TextView alias;
     TextView frequency;
     TextView takenSince;
+    TextView instructions;
     Button notesButton;
     Button editButton;
     Button historyButton;
@@ -76,13 +79,18 @@ public class MyMedicationsFragment extends Fragment {
         DBHelper db = new DBHelper(getContext());
         LocalTime[] times = db.getMedicationTimes(medication.getId());
         LocalDateTime[] dateTimes = new LocalDateTime[times.length];
-        String dosageVal;
+        LinearLayout barrier = v.findViewById(R.id.barrier);
+        LinearLayout barrier1 = v.findViewById(R.id.barrier1);
+        LinearLayout barrier2 = v.findViewById(R.id.barrier2);
+        LinearLayout barrier3 = v.findViewById(R.id.barrier3);
 
         name = v.findViewById(R.id.myMedCardMedicationName);
-        dosage = v.findViewById(R.id.myMedCardDosage);
+        dosage = v.findViewById(R.id.dosage_amount);
+        doseUnit = v.findViewById(R.id.dosage_unit);
         alias = v.findViewById(R.id.myMedCardAlias);
         frequency = v.findViewById(R.id.myMedCardFrequency);
         takenSince = v.findViewById(R.id.myMedCardTakenSince);
+        instructions = v.findViewById(R.id.instructions);
         notesButton = v.findViewById(R.id.myMedsNotes);
         editButton = v.findViewById(R.id.myMedsEdit);
         historyButton = v.findViewById(R.id.history_button);
@@ -93,14 +101,9 @@ public class MyMedicationsFragment extends Fragment {
 
         medication.setTimes(dateTimes);
 
-        if (medication.getDosage() == medication.getDosage()) {
-            dosageVal = String.format(Locale.getDefault(), "%d", medication.getDosage());
-        } else {
-            dosageVal = String.valueOf(medication.getDosage());
-        }
-
-        name.setText(getString(R.string.med_name, medication.getName()));
-        dosage.setText(getString(R.string.dosage, dosageVal, medication.getDosageUnits()));
+        name.setText(medication.getName());
+        dosage.setText(String.valueOf(medication.getDosage()));
+        doseUnit.setText(medication.getDosageUnits());
 
         String label = medication.generateFrequencyLabel(
                 getContext(),
@@ -110,10 +113,7 @@ public class MyMedicationsFragment extends Fragment {
 
         frequency.setText(label);
 
-        if (!medication.getAlias().equals("")) {
-            alias.setVisibility(View.VISIBLE);
-            alias.setText(getString(R.string.alias_lbl, medication.getAlias()));
-        }
+        alias.setText(medication.getAlias().isEmpty() ? "N/A" : medication.getAlias());
 
         LocalDateTime start = medication.getParent() == null ? medication.getStartDate() : medication.getParent().getStartDate();
 
@@ -122,7 +122,13 @@ public class MyMedicationsFragment extends Fragment {
                 Locale.getDefault()
         ).format(start);
 
-        takenSince.setText(getString(R.string.taken_since, beginning));
+        takenSince.setText(beginning);
+
+        if (medication.getInstructions() == null) {
+            instructions.setText("N/A");
+        } else {
+            instructions.setText(medication.getInstructions().isEmpty() ? "N/A" : medication.getInstructions());
+        }
 
         Intent notesIntent = new Intent(getActivity(), MedicationNotes.class);
         notesIntent.putExtra("medId", medication.getId());
@@ -150,5 +156,10 @@ public class MyMedicationsFragment extends Fragment {
             getActivity().finish();
             startActivity(intent);
         });
+
+        barrier.setBackgroundColor(name.getCurrentTextColor());
+        barrier1.setBackgroundColor(name.getCurrentTextColor());
+        barrier2.setBackgroundColor(name.getCurrentTextColor());
+        barrier3.setBackgroundColor(name.getCurrentTextColor());
     }
 }

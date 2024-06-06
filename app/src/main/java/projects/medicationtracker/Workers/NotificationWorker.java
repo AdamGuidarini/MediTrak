@@ -15,6 +15,7 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -42,29 +43,35 @@ public class NotificationWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        final String message = getInputData().getString(MESSAGE);
-        final String doseTime = getInputData().getString(DOSE_TIME);
-        final long notificationId = getInputData().getLong(NOTIFICATION_ID, System.currentTimeMillis());
-        final long medId = getInputData().getLong(MEDICATION_ID, -1);
+        try {
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            final String message = getInputData().getString(MESSAGE);
+            final String doseTime = getInputData().getString(DOSE_TIME);
+            final long notificationId = getInputData().getLong(NOTIFICATION_ID, System.currentTimeMillis());
+            final long medId = getInputData().getLong(MEDICATION_ID, -1);
 
-        Notification notification = createNotification(message, doseTime, notificationId, medId);
-        Notification notificationSummary = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setContentTitle(context.getString(R.string.app_name))
-                .setSmallIcon(R.drawable.pill)
-                .setStyle(new NotificationCompat.InboxStyle())
-                .setGroup(GROUP_KEY)
-                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
-                .setGroupSummary(true)
-                .setAutoCancel(true)
-                .build();
+            Notification notification = createNotification(message, doseTime, notificationId, medId);
+            Notification notificationSummary = new NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setContentTitle(context.getString(R.string.app_name))
+                    .setSmallIcon(R.drawable.pill)
+                    .setStyle(new NotificationCompat.InboxStyle())
+                    .setGroup(GROUP_KEY)
+                    .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
+                    .setGroupSummary(true)
+                    .setAutoCancel(true)
+                    .build();
 
-        notificationManager.notify(SUMMARY_ID, notificationSummary);
+            notificationManager.notify(SUMMARY_ID, notificationSummary);
 
-        // Only fire notification if not other active notification has the same ID
-        if (Arrays.stream(notificationManager.getActiveNotifications()).filter(n -> n.getId() == notificationId).toArray().length == 0) {
-            notificationManager.notify((int) notificationId, notification);
+            // Only fire notification if not other active notification has the same ID
+            if (Arrays.stream(notificationManager.getActiveNotifications()).filter(n -> n.getId() == notificationId).toArray().length == 0) {
+                notificationManager.notify((int) notificationId, notification);
+            }
+        } catch (Exception e) {
+            Log.e("MediTrak:Notifications", e.getMessage());
+
+            return Result.failure();
         }
 
         return Result.success();

@@ -377,7 +377,7 @@ public class Medication implements Cloneable, Parcelable {
 
             freqLabel = new StringBuilder(applicationContext.getString(R.string.taken_daily_at) + " " + time);
         } else if (getFrequency() == MINUTES_IN_DAY && (getTimes().length > 1)) {
-            freqLabel = new StringBuilder(applicationContext.getString(R.string.taken_daily_at));
+            freqLabel = new StringBuilder(applicationContext.getString(R.string.taken_daily_at) + " ");
 
             for (int i = 0; i < this.getTimes().length; i++) {
                 String time = DateTimeFormatter.ofPattern(

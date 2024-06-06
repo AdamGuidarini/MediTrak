@@ -234,6 +234,7 @@ public class DBHelper extends SQLiteOpenHelper {
             String alias = cursor.getString(cursor.getColumnIndexOrThrow(ALIAS));
             long parentId = cursor.getLong(cursor.getColumnIndexOrThrow(PARENT_ID));
             long childId = cursor.getLong(cursor.getColumnIndexOrThrow(CHILD_ID));
+            String instructions = cursor.getString(cursor.getColumnIndexOrThrow(INSTRUCTIONS));
 
             LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(startDateStr);
 
@@ -275,6 +276,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             medToAdd = new Medication(medName, patient, units, times,
                     startDate, medId, freq, dosage, alias);
+            medToAdd.setInstructions(instructions);
 
             if (parentId > 0) medToAdd.setParent(getMedication(parentId));
             if (childId > 0) medToAdd.setChild(getMedication(childId));

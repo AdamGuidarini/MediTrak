@@ -1,5 +1,12 @@
+<style>
+  .screenshot {
+    width: 15%;
+    padding-right: 5px;
+  }
+</style>
+
 # MediTrak
-An Android app that helps users keep track of their medications.
+An Android app that helps you keep track of your medications.
 
 ## About
 
@@ -7,8 +14,7 @@ MediTrak is an Android application designed to make it easier for users to keep 
 
 ## Requirements
 
-+ Android 8.0 Oreo or newer
-+ 15 MB storage
+- Android 8 Oreo or newer
 
 ## Languages
 
@@ -48,9 +54,15 @@ This project uses the ````sqlite3.c```` and ````sqlite3.h```` files in its NDK p
 
 ## Installation
 
+<div style="display: flex;">
+ <img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="90" alt="Get it on GitHub" href="https://github.com/AdamGuidarini/MediTrak/releases"/>
+ <img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height=90 alt="Get it on IzzyOnDroid" href="https://apt.izzysoft.de/fdroid/index/apk/projects.medicationtracker"/>
+</div>
+
 ### GitHub
 
-The latest releases can be found here: [releases](https://github.com/AdamGuidarini/MediTrak/releases). You may need to enable downloading apps from unknown sources to install it.
+- The latest releases can be found here: [releases](https://github.com/AdamGuidarini/MediTrak/releases). You may need to enable downloading apps from unknown sources to install it.
+- You can also the app [Obtainium](https://github.com/ImranR98/Obtainium) or others like it to automatically update to the newest release on GitHub.
 
 ### F-Droid
 
@@ -67,9 +79,9 @@ Thanks to [IzzySoft](https://github.com/IzzySoft), this app is available in the 
 
 ## Screenshots
 
-<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/63f322c3-8006-4ba9-8c2f-fa27cbb7001e" width=10% height=10%>
-<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/5a8bdc42-ee52-426a-bc2c-6f898fdb825e" width=10% height=10%>
-<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/e4da8dca-804b-4280-9315-9835f80d9e69" width=10% height=10%>
-<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/09d363b6-1514-4d92-a1fd-81cdf05b9644" width=10% height=10%>
-<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/19f32b0c-2ff5-4bff-9e2a-e65c285b247e" width=10% height=10%>
-<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/a8b4bd89-00a1-411e-ae69-6868ef85247f" width=10% height=10%>
+<img class="screenshot" src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/63f322c3-8006-4ba9-8c2f-fa27cbb7001e">
+<img class="screenshot" src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/5a8bdc42-ee52-426a-bc2c-6f898fdb825e">
+<img class="screenshot" src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/e4da8dca-804b-4280-9315-9835f80d9e69">
+<img class="screenshot" src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/09d363b6-1514-4d92-a1fd-81cdf05b9644">
+<img class="screenshot" src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/19f32b0c-2ff5-4bff-9e2a-e65c285b247e">
+<img class="screenshot" src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/a8b4bd89-00a1-411e-ae69-6868ef85247f">
