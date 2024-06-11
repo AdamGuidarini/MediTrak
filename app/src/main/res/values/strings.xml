@@ -1,35 +1,35 @@
 <resources>
     <!-- Common -->
-    <string name="yes">Yes</string>
+    <string name="yes">Sí</string>
     <string name="no">No</string>
-    <string name="close">Close</string>
-    <string name="cancel">Cancel</string>
+    <string name="close">Cerrar</string>
+    <string name="cancel">Cancelar</string>
     <string name="app_name">MediTrak</string>
-    <string name="edit">Edit</string>
-    <string name="submit">Submit</string>
-    <string name="save_changes">Save Changes</string>
-    <string name="save">Save</string>
-    <string name="you">You</string>
-    <string name="your">Your</string>
+    <string name="edit">Editar</string>
+    <string name="submit">Enviar</string>
+    <string name="save_changes">Guardar cambios</string>
+    <string name="save">Guardar</string>
+    <string name="you">Tú</string>
+    <string name="your">Tuyo</string>
     <string name="ok">OK</string>
-    <string name="delete">Delete</string>
-    <string name="i_agree">I agree</string>
+    <string name="delete">Eliminar</string>
+    <string name="i_agree">Estoy de acuerdo</string>
 
     <!-- Filters -->
-    <string name="clear">Clear</string>
-    <string name="apply">Apply</string>
-    <string name="before">Before</string>
-    <string name="after">After</string>
-    <string name="on">On</string>
+    <string name="clear">Limpiar</string>
+    <string name="apply">Aplicar</string>
+    <string name="before">Antes</string>
+    <string name="after">Después</string>
+    <string name="on">En</string>
 
     <!-- Errors -->
-    <string name="invalid_value">Invalid value entered</string>
-    <string name="must_be_positive_int">Value must be a positive integer</string>
-    <string name="val_too_big">Provided value is too big</string>
-    <string name="cannot_exceed_50">Provided value cannot exceed 50</string>
-    <string name="must_be_greater_than_0">Provided value must be greater than 0</string>
-    <string name="provided_name_invalid">Provided name is invalid</string>
-    <string name="err_provide_name">Please provide a name</string>
+    <string name="invalid_value">Valor ingresado inválido</string>
+    <string name="must_be_positive_int">El valor debe ser un número entero positivo</string>
+    <string name="val_too_big">El valor indicado es demasiado grande</string>
+    <string name="cannot_exceed_50">El valor indicado no puede superar el 50</string>
+    <string name="must_be_greater_than_0">El valor indicado debe ser mayor que 0</string>
+    <string name="provided_name_invalid">El nombre indicado no es válido</string>
+    <string name="err_provide_name">Por favor, proporcione un nombre</string>
     <string name="err_enter_dosage">Please enter a dosage</string>
     <string name="err_units_for_med">Please enter the units for this medication</string>
     <string name="err_select_frequency">Please select a frequency type</string>
