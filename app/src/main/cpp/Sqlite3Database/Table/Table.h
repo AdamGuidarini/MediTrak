@@ -8,6 +8,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <iostream>
 #include "sqlite3.h"
 
 using namespace std;

@@ -63,7 +63,13 @@ int Table::getCount() {
 }
 
 string Table::getItem(string columnName) {
-    return table.at(columnName).at(currentRow);
+    try {
+        return table.at(columnName).at(currentRow);
+    } catch (exception e) {
+        cerr << "OUT OF RANGE. No item found in column " << columnName << " in row " << currentRow;
+
+        return "0";
+    }
 }
 
 bool Table::isFirst() {
