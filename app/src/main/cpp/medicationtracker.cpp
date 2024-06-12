@@ -193,6 +193,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbCreate(JNIEnv *env, job
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
     }
 }
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_projects_medicationtracker_Helpers_NativeDbHelper_dbUpgrade(JNIEnv *env, jobject thiz, jstring db_path, jint version) {
@@ -354,6 +355,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_exportMedHistory(
 
     return true;
 }
+
 extern "C"
 JNIEXPORT jobject JNICALL
 Java_projects_medicationtracker_Helpers_NativeDbHelper_findDose(
@@ -376,3 +378,23 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_findDose(
     return jDose;
 }
 
+extern "C"
+JNIEXPORT jobject JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_getDoseById(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jlong dose_id,
+        jobject medication
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    DatabaseController controller(dbPath);
+
+    Dose* d = controller.getDoseById(dose_id);
+
+    auto jDose = doseToJavaConverter(*d, env, medication);
+
+    delete d;
+
+    return jDose;
+}

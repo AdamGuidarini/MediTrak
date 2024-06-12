@@ -94,6 +94,13 @@ private:
      */
     void create();
 
+    /**
+     * Sets a dose from a table
+     * @param table
+     * @return Dose contained in table or nullptr
+     */
+    Dose* setDose(Table* table);
+
 public:
     const string NOTES_TABLE = "Notes";
     const string SETTINGS_TABLE = "Settings";
@@ -197,6 +204,13 @@ public:
      * @return The dose for the given med ID & scheduled time or nullptr
      */
     Dose* findDose(long medicationId, string scheduledTime);
+
+    /**
+     * Retrieves Dose by its ID
+     * @param doseId ID of dose to find
+     * @return Dose with provided ID or nullptr
+     */
+    Dose* getDoseById(long doseId);
 };
 
 #endif //MEDICATIONTRACKER_DATABASECONTROLLER_H

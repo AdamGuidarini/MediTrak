@@ -333,6 +333,37 @@ vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
     return doses;
 }
 
+Dose* DatabaseController::setDose(Table* table) {
+    Dose* dose = nullptr;
+
+    if (table->getCount() > 0) {
+        table->moveToFirst();
+
+        int overrideDose = -1;
+        string overrideUnit = "";
+
+        if (!empty(table->getItem(OVERRIDE_DOSE_AMOUNT))) {
+            overrideDose = stoi(table->getItem(OVERRIDE_DOSE_AMOUNT));
+        }
+
+        if (!empty(table->getItem(OVERRIDE_DOSE_UNIT))) {
+            overrideUnit = table->getItem(OVERRIDE_DOSE_UNIT);
+        }
+
+        dose = new Dose(
+                stol(table->getItem(DOSE_ID)),
+                stol(table->getItem(MED_ID)),
+                table->getItem(TAKEN) == "1",
+                table->getItem(DOSE_TIME),
+                table->getItem(TIME_TAKEN),
+                overrideDose,
+                overrideUnit
+        );
+    }
+
+    return dose;
+}
+
 Dose* DatabaseController::findDose(long medicationId, std::string scheduledTime) {
     Table* result = manager.execSqlWithReturn(
         "SELECT * FROM " + MEDICATION_TRACKER_TABLE
@@ -340,32 +371,21 @@ Dose* DatabaseController::findDose(long medicationId, std::string scheduledTime)
         + " AND " + DOSE_TIME + "='" + scheduledTime +"'"
         + " AND " + TAKEN + " = TRUE"
     );
-    Dose* dose = nullptr;
 
-    if (result->getCount() > 0) {
-        result->moveToFirst();
+    Dose* dose = setDose(result);
 
-        int overrideDose = -1;
-        string overrideUnit = "";
+    delete result;
 
-        if (!empty(result->getItem(OVERRIDE_DOSE_AMOUNT))) {
-            overrideDose = stoi(result->getItem(OVERRIDE_DOSE_AMOUNT));
-        }
+    return dose;
+}
 
-        if (!empty(result->getItem(OVERRIDE_DOSE_UNIT))) {
-            overrideUnit = result->getItem(OVERRIDE_DOSE_UNIT);
-        }
+Dose* DatabaseController::getDoseById(long doseId) {
+    Table* result = manager.execSqlWithReturn(
+      "SELECT * FROM " + MEDICATION_TRACKER_TABLE
+      + " WHERE " + DOSE_ID + "=" + to_string(doseId)
+    );
 
-        dose = new Dose(
-            stol(result->getItem(DOSE_ID)),
-            stol(result->getItem(MED_ID)),
-            result->getItem(TAKEN) == "1",
-            result->getItem(DOSE_TIME),
-            result->getItem(TIME_TAKEN),
-            overrideDose,
-            overrideUnit
-        );
-    }
+    Dose* dose = setDose(result);
 
     delete result;
 
