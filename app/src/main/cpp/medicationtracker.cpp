@@ -28,12 +28,12 @@ std::map<std::string, std::string> getValues(jobjectArray arr, JNIEnv *env) {
     return vals;
 }
 
-jobjectArray doseToJavaConverter(vector<Dose> doses, JNIEnv* env, jobject &jMedication) {
+jobject doseToJavaConverter(Dose dose, JNIEnv* env, jobject &jMedication) {
     jfieldID medDoses = env->GetFieldID(env->GetObjectClass(jMedication), "doses", "[Lprojects/medicationtracker/Models/Dose;");
     jobjectArray jDoses = static_cast<jobjectArray>(env->GetObjectField(jMedication, medDoses));
     jclass jDose = env->GetObjectClass(env->GetObjectArrayElement(jDoses, 0));
 
-    jDoses = env->NewObjectArray(doses.size(), jDose, NULL);
+//    jDoses = env->NewObjectArray(doses.size(), jDose, NULL);
 
     jmethodID constructor = env->GetMethodID(
         jDose,
@@ -41,21 +41,18 @@ jobjectArray doseToJavaConverter(vector<Dose> doses, JNIEnv* env, jobject &jMedi
         "(JJZLjava/lang/String;Ljava/lang/String;)V"
     );
 
-    for (int i = 0; i < doses.size(); i++) {
-        jobject dose = env->NewObject(
-            jDose,
-            constructor,
-            doses.at(i).id,
-            doses.at(i).medicationId,
-            doses.at(i).taken,
-            env->NewStringUTF(doses.at(i).timeTaken.c_str()),
-            env->NewStringUTF(doses.at(i).doseTime.c_str())
-        );
+    jobject javaDose = env->NewObject(
+        jDose,
+        constructor,
+        dose.id,
+        dose.medicationId,
+        dose.taken,
+        env->NewStringUTF(dose.timeTaken.c_str()),
+        env->NewStringUTF(dose.doseTime.c_str())
+    );
 
-        env->SetObjectArrayElement(jDoses, i, dose);
-    }
 
-    return jDoses;
+    return javaDose;
 }
 
 jobject medicationToJavaConverter(Medication med, JNIEnv* env, jclass jMedication) {
@@ -101,7 +98,15 @@ jobject medicationToJavaConverter(Medication med, JNIEnv* env, jclass jMedicatio
         env->CallVoidMethod(jMedicationInstance, setParent, medParent);
     }
 
-    auto jDoses = doseToJavaConverter(med.doses, env, jMedicationInstance);
+    jfieldID medDoses = env->GetFieldID(env->GetObjectClass(jMedicationInstance), "doses", "[Lprojects/medicationtracker/Models/Dose;");
+    jobjectArray jDoses = static_cast<jobjectArray>(env->GetObjectField(jMedicationInstance, medDoses));
+    jclass jDose = env->GetObjectClass(env->GetObjectArrayElement(jDoses, 0));
+
+    jDoses = env->NewObjectArray(med.doses.size(), jDose, NULL);
+
+    for (int i = 0; i < med.doses.size(); i++) {
+        env->SetObjectArrayElement(jDoses, i, doseToJavaConverter(med.doses.at(i), env, jMedicationInstance));
+    }
 
     env->CallVoidMethod(jMedicationInstance, setDoses, jDoses);
 
@@ -364,9 +369,10 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_findDose(
         dose = new Dose();
     }
 
-    jobjectArray jDose = doseToJavaConverter({ *dose }, env, medication);
+    jobject jDose = doseToJavaConverter(*dose, env, medication);
 
     delete dose;
 
-    return env->GetObjectArrayElement(jDose, 0);
+    return jDose;
 }
+

@@ -42,6 +42,8 @@ public class DoseInfoDialog extends DialogFragment {
     private final TextView textView;
     private TextInputEditText timeTaken;
     private TextInputEditText dateTaken;
+    private TextInputEditText dosageAmount;
+    private TextInputEditText dosageUnit;
 
     public DoseInfoDialog(long doseId, DBHelper database, TextView tv) {
         this.doseId = doseId;
@@ -74,6 +76,8 @@ public class DoseInfoDialog extends DialogFragment {
 
         timeTaken = infoDialog.findViewById(R.id.dose_time_taken);
         dateTaken = infoDialog.findViewById(R.id.dose_date_taken);
+        dosageAmount = infoDialog.findViewById(R.id.dosage_amount);
+        dosageUnit = infoDialog.findViewById(R.id.dosage_unit);
 
         if (doseId != -1) {
             LocalDateTime doseDate = db.getTimeTaken(doseId);
@@ -85,7 +89,6 @@ public class DoseInfoDialog extends DialogFragment {
                     preferences.getString(TIME_FORMAT),
                     Locale.getDefault()
             ).format(doseDate);
-
 
             timeTaken.setShowSoftInputOnFocus(false);
             dateTaken.setShowSoftInputOnFocus(false);
