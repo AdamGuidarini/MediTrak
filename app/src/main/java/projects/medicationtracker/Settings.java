@@ -311,7 +311,6 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
     private void setDateFormatMenu() {
         MaterialAutoCompleteTextView dateSelector = findViewById(R.id.date_format_selector);
         String dateFormat = preferences.getString(DATE_FORMAT, DBHelper.DateFormats.MM_DD_YYYY);
-        String timeFormat = preferences.getString(TIME_FORMAT, DBHelper.TimeFormats._12_HOUR);
 
         dateSelector.setAdapter(createDateFormatMenuAdapter());
 
@@ -325,6 +324,8 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
         }
 
         dateSelector.setOnItemClickListener((parent, view, position, id) -> {
+            String timeFormat = preferences.getString(TIME_FORMAT, DBHelper.TimeFormats._12_HOUR);
+
             switch (position) {
                 case 0:
                     if (!dateFormat.equals(DBHelper.DateFormats.MM_DD_YYYY)) {
@@ -338,6 +339,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
             }
 
             dateSelector.clearFocus();
+            preferences = db.getPreferences();
         });
     }
 
@@ -347,7 +349,6 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
     private void setTimeFormatMenu() {
         MaterialAutoCompleteTextView timeSelector = findViewById(R.id.time_format_selector);
         String timeFormat = preferences.getString(TIME_FORMAT, DBHelper.TimeFormats._12_HOUR);
-        String dateFormat = preferences.getString(DATE_FORMAT, DBHelper.DateFormats.DD_MM_YYYY);
 
         timeSelector.setAdapter(createTimeFormatMenuAdapter());
 
@@ -361,6 +362,8 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
         }
 
         timeSelector.setOnItemClickListener((parent, view, position, id) -> {
+            String dateFormat = preferences.getString(DATE_FORMAT, DBHelper.DateFormats.DD_MM_YYYY);
+
             switch (position) {
                 case 0:
                     if (!timeFormat.equals(DBHelper.TimeFormats._12_HOUR)) {
@@ -374,6 +377,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
             }
 
             timeSelector.clearFocus();
+            preferences = db.getPreferences();
         });
     }
 

@@ -1,10 +1,3 @@
-<style>
-  .screenshot {
-    width: 15%;
-    padding-right: 5px;
-  }
-</style>
-
 # MediTrak
 An Android app that helps you keep track of your medications.
 
@@ -79,9 +72,9 @@ Thanks to [IzzySoft](https://github.com/IzzySoft), this app is available in the 
 
 ## Screenshots
 
-<img class="screenshot" src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/63f322c3-8006-4ba9-8c2f-fa27cbb7001e">
-<img class="screenshot" src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/5a8bdc42-ee52-426a-bc2c-6f898fdb825e">
-<img class="screenshot" src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/e4da8dca-804b-4280-9315-9835f80d9e69">
-<img class="screenshot" src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/09d363b6-1514-4d92-a1fd-81cdf05b9644">
-<img class="screenshot" src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/19f32b0c-2ff5-4bff-9e2a-e65c285b247e">
-<img class="screenshot" src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/a8b4bd89-00a1-411e-ae69-6868ef85247f">
+<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/63f322c3-8006-4ba9-8c2f-fa27cbb7001e" width="15%">
+<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/5a8bdc42-ee52-426a-bc2c-6f898fdb825e" width="15%">
+<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/e4da8dca-804b-4280-9315-9835f80d9e69" width="15%">
+<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/09d363b6-1514-4d92-a1fd-81cdf05b9644" width="15%">
+<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/19f32b0c-2ff5-4bff-9e2a-e65c285b247e" width="15%">
+<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/a8b4bd89-00a1-411e-ae69-6868ef85247f" width="15%">
