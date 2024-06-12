@@ -30,118 +30,118 @@
     <string name="must_be_greater_than_0">El valor indicado debe ser mayor que 0</string>
     <string name="provided_name_invalid">El nombre indicado no es válido</string>
     <string name="err_provide_name">Por favor, proporcione un nombre</string>
-    <string name="err_enter_dosage">Please enter a dosage</string>
-    <string name="err_units_for_med">Please enter the units for this medication</string>
-    <string name="err_select_frequency">Please select a frequency type</string>
-    <string name="err_select_time">Please select a time</string>
-    <string name="err_select_start_date">Please select a start date.</string>
-    <string name="err_enter_num_timers_per_day">Please enter the number of times this medication is taken in a day</string>
-    <string name="err_enter_med_freq">Please enter how often the medication is taken.</string>
-    <string name="err_enter_time_unit">Please select a time unit.</string>
-    <string name="err_name_for_med">Please enter a name for this medication</string>
-    <string name="err_missing_file_name">Missing file name</string>
-    <string name="err_file_must_be_json">Export file must have a .json extension</string>
+    <string name="err_enter_dosage">Por favor, proporcione una dosis</string>
+    <string name="err_units_for_med">Por favor, proporcione las unidades para este medicamento</string>
+    <string name="err_select_frequency">Por favor, seleccione un tipo de frecuencia</string>
+    <string name="err_select_time">Por favor, seleccione una hora</string>
+    <string name="err_select_start_date">Por favor, seleccione una fecha de inicio.</string>
+    <string name="err_enter_num_timers_per_day">Por favor, proporcione el número de veces que se toma este medicamento en un día</string>
+    <string name="err_enter_med_freq">Por favor, proporcione la frecuencia con la que se toma el medicamento.</string>
+    <string name="err_enter_time_unit">Por favor, seleccione una unidad de tiempo.</string>
+    <string name="err_name_for_med">Por favor, introduzca un nombre para este medicamento</string>
+    <string name="err_missing_file_name">Falta el nombre del archivo</string>
+    <string name="err_file_must_be_json">El archivo de exportación debe tener una extensión .json</string>
 
     <!-- Time formats -->
     <string name="date_format">Mmm dd, yyyy</string>
     <string name="time_format_hh_mm_aa">hh:mm aa</string>
 
     <!-- Time -->
-    <string name="sunday">Sunday</string>
-    <string name="monday">Monday</string>
-    <string name="tuesday">Tuesday</string>
-    <string name="wednesday">Wednesday</string>
-    <string name="thursday">Thursday</string>
-    <string name="friday">Friday</string>
-    <string name="saturday">Saturday</string>
-    <string name="minutes">Minutes</string>
-    <string name="hours">Hours</string>
-    <string name="days">Days</string>
-    <string name="weeks">Weeks</string>
+    <string name="sunday">Domingo</string>
+    <string name="monday">Lunes</string>
+    <string name="tuesday">Martes</string>
+    <string name="wednesday">Miércoles</string>
+    <string name="thursday">Jueves</string>
+    <string name="friday">Viernes</string>
+    <string name="saturday">Sábado</string>
+    <string name="minutes">Minutos</string>
+    <string name="hours">Horas</string>
+    <string name="days">Días</string>
+    <string name="weeks">Semanas</string>
 
     <!-- MainActivity -->
-    <string name="no_medications_found">No medications found</string>
-    <string name="med_schedule">Medication Schedule</string>
-    <string name="no_meds_for_day">No medications for %1$s</string>
-    <string name="cannot_take_more_than_hours">Cannot take medications more than %1$d hours in advance</string>
-    <string name="as_needed_dose">As Needed Dose</string>
-    <string name="welcome">Welcome to MediTrak!</string>
+    <string name="no_medications_found">No se han encontrado medicamentos</string>
+    <string name="med_schedule">Plan de medicamentos</string>
+    <string name="no_meds_for_day">No hay medicamentos para %1$s</string>
+    <string name="cannot_take_more_than_hours">No se pueden tomar medicamentos con más de %1$d horas de antelación</string>
+    <string name="as_needed_dose">Dosis según necesidad</string>
+    <string name="welcome">¡Bienvenido a MediTrak!</string>
     <string name="warranty_info">
-        This application is meant to assist in keeping track of your medications. It is not intended
-        to provide medical advice and no information provided by this application should be misconstrued
-        as such. The creators of this application are not responsible for any missed
-        doses of your medications for any reason. If you require medical assistance, please contact a medical professional.
-        By using this application, you are agreeing to the aforementioned terms as well as those of the GPL2 license under
-        which it is released. \n\n
+        Esta aplicación está pensada para ayudarle a realizar un seguimiento de sus medicamentos. No pretende
+        proporcionar asesoramiento médico y ninguna información proporcionada por esta aplicación debe ser malinterpretada
+        como tal. Los creadores de esta aplicación no se responsabilizan por ninguna
+        dosis perdida de sus medicamentos bajo ningún motivo. Si necesita asistencia médica, póngase en contacto con un médico profesional.
+        Al utilizar esta aplicación, usted acepta los términos antes mencionados, así como los de la licencia GPL2 bajo 
+        la que se publica. \n\n
 
-        This application is released under the GNU Public License Version 2, see below for more details:
+        Esta aplicación está publicada bajo la Licencia Pública GNU Versión 2, ver más abajo para más detalles:
     </string>
 
     <!-- Add/EditMedication -->
-    <string name="add_medication">Add Medication</string>
-    <string name="edit_medication">Edit Medication</string>
-    <string name="delete_medication">Delete Medication</string>
-    <string name="note_timestamp">Date: %1$s at: %2$s</string>
-    <string name="note_edit_timestamp">Edited: %1$s at: %2$s</string>
-    <string name="patient_changed">Patient changed from %1$s to %2$s\n</string>
-    <string name="name_changed">Name changed from %1$s to %2$s\n</string>
-    <string name="removed_alias">Alias %1$s removed\n</string>
-    <string name="added_alias">Alias %1$s added\n</string>
-    <string name="changed_alias">Alias changed from %1$s to %2$s\n</string>
-    <string name="changed_dosage">Dosage changed from %1$s to %2$s\n</string>
-    <string name="frequency_changed">Frequency changed from %1$s to %2$s\n</string>
-    <string name="times_per">Times per</string>
-    <string name="patientIsMe">Me</string>
-    <string name="patient">Patient</string>
-    <string name="other">Other</string>
-    <string name="name">Name</string>
-    <string name="medication_name">Medication Name</string>
-    <string name="medication_dosage">Dosage</string>
-    <string name="medication_frequency">Frequency</string>
-    <string name="taken_every">Taken Every</string>
-    <string name="units">Units</string>
-    <string name="taken">Taken</string>
-    <string name="frequency">Frequency</string>
-    <string name="multiple_times_per_day">Multiple Times per Day</string>
-    <string name="as_needed">As Needed</string>
-    <string name="daily">Daily</string>
-    <string name="weekly">Weekly</string>
-    <string name="monthly">Monthly</string>
+    <string name="add_medication">Añadir medicamento</string>
+    <string name="edit_medication">Editar medicamento</string>
+    <string name="delete_medication">Eliminar medicamento</string>
+    <string name="note_timestamp">Fecha: %1$s a las: %2$s</string>
+    <string name="note_edit_timestamp">Editado: %1$s a las: %2$s</string>
+    <string name="patient_changed">Paciente cambiado de %1$s a %2$s\n</string>
+    <string name="name_changed">Nombre cambiado de %1$s a %2$s\n</string>
+    <string name="removed_alias">Alias %1$s borrado\n</string>
+    <string name="added_alias">Alias %1$s añadido\n</string>
+    <string name="changed_alias">Alias cambiado de %1$s A %2$s\n</string>
+    <string name="changed_dosage">Dosis cambiada de %1$s a %2$s\n</string>
+    <string name="frequency_changed">Frecuencia cambiada de %1$s a %2$s\n</string>
+    <string name="times_per">Veces por</string>
+    <string name="patientIsMe">Yo</string>
+    <string name="patient">Paciente</string>
+    <string name="other">Otro</string>
+    <string name="name">Nombre</string>
+    <string name="medication_name">Nombre del medicamento</string>
+    <string name="medication_dosage">Dosis</string>
+    <string name="medication_frequency">Frecuencia</string>
+    <string name="taken_every">Tomado cada</string>
+    <string name="units">Unidades</string>
+    <string name="taken">Tomado</string>
+    <string name="frequency">Frecuencia</string>
+    <string name="multiple_times_per_day">Varias veces por día</string>
+    <string name="as_needed">Según necesidad</string>
+    <string name="daily">Diario</string>
+    <string name="weekly">Semanal</string>
+    <string name="monthly">Mensual</string>
     <string name="medication_name_amp_dosage"><![CDATA[Medication Name & Dosage]]></string>
-    <string name="who_takes_this_medication">Who takes this medication?</string>
-    <string name="someone_else">Someone else</string>
+    <string name="who_takes_this_medication">¿Quién toma este medicamento?</string>
+    <string name="someone_else">Alguien más</string>
     <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[What is the medication\'s name & how much is taken?]]></string>
-    <string name="alias_for_notifications">Alias for notifications</string>
-    <string name="how_often_is_the_medication_taken">How often is the medication taken?</string>
-    <string name="start_date">Start Date</string>
-    <string name="taken_at">Taken at</string>
-    <string name="unit_of_time">Unit of Time</string>
-    <string name="custom_frequency">Custom Frequency</string>
-    <string name="at_n_n_tap_to_set_time">At: \n\n Tap to set time</string>
-    <string name="times_per_day">Times per day</string>
-    <string name="atThisTime">At: Tap to set time</string>
-    <string name="starting">Starting:</string>
-    <string name="alias_for_medication">Alias for medication</string>
-    <string name="alias_for_medication_displays_notification">Alias for medication displays notification</string>
-    <string name="medication_alias_displays_in_notification">Medication alias displays in notification</string>
-    <string name="place_holder_tap_again_then_hit_cancel">Place holder, tap again then hit cancel</string>
-    <string name="yourMedications">Your Medications:</string>
-    <string name="no_notes_for_this_medication">No notes for this medication</string>
-    <string name="unitExample">Ex. mg, g, drops</string>
-    <string name="patient_name">Patient Name:</string>
-    <string name="no_alias">No alias</string>
-    <string name="tap_to_set_date">Tap to set date</string>
-    <string name="at">At:</string>
-    <string name="tap_to_set_time">Tap to set Time</string>
-    <string name="apply_retroactive">Apply Changes Retroactively</string>
-    <string name="retroactive_warning">Warning: Changes to frequency may cause previously taken doses to no longer be visible in the schedule.</string>
-    <string name="would_like_apply_retroactively">Changes to dosage and frequency can be applied retroactively as of the previous change. Would you like to apply these changes retroactively?</string>
-    <string name="apply_changes_as_of">Apply changes as of:</string>
-    <string name="from_med_last_change">Last change</string>
-    <string name="from_med_start">Start of medication</string>
-    <string name="instructions">Instructions</string>
-    <string name="instructions_optional">Instructions (Optional)</string>
-    <string name="instrucations_added">Added instructions: %1$s</string>
+    <string name="alias_for_notifications">Alias para notificaciones</string>
+    <string name="how_often_is_the_medication_taken">¿Cada cuánto se toma el medicamento?</string>
+    <string name="start_date">Fecha de inicio</string>
+    <string name="taken_at">Tomado a las</string>
+    <string name="unit_of_time">Unidad de tiempo</string>
+    <string name="custom_frequency">Frecuencia personalizada</string>
+    <string name="at_n_n_tap_to_set_time">A las: \n\n Presione para ajustar la hora</string>
+    <string name="times_per_day">Veces por día</string>
+    <string name="atThisTime">A las: Presione para ajustar la hora</string>
+    <string name="starting">Inicio:</string>
+    <string name="alias_for_medication">Alias para el medicamento</string>
+    <string name="alias_for_medication_displays_notification">Alias para la notifiación de medicamentos</string>
+    <string name="medication_alias_displays_in_notification">Alias del medicamento que aparece en la notificación</string>
+    <string name="place_holder_tap_again_then_hit_cancel">Coloca el marcador, toca de nuevo y luego presiona cancelar</string>
+    <string name="yourMedications">Tus medicamentos:</string>
+    <string name="no_notes_for_this_medication">Notas para este medicamento</string>
+    <string name="unitExample">P. Ej. mg, g, gotas</string>
+    <string name="patient_name">Nombre del paciente:</string>
+    <string name="no_alias">Sin alias</string>
+    <string name="tap_to_set_date">Toca para establecer la fecha</string>
+    <string name="at">A las:</string>
+    <string name="tap_to_set_time">Toca para establecer la hora</string>
+    <string name="apply_retroactive">Aplicar cambios retroactivamente</string>
+    <string name="retroactive_warning">Atención: Los cambios en la frecuencia pueden hacer que las dosis tomadas anteriormente ya no sean visibles en el horario.</string>
+    <string name="would_like_apply_retroactively">Los cambios de dosis y frecuencia pueden aplicarse retroactivamente a partir del cambio anterior. ¿Desea aplicar estos cambios retroactivamente?</string>
+    <string name="apply_changes_as_of">Aplicar los cambios a partir de:</string>
+    <string name="from_med_last_change">Último cambio</string>
+    <string name="from_med_start">Inicio de medicación</string>
+    <string name="instructions">Instrucciones</string>
+    <string name="instructions_optional">Instrucciones (Opcional)</string>
+    <string name="instrucations_added">Instrucciones añadidas: %1$s</string>
 
     <!-- MyMedications -->
     <string name="my_medications">My Medications</string>
