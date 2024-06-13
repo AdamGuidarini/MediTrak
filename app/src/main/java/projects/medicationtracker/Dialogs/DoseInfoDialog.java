@@ -180,6 +180,7 @@ public class DoseInfoDialog extends DialogFragment {
         LocalDateTime dateTime = LocalDateTime.of(date, time).withSecond(0);
         int overrideAmount = Integer.parseInt(dosageAmount.getText().toString());
         String overrideUnits = dosageUnit.getText().toString();
+        Fragment parent = getParentFragment();
 
         thisDose.setTimeTaken(dateTime);
 
@@ -192,6 +193,10 @@ public class DoseInfoDialog extends DialogFragment {
         }
 
         nativeDb.updateDose(thisDose);
+
+        if (parent instanceof IDialogCloseListener) {
+            ((IDialogCloseListener) parent).handleDialogClose(IDialogCloseListener.Action.EDIT, thisDose);
+        }
 
         dismiss();
     }
