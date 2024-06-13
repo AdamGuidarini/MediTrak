@@ -79,9 +79,23 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                 timeFormat, Locale.getDefault()
         ).format(takenDateTime.toLocalTime());
 
+        String doseLbl = "";
+
+        if (doses[position].getOverrideDoseAmount() != -1) {
+            doseLbl += doses[position].getOverrideDoseAmount() + " ";
+        } else {
+            doseLbl += currentMed.getDosage() + " ";
+        }
+
+        if (!doses[position].getOverrideDoseUnit().isEmpty()) {
+            doseLbl += doses[position].getOverrideDoseUnit();
+        } else {
+            doseLbl += currentMed.getDosageUnits();
+        }
+
         holder.scheduledDateLabel.setText(scheduleDate + "\n" + scheduleTime);
         holder.takenDateLabel.setText(takenDate + "\n" + takenTime);
-        holder.dosageAmount.setText(currentMed.getDosage() + " " + currentMed.getDosageUnits());
+        holder.dosageAmount.setText(doseLbl);
 
         if (position == doses.length - 1) {
             holder.barrier.setVisibility(View.GONE);

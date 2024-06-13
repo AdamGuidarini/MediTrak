@@ -148,7 +148,6 @@ public class MyMedicationsFragment extends Fragment {
             getActivity().startActivity(editMedIntent);
         });
 
-
         Intent intent = new Intent(getActivity(), MedicationHistory.class);
 
         historyButton.setOnClickListener(view -> {

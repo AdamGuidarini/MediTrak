@@ -128,7 +128,7 @@ public class DoseInfoDialog extends DialogFragment {
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    infoDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
+                    infoDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(!editable.toString().isEmpty());
                 }
             };
 
