@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import projects.medicationtracker.Helpers.TimeFormatting;
+
 /**
  * A simple class representing a Medication dose
  */
@@ -15,8 +17,8 @@ public class Dose {
     private long medId;
     private LocalDateTime timeTaken;
     private LocalDateTime doseTime;
-    private int overrideDoseAmount;
-    private String overrideDoseUnit;
+    private int overrideDoseAmount = -1;
+    private String overrideDoseUnit = "";
 
     /**
      * Class constructor
@@ -133,6 +135,10 @@ public class Dose {
      */
     public LocalDateTime getTimeTaken() { return timeTaken; }
 
+    public String getTimeTakenText() {
+        return TimeFormatting.localDateTimeToDbString(timeTaken);
+    }
+
     public void setTimeTaken(LocalDateTime timeTaken) {
         this.timeTaken = timeTaken;
     }
@@ -141,23 +147,27 @@ public class Dose {
         return doseTime;
     }
 
+    public String getDoseTimeText() {
+        return TimeFormatting.localDateTimeToDbString(doseTime);
+    }
+
     public void setDoseTime(LocalDateTime doseTime) {
         this.doseTime = doseTime;
     }
 
-    public int getOverrideDoseValue() {
+    public int getOverrideDoseAmount() {
         return overrideDoseAmount;
     }
 
-    public void setOverrideDoseValue(int overrideDoseValue) {
+    public void setOverrideDoseAmount(int overrideDoseValue) {
         this.overrideDoseAmount = overrideDoseValue;
     }
 
-    public void setOverrideDoseAmount(String overrideUnit) {
+    public void setOverrideDoseUnit(String overrideUnit) {
         this.overrideDoseUnit = overrideUnit;
     }
 
-    public String getOverrideDoseAmount() {
+    public String getOverrideDoseUnit() {
         return overrideDoseUnit;
     }
 }

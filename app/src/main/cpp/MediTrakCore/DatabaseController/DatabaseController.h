@@ -211,6 +211,13 @@ public:
      * @return Dose with provided ID or nullptr
      */
     Dose* getDoseById(long doseId);
+
+    /**\
+     * Updates a dose record
+     * @param dose Dose to update
+     * @return true if update succeeded
+     */
+    bool updateDose(Dose dose);
 };
 
 #endif //MEDICATIONTRACKER_DATABASECONTROLLER_H

@@ -391,3 +391,32 @@ Dose* DatabaseController::getDoseById(long doseId) {
 
     return dose;
 }
+
+bool DatabaseController::updateDose(Dose dose) {
+    map<string, string> values;
+
+    values.insert(pair<string, string>(TIME_TAKEN, dose.timeTaken));
+    values.insert(pair<string, string>(DOSE_TIME, dose.doseTime));
+
+    if (dose.overrideDoseAmount != -1) {
+        values.insert(pair<string, string>(OVERRIDE_DOSE_AMOUNT, to_string(dose.overrideDoseAmount)));
+    }
+
+    if (!dose.overrideDoseUnit.empty()) {
+        values.insert(pair<string, string>(DOSE_TIME, dose.overrideDoseUnit));
+    }
+
+    try {
+        manager.update(
+                MEDICATION_TRACKER_TABLE,
+                values,
+                {pair<string, string>(DOSE_ID, to_string(dose.id))}
+        );
+
+        return true;
+    } catch (exception e) {
+        cerr << "Failed to update dose " << dose.id << endl;
+
+        return false;
+    }
+}

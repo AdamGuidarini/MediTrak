@@ -3,6 +3,7 @@ package projects.medicationtracker.Dialogs;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
+import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -30,6 +31,7 @@ import kotlin.Triple;
 import projects.medicationtracker.Fragments.SelectDateFragment;
 import projects.medicationtracker.Fragments.TimePickerFragment;
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
@@ -39,6 +41,8 @@ import projects.medicationtracker.Models.Medication;
 public class DoseInfoDialog extends DialogFragment {
     private final long doseId;
     private final DBHelper db;
+    private final NativeDbHelper nativeDb;
+    private Dose thisDose;
     private final TextView textView;
     private TextInputEditText timeTaken;
     private TextInputEditText dateTaken;
@@ -49,6 +53,7 @@ public class DoseInfoDialog extends DialogFragment {
         this.doseId = doseId;
         db = database;
         textView = tv;
+        nativeDb = new NativeDbHelper(DATABASE_PATH);
     }
 
     @NonNull
@@ -74,6 +79,8 @@ public class DoseInfoDialog extends DialogFragment {
 
         infoDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
 
+        thisDose = nativeDb.getDoseById(doseId);
+
         timeTaken = infoDialog.findViewById(R.id.dose_time_taken);
         dateTaken = infoDialog.findViewById(R.id.dose_date_taken);
         dosageAmount = infoDialog.findViewById(R.id.dosage_amount);
@@ -98,6 +105,20 @@ public class DoseInfoDialog extends DialogFragment {
 
             dateTaken.setText(date);
             dateTaken.setTag(doseDate.toLocalDate());
+
+            if (thisDose.getOverrideDoseAmount() == -1) {
+                dosageAmount.setText(String.valueOf(med.getDosage()));
+            } else {
+                dosageAmount.setText(String.valueOf(thisDose.getOverrideDoseAmount()));
+            }
+
+            if (thisDose.getOverrideDoseUnit().isEmpty()) {
+                dosageUnit.setText(med.getDosageUnits());
+            } else {
+                dosageUnit.setText(thisDose.getOverrideDoseUnit());
+            }
+
+
             TextWatcher tw = new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
@@ -112,6 +133,8 @@ public class DoseInfoDialog extends DialogFragment {
 
             timeTaken.addTextChangedListener(tw);
             dateTaken.addTextChangedListener(tw);
+            dosageAmount.addTextChangedListener(tw);
+            dosageUnit.addTextChangedListener(tw);
         }
 
         return infoDialog;

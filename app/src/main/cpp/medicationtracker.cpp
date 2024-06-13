@@ -55,6 +55,27 @@ jobject doseToJavaConverter(Dose dose, JNIEnv* env, jobject &jMedication) {
     return javaDose;
 }
 
+Dose javaDoseToNativeDoseConverter(jobject jDose, JNIEnv* env) {
+    jclass jDoseClass = env->GetObjectClass(jDose);
+    jmethodID getDoseId = env->GetMethodID(jDoseClass, "getDoseId", "()J");
+    jmethodID getMedId = env->GetMethodID(jDoseClass, "getMedId", "()J");
+    jmethodID isTaken = env->GetMethodID(jDoseClass, "isTaken", "()Z");
+    jmethodID getTimeTakenText = env->GetMethodID(jDoseClass, "getTimeTakenText", "()Ljava/lang/String");
+    jmethodID getDoseTimeText = env->GetMethodID(jDoseClass, "getDoseTimeText", "()Ljava/lang/String");
+    jmethodID getOverrideDoseAmount = env->GetMethodID(jDoseClass, "getOverrideDoseAmount", "()I");
+    jmethodID getOverrideDoseUnit = env->GetMethodID(jDoseClass, "getDoseTime", "()Ljava/lang/String");
+
+    return Dose(
+        env->CallLongMethod(jDose, getDoseId),
+        env->CallLongMethod(jDose, getMedId),
+        env->CallBooleanMethod(jDose, isTaken),
+        env->GetStringUTFChars((jstring) env->CallObjectMethod(jDose, getDoseTimeText), new jboolean (false)),
+        env->GetStringUTFChars((jstring) env->CallObjectMethod(jDose, getTimeTakenText), new jboolean (false)),
+        env->CallIntMethod(jDose, getOverrideDoseAmount),
+        env->GetStringUTFChars((jstring) env->CallObjectMethod(jDose, getOverrideDoseUnit), new jboolean (false))
+    );
+}
+
 jobject medicationToJavaConverter(Medication med, JNIEnv* env, jclass jMedication) {
     jclass String = env->FindClass("java/lang/String");
     jobjectArray medTimes = env->NewObjectArray(med.times.size(), String, NULL);
@@ -397,4 +418,20 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getDoseById(
     delete d;
 
     return jDose;
+}
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_updateDose(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jobject dose
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    DatabaseController controller(dbPath);
+
+    Dose nDose = javaDoseToNativeDoseConverter(dose, env);
+
+    return controller.updateDose(nDose);
 }

@@ -69,7 +69,8 @@
                     android:id="@+id/dosage_amount"
                     android:hint="@string/medication_dosage"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
             </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
