@@ -403,7 +403,7 @@ bool DatabaseController::updateDose(Dose dose) {
     }
 
     if (!dose.overrideDoseUnit.empty()) {
-        values.insert(pair<string, string>(DOSE_TIME, dose.overrideDoseUnit));
+        values.insert(pair<string, string>(OVERRIDE_DOSE_UNIT, dose.overrideDoseUnit));
     }
 
     try {

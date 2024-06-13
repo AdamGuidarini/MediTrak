@@ -48,6 +48,7 @@ public class DoseInfoDialog extends DialogFragment {
     private TextInputEditText dateTaken;
     private TextInputEditText dosageAmount;
     private TextInputEditText dosageUnit;
+    private Medication medication;
 
     public DoseInfoDialog(long doseId, DBHelper database, TextView tv) {
         this.doseId = doseId;
@@ -61,7 +62,7 @@ public class DoseInfoDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstances) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        Medication med = ((Triple<Medication, Long, LocalDateTime>) textView.getTag()).getFirst();
+        medication = ((Triple<Medication, Long, LocalDateTime>) textView.getTag()).getFirst();
         AlertDialog infoDialog;
 
         builder.setView(inflater.inflate(R.layout.dialog_dose_info, null));
@@ -70,7 +71,7 @@ public class DoseInfoDialog extends DialogFragment {
         builder.setPositiveButton(getString(R.string.save), ((dialogInterface, i) -> save()));
         builder.setNegativeButton(R.string.close, ((dialogInterface, i) -> dismiss()));
 
-        if (med.getFrequency() == 0) {
+        if (medication.getFrequency() == 0) {
             builder.setNeutralButton(R.string.delete, ((dialogInterface, i) -> deleteAsNeededDose()));
         }
 
@@ -107,13 +108,13 @@ public class DoseInfoDialog extends DialogFragment {
             dateTaken.setTag(doseDate.toLocalDate());
 
             if (thisDose.getOverrideDoseAmount() == -1) {
-                dosageAmount.setText(String.valueOf(med.getDosage()));
+                dosageAmount.setText(String.valueOf(medication.getDosage()));
             } else {
                 dosageAmount.setText(String.valueOf(thisDose.getOverrideDoseAmount()));
             }
 
             if (thisDose.getOverrideDoseUnit().isEmpty()) {
-                dosageUnit.setText(med.getDosageUnits());
+                dosageUnit.setText(medication.getDosageUnits());
             } else {
                 dosageUnit.setText(thisDose.getOverrideDoseUnit());
             }
@@ -177,12 +178,20 @@ public class DoseInfoDialog extends DialogFragment {
         LocalDate date = (LocalDate) dateTaken.getTag();
         LocalTime time = (LocalTime) timeTaken.getTag();
         LocalDateTime dateTime = LocalDateTime.of(date, time).withSecond(0);
+        int overrideAmount = Integer.parseInt(dosageAmount.getText().toString());
+        String overrideUnits = dosageUnit.getText().toString();
 
-        db.updateDoseStatus(
-                doseId,
-                TimeFormatting.localDateTimeToDbString(dateTime),
-                true
-        );
+        thisDose.setTimeTaken(dateTime);
+
+        if (medication.getDosage() != overrideAmount) {
+            thisDose.setOverrideDoseAmount(overrideAmount);
+        }
+
+        if (!medication.getDosageUnits().equals(overrideUnits)) {
+            thisDose.setOverrideDoseUnit(overrideUnits);
+        }
+
+        nativeDb.updateDose(thisDose);
 
         dismiss();
     }

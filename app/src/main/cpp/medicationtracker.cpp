@@ -33,6 +33,9 @@ jobject doseToJavaConverter(Dose dose, JNIEnv* env, jobject &jMedication) {
     jobjectArray jDoses = static_cast<jobjectArray>(env->GetObjectField(jMedication, medDoses));
     jclass jDose = env->GetObjectClass(env->GetObjectArrayElement(jDoses, 0));
 
+    jmethodID setOverrideDoseAmount = env->GetMethodID(jDose, "setOverrideDoseAmount", "(I)V");
+    jmethodID setOverrideDoseUnit = env->GetMethodID(jDose, "setOverrideDoseUnit", "(Ljava/lang/String;)V");
+
 //    jDoses = env->NewObjectArray(doses.size(), jDose, NULL);
 
     jmethodID constructor = env->GetMethodID(
@@ -51,6 +54,17 @@ jobject doseToJavaConverter(Dose dose, JNIEnv* env, jobject &jMedication) {
         env->NewStringUTF(dose.doseTime.c_str())
     );
 
+    if (dose.overrideDoseAmount != -1) {
+        env->CallVoidMethod(javaDose, setOverrideDoseAmount, dose.overrideDoseAmount);
+    }
+
+    if (!dose.overrideDoseUnit.empty()) {
+        env->CallVoidMethod(
+            javaDose,
+            setOverrideDoseUnit,
+            env->NewStringUTF(dose.overrideDoseUnit.c_str())
+        );
+    }
 
     return javaDose;
 }
@@ -60,10 +74,10 @@ Dose javaDoseToNativeDoseConverter(jobject jDose, JNIEnv* env) {
     jmethodID getDoseId = env->GetMethodID(jDoseClass, "getDoseId", "()J");
     jmethodID getMedId = env->GetMethodID(jDoseClass, "getMedId", "()J");
     jmethodID isTaken = env->GetMethodID(jDoseClass, "isTaken", "()Z");
-    jmethodID getTimeTakenText = env->GetMethodID(jDoseClass, "getTimeTakenText", "()Ljava/lang/String");
-    jmethodID getDoseTimeText = env->GetMethodID(jDoseClass, "getDoseTimeText", "()Ljava/lang/String");
+    jmethodID getTimeTakenText = env->GetMethodID(jDoseClass, "getTimeTakenText", "()Ljava/lang/String;");
+    jmethodID getDoseTimeText = env->GetMethodID(jDoseClass, "getDoseTimeText", "()Ljava/lang/String;");
     jmethodID getOverrideDoseAmount = env->GetMethodID(jDoseClass, "getOverrideDoseAmount", "()I");
-    jmethodID getOverrideDoseUnit = env->GetMethodID(jDoseClass, "getDoseTime", "()Ljava/lang/String");
+    jmethodID getOverrideDoseUnit = env->GetMethodID(jDoseClass, "getOverrideDoseUnit", "()Ljava/lang/String;");
 
     return Dose(
         env->CallLongMethod(jDose, getDoseId),
