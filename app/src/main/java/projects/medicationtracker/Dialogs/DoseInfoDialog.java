@@ -20,6 +20,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -49,6 +50,8 @@ public class DoseInfoDialog extends DialogFragment {
     private TextInputEditText dosageAmount;
     private TextInputEditText dosageUnit;
     private Medication medication;
+    private boolean isDosageValid = true;
+    private boolean isDosageUnitValid = true;
 
     public DoseInfoDialog(long doseId, DBHelper database, TextView tv) {
         this.doseId = doseId;
@@ -128,14 +131,64 @@ public class DoseInfoDialog extends DialogFragment {
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    infoDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(!editable.toString().isEmpty());
+                    infoDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(isDosageUnitValid && isDosageValid);
                 }
             };
 
             timeTaken.addTextChangedListener(tw);
             dateTaken.addTextChangedListener(tw);
-            dosageAmount.addTextChangedListener(tw);
-            dosageUnit.addTextChangedListener(tw);
+
+            dosageAmount.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    TextInputLayout inputLayout = infoDialog.findViewById(R.id.dosage_layout);
+                    inputLayout.setErrorEnabled(false);
+
+                    if (editable.toString().isEmpty()) {
+                        isDosageValid = false;
+                        inputLayout.setError(getString(R.string.err_required));
+                    } else {
+                        try {
+                            Integer.valueOf(editable.toString());
+                            isDosageValid = true;
+                        } catch (Exception e) {
+                            inputLayout.setError(getString(R.string.val_too_big));
+                            isDosageValid = false;
+                        }
+                    }
+
+                    infoDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(isDosageUnitValid && isDosageValid);
+                }
+            });
+
+            dosageUnit.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    TextInputLayout inputLayout = infoDialog.findViewById(R.id.dosage_unit_layout);
+                    inputLayout.setErrorEnabled(false);
+
+                    if (editable.toString().isEmpty()) {
+                        inputLayout.setError(getString(R.string.err_required));
+                        isDosageUnitValid = false;
+                    } else {
+                        isDosageUnitValid = true;
+                    }
+
+                    infoDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(isDosageUnitValid && isDosageValid);
+                }
+            });
         }
 
         return infoDialog;
@@ -213,5 +266,13 @@ public class DoseInfoDialog extends DialogFragment {
                     IDialogCloseListener.Action.DELETE, dose
             );
         }
+    }
+
+    private void setDosageValidity(boolean valid) {
+        isDosageValid = valid;
+    }
+
+    private void setDosageUnitValidity(boolean valid) {
+        isDosageUnitValid = valid;
     }
 }
