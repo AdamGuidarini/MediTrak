@@ -144,109 +144,109 @@
     <string name="instrucations_added">Instrucciones añadidas: %1$s</string>
 
     <!-- MyMedications -->
-    <string name="my_medications">My Medications</string>
-    <string name="med_name">Medication name: %1$s</string>
-    <string name="dosage">Dosage: %1$s %2$s</string>
-    <string name="taken_daily_at">Taken daily at </string>
-    <string name="taken_every_lbl">Taken every </string>
+    <string name="my_medications">Mis medicamentos</string>
+    <string name="med_name">Nombre del medicamento: %1$s</string>
+    <string name="dosage">Dosis: %1$s %2$s</string>
+    <string name="taken_daily_at">Tomado diariamente a las </string>
+    <string name="taken_every_lbl">Tomado cada </string>
     <string name="alias_lbl">Alias</string>
-    <string name="taken_since">Taken since: %1$s</string>
-    <string name="taken_as_needed">Taken as needed.</string>
-    <string name="all_previous_edits_overridden">All previous changes overridden.</string>
+    <string name="taken_since">Tomado desde: %1$s</string>
+    <string name="taken_as_needed">Tomado según necesidad.</string>
+    <string name="all_previous_edits_overridden">Anulados todos los cambios anteriores.</string>
 
     <!-- Notes -->
-    <string name="notes">Notes</string>
-    <string name="add_note">Add Note</string>
-    <string name="edit_note">Edit Note</string>
+    <string name="notes">Notas</string>
+    <string name="add_note">Añadir nota</string>
+    <string name="edit_note">Editar nota</string>
 
     <!-- Settings Activity -->
-    <string name="settings">Settings</string>
-    <string name="options">Options</string>
-    <string name="license">License</string>
-    <string name="purpose">MediTrak is a free and open source application designed to help you keep track of your medications, so you can more easily answer the question \"did I take my medication yesterday?\"</string>
+    <string name="settings">Configuración</string>
+    <string name="options">Opciones</string>
+    <string name="license">Licencia</string>
+    <string name="purpose">MediTrak es una aplicación gratuita, libre y de código abierto diseñada para ayudarte a llevar un registro de tus medicamentos, para que puedas responder más fácilmente a la pregunta \"¿tomé mi medicamento ayer?\"</string>
     <string name="copyright">Copyright © 2022 Adam Guidarini</string>
-    <string name="licenseInfo">MediTrak is free software and may be redistributed and/or modified under the terms of the GNU General Public License as published by the Free software foundation, either version 2 or (at your option) later.</string>
+    <string name="licenseInfo">MediTrak es software libre y puede ser redistribuido y/o modificado bajo los términos de la Licencia Pública General de GNU publicada por la Free software foundation, ya sea la versión 2 o (a su elección) posterior.</string>
     <string name="warranty">
-        This program is free software; you can redistribute it and/or
-        modify it under the terms of the GNU General Public License
-        as published by the Free Software Foundation; either version 2
-        of the License, or (at your option) any later version.
+        Este programa es de software libre; puede redistribuirlo y/o
+        modificarlo bajo los términos de la Licencia Pública General de GNU
+        publicada por la Free Software Foundation; ya sea la versión 2
+        de la Licencia, o (a su elección) cualquier versión posterior.
 
-        This program is distributed in the hope that it will be useful,
-        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        Este programa se distribuye con la esperanza de que sea útil,
+        pero SIN NINGUNA GARANTÍA; ni siquiera la garantía implícita de
 
-        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-        GNU General Public License for more details
+        COMERCIABILIDAD o IDONEIDAD PARA UN PROPÓSITO PARTICULAR.  Consulte la
+        Licencia Pública General GNU para más detalles
     </string>
     <string name="copyOfGPL2">
-        You should have received a copy of the GNU General Public License
-        along with this program; if not, write to the Free Software
+        Debería haber recibido una copia de la Licencia Pública General de GNU
+        junto con este programa; si no es así, escriba a la Free Software 
         Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
     </string>
-    <string name="cannot_take_medication_more_than">Cannot take medication more than</string>
-    <string name="hours_in_advance">hours in advance</string>
-    <string name="title_activity_settings">Settings</string>
-    <string name="delete_all">Delete All</string>
-    <string name="pause_medication">Pause Medication</string>
-    <string name="resume_medication">Resume Medication</string>
-    <string name="pause_message">Are you sure you want to pause %1$s? It will no longer appear in your schedule, but may be resumed at any time.</string>
-    <string name="resume_message">Resuming %1$s will restore it to your schedule. Are you sure you want to proceed?</string>
-    <string name="enable_notifications">Enable Notifications</string>
-    <string name="disable_time_before_dose_requirement">Disable time in advance limit</string>
-    <string name="theme">Theme</string>
-    <string name="light_mode">Light mode</string>
-    <string name="dark_mode">Dark mode</string>
-    <string name="match_system_theme">System default</string>
-    <string name="number_of_hours_before_dose_can_be_taken">Limit before which medication cannot be taken:</string>
-    <string name="export">Export</string>
-    <string name="importData">Import</string>
-    <string name="data">Data</string>
-    <string name="export_directory">Export Directory</string>
-    <string name="export_file_name">Export File Name</string>
-    <string name="downloads">Downloads</string>
-    <string name="documents">Documents</string>
-    <string name="export_data">Export Data</string>
-    <string name="successful_export">Successfully exported data to: %1$s?</string>
-    <string name="import_success">Successfully imported data</string>
-    <string name="failed_export">Data could not be exported</string>
-    <string name="failed_import">Failed to import data</string>
-    <string name="could_not_retrieve_file">Could not retrieve import file</string>
-    <string name="notifications_already_enabled">Notifications are already enabled</string>
-    <string name="date_format_title">Date Format</string>
-    <string name="date_format_mm_dd_yyyy">MM/DD/YYYY</string>
-    <string name="date_format_dd_mm_yyyy">DD/MM/YYYY</string>
-    <string name="time_format">Time Format</string>
-    <string name="hour_12">12 Hour</string>
-    <string name="hour_24">24 Hour</string>
-    <string name="language">Language</string>
+    <string name="cannot_take_medication_more_than">Ya no puede tomar el medicamento</string>
+    <string name="hours_in_advance">horas de antelación</string>
+    <string name="title_activity_settings">Configuración</string>
+    <string name="delete_all">Eliminar todo</string>
+    <string name="pause_medication">Pausar medicamento</string>
+    <string name="resume_medication">Reanudar medicamento</string>
+    <string name="pause_message">¿Está seguro de que desea pausar %1$s? Ya no aparecerá en su programación, pero puede reanudarla en cualquier momento.</string>
+    <string name="resume_message">Reanudar %1$s lo restaurará en su programación. ¿Está seguro de que desea continuar?</string>
+    <string name="enable_notifications">Habilitar notificaciones</string>
+    <string name="disable_time_before_dose_requirement">Desactivar límite de tiempo de antelación</string>
+    <string name="theme">Tema</string>
+    <string name="light_mode">Modo claro</string>
+    <string name="dark_mode">Modo oscuro</string>
+    <string name="match_system_theme">Predeterminado del sistema</string>
+    <string name="number_of_hours_before_dose_can_be_taken">Límite antes del cual no se puede tomar la medicación:</string>
+    <string name="export">Exportar</string>
+    <string name="importData">Importar</string>
+    <string name="data">Datos</string>
+    <string name="export_directory">Directorio de exportación</string>
+    <string name="export_file_name">Nombre del archivo de exportación</string>
+    <string name="downloads">Descargas</string>
+    <string name="documents">Documentos</string>
+    <string name="export_data">Datos de exportación</string>
+    <string name="successful_export">Datos exportados con éxito a: %1$s?</string>
+    <string name="import_success">Datos importados con éxito</string>
+    <string name="failed_export">No se han podido exportar los datos</string>
+    <string name="failed_import">No se han podido importar los datos</string>
+    <string name="could_not_retrieve_file">No se ha podido recuperar el archivo de importación</string>
+    <string name="notifications_already_enabled">Las notificaciones ya están activadas</string>
+    <string name="date_format_title">Formato de fecha</string>
+    <string name="date_format_mm_dd_yyyy">MM/DD/AAAA</string>
+    <string name="date_format_dd_mm_yyyy">DD/MM/AAAA</string>
+    <string name="time_format">Formato de hora</string>
+    <string name="hour_12">12 horas</string>
+    <string name="hour_24">24 horas</string>
+    <string name="language">Idioma</string>
 
     <!-- Dose Info dialog -->
-    <string name="not_taken_yet">Not yet taken</string>
-    <string name="not_taken">Not taken</string>
-    <string name="marked_taken_at">Marked taken at</string>
-    <string name="dose_information">Dose information</string>
-    <string name="time_taken">Time Taken</string>
-    <string name="date_taken">Date Taken</string>
-    <string name="this_dose">This Dose</string>
+    <string name="not_taken_yet">Aún no se ha tomado</string>
+    <string name="not_taken">No tomado</string>
+    <string name="marked_taken_at">Marcado como tomado a las</string>
+    <string name="dose_information">Información sobre la dosis</string>
+    <string name="time_taken">Hora de tomada</string>
+    <string name="date_taken">Fecha de tomada</string>
+    <string name="this_dose">Esta dosis</string>
 
     <!-- Delete Everything -->
-    <string name="delete_all_data">Delete All Saved Data</string>
-    <string name="delete_all_data_cannot_be_undone">Delete all saved data? This action cannot be undone.</string>
-    <string name="all_data_deleted">All data has been deleted</string>
+    <string name="delete_all_data">Borrar todos los datos guardados</string>
+    <string name="delete_all_data_cannot_be_undone">¿Eliminar todos los datos guardados? Esta acción no se puede deshacer.</string>
+    <string name="all_data_deleted">Se han eliminado todos los datos</string>
 
     <!-- Notifications -->
-    <string name="mark_as_taken">Taken</string>
-    <string name="snooze_message">Snooze</string>
-    <string name="its_time_your_med">It\'s time to take your %1$s of %2$s</string>
-    <string name="time_for_other_med">It\'s time for %1$s\'s %2$s of %3$s</string>
-    <string name="add_dose">Add Dose</string>
+    <string name="mark_as_taken">Tomado</string>
+    <string name="snooze_message">Posponer</string>
+    <string name="its_time_your_med">Es hora de tomar tu %1$s de %2$s</string>
+    <string name="time_for_other_med">Es la hora de %1$s de %2$s de %3$s</string>
+    <string name="add_dose">Añadir dosis</string>
 
     <!-- Med History -->
-    <string name="history">History</string>
-    <string name="scheduled">Scheduled</string>
-    <string name="dosage_hist">Dosage</string>
-    <string name="filter">Filter</string>
-    <string name="export_csv">Export CSV</string>
-    <string name="no_records">No Records</string>
+    <string name="history">Historia</string>
+    <string name="scheduled">Programado</string>
+    <string name="dosage_hist">Dosificación</string>
+    <string name="filter">Filtro</string>
+    <string name="export_csv">Exportar CSV</string>
+    <string name="no_records">Sin registros</string>
 
 </resources>
