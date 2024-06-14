@@ -56,7 +56,7 @@ This project uses the ````sqlite3.c```` and ````sqlite3.h```` files in its NDK p
 ### GitHub
 
 - The latest releases can be found here: [releases](https://github.com/AdamGuidarini/MediTrak/releases). You may need to enable downloading apps from unknown sources to install it.
-- You can also the app [Obtainium](https://github.com/ImranR98/Obtainium) or others like it to automatically update to the newest release on GitHub.
+- You can also use the app [Obtainium](https://github.com/ImranR98/Obtainium) or others like it to automatically update to the newest release on GitHub.
 
 ### F-Droid
 
