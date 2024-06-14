@@ -102,7 +102,7 @@
     <string name="medication_dosage">Dosierung</string>
     <string name="medication_frequency">Häufigkeit</string>
     <string name="taken_every">Eingenommen jeden</string>
-    <string name="units">Einheiten</string>
+    <string name="units">Dosierungseinheit</string>
     <string name="taken">Eingenommen</string>
     <string name="frequency">Häufigkeit</string>
     <string name="multiple_times_per_day">Mehrmals pro Tag</string>
