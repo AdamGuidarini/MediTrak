@@ -18,7 +18,7 @@ android {
 
         versionCode 25
         versionName "0.12.6"
-        resourceConfigurations += ['en', 'de']
+        resourceConfigurations += ['en', 'de', 'es']
 
 
         ndk {
