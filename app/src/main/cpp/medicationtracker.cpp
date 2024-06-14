@@ -28,12 +28,15 @@ std::map<std::string, std::string> getValues(jobjectArray arr, JNIEnv *env) {
     return vals;
 }
 
-jobjectArray doseToJavaConverter(vector<Dose> doses, JNIEnv* env, jobject &jMedication) {
+jobject doseToJavaConverter(Dose dose, JNIEnv* env, jobject &jMedication) {
     jfieldID medDoses = env->GetFieldID(env->GetObjectClass(jMedication), "doses", "[Lprojects/medicationtracker/Models/Dose;");
     jobjectArray jDoses = static_cast<jobjectArray>(env->GetObjectField(jMedication, medDoses));
     jclass jDose = env->GetObjectClass(env->GetObjectArrayElement(jDoses, 0));
 
-    jDoses = env->NewObjectArray(doses.size(), jDose, NULL);
+    jmethodID setOverrideDoseAmount = env->GetMethodID(jDose, "setOverrideDoseAmount", "(I)V");
+    jmethodID setOverrideDoseUnit = env->GetMethodID(jDose, "setOverrideDoseUnit", "(Ljava/lang/String;)V");
+
+//    jDoses = env->NewObjectArray(doses.size(), jDose, NULL);
 
     jmethodID constructor = env->GetMethodID(
         jDose,
@@ -41,21 +44,50 @@ jobjectArray doseToJavaConverter(vector<Dose> doses, JNIEnv* env, jobject &jMedi
         "(JJZLjava/lang/String;Ljava/lang/String;)V"
     );
 
-    for (int i = 0; i < doses.size(); i++) {
-        jobject dose = env->NewObject(
-            jDose,
-            constructor,
-            doses.at(i).id,
-            doses.at(i).medicationId,
-            doses.at(i).taken,
-            env->NewStringUTF(doses.at(i).timeTaken.c_str()),
-            env->NewStringUTF(doses.at(i).doseTime.c_str())
-        );
+    jobject javaDose = env->NewObject(
+        jDose,
+        constructor,
+        dose.id,
+        dose.medicationId,
+        dose.taken,
+        env->NewStringUTF(dose.timeTaken.c_str()),
+        env->NewStringUTF(dose.doseTime.c_str())
+    );
 
-        env->SetObjectArrayElement(jDoses, i, dose);
+    if (dose.overrideDoseAmount != -1) {
+        env->CallVoidMethod(javaDose, setOverrideDoseAmount, dose.overrideDoseAmount);
     }
 
-    return jDoses;
+    if (!dose.overrideDoseUnit.empty()) {
+        env->CallVoidMethod(
+            javaDose,
+            setOverrideDoseUnit,
+            env->NewStringUTF(dose.overrideDoseUnit.c_str())
+        );
+    }
+
+    return javaDose;
+}
+
+Dose javaDoseToNativeDoseConverter(jobject jDose, JNIEnv* env) {
+    jclass jDoseClass = env->GetObjectClass(jDose);
+    jmethodID getDoseId = env->GetMethodID(jDoseClass, "getDoseId", "()J");
+    jmethodID getMedId = env->GetMethodID(jDoseClass, "getMedId", "()J");
+    jmethodID isTaken = env->GetMethodID(jDoseClass, "isTaken", "()Z");
+    jmethodID getTimeTakenText = env->GetMethodID(jDoseClass, "getTimeTakenText", "()Ljava/lang/String;");
+    jmethodID getDoseTimeText = env->GetMethodID(jDoseClass, "getDoseTimeText", "()Ljava/lang/String;");
+    jmethodID getOverrideDoseAmount = env->GetMethodID(jDoseClass, "getOverrideDoseAmount", "()I");
+    jmethodID getOverrideDoseUnit = env->GetMethodID(jDoseClass, "getOverrideDoseUnit", "()Ljava/lang/String;");
+
+    return Dose(
+        env->CallLongMethod(jDose, getDoseId),
+        env->CallLongMethod(jDose, getMedId),
+        env->CallBooleanMethod(jDose, isTaken),
+        env->GetStringUTFChars((jstring) env->CallObjectMethod(jDose, getDoseTimeText), new jboolean (false)),
+        env->GetStringUTFChars((jstring) env->CallObjectMethod(jDose, getTimeTakenText), new jboolean (false)),
+        env->CallIntMethod(jDose, getOverrideDoseAmount),
+        env->GetStringUTFChars((jstring) env->CallObjectMethod(jDose, getOverrideDoseUnit), new jboolean (false))
+    );
 }
 
 jobject medicationToJavaConverter(Medication med, JNIEnv* env, jclass jMedication) {
@@ -101,7 +133,15 @@ jobject medicationToJavaConverter(Medication med, JNIEnv* env, jclass jMedicatio
         env->CallVoidMethod(jMedicationInstance, setParent, medParent);
     }
 
-    auto jDoses = doseToJavaConverter(med.doses, env, jMedicationInstance);
+    jfieldID medDoses = env->GetFieldID(env->GetObjectClass(jMedicationInstance), "doses", "[Lprojects/medicationtracker/Models/Dose;");
+    jobjectArray jDoses = static_cast<jobjectArray>(env->GetObjectField(jMedicationInstance, medDoses));
+    jclass jDose = env->GetObjectClass(env->GetObjectArrayElement(jDoses, 0));
+
+    jDoses = env->NewObjectArray(med.doses.size(), jDose, NULL);
+
+    for (int i = 0; i < med.doses.size(); i++) {
+        env->SetObjectArrayElement(jDoses, i, doseToJavaConverter(med.doses.at(i), env, jMedicationInstance));
+    }
 
     env->CallVoidMethod(jMedicationInstance, setDoses, jDoses);
 
@@ -188,6 +228,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbCreate(JNIEnv *env, job
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
     }
 }
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_projects_medicationtracker_Helpers_NativeDbHelper_dbUpgrade(JNIEnv *env, jobject thiz, jstring db_path, jint version) {
@@ -349,6 +390,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_exportMedHistory(
 
     return true;
 }
+
 extern "C"
 JNIEXPORT jobject JNICALL
 Java_projects_medicationtracker_Helpers_NativeDbHelper_findDose(
@@ -364,9 +406,46 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_findDose(
         dose = new Dose();
     }
 
-    jobjectArray jDose = doseToJavaConverter({ *dose }, env, medication);
+    jobject jDose = doseToJavaConverter(*dose, env, medication);
 
     delete dose;
 
-    return env->GetObjectArrayElement(jDose, 0);
+    return jDose;
+}
+
+extern "C"
+JNIEXPORT jobject JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_getDoseById(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jlong dose_id,
+        jobject medication
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    DatabaseController controller(dbPath);
+
+    Dose* d = controller.getDoseById(dose_id);
+
+    auto jDose = doseToJavaConverter(*d, env, medication);
+
+    delete d;
+
+    return jDose;
+}
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_updateDose(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jobject dose
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    DatabaseController controller(dbPath);
+
+    Dose nDose = javaDoseToNativeDoseConverter(dose, env);
+
+    return controller.updateDose(nDose);
 }

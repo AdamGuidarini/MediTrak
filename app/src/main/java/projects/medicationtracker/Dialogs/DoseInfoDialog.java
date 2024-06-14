@@ -3,6 +3,7 @@ package projects.medicationtracker.Dialogs;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
+import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -19,6 +20,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,6 +32,7 @@ import kotlin.Triple;
 import projects.medicationtracker.Fragments.SelectDateFragment;
 import projects.medicationtracker.Fragments.TimePickerFragment;
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
@@ -39,14 +42,22 @@ import projects.medicationtracker.Models.Medication;
 public class DoseInfoDialog extends DialogFragment {
     private final long doseId;
     private final DBHelper db;
+    private final NativeDbHelper nativeDb;
+    private Dose thisDose;
     private final TextView textView;
     private TextInputEditText timeTaken;
     private TextInputEditText dateTaken;
+    private TextInputEditText dosageAmount;
+    private TextInputEditText dosageUnit;
+    private Medication medication;
+    private boolean isDosageValid = true;
+    private boolean isDosageUnitValid = true;
 
     public DoseInfoDialog(long doseId, DBHelper database, TextView tv) {
         this.doseId = doseId;
         db = database;
         textView = tv;
+        nativeDb = new NativeDbHelper(DATABASE_PATH);
     }
 
     @NonNull
@@ -54,7 +65,7 @@ public class DoseInfoDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstances) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        Medication med = ((Triple<Medication, Long, LocalDateTime>) textView.getTag()).getFirst();
+        medication = ((Triple<Medication, Long, LocalDateTime>) textView.getTag()).getFirst();
         AlertDialog infoDialog;
 
         builder.setView(inflater.inflate(R.layout.dialog_dose_info, null));
@@ -63,7 +74,7 @@ public class DoseInfoDialog extends DialogFragment {
         builder.setPositiveButton(getString(R.string.save), ((dialogInterface, i) -> save()));
         builder.setNegativeButton(R.string.close, ((dialogInterface, i) -> dismiss()));
 
-        if (med.getFrequency() == 0) {
+        if (medication.getFrequency() == 0) {
             builder.setNeutralButton(R.string.delete, ((dialogInterface, i) -> deleteAsNeededDose()));
         }
 
@@ -72,8 +83,12 @@ public class DoseInfoDialog extends DialogFragment {
 
         infoDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
 
+        thisDose = nativeDb.getDoseById(doseId);
+
         timeTaken = infoDialog.findViewById(R.id.dose_time_taken);
         dateTaken = infoDialog.findViewById(R.id.dose_date_taken);
+        dosageAmount = infoDialog.findViewById(R.id.dosage_amount);
+        dosageUnit = infoDialog.findViewById(R.id.dosage_unit);
 
         if (doseId != -1) {
             LocalDateTime doseDate = db.getTimeTaken(doseId);
@@ -86,7 +101,6 @@ public class DoseInfoDialog extends DialogFragment {
                     Locale.getDefault()
             ).format(doseDate);
 
-
             timeTaken.setShowSoftInputOnFocus(false);
             dateTaken.setShowSoftInputOnFocus(false);
 
@@ -95,6 +109,20 @@ public class DoseInfoDialog extends DialogFragment {
 
             dateTaken.setText(date);
             dateTaken.setTag(doseDate.toLocalDate());
+
+            if (thisDose.getOverrideDoseAmount() == -1) {
+                dosageAmount.setText(String.valueOf(medication.getDosage()));
+            } else {
+                dosageAmount.setText(String.valueOf(thisDose.getOverrideDoseAmount()));
+            }
+
+            if (thisDose.getOverrideDoseUnit().isEmpty()) {
+                dosageUnit.setText(medication.getDosageUnits());
+            } else {
+                dosageUnit.setText(thisDose.getOverrideDoseUnit());
+            }
+
+
             TextWatcher tw = new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
@@ -103,12 +131,64 @@ public class DoseInfoDialog extends DialogFragment {
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    infoDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
+                    infoDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(isDosageUnitValid && isDosageValid);
                 }
             };
 
             timeTaken.addTextChangedListener(tw);
             dateTaken.addTextChangedListener(tw);
+
+            dosageAmount.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    TextInputLayout inputLayout = infoDialog.findViewById(R.id.dosage_layout);
+                    inputLayout.setErrorEnabled(false);
+
+                    if (editable.toString().isEmpty()) {
+                        isDosageValid = false;
+                        inputLayout.setError(getString(R.string.err_required));
+                    } else {
+                        try {
+                            Integer.valueOf(editable.toString());
+                            isDosageValid = true;
+                        } catch (Exception e) {
+                            inputLayout.setError(getString(R.string.val_too_big));
+                            isDosageValid = false;
+                        }
+                    }
+
+                    infoDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(isDosageUnitValid && isDosageValid);
+                }
+            });
+
+            dosageUnit.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    TextInputLayout inputLayout = infoDialog.findViewById(R.id.dosage_unit_layout);
+                    inputLayout.setErrorEnabled(false);
+
+                    if (editable.toString().isEmpty()) {
+                        inputLayout.setError(getString(R.string.err_required));
+                        isDosageUnitValid = false;
+                    } else {
+                        isDosageUnitValid = true;
+                    }
+
+                    infoDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(isDosageUnitValid && isDosageValid);
+                }
+            });
         }
 
         return infoDialog;
@@ -151,12 +231,25 @@ public class DoseInfoDialog extends DialogFragment {
         LocalDate date = (LocalDate) dateTaken.getTag();
         LocalTime time = (LocalTime) timeTaken.getTag();
         LocalDateTime dateTime = LocalDateTime.of(date, time).withSecond(0);
+        int overrideAmount = Integer.parseInt(dosageAmount.getText().toString());
+        String overrideUnits = dosageUnit.getText().toString();
+        Fragment parent = getParentFragment();
 
-        db.updateDoseStatus(
-                doseId,
-                TimeFormatting.localDateTimeToDbString(dateTime),
-                true
-        );
+        thisDose.setTimeTaken(dateTime);
+
+        if (medication.getDosage() != overrideAmount) {
+            thisDose.setOverrideDoseAmount(overrideAmount);
+        }
+
+        if (!medication.getDosageUnits().equals(overrideUnits)) {
+            thisDose.setOverrideDoseUnit(overrideUnits);
+        }
+
+        nativeDb.updateDose(thisDose);
+
+        if (parent instanceof IDialogCloseListener) {
+            ((IDialogCloseListener) parent).handleDialogClose(IDialogCloseListener.Action.EDIT, thisDose);
+        }
 
         dismiss();
     }
@@ -173,5 +266,13 @@ public class DoseInfoDialog extends DialogFragment {
                     IDialogCloseListener.Action.DELETE, dose
             );
         }
+    }
+
+    private void setDosageValidity(boolean valid) {
+        isDosageValid = valid;
+    }
+
+    private void setDosageUnitValidity(boolean valid) {
+        isDosageUnitValid = valid;
     }
 }
