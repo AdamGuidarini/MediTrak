@@ -83,7 +83,7 @@ public class DoseInfoDialog extends DialogFragment {
 
         infoDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
 
-        thisDose = nativeDb.getDoseById(doseId);
+        thisDose = doseId != -1 ? nativeDb.getDoseById(doseId) : new Dose();
 
         timeTaken = infoDialog.findViewById(R.id.dose_time_taken);
         dateTaken = infoDialog.findViewById(R.id.dose_date_taken);

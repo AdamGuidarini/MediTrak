@@ -100,7 +100,7 @@
     <string name="medication_dosage">Dosis</string>
     <string name="medication_frequency">Frecuencia</string>
     <string name="taken_every">Tomado cada</string>
-    <string name="units">Unidades</string>
+    <string name="units">Unidad de Dosis</string>
     <string name="taken">Tomado</string>
     <string name="frequency">Frecuencia</string>
     <string name="multiple_times_per_day">Varias veces por día</string>
