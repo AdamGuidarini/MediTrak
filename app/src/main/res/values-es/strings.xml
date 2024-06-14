@@ -108,10 +108,10 @@
     <string name="daily">Diario</string>
     <string name="weekly">Semanal</string>
     <string name="monthly">Mensual</string>
-    <string name="medication_name_amp_dosage"><![CDATA[Medication Name & Dosage]]></string>
+    <string name="medication_name_amp_dosage"><![CDATA[Nombre del medicamento y dosis]]></string>
     <string name="who_takes_this_medication">¿Quién toma este medicamento?</string>
     <string name="someone_else">Alguien más</string>
-    <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[What is the medication\'s name & how much is taken?]]></string>
+    <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[¿Cuál es el nombre del medicamento y cuánto se toma?]]></string>
     <string name="alias_for_notifications">Alias para notificaciones</string>
     <string name="how_often_is_the_medication_taken">¿Cada cuánto se toma el medicamento?</string>
     <string name="start_date">Fecha de inicio</string>
