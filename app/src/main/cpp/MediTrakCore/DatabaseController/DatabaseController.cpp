@@ -333,6 +333,37 @@ vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
     return doses;
 }
 
+Dose* DatabaseController::setDose(Table* table) {
+    Dose* dose = nullptr;
+
+    if (table->getCount() > 0) {
+        table->moveToFirst();
+
+        int overrideDose = -1;
+        string overrideUnit = "";
+
+        if (!empty(table->getItem(OVERRIDE_DOSE_AMOUNT))) {
+            overrideDose = stoi(table->getItem(OVERRIDE_DOSE_AMOUNT));
+        }
+
+        if (!empty(table->getItem(OVERRIDE_DOSE_UNIT))) {
+            overrideUnit = table->getItem(OVERRIDE_DOSE_UNIT);
+        }
+
+        dose = new Dose(
+                stol(table->getItem(DOSE_ID)),
+                stol(table->getItem(MED_ID)),
+                table->getItem(TAKEN) == "1",
+                table->getItem(DOSE_TIME),
+                table->getItem(TIME_TAKEN),
+                overrideDose,
+                overrideUnit
+        );
+    }
+
+    return dose;
+}
+
 Dose* DatabaseController::findDose(long medicationId, std::string scheduledTime) {
     Table* result = manager.execSqlWithReturn(
         "SELECT * FROM " + MEDICATION_TRACKER_TABLE
@@ -340,34 +371,52 @@ Dose* DatabaseController::findDose(long medicationId, std::string scheduledTime)
         + " AND " + DOSE_TIME + "='" + scheduledTime +"'"
         + " AND " + TAKEN + " = TRUE"
     );
-    Dose* dose = nullptr;
 
-    if (result->getCount() > 0) {
-        result->moveToFirst();
-
-        int overrideDose = -1;
-        string overrideUnit = "";
-
-        if (!empty(result->getItem(OVERRIDE_DOSE_AMOUNT))) {
-            overrideDose = stoi(result->getItem(OVERRIDE_DOSE_AMOUNT));
-        }
-
-        if (!empty(result->getItem(OVERRIDE_DOSE_UNIT))) {
-            overrideUnit = result->getItem(OVERRIDE_DOSE_UNIT);
-        }
-
-        dose = new Dose(
-            stol(result->getItem(DOSE_ID)),
-            stol(result->getItem(MED_ID)),
-            result->getItem(TAKEN) == "1",
-            result->getItem(DOSE_TIME),
-            result->getItem(TIME_TAKEN),
-            overrideDose,
-            overrideUnit
-        );
-    }
+    Dose* dose = setDose(result);
 
     delete result;
 
     return dose;
+}
+
+Dose* DatabaseController::getDoseById(long doseId) {
+    Table* result = manager.execSqlWithReturn(
+      "SELECT * FROM " + MEDICATION_TRACKER_TABLE
+      + " WHERE " + DOSE_ID + "=" + to_string(doseId)
+    );
+
+    Dose* dose = setDose(result);
+
+    delete result;
+
+    return dose;
+}
+
+bool DatabaseController::updateDose(Dose dose) {
+    map<string, string> values;
+
+    values.insert(pair<string, string>(TIME_TAKEN, dose.timeTaken));
+    values.insert(pair<string, string>(DOSE_TIME, dose.doseTime));
+
+    if (dose.overrideDoseAmount != -1) {
+        values.insert(pair<string, string>(OVERRIDE_DOSE_AMOUNT, to_string(dose.overrideDoseAmount)));
+    }
+
+    if (!dose.overrideDoseUnit.empty()) {
+        values.insert(pair<string, string>(OVERRIDE_DOSE_UNIT, dose.overrideDoseUnit));
+    }
+
+    try {
+        manager.update(
+                MEDICATION_TRACKER_TABLE,
+                values,
+                {pair<string, string>(DOSE_ID, to_string(dose.id))}
+        );
+
+        return true;
+    } catch (exception e) {
+        cerr << "Failed to update dose " << dose.id << endl;
+
+        return false;
+    }
 }

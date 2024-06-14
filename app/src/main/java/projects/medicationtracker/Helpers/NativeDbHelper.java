@@ -107,6 +107,14 @@ public class NativeDbHelper {
         return findDose(dbPath, medicationId, TimeFormatting.localDateTimeToDbString(doseTime), new Medication());
     }
 
+    public Dose getDoseById(long doseId) {
+        return getDoseById(dbPath, doseId, new Medication());
+    }
+
+    public boolean updateDose(Dose dose) {
+        return updateDose(dbPath, dose);
+    }
+
     /**
      * Native methods
      */
@@ -120,4 +128,6 @@ public class NativeDbHelper {
     private native Medication getMedHistory(String dbPath, long medId, Class<Medication> medicationClass);
     private native boolean exportMedHistory(String dbPath, String exportPath, Pair<String, String[]>[] data);
     private native Dose findDose(String dbPath, long medicationId, String doseTime, Medication med);
+    private native Dose getDoseById(String dbPath, long doseId, Medication med);
+    private native boolean updateDose(String dbPath, Dose dose);
 }

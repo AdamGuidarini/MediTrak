@@ -3,6 +3,7 @@ package projects.medicationtracker.Fragments;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
+import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -25,12 +26,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import kotlin.Triple;
 import projects.medicationtracker.Dialogs.AddAsNeededDoseDialog;
 import projects.medicationtracker.Dialogs.DoseInfoDialog;
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Helpers.TextViewUtils;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
@@ -55,6 +58,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     private static String dayOfWeek;
     private static LocalDate dayInCurrentWeek;
     private static int dayNumber;
+    private NativeDbHelper nativeDb;
 
     /**
      * Required empty constructor
@@ -104,6 +108,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         LocalDate thisDate;
+        nativeDb = new NativeDbHelper(DATABASE_PATH);
 
         assert getArguments() != null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -208,6 +213,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         long medId = medication.getId();
         Triple<Medication, Long, LocalDateTime> tag;
         long doseRowId = db.getDoseId(medId, TimeFormatting.localDateTimeToDbString(time));
+        Dose dose = doseRowId != -1 ? nativeDb.getDoseById(doseRowId) : new Dose();
         ImageButton button = new ImageButton(rootView.getContext());
 
         button.setBackgroundResource(android.R.drawable.ic_menu_info_details);
@@ -233,25 +239,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
             doseInfo.show(getChildFragmentManager(), null);
         });
 
-        // Set Checkbox label
-        String medName = medication.getName();
-        String dosage;
-        if (medication.getDosage() == medication.getDosage()) {
-            dosage = String.format(Locale.getDefault(), "%d", medication.getDosage());
-        } else {
-            dosage = String.valueOf(medication.getDosage());
-        }
-
-        dosage += " " + medication.getDosageUnits();
-
-        String dosageTime = DateTimeFormatter.ofPattern(
-                preferences.getString(TIME_FORMAT),
-                Locale.getDefault()
-        ).format(time.toLocalTime());
-
-        String thisMedicationLabel = medName + " - " + dosage + " - " + dosageTime;
-
-        thisMedication.setText(thisMedicationLabel);
+        thisMedication.setText(createLabel(medication, dose, time));
 
         tag = new Triple<>(medication, doseRowId, time);
 
@@ -280,7 +268,6 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
                 return;
             }
 
-
             String now = TimeFormatting.localDateTimeToDbString(LocalDateTime.now().withSecond(0));
 
             if (doseId != -1) {
@@ -300,6 +287,31 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         });
 
         return rl;
+    }
+
+    private String createLabel(Medication medication, Dose dose, LocalDateTime doseTime) {
+        String dosage;
+
+        if (dose.getDoseId() != -1 && !Objects.isNull(dose) && dose.getOverrideDoseAmount() != -1) {
+            dosage = String.valueOf(dose.getOverrideDoseAmount());
+        } else {
+            dosage = String.valueOf(medication.getDosage());
+        }
+
+        dosage += " ";
+
+        if (dose.getDoseId() != -1 && !Objects.isNull(dose) && !dose.getOverrideDoseUnit().isEmpty()) {
+            dosage += dose.getOverrideDoseUnit();
+        } else {
+            dosage += medication.getDosageUnits();
+        }
+
+        String dosageTime = DateTimeFormatter.ofPattern(
+                preferences.getString(TIME_FORMAT),
+                Locale.getDefault()
+        ).format(doseTime.toLocalTime());
+
+        return medication.getName() + " - " + dosage + " - " + dosageTime;
     }
 
     /**
@@ -357,6 +369,32 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
                 sortSchedule(asNeededList);
 
                 asNeededList.forEach(ll::addView);
+
+                break;
+            case EDIT:
+                LinearLayout checkBoxHolder = rootView.findViewById(R.id.medicationSchedule);
+                CheckBox doseBox = null;
+                Medication medication = null;
+                LocalDateTime time = null;
+
+                for (int i = 0; i < checkBoxHolder.getChildCount(); i++) {
+                    RelativeLayout rl = (RelativeLayout) checkBoxHolder.getChildAt(i);
+                    Triple<Medication, Long, LocalDateTime> tag = (Triple<Medication, Long, LocalDateTime>) rl.getChildAt(0).getTag();
+
+                    if (tag.getSecond() == dose.getDoseId()) {
+                        doseBox = (CheckBox) rl.getChildAt(0);
+                        medication = tag.getFirst();
+                        time = tag.getThird();
+
+                        break;
+                    }
+                }
+
+                if (time == null || medication == null || doseBox == null) {
+                    return;
+                }
+
+                doseBox.setText(createLabel(medication, dose, time));
 
                 break;
             case DELETE:

@@ -41,6 +41,7 @@
     <string name="err_name_for_med">Please enter a name for this medication</string>
     <string name="err_missing_file_name">Missing file name</string>
     <string name="err_file_must_be_json">Export file must have a .json extension</string>
+    <string name="err_required">Required</string>
 
     <!-- Time formats -->
     <string name="date_format">Mmm dd, yyyy</string>
