@@ -13,6 +13,7 @@ MediTrak is an Android application designed to make it easier for users to keep 
 
  - English (default)
  - German by [uDEV2019](https://github.com/uDEV2019)
+ - Spanish by [zaovb](https://github.com/zaovb)
 
 ## Building the App
 
