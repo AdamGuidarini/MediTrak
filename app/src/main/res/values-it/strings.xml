@@ -61,7 +61,7 @@
     <string name="weeks">Settimane</string>
 
     <!-- MainActivity -->
-    <string name="no_medications_found">Nessun farmaco trovata</string>
+    <string name="no_medications_found">Nessun farmaco trovato</string>
     <string name="med_schedule">Programma di farmaci</string>
     <string name="no_meds_for_day">Nessun farmaco trovato per %1$s</string>
     <string name="cannot_take_more_than_hours">Non si può prendere farmaci 	più di %1$d ore in anticipo</string>
