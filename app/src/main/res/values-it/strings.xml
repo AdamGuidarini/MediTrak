@@ -1,81 +1,82 @@
 <resources>
     <!-- Common -->
-    <string name="yes">Yes</string>
+    <string name="yes">Sì</string>
     <string name="no">No</string>
-    <string name="close">Close</string>
-    <string name="cancel">Cancel</string>
+    <string name="close">Chiudere</string>
+    <string name="cancel">Cancellare</string>
     <string name="app_name">MediTrak</string>
-    <string name="edit">Edit</string>
-    <string name="submit">Submit</string>
-    <string name="save_changes">Save Changes</string>
-    <string name="save">Save</string>
-    <string name="you">You</string>
-    <string name="your">Your</string>
+    <string name="edit">Editare</string>
+    <string name="submit">Presentare</string>
+    <string name="save_changes">Salvare le modifiche</string>
+    <string name="save">Salvare</string>
+    <string name="you">Tu</string>
+    <string name="your">Il tuo</string>
     <string name="ok">OK</string>
-    <string name="delete">Delete</string>
-    <string name="i_agree">I agree</string>
+    <string name="delete">Eliminare</string>
+    <string name="i_agree">Sono d\'accordo</string>
 
     <!-- Filters -->
-    <string name="clear">Clear</string>
-    <string name="apply">Apply</string>
-    <string name="before">Before</string>
-    <string name="after">After</string>
-    <string name="on">On</string>
+    <string name="clear">Pulire</string>
+    <string name="apply">Applicare</string>
+    <string name="before">Prima</string>
+    <string name="after">Dopo</string>
+    <string name="on">Nel</string>
 
     <!-- Errors -->
-    <string name="invalid_value">Invalid value entered</string>
-    <string name="must_be_positive_int">Value must be a positive integer</string>
-    <string name="val_too_big">Provided value is too big</string>
-    <string name="cannot_exceed_50">Provided value cannot exceed 50</string>
-    <string name="must_be_greater_than_0">Provided value must be greater than 0</string>
-    <string name="provided_name_invalid">Provided name is invalid</string>
-    <string name="err_provide_name">Please provide a name</string>
-    <string name="err_enter_dosage">Please enter a dosage</string>
-    <string name="err_units_for_med">Please enter the units for this medication</string>
-    <string name="err_select_frequency">Please select a frequency type</string>
-    <string name="err_select_time">Please select a time</string>
-    <string name="err_select_start_date">Please select a start date.</string>
-    <string name="err_enter_num_timers_per_day">Please enter the number of times this medication is taken in a day</string>
-    <string name="err_enter_med_freq">Please enter how often the medication is taken.</string>
-    <string name="err_enter_time_unit">Please select a time unit.</string>
-    <string name="err_name_for_med">Please enter a name for this medication</string>
-    <string name="err_missing_file_name">Missing file name</string>
-    <string name="err_file_must_be_json">Export file must have a .json extension</string>
-    <string name="err_required">Required</string>
+    <string name="invalid_value">Valore inserito non valido</string>
+    <string name="must_be_positive_int">Il valore deve esser un intero positivor</string>
+    <string name="val_too_big">Il valore fornito è troppo grande</string>
+    <string name="cannot_exceed_50">Il valore fornito non può superare 50</string>
+    <string name="must_be_greater_than_0">Il value fornito non può essere inferiore a 0</string>
+    <string name="provided_name_invalid">Il nome fornito non è valido</string>
+    <string name="err_provide_name">Per favore, fornisci un nome</string>
+    <string name="err_enter_dosage">Per favore, fornisci una dose</string>
+    <string name="err_units_for_med">Per favore, fornisci una unità per questo farmaco</string>
+    <string name="err_select_frequency">Per favore, scegli un tipo di frequenza</string>
+    <string name="err_select_time">Per favore, scegli un\'ora</string>
+    <string name="err_select_start_date">Per favore, scegli una data d\'inizio</string>
+    <string name="err_enter_num_timers_per_day">Per favore, fornisci il numero di volte per giorno che si prende questo farmaco</string>
+    <string name="err_enter_med_freq">Per favore, fornisci quanto spesso si prende questo farmaco.</string>
+    <string name="err_enter_time_unit">Per favore, scegli una unità di tempo.</string>
+    <string name="err_name_for_med">Per favore, fornisci il nome del farmaco</string>
+    <string name="err_missing_file_name">Manca il nome del file</string>
+    <string name="err_file_must_be_json">Il file di esportazione deve avere l\'estensione .json</string>
+    <string name="err_required">Obbligatorio</string>
 
     <!-- Time formats -->
     <string name="date_format">Mmm dd, yyyy</string>
     <string name="time_format_hh_mm_aa">hh:mm aa</string>
 
     <!-- Time -->
-    <string name="sunday">Sunday</string>
-    <string name="monday">Monday</string>
-    <string name="tuesday">Tuesday</string>
-    <string name="wednesday">Wednesday</string>
-    <string name="thursday">Thursday</string>
-    <string name="friday">Friday</string>
-    <string name="saturday">Saturday</string>
-    <string name="minutes">Minutes</string>
-    <string name="hours">Hours</string>
-    <string name="days">Days</string>
-    <string name="weeks">Weeks</string>
+    <string name="sunday">Domenica</string>
+    <string name="monday">Lunedì</string>
+    <string name="tuesday">Martedì</string>
+    <string name="wednesday">Mercoledì</string>
+    <string name="thursday">Giovedì</string>
+    <string name="friday">Venerdì</string>
+    <string name="saturday">Sabato</string>
+    <string name="minutes">Minuti</string>
+    <string name="hours">Ore</string>
+    <string name="days">Giorni</string>
+    <string name="weeks">Settimane</string>
 
     <!-- MainActivity -->
-    <string name="no_medications_found">No medications found</string>
-    <string name="med_schedule">Medication Schedule</string>
-    <string name="no_meds_for_day">No medications for %1$s</string>
-    <string name="cannot_take_more_than_hours">Cannot take medications more than %1$d hours in advance</string>
-    <string name="as_needed_dose">As Needed Dose</string>
-    <string name="welcome">Welcome to MediTrak!</string>
+    <string name="no_medications_found">Nessun farmaco trovata</string>
+    <string name="med_schedule">Programma di farmaci</string>
+    <string name="no_meds_for_day">Nessun farmaco trovato per %1$s</string>
+    <string name="cannot_take_more_than_hours">Non si può prendere farmaci 	più di %1$d ore in anticipo</string>
+    <string name="as_needed_dose">Dose secondo necessità</string>
+    <string name="welcome">Benvenuto a MediTrak!</string>
     <string name="warranty_info">
-        This application is meant to assist in keeping track of your medications. It is not intended
-        to provide medical advice and no information provided by this application should be misconstrued
-        as such. The creators of this application are not responsible for any missed
-        doses of your medications for any reason. If you require medical assistance, please contact a medical professional.
-        By using this application, you are agreeing to the aforementioned terms as well as those of the GPL version 2.0 license under
-        which it is released. \n\n
+        Questa applicazione ha lo scopo di aiutarLa a tenere il conto dei Suoi faramci. Non ha lo scopo di
+        fornire consigli di tipo medico e nessuna informazione fornita da questa applicazione dovrebbe essere
+        erroneamente interpretata di per sé. I creatori di questa applicazione non sono resposnabili per nessuna
+        dose dimenticata per qualsiasi motivo. Se ha bisogno di assistenza medica, per favore contattare
+        un medico professionale.
+        Con l\'utilizzo di questa applicazione, acconsenti ai termini e condizioni predetti così come quelli
+        della licenza GPL versione 2.0 in cui è pubblicata. \n\n
 
-        This application is released under the GNU Public License Version 2, see below for more details:
+        Questa applicazione è pubblicata sotto la GNU General Public License Versione 2.0, vedi sotto per maggiori dettagli:
     </string>
 
     <!-- Add/EditMedication -->
