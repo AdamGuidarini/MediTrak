@@ -24,7 +24,7 @@
 
     <!-- Errors -->
     <string name="invalid_value">Valore inserito non valido</string>
-    <string name="must_be_positive_int">Il valore deve esser un intero positivor</string>
+    <string name="must_be_positive_int">Il valore deve essere un intero positivor</string>
     <string name="val_too_big">Il valore fornito è troppo grande</string>
     <string name="cannot_exceed_50">Il valore fornito non può superare 50</string>
     <string name="must_be_greater_than_0">Il value fornito non può essere inferiore a 0</string>
