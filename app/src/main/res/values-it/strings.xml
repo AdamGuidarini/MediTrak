@@ -24,7 +24,7 @@
 
     <!-- Errors -->
     <string name="invalid_value">Valore inserito non valido</string>
-    <string name="must_be_positive_int">Il valore deve esser un intero positivor</string>
+    <string name="must_be_positive_int">Il valore deve essere un intero positivo</string>
     <string name="val_too_big">Il valore fornito è troppo grande</string>
     <string name="cannot_exceed_50">Il valore fornito non può superare 50</string>
     <string name="must_be_greater_than_0">Il value fornito non può essere inferiore a 0</string>
@@ -64,7 +64,7 @@
     <string name="no_medications_found">Nessun farmaco trovato</string>
     <string name="med_schedule">Programma di farmaci</string>
     <string name="no_meds_for_day">Nessun farmaco trovato per %1$s</string>
-    <string name="cannot_take_more_than_hours">Non si può prendere farmaci 	più di %1$d ore in anticipo</string>
+    <string name="cannot_take_more_than_hours">Non si può prendere farmaci più di %1$d ore in anticipo</string>
     <string name="as_needed_dose">Dosaggio secondo necessità</string>
     <string name="welcome">Benvenuto a MediTrak!</string>
     <string name="warranty_info">
