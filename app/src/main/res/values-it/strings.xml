@@ -30,7 +30,7 @@
     <string name="must_be_greater_than_0">Il value fornito non può essere inferiore a 0</string>
     <string name="provided_name_invalid">Il nome fornito non è valido</string>
     <string name="err_provide_name">Per favore, fornisci un nome</string>
-    <string name="err_enter_dosage">Per favore, fornisci una dose</string>
+    <string name="err_enter_dosage">Per favore, fornisci un dosaggio</string>
     <string name="err_units_for_med">Per favore, fornisci una unità per questo farmaco</string>
     <string name="err_select_frequency">Per favore, scegli un tipo di frequenza</string>
     <string name="err_select_time">Per favore, scegli un\'ora</string>
@@ -65,13 +65,13 @@
     <string name="med_schedule">Programma di farmaci</string>
     <string name="no_meds_for_day">Nessun farmaco trovato per %1$s</string>
     <string name="cannot_take_more_than_hours">Non si può prendere farmaci 	più di %1$d ore in anticipo</string>
-    <string name="as_needed_dose">Dose secondo necessità</string>
+    <string name="as_needed_dose">Dosaggio secondo necessità</string>
     <string name="welcome">Benvenuto a MediTrak!</string>
     <string name="warranty_info">
         Questa applicazione ha lo scopo di aiutarLa a tenere il conto dei Suoi faramci. Non ha lo scopo di
         fornire consigli di tipo medico e nessuna informazione fornita da questa applicazione dovrebbe essere
-        erroneamente interpretata di per sé. I creatori di questa applicazione non sono resposnabili per nessuna
-        dose dimenticata per qualsiasi motivo. Se ha bisogno di assistenza medica, per favore contattare
+        erroneamente interpretata di per sé. I creatori di questa applicazione non sono resposnabili per nessun
+        dosaggio dimenticato per qualsiasi motivo. Se ha bisogno di assistenza medica, per favore contattare
         un medico professionale.
         Con l\'utilizzo di questa applicazione, acconsenti ai termini e condizioni predetti così come quelli
         della licenza GPL versione 2.0 in cui è pubblicata. \n\n
@@ -80,92 +80,81 @@
     </string>
 
     <!-- Add/EditMedication -->
-    <string name="add_medication">Add Medication</string>
-    <string name="edit_medication">Edit Medication</string>
-    <string name="delete_medication">Delete Medication</string>
-    <string name="note_timestamp">Date: %1$s at: %2$s</string>
-    <string name="note_edit_timestamp">Edited: %1$s at: %2$s</string>
-    <string name="patient_changed">Patient changed from %1$s to %2$s\n</string>
-    <string name="name_changed">Name changed from %1$s to %2$s\n</string>
+    <string name="add_medication">Aggiungere farmaco</string>
+    <string name="edit_medication">Editare farmaco</string>
+    <string name="delete_medication">Eliminare farmaco</string>
+    <string name="note_timestamp">Data: %1$s alle: %2$s</string>
+    <string name="note_edit_timestamp">Editato: %1$s alle: %2$s</string>
+    <string name="patient_changed">Paziente cambiata da %1$s a %2$s\n</string>
+    <string name="name_changed">Nome cambiato da %1$s a %2$s\n</string>
     <string name="removed_alias">Alias %1$s removed\n</string>
-    <string name="added_alias">Alias %1$s added\n</string>
-    <string name="changed_alias">Alias changed from %1$s to %2$s\n</string>
-    <string name="changed_dosage">Dosage changed from %1$s to %2$s\n</string>
-    <string name="frequency_changed">Frequency changed from %1$s to %2$s\n</string>
-    <string name="times_per">Times per</string>
-    <string name="patientIsMe">Me</string>
-    <string name="patient">Patient</string>
-    <string name="other">Other</string>
-    <string name="name">Name</string>
-    <string name="medication_name">Medication Name</string>
-    <string name="medication_dosage">Dosage</string>
-    <string name="medication_frequency">Frequency</string>
-    <string name="taken_every">Taken Every</string>
-    <string name="units">Dosage Unit</string>
-    <string name="taken">Taken</string>
-    <string name="frequency">Frequency</string>
-    <string name="multiple_times_per_day">Multiple Times per Day</string>
-    <string name="as_needed">As Needed</string>
-    <string name="daily">Daily</string>
-    <string name="weekly">Weekly</string>
-    <string name="monthly">Monthly</string>
-    <string name="medication_name_amp_dosage"><![CDATA[Medication Name & Dosage]]></string>
-    <string name="who_takes_this_medication">Who takes this medication?</string>
-    <string name="someone_else">Someone else</string>
-    <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[What is the medication\'s name & how much is taken?]]></string>
-    <string name="alias_for_notifications">Alias for notifications</string>
-    <string name="how_often_is_the_medication_taken">How often is the medication taken?</string>
-    <string name="start_date">Start Date</string>
-    <string name="taken_at">Taken at</string>
-    <string name="unit_of_time">Unit of Time</string>
-    <string name="custom_frequency">Custom Frequency</string>
-    <string name="at_n_n_tap_to_set_time">At: \n\n Tap to set time</string>
-    <string name="times_per_day">Times per day</string>
-    <string name="atThisTime">At: Tap to set time</string>
-    <string name="starting">Starting:</string>
-    <string name="alias_for_medication">Alias for medication</string>
-    <string name="alias_for_medication_displays_notification">Alias for medication displays notification</string>
-    <string name="medication_alias_displays_in_notification">Medication alias displays in notification</string>
-    <string name="place_holder_tap_again_then_hit_cancel">Place holder, tap again then hit cancel</string>
-    <string name="yourMedications">Your Medications:</string>
-    <string name="no_notes_for_this_medication">No notes for this medication</string>
-    <string name="unitExample">Ex. mg, g, drops</string>
-    <string name="patient_name">Patient Name:</string>
-    <string name="no_alias">No alias</string>
-    <string name="tap_to_set_date">Tap to set date</string>
-    <string name="at">At:</string>
-    <string name="tap_to_set_time">Tap to set Time</string>
-    <string name="apply_retroactive">Apply Changes Retroactively</string>
-    <string name="retroactive_warning">Warning: Changes to frequency may cause previously taken doses to no longer be visible in the schedule.</string>
-    <string name="would_like_apply_retroactively">Changes to dosage and frequency can be applied retroactively as of the previous change. Would you like to apply these changes retroactively?</string>
-    <string name="apply_changes_as_of">Apply changes as of:</string>
-    <string name="from_med_last_change">Last change</string>
-    <string name="from_med_start">Start of medication</string>
-    <string name="instructions">Instructions</string>
-    <string name="instructions_optional">Instructions (Optional)</string>
-    <string name="instrucations_added">Added instructions: %1$s</string>
+    <string name="added_alias">Alias %1$s aggiunto\n</string>
+    <string name="changed_alias">Alias cambiato da %1$s a %2$s\n</string>
+    <string name="changed_dosage">Dosaggio cambiato da %1$s a %2$s\n</string>
+    <string name="frequency_changed">Frequenza cambiata da %1$s a %2$s\n</string>
+    <string name="times_per">Volte al</string>
+    <string name="patientIsMe">Io</string>
+    <string name="patient">Paziente</string>
+    <string name="other">Altro</string>
+    <string name="name">Nome</string>
+    <string name="medication_name">Nome del farmaco</string>
+    <string name="medication_dosage">Dosaggio</string>
+    <string name="medication_frequency">Frequenza</string>
+    <string name="taken_every">Preso ogni</string>
+    <string name="units">Unità di dosaggio</string>
+    <string name="taken">Preso</string>
+    <string name="frequency">Frequenza</string>
+    <string name="multiple_times_per_day">Più volte al giorno</string>
+    <string name="as_needed">Secondo necessità</string>
+    <string name="daily">Giornalmente</string>
+    <string name="weekly">Settimanalmente</string>
+    <string name="monthly">Mensile</string>
+    <string name="medication_name_amp_dosage"><![CDATA[Nome & Dosaggio del Farmaco]]></string>
+    <string name="who_takes_this_medication">Chi prende questo farmaco?</string>
+    <string name="someone_else">Qualcun altro</string>
+    <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[qual è il nome del farmaco & quanto se ne prende?]]></string>
+    <string name="alias_for_notifications">Alias per le notifiche</string>
+    <string name="how_often_is_the_medication_taken">Quanto spesso si prende questo farmaco?</string>
+    <string name="start_date">Data d\'inizio</string>
+    <string name="taken_at">Preso alle</string>
+    <string name="unit_of_time">Unità di tempo</string>
+    <string name="custom_frequency">Frequenza personalizzata</string>
+    <string name="times_per_day">Volte al giorno</string>
+    <string name="starting">Inizio:</string>
+    <string name="alias_for_medication">Alias per il farmaco</string>
+    <string name="yourMedications">I tuoi farmaci:</string>
+    <string name="no_notes_for_this_medication">Nessun appunto per questo farmaco</string>
+    <string name="unitExample">Es. mg, g, drops</string>
+    <string name="patient_name">Nome del paziente:</string>
+    <string name="no_alias">Nessun alias</string>
+    <string name="at">Alle:</string>
+    <string name="apply_retroactive">Applicare le modifiche con effetto retroattivo</string>
+    <string name="retroactive_warning">Avviso: Le modifiche alla frequenza possono rendere le dosi precedentemente prese non sono più visibili nel programma.</string>
+    <string name="would_like_apply_retroactively">Le modifiche al dosaggio si possono applicare con effetto retroattivo a partire all\'ultima modifica. Vorrersti applicare queste modifiche con effetto retroattivo?</string>
+    <string name="instructions">Istruzioni</string>
+    <string name="instructions_optional">Istruzioni (Opzionali)</string>
+    <string name="instrucations_added">Istruzioni aggiunte: %1$s</string>
 
     <!-- MyMedications -->
-    <string name="my_medications">My Medications</string>
-    <string name="med_name">Medication name: %1$s</string>
-    <string name="dosage">Dosage: %1$s %2$s</string>
-    <string name="taken_daily_at">Taken daily at </string>
-    <string name="taken_every_lbl">Taken every </string>
+    <string name="my_medications">I miei farmaci</string>
+    <string name="med_name">Nome del farmaco: %1$s</string>
+    <string name="dosage">Dosaggio: %1$s %2$s</string>
+    <string name="taken_daily_at">Preso giornalmente alle </string>
+    <string name="taken_every_lbl">Preso ogni </string>
     <string name="alias_lbl">Alias</string>
-    <string name="taken_since">Taken since: %1$s</string>
-    <string name="taken_as_needed">Taken as needed.</string>
-    <string name="all_previous_edits_overridden">All previous changes overridden.</string>
+    <string name="taken_since">Preso dal: %1$s</string>
+    <string name="taken_as_needed">Preso secondo necessità.</string>
 
     <!-- Notes -->
-    <string name="notes">Notes</string>
-    <string name="add_note">Add Note</string>
-    <string name="edit_note">Edit Note</string>
+    <string name="notes">Appunti</string>
+    <string name="add_note">Creare Appunto</string>
+    <string name="edit_note">Editare Appunto</string>
 
     <!-- Settings Activity -->
-    <string name="settings">Settings</string>
-    <string name="options">Options</string>
-    <string name="license">License</string>
-    <string name="purpose">MediTrak is a free and open source application designed to help you keep track of your medications, so you can more easily answer the question \"did I take my medication yesterday?\"</string>
+    <string name="settings">Configurazioni</string>
+    <string name="options">Opzioni</string>
+    <string name="license">Licenza</string>
+    <string name="purpose">MediTrak è una applicazione libero e open source progettata per aiutarti a tenere traccia dei tuoi faramci, così puoi rispondere più facilmente alla domanda \"ho preso il mio faramco ieri?\"</string>
     <string name="copyright">Copyright © 2022 Adam Guidarini</string>
     <string name="licenseInfo">MediTrak is free software and may be redistributed and/or modified under the terms of the GNU General Public License as published by the Free software foundation, either version 2 or (at your option) later.</string>
     <string name="warranty">

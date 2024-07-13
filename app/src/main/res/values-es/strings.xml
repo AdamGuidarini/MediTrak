@@ -108,7 +108,7 @@
     <string name="daily">Diario</string>
     <string name="weekly">Semanal</string>
     <string name="monthly">Mensual</string>
-    <string name="medication_name_amp_dosage"><![CDATA[Nombre del medicamento y dosis]]></string>
+    <string name="medication_name_amp_dosage"><![CDATA[Nombre y dosis del medicamento]]></string>
     <string name="who_takes_this_medication">¿Quién toma este medicamento?</string>
     <string name="someone_else">Alguien más</string>
     <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[¿Cuál es el nombre del medicamento y cuánto se toma?]]></string>
@@ -118,28 +118,18 @@
     <string name="taken_at">Tomado a las</string>
     <string name="unit_of_time">Unidad de tiempo</string>
     <string name="custom_frequency">Frecuencia personalizada</string>
-    <string name="at_n_n_tap_to_set_time">A las: \n\n Presione para ajustar la hora</string>
     <string name="times_per_day">Veces por día</string>
-    <string name="atThisTime">A las: Presione para ajustar la hora</string>
     <string name="starting">Inicio:</string>
     <string name="alias_for_medication">Alias para el medicamento</string>
-    <string name="alias_for_medication_displays_notification">Alias para la notifiación de medicamentos</string>
-    <string name="medication_alias_displays_in_notification">Alias del medicamento que aparece en la notificación</string>
-    <string name="place_holder_tap_again_then_hit_cancel">Coloca el marcador, toca de nuevo y luego presiona cancelar</string>
     <string name="yourMedications">Tus medicamentos:</string>
     <string name="no_notes_for_this_medication">Notas para este medicamento</string>
     <string name="unitExample">P. Ej. mg, g, gotas</string>
     <string name="patient_name">Nombre del paciente:</string>
     <string name="no_alias">Sin alias</string>
-    <string name="tap_to_set_date">Toca para establecer la fecha</string>
     <string name="at">A las:</string>
-    <string name="tap_to_set_time">Toca para establecer la hora</string>
     <string name="apply_retroactive">Aplicar cambios retroactivamente</string>
     <string name="retroactive_warning">Atención: Los cambios en la frecuencia pueden hacer que las dosis tomadas anteriormente ya no sean visibles en el horario.</string>
     <string name="would_like_apply_retroactively">Los cambios de dosis y frecuencia pueden aplicarse retroactivamente a partir del cambio anterior. ¿Desea aplicar estos cambios retroactivamente?</string>
-    <string name="apply_changes_as_of">Aplicar los cambios a partir de:</string>
-    <string name="from_med_last_change">Último cambio</string>
-    <string name="from_med_start">Inicio de medicación</string>
     <string name="instructions">Instrucciones</string>
     <string name="instructions_optional">Instrucciones (Opcional)</string>
     <string name="instrucations_added">Instrucciones añadidas: %1$s</string>
@@ -153,7 +143,6 @@
     <string name="alias_lbl">Alias</string>
     <string name="taken_since">Tomado desde: %1$s</string>
     <string name="taken_as_needed">Tomado según necesidad.</string>
-    <string name="all_previous_edits_overridden">Anulados todos los cambios anteriores.</string>
 
     <!-- Notes -->
     <string name="notes">Notas</string>
