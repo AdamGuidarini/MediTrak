@@ -155,7 +155,7 @@
     <string name="license">Licencia</string>
     <string name="purpose">MediTrak es una aplicación gratuita, libre y de código abierto diseñada para ayudarte a llevar un registro de tus medicamentos, para que puedas responder más fácilmente a la pregunta \"¿tomé mi medicamento ayer?\"</string>
     <string name="copyright">Copyright © 2022 Adam Guidarini</string>
-    <string name="licenseInfo">MediTrak es software libre y puede ser redistribuido y/o modificado bajo los términos de la Licencia Pública General de GNU publicada por la Free software foundation, ya sea la versión 2 o (a su elección) posterior.</string>
+    <string name="licenseInfo">MediTrak es software libre y puede ser redistribuido y/o modificado bajo los términos de la Licencia Pública General de GNU publicada por la Free Software Foundation, ya sea la versión 2 o (a su elección) posterior.</string>
     <string name="warranty">
         Este programa es de software libre; puede redistribuirlo y/o
         modificarlo bajo los términos de la Licencia Pública General de GNU
@@ -164,16 +164,14 @@
 
         Este programa se distribuye con la esperanza de que sea útil,
         pero SIN NINGUNA GARANTÍA; ni siquiera la garantía implícita de
-
         COMERCIABILIDAD o IDONEIDAD PARA UN PROPÓSITO PARTICULAR.  Consulte la
-        Licencia Pública General GNU para más detalles
+        Licencia Pública General GNU para más detalles.
     </string>
     <string name="copyOfGPL2">
         Debería haber recibido una copia de la Licencia Pública General de GNU
-        junto con este programa; si no es así, escriba a la Free Software 
-        Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+        junto con este programa; si no es así, vea https://www.gnu.org/licenses/.
     </string>
-    <string name="cannot_take_medication_more_than">Ya no puede tomar el medicamento</string>
+    <string name="cannot_take_medication_more_than">No puede tomar el medicamento más de</string>
     <string name="hours_in_advance">horas de antelación</string>
     <string name="title_activity_settings">Configuración</string>
     <string name="delete_all">Eliminar todo</string>
@@ -228,7 +226,7 @@
     <string name="mark_as_taken">Tomado</string>
     <string name="snooze_message">Posponer</string>
     <string name="its_time_your_med">Es hora de tomar tu %1$s de %2$s</string>
-    <string name="time_for_other_med">Es la hora de %1$s de %2$s de %3$s</string>
+    <string name="time_for_other_med">Es la hora de los %2$s de %3$s de %1$s</string>
     <string name="add_dose">Añadir dosis</string>
 
     <!-- Med History -->

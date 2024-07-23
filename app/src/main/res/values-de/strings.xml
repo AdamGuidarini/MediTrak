@@ -166,14 +166,12 @@
 
         Dieses Programm wird in der Hoffnung verbreitet, dass es nützlich sein wird,
         aber OHNE JEGLICHE GARANTIE; ohne die stillschweigende Garantie von
-
         MARKTGÄNGIGKEIT oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK. Siehe die
-        weiteren Informationen zur GNU General Public License
+        weiteren Informationen zur GNU General Public License.
     </string>
     <string name="copyOfGPL2">
         Sie sollten eine Kopie der GNU General Public License erhalten haben
-        zusammen mit diesem Programm; Wenn nicht, schreiben Sie an die Free Software
-        Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+        zusammen mit diesem Programm; Wenn nicht, siehe https://www.gnu.org/licenses/.
     </string>
     <string name="cannot_take_medication_more_than">Kann Medikamente nicht mehr einnehmen als</string>
     <string name="hours_in_advance">Stunden im Voraus</string>
