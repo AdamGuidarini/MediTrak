@@ -88,6 +88,13 @@ public class DBHelper extends SQLiteOpenHelper {
         public static final String DD_MM_YYYY = "dd/MM/yyyy";
     }
 
+    public static class Languages {
+        public static final String ENGLISH = "en";
+        public static final String GERMAN = "de";
+        public static final String SPANISH = "es";
+        public static final String ITALIAN = "it";
+    }
+
     private NativeDbHelper nativeHelper;
 
     public DBHelper(@Nullable Context context) {

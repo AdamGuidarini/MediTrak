@@ -92,6 +92,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
         setThemeMenu();
         setDateFormatMenu();
         setTimeFormatMenu();
+        setLanguageMenu();
 
         chooseFileLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -379,6 +380,13 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
             timeSelector.clearFocus();
             preferences = db.getPreferences();
         });
+    }
+
+    /**
+     * Creates menu allow language change
+     */
+    private void setLanguageSelector() {
+        MaterialAutoCompleteTextView langSelector = findViewById(R.id.language_selector);
     }
 
     /**
