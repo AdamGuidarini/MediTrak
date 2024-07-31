@@ -3,6 +3,7 @@ package projects.medicationtracker;
 import static projects.medicationtracker.Helpers.DBHelper.DARK;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
+import static projects.medicationtracker.Helpers.DBHelper.LANGUAGE;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
@@ -385,8 +386,9 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
     /**
      * Creates menu allow language change
      */
-    private void setLanguageSelector() {
+    private void setLanguageMenu() {
         MaterialAutoCompleteTextView langSelector = findViewById(R.id.language_selector);
+        String language = preferences.getString(LANGUAGE, DBHelper.Languages.ENGLISH);
     }
 
     /**

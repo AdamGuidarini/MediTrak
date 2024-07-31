@@ -73,6 +73,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String AGREED_TO_TERMS = "AgreedToTerms";
     public static String DATE_FORMAT = "DateFormat";
     public static String TIME_FORMAT = "TimeFormat";
+    public static String LANGUAGE = "Language";
 
     private static final String ACTIVITY_CHANGE_TABLE = "ActivityChanges";
     private static final String CHANGE_DATE = "ChangeDate";
