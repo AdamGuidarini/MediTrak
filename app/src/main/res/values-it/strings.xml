@@ -156,7 +156,7 @@
     <string name="license">Licenza</string>
     <string name="purpose">MediTrak è una applicazione libero e open source progettata per aiutarti a tenere traccia dei tuoi faramci, così puoi rispondere più facilmente alla domanda \"ho preso il mio faramco ieri?\"</string>
     <string name="copyright">Copyright © 2022 Adam Guidarini</string>
-    <string name="licenseInfo">MediTrak è software gratuita e può essere ridistribuito e/o modificato secondo i termini della GLicenza Pubblica Generica GNU come pubblicato dalla Free Software Foundation, o la versione 2 o (a propria scelta) più tardi.</string>
+    <string name="licenseInfo">MediTrak è software gratuita e può essere ridistribuito e/o modificato secondo i termini della Licenza Pubblica Generica GNU come pubblicato dalla Free Software Foundation, o la versione 2 o (a propria scelta) più tardi.</string>
     <string name="warranty">
         Questo programma è software libero; è possibile ridistribuirlo e/o
         modificarlo secondo i termini della licenza GNU General Public License,
