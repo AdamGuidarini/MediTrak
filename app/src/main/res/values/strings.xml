@@ -132,7 +132,7 @@
     <string name="would_like_apply_retroactively">Changes to dosage and frequency can be applied retroactively as of the previous change. Would you like to apply these changes retroactively?</string>
     <string name="instructions">Instructions</string>
     <string name="instructions_optional">Instructions (Optional)</string>
-    <string name="instrucations_added">Added instructions: %1$s</string>
+    <string name="instructions_added">Added instructions: %1$s</string>
 
     <!-- MyMedications -->
     <string name="my_medications">My Medications</string>

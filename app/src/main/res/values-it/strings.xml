@@ -133,7 +133,7 @@
     <string name="would_like_apply_retroactively">Le modifiche al dosaggio si possono applicare con effetto retroattivo a partire all\'ultima modifica. Vorrersti applicare queste modifiche con effetto retroattivo?</string>
     <string name="instructions">Istruzioni</string>
     <string name="instructions_optional">Istruzioni (Opzionali)</string>
-    <string name="instrucations_added">Istruzioni aggiunte: %1$s</string>
+    <string name="instructions_added">Istruzioni aggiunte: %1$s</string>
 
     <!-- MyMedications -->
     <string name="my_medications">I miei farmaci</string>
