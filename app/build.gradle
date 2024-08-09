@@ -16,7 +16,7 @@ android {
         targetSdkVersion 34
         compileSdk 34
 
-        versionCode 26
+        versionCode 27
         versionName "0.12.7"
         resourceConfigurations += ['en', 'de', 'es', 'it']
 
