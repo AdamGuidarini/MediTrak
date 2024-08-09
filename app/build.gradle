@@ -17,7 +17,7 @@ android {
         compileSdk 34
 
         versionCode 28
-        versionName "0.12.8"
+        versionName "0.12.9"
         resourceConfigurations += ['en', 'de', 'es', 'it']
 
 
