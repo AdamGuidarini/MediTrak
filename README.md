@@ -11,9 +11,17 @@ MediTrak is an Android application designed to make it easier for users to keep 
 
 ## Languages
 
- - English (default)
- - German by [uDEV2019](https://github.com/uDEV2019)
- - Spanish by [zaovb](https://github.com/zaovb)
+ - English
+ - German by [uDEV2019](https://github.com/uDEV2019)<sup>1,2</sup>
+ - Spanish by [zaovb](https://github.com/zaovb)<sup>1,3</sup>
+ - Italian<sup>4</sup>
+
+<div style="font-size: 0.8em;">
+1. Translated by native speaker.<br>
+2. Additional translations provided by non-native speaker through a machine translator.<br>
+3. Additional translations provided by non-native speaker.<br>
+4. Translated by a non-native speaker.
+</div>
 
 ## Building the App
 

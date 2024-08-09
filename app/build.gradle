@@ -13,12 +13,12 @@ android {
     defaultConfig {
         applicationId "projects.medicationtracker"
         minSdkVersion 26
-        targetSdkVersion 33
+        targetSdkVersion 34
         compileSdk 34
 
         versionCode 26
         versionName "0.12.7"
-        resourceConfigurations += ['en', 'de', 'es']
+        resourceConfigurations += ['en', 'de', 'es', 'it']
 
 
         ndk {

@@ -12,6 +12,7 @@ import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -33,6 +34,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.os.LocaleListCompat;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
@@ -92,6 +94,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
         setThemeMenu();
         setDateFormatMenu();
         setTimeFormatMenu();
+        setLanguageMenu();
 
         chooseFileLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -378,6 +381,72 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
 
             timeSelector.clearFocus();
             preferences = db.getPreferences();
+        });
+    }
+
+    /**
+     * Creates menu allow language change
+     */
+    private void setLanguageMenu() {
+        MaterialAutoCompleteTextView langSelector = findViewById(R.id.language_selector);
+        String[] langOpts = { "Deutsch", "English", "Español", "Italiano" };
+        String[] langCodes = {"de", "en", "es", "it"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+            this,
+            android.R.layout.simple_dropdown_item_1line,
+            langOpts
+        );
+
+        Configuration config = getResources().getConfiguration();
+
+        langSelector.setAdapter(adapter);
+
+        String langCode = config.getLocales().get(0).getLanguage();
+
+        switch (langCode) {
+            case "de":
+                langSelector.setText(langOpts[0], false);
+                break;
+            case "en":
+            default:
+                langSelector.setText(langOpts[1], false);
+                break;
+            case "es":
+                langSelector.setText(langOpts[2], false);
+                break;
+            case "it":
+                langSelector.setText(langOpts[3], false);
+                break;
+        }
+
+        langSelector.setOnItemClickListener((parent, view, position, id) -> {
+            LocaleListCompat locale = LocaleListCompat.forLanguageTags(langCodes[position]);
+            AppCompatDelegate.setApplicationLocales(locale);
+
+            langSelector.clearFocus();
+        });
+
+        langSelector.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                setThemeMenu();
+                setTimeFormatMenu();
+                setDateFormatMenu();
+
+                langSelector.setAdapter(
+                    new ArrayAdapter<>(
+                        langSelector.getContext(),
+                        android.R.layout.simple_dropdown_item_1line,
+                        langOpts
+                    )
+                );
+            }
         });
     }
 

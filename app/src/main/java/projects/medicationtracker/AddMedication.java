@@ -1502,7 +1502,7 @@ public class AddMedication extends AppCompatActivity {
         }
 
         if (medication.getInstructions() != null && !medication.getInstructions().isEmpty()) {
-            note += getString(R.string.instrucations_added, medication.getInstructions());
+            note += getString(R.string.instructions_added, medication.getInstructions());
         }
 
         return note;
