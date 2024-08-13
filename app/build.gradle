@@ -18,7 +18,7 @@ android {
 
         versionCode 28
         versionName "0.12.9"
-        resourceConfigurations += ['en', 'de', 'es', 'it']
+        resourceConfigurations += ['en', 'de', 'es', 'it', 'tr']
 
 
         ndk {
