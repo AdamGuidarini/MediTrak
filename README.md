@@ -57,8 +57,12 @@ This project uses the ````sqlite3.c```` and ````sqlite3.h```` files in its NDK p
 ## Installation
 
 <div style="display: flex;">
- <img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="90" alt="Get it on GitHub" href="https://github.com/AdamGuidarini/MediTrak/releases"/>
- <img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height=90 alt="Get it on IzzyOnDroid" href="https://apt.izzysoft.de/fdroid/index/apk/projects.medicationtracker"/>
+ <a href="https://github.com/AdamGuidarini/MediTrak/releases">
+  <img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="90" alt="Get it on GitHub"/>
+ </a>
+ <a href="https://apt.izzysoft.de/fdroid/index/apk/projects.medicationtracker">
+  <img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height=90 alt="Get it on IzzyOnDroid"/>
+ </a>
 </div>
 
 ### GitHub
