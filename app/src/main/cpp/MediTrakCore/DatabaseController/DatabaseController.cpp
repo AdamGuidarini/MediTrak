@@ -420,3 +420,23 @@ bool DatabaseController::updateDose(Dose dose) {
         return false;
     }
 }
+
+bool DatabaseController::stashNotification(Notification notification) {
+    map<string, string> values;
+
+    values.insert(pair<string, string>(MED_ID, to_string(notification.medId)));
+    values.insert(pair<string, string>(DOSE_TIME, notification.doseTime));
+
+    try {
+        manager.insert(
+                MEDICATION_TRACKER_TABLE,
+                values
+        );
+
+        return true;
+    } catch (exception e) {
+        cerr << "Failed to save notification for medication " << notification.medId << endl;
+
+        return false;
+    }
+}

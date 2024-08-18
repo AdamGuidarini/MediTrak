@@ -11,6 +11,7 @@
 #include "DbManager.h"
 #include "../Medication/Medication.h"
 #include "../Dose/Dose.h"
+#include "../Notification/Notification.h"
 
 using namespace std;
 
@@ -220,9 +221,10 @@ public:
     bool updateDose(Dose dose);
 
     /**
-     *
+     * Stores a notification
+     * @param notification notification to store
      */
-
+    bool stashNotification(Notification notification);
 };
 
 #endif //MEDICATIONTRACKER_DATABASECONTROLLER_H
