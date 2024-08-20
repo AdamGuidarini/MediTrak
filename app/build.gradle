@@ -28,7 +28,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
-                arguments'-DANDROID_TOOLCHAIN=clang', '-DANDROID_ARM_NEON=TRUE'
+                arguments'-DANDROID_TOOLCHAIN=clang', '-DANDROID_ARM_NEON=TRUE', '-DCMAKE_SHARED_LINKER_FLAGS=-Wl,--build-id=none'
                 cppFlags '-frtti -fexceptions'
             }
         }
