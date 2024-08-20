@@ -225,6 +225,12 @@ public:
      * @param notification notification to store
      */
     bool stashNotification(Notification notification);
+
+    /**
+     * Retrieves all stashed notifications
+     * @return All notifications currently stored in DB
+     */
+    vector<Notification> getStashedNotifications();
 };
 
 #endif //MEDICATIONTRACKER_DATABASECONTROLLER_H

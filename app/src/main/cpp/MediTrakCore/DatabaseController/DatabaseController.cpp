@@ -440,3 +440,25 @@ bool DatabaseController::stashNotification(Notification notification) {
         return false;
     }
 }
+
+vector<Notification> DatabaseController::getStashedNotifications() {
+    vector<Notification> notifications;
+
+    Table* table = manager.execSqlWithReturn("SELECT * FROM " + NOTIFICATIONS);
+
+    while (table->getCount() > 0 && !table->isAfterLast()) {
+        Notification note(
+            stol(table->getItem(NOTIFICATION_ID)),
+            stol(table->getItem(MED_ID)),
+            table->getItem(DOSE_TIME)
+        );
+
+        notifications.push_back(note);
+
+        table->moveToNext();
+    }
+
+    delete table;
+
+    return notifications;
+}
