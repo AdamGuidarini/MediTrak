@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 import projects.medicationtracker.Models.Dose;
 import projects.medicationtracker.Models.Medication;
+import projects.medicationtracker.Models.Notification;
 
 public class NativeDbHelper {
     static {
@@ -115,6 +116,10 @@ public class NativeDbHelper {
         return updateDose(dbPath, dose);
     }
 
+    public long stashNotification(Notification notification) {
+        return 0;
+    }
+
     /**
      * Native methods
      */
@@ -130,4 +135,5 @@ public class NativeDbHelper {
     private native Dose findDose(String dbPath, long medicationId, String doseTime, Medication med);
     private native Dose getDoseById(String dbPath, long doseId, Medication med);
     private native boolean updateDose(String dbPath, Dose dose);
+    private native long stashNotification(String dbPath, Notification notification);
 }

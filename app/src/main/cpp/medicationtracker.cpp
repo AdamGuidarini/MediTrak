@@ -36,8 +36,6 @@ jobject doseToJavaConverter(Dose dose, JNIEnv* env, jobject &jMedication) {
     jmethodID setOverrideDoseAmount = env->GetMethodID(jDose, "setOverrideDoseAmount", "(I)V");
     jmethodID setOverrideDoseUnit = env->GetMethodID(jDose, "setOverrideDoseUnit", "(Ljava/lang/String;)V");
 
-//    jDoses = env->NewObjectArray(doses.size(), jDose, NULL);
-
     jmethodID constructor = env->GetMethodID(
         jDose,
         "<init>",
@@ -146,6 +144,19 @@ jobject medicationToJavaConverter(Medication med, JNIEnv* env, jclass jMedicatio
     env->CallVoidMethod(jMedicationInstance, setDoses, jDoses);
 
     return jMedicationInstance;
+}
+
+Notification javaNotificationToNativeNotificationMapper(jobject notification, JNIEnv* env) {
+    jclass jNotificationClass = env->GetObjectClass(notification);
+    jmethodID getNotificationId = env->GetMethodID(jNotificationClass, "getId", "()J");
+    jmethodID getMedId = env->GetMethodID(jNotificationClass, "getMedId", "()J");
+    jmethodID getDoseTime = env->GetMethodID(jNotificationClass, "getDoseTimeString", "()Ljava/lang/String;");
+
+    return Notification(
+        env->CallLongMethod(notification, getNotificationId),
+        env->CallLongMethod(notification, getMedId),
+        env->GetStringUTFChars((jstring) env->CallObjectMethod(notification, getDoseTime), new jboolean(true))
+    );
 }
 
 extern "C"
@@ -448,4 +459,20 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_updateDose(
     Dose nDose = javaDoseToNativeDoseConverter(dose, env);
 
     return controller.updateDose(nDose);
+}
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_stashNotification(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jobject notification
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    DatabaseController controller(dbPath);
+
+    Notification notificationToStash = javaNotificationToNativeNotificationMapper(notification, env);
+
+    return controller.stashNotification(notificationToStash);
 }

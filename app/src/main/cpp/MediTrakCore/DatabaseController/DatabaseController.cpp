@@ -182,11 +182,11 @@ void DatabaseController::update(string table, map<string, string> values, map<st
 }
 
 void DatabaseController::deleteRecord(string table, map<string, string> where) {
-    manager.deleteRecord(table, where);
+    manager.deleteRecord(std::move(table), std::move(where));
 }
 
 void DatabaseController::updateSettings(map<std::string, std::string> values) {
-    manager.update(SETTINGS_TABLE, values, {});
+    manager.update(SETTINGS_TABLE, std::move(values), {});
 }
 
 void DatabaseController::exportJSON(
@@ -461,4 +461,8 @@ vector<Notification> DatabaseController::getStashedNotifications() {
     delete table;
 
     return notifications;
+}
+
+void DatabaseController::deleteNotification(long id) {
+    manager.deleteRecord(NOTIFICATION_ID, { pair(NOTIFICATION_ID, to_string(id)) });
 }

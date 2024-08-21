@@ -231,6 +231,12 @@ public:
      * @return All notifications currently stored in DB
      */
     vector<Notification> getStashedNotifications();
+
+    /**
+     * Deletes a stored notification
+     * @param id ID of notification to delete
+     */
+     void deleteNotification(long id);
 };
 
 #endif //MEDICATIONTRACKER_DATABASECONTROLLER_H
