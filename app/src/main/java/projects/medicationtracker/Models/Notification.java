@@ -39,6 +39,7 @@ public class Notification {
     }
 
     public String getDoseTimeString() {
-        return TimeFormatting.localDateTimeToDbString(doseTime);
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DBHelper.DateFormats.DB_DATE_FORMAT, Locale.getDefault());
+        return dateFormat.format(doseTime);
     }
 }

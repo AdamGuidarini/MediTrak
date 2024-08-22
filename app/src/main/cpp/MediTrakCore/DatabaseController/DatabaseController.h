@@ -130,7 +130,7 @@ public:
      * @param values Values to add to new row
      * @return Row id of added row
      */
-    long insert(string table, map<string, string> values);
+    long insert(const string& table, map<string, string> values);
 
     /**
      * Updates rows matching where clause with with new values
@@ -182,7 +182,7 @@ public:
      * One element from each record will be added to the row corresponding to its key
      * @param data Data to export - The first row of the file will consist of the keys of the data map
      */
-    void exportCsv(string exportPath, map<string, vector<string>> data);
+    void exportCsv(const string& exportPath, map<string, vector<string>> data);
 
     /**
      * Retrieves a Medication from the database
@@ -204,7 +204,7 @@ public:
      * @param scheduledTime Time dose should be taken
      * @return The dose for the given med ID & scheduled time or nullptr
      */
-    Dose* findDose(long medicationId, string scheduledTime);
+    Dose* findDose(long medicationId, const string& scheduledTime);
 
     /**
      * Retrieves Dose by its ID
@@ -218,13 +218,13 @@ public:
      * @param dose Dose to update
      * @return true if update succeeded
      */
-    bool updateDose(Dose dose);
+    bool updateDose(const Dose& dose);
 
     /**
      * Stores a notification
      * @param notification notification to store
      */
-    bool stashNotification(Notification notification);
+    bool stashNotification(const Notification& notification);
 
     /**
      * Retrieves all stashed notifications

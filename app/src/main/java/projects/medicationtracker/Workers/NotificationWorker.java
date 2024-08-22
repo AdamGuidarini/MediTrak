@@ -7,6 +7,7 @@ import static projects.medicationtracker.Helpers.NotificationHelper.GROUP_KEY;
 import static projects.medicationtracker.Helpers.NotificationHelper.MEDICATION_ID;
 import static projects.medicationtracker.Helpers.NotificationHelper.MESSAGE;
 import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION_ID;
+import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -24,6 +25,7 @@ import androidx.work.WorkerParameters;
 
 import java.util.Arrays;
 
+import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.MainActivity;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Receivers.EventReceiver;
@@ -66,7 +68,16 @@ public class NotificationWorker extends Worker {
 
             // Only fire notification if not other active notification has the same ID
             if (Arrays.stream(notificationManager.getActiveNotifications()).filter(n -> n.getId() == notificationId).toArray().length == 0) {
+                NativeDbHelper nativeDb = new NativeDbHelper(DATABASE_PATH);
+                String doseTimeDb = doseTime.replace("T", " ") + ":00";
+
+                projects.medicationtracker.Models.Notification alert = new projects.medicationtracker.Models.Notification(
+                    notificationId, medId, doseTimeDb
+                );
+
                 notificationManager.notify((int) notificationId, notification);
+
+                nativeDb.stashNotification(alert);
             }
         } catch (Exception e) {
             Log.e("MediTrak:Notifications", e.getMessage());
