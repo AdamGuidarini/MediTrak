@@ -10,9 +10,10 @@
 struct Notification {
     long id;
     long medId;
+    long notificationId;
     std::string doseTime;
 
-    Notification(long id, long medId, std::string doseTime);
+    Notification(long id, long medId, long notificationId, std::string doseTime);
 };
 
 

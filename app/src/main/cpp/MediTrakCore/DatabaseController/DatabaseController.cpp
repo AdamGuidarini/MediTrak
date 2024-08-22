@@ -34,7 +34,7 @@ void DatabaseController::create() {
         + MED_DOSAGE + " DECIMAL(3,2),"
         + MED_UNITS + " TEXT,"
         + START_DATE + " DATETIME,"
-        + MED_FREQUENCY + " INT,"
+        + MED_FREQUENCY + " INTEGER,"
         + ALIAS + " TEXT,"
         + ACTIVE + " BOOLEAN DEFAULT 1,"
         + PARENT_ID + " INTEGER,"
@@ -47,11 +47,11 @@ void DatabaseController::create() {
 
     manager.execSql("CREATE TABLE IF NOT EXISTS " + MEDICATION_TRACKER_TABLE + "("
         + DOSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-        + MED_ID + " INT,"
+        + MED_ID + " INTEGER,"
         + DOSE_TIME + " DATETIME,"
         + TAKEN + " BOOLEAN,"
         + TIME_TAKEN + " DATETIME,"
-        + OVERRIDE_DOSE_AMOUNT + " INT,"
+        + OVERRIDE_DOSE_AMOUNT + " INTEGER,"
         + OVERRIDE_DOSE_UNIT + " TEXT,"
         + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
         + ");"
@@ -60,7 +60,7 @@ void DatabaseController::create() {
     manager.execSql(
         "CREATE TABLE IF NOT EXISTS " + MEDICATION_TIMES + "("
         + TIME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-        + MED_ID + " INT,"
+        + MED_ID + " INTEGER,"
         + DRUG_TIME + " TEXT,"
         + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
         + ");"
@@ -69,7 +69,7 @@ void DatabaseController::create() {
     manager.execSql(
         "CREATE TABLE IF NOT EXISTS " + NOTES_TABLE + "("
         + NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-        + MED_ID + " INT, "
+        + MED_ID + " INTEGER, "
         + NOTE + " TEXT, "
         + ENTRY_TIME + " DATETIME,"
         + TIME_EDITED + " DATETIME,"
@@ -79,7 +79,7 @@ void DatabaseController::create() {
 
     manager.execSql(
         "CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
-        + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
+        + TIME_BEFORE_DOSE + " INTEGER DEFAULT 2, "
         + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1, "
         + THEME + " TEXT DEFAULT '" + DEFAULT + "',"
         + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0,"
@@ -96,7 +96,7 @@ void DatabaseController::create() {
     manager.execSql(
         "CREATE TABLE IF NOT EXISTS " + ACTIVITY_CHANGE_TABLE + "("
         + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-        + MED_ID + " INT,"
+        + MED_ID + " INTEGER,"
         + CHANGE_DATE + " DATETIME,"
         + PAUSED + " BOOLEAN,"
         + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
@@ -105,10 +105,12 @@ void DatabaseController::create() {
 
     manager.execSql(
         "CREATE TABLE IF NOT EXISTS " + NOTIFICATIONS + "("
-        + NOTIFICATION_ID + " INT PRIMARY KEY,"
-        + MED_ID + " INT, "
-        + DOSE_ID + " INT, "
-        + SCHEDULED_TIME + " DATETIME);"
+        + NOTIFICATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+        + MED_ID + " INTEGER, "
+        + DOSE_ID + " INTEGER, "
+        + SCHEDULED_TIME + " DATETIME,"
+        + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
+        + ");"
     );
 
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
@@ -127,7 +129,7 @@ void DatabaseController::upgrade(int currentVersion) {
         manager.execSql(
             "CREATE TABLE IF NOT EXISTS " + ACTIVITY_CHANGE_TABLE + "("
             + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + MED_ID + " INT,"
+            + MED_ID + " INTEGER,"
             + CHANGE_DATE + " DATETIME,"
             + PAUSED + " BOOLEAN,"
             + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
@@ -158,18 +160,23 @@ void DatabaseController::upgrade(int currentVersion) {
     }
 
     if (currentVersion < 13) {
-        manager.execSql(
-            "CREATE TABLE IF NOT EXISTS " + NOTIFICATIONS + "("
-            + NOTIFICATION_ID + " INT PRIMARY KEY,"
-            + MED_ID + " INT, "
-            + DOSE_ID + " INT, "
-            + SCHEDULED_TIME + " DATETIME);"
-        );
-
-
         manager.execSql("ALTER TABLE " + MEDICATION_TRACKER_TABLE + " ADD COLUMN " + OVERRIDE_DOSE_AMOUNT + " INT;");
         manager.execSql("ALTER TABLE " + MEDICATION_TRACKER_TABLE + " ADD COLUMN " + OVERRIDE_DOSE_UNIT + " TEXT;");
         manager.execSql("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + INSTRUCTIONS + " TEXT;");
+    }
+
+    if (currentVersion < 14) {
+        manager.execSql(
+            "BEGIN TRANSACTION; DROP TABLE IF EXISTS " + NOTIFICATIONS
+            + "; CREATE TABLE IF NOT EXISTS " + NOTIFICATIONS + "("
+            + NOTIFICATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + MED_ID + " INTEGER, "
+            + DOSE_ID + " INTEGER, "
+            + SCHEDULED_TIME + " DATETIME,"
+            + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
+            + ");"
+            + "END TRANSACTION;"
+        );
     }
 
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
@@ -427,6 +434,7 @@ bool DatabaseController::stashNotification(const Notification& notification) {
 
     values.insert(pair<string, string>(MED_ID, to_string(notification.medId)));
     values.insert(pair<string, string>(DOSE_TIME, notification.doseTime));
+    values.insert(pair<string, string>(DOSE_ID, to_string(notification.notificationId)));
 
     try {
         manager.insert(
@@ -451,6 +459,7 @@ vector<Notification> DatabaseController::getStashedNotifications() {
         Notification note(
             stol(table->getItem(NOTIFICATION_ID)),
             stol(table->getItem(MED_ID)),
+            stol(table->getItem(DOSE_ID)),
             table->getItem(DOSE_TIME)
         );
 

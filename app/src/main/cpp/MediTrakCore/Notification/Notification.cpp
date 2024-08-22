@@ -5,8 +5,9 @@
 #include "Notification.h"
 #include <utility>
 
-Notification::Notification(long id, long medId, std::string doseTime) {
+Notification::Notification(long id, long medId, long notificationId, std::string doseTime) {
     this->id = id;
     this->medId = medId;
+    this->notificationId = notificationId;
     this->doseTime = std::move(doseTime);
 }

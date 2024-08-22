@@ -148,13 +148,15 @@ jobject medicationToJavaConverter(Medication med, JNIEnv* env, jclass jMedicatio
 
 Notification javaNotificationToNativeNotificationMapper(jobject notification, JNIEnv* env) {
     jclass jNotificationClass = env->GetObjectClass(notification);
-    jmethodID getNotificationId = env->GetMethodID(jNotificationClass, "getId", "()J");
+    jmethodID getId = env->GetMethodID(jNotificationClass, "getId", "()J");
     jmethodID getMedId = env->GetMethodID(jNotificationClass, "getMedId", "()J");
+    jmethodID getNotificationId = env->GetMethodID(jNotificationClass, "getNotificationId", "()J");
     jmethodID getDoseTime = env->GetMethodID(jNotificationClass, "getDoseTimeString", "()Ljava/lang/String;");
 
     return Notification(
-        env->CallLongMethod(notification, getNotificationId),
+        env->CallLongMethod(notification, getId),
         env->CallLongMethod(notification, getMedId),
+        env->CallLongMethod(notification, getNotificationId),
         env->GetStringUTFChars((jstring) env->CallObjectMethod(notification, getDoseTime), new jboolean(true))
     );
 }

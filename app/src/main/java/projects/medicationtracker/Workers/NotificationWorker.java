@@ -72,7 +72,7 @@ public class NotificationWorker extends Worker {
                 String doseTimeDb = doseTime.replace("T", " ") + ":00";
 
                 projects.medicationtracker.Models.Notification alert = new projects.medicationtracker.Models.Notification(
-                    notificationId, medId, doseTimeDb
+                    -1, medId, notificationId, doseTimeDb
                 );
 
                 notificationManager.notify((int) notificationId, notification);

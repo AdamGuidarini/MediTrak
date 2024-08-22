@@ -26,7 +26,7 @@ import projects.medicationtracker.Models.Note;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Medications.db";
-    private final static int DATABASE_VERSION = 13;
+    private final static int DATABASE_VERSION = 14;
 
     public final static String ANDROID_METADATA = "android_metadata";
 
