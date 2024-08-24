@@ -4,6 +4,7 @@ import android.util.Pair;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import projects.medicationtracker.Models.Dose;
 import projects.medicationtracker.Models.Medication;
@@ -126,7 +127,7 @@ public class NativeDbHelper {
     }
 
     public ArrayList<Notification> getNotifications() {
-        return new ArrayList<>();
+        return new ArrayList<>(Arrays.asList(getNotifications(dbPath, Notification.class)));
     }
 
     /**
@@ -146,5 +147,5 @@ public class NativeDbHelper {
     private native boolean updateDose(String dbPath, Dose dose);
     private native long stashNotification(String dbPath, Notification notification);
     private native void deleteNotification(String dbPath, long notificationId);
-    private native Notification[] getNotifications(String dbPath);
+    private native Notification[] getNotifications(String dbPath, Class<Notification> notificationClass);
 }

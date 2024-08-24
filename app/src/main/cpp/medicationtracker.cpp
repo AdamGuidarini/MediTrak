@@ -161,6 +161,10 @@ Notification javaNotificationToNativeNotificationMapper(jobject notification, JN
     );
 }
 
+jobject nativeNotificationToJavaNotificationConverter(JNIEnv* env, Notification notification) {
+    return nullptr;
+}
+
 extern "C"
 JNIEXPORT jboolean JNICALL
 Java_projects_medicationtracker_Helpers_NativeDbHelper_dbExporter(
@@ -498,10 +502,27 @@ JNIEXPORT jobjectArray JNICALL
 Java_projects_medicationtracker_Helpers_NativeDbHelper_getNotifications(
     JNIEnv *env,
     jobject thiz,
-    jstring db_path
+    jstring db_path,
+    jclass jNotificationClass
 ) {
     std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
     DatabaseController controller(dbPath);
 
-    return {};
+    vector<Notification> notifications = controller.getStashedNotifications();
+
+    jobjectArray jNotifications = env->NewObjectArray(
+        notifications.size(),
+        jNotificationClass,
+        nullptr
+    );
+
+    for (int i = 0; i < notifications.size(); i++) {
+//        env->SetObjectArrayElement(
+//          jNotifications,
+//          i,
+//
+//        );
+    }
+
+    return jNotifications;
 }
