@@ -19,11 +19,13 @@ import android.service.notification.StatusBarNotification;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Models.Medication;
+import projects.medicationtracker.Models.Notification;
 import projects.medicationtracker.Workers.NotificationWorker;
 
 public class EventReceiver extends BroadcastReceiver {
@@ -56,13 +58,14 @@ public class EventReceiver extends BroadcastReceiver {
                     db
             );
         } else if (intent.getAction().contains(DISMISSED_ACTION)) {
-            String medId = "_" + intent.getAction().split("_")[1];
-
             nativeDbHelper.deleteNotification(intent.getLongExtra(NOTIFICATION_ID, 0));
         } else {
+            final ArrayList<Notification> notifications = nativeDbHelper.getNotifications();
+
             for (final Medication medication : medications) {
                 prepareNotification(context, medication);
             }
+
         }
 
         NotificationManager manager = (NotificationManager) context.getSystemService(

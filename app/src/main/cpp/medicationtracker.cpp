@@ -492,3 +492,16 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_deleteNotification(
 
     controller.deleteNotification(notificationId);
 }
+
+extern "C"
+JNIEXPORT jobjectArray JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_getNotifications(
+    JNIEnv *env,
+    jobject thiz,
+    jstring db_path
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    DatabaseController controller(dbPath);
+
+    return {};
+}
