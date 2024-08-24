@@ -474,5 +474,5 @@ vector<Notification> DatabaseController::getStashedNotifications() {
 }
 
 void DatabaseController::deleteNotification(long id) {
-    manager.deleteRecord(NOTIFICATION_ID, { pair(NOTIFICATION_ID, to_string(id)) });
+    manager.deleteRecord(NOTIFICATIONS, { pair(DOSE_ID, to_string(id)) });
 }

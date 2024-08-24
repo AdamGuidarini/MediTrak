@@ -478,3 +478,17 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_stashNotification(
 
     return controller.stashNotification(notificationToStash);
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_deleteNotification(
+    JNIEnv *env,
+    jobject thiz,
+    jstring db_path,
+    jlong notificationId
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    DatabaseController controller(dbPath);
+
+    controller.deleteNotification(notificationId);
+}

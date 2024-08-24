@@ -6,6 +6,8 @@ import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION
 import static projects.medicationtracker.Helpers.NotificationHelper.clearPendingNotifications;
 import static projects.medicationtracker.Helpers.NotificationHelper.createNotifications;
 import static projects.medicationtracker.Helpers.NotificationHelper.scheduleIn15Minutes;
+import static projects.medicationtracker.MediTrak.DATABASE_PATH;
+import static projects.medicationtracker.Workers.NotificationWorker.DISMISSED_ACTION;
 import static projects.medicationtracker.Workers.NotificationWorker.SNOOZE_ACTION;
 import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
 
@@ -19,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Workers.NotificationWorker;
@@ -27,6 +30,7 @@ public class EventReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         final DBHelper db = new DBHelper(context);
+        final NativeDbHelper nativeDbHelper = new NativeDbHelper(DATABASE_PATH);
         ArrayList<Medication> medications = db.getMedications();
 
         if (intent.getAction().contains(NotificationWorker.MARK_AS_TAKEN_ACTION)) {
@@ -39,6 +43,8 @@ public class EventReceiver extends BroadcastReceiver {
                     intent.getStringExtra(DOSE_TIME + medId),
                     db
             );
+
+            nativeDbHelper.deleteNotification(intent.getLongExtra(NOTIFICATION_ID, 0));
         } else if (intent.getAction().contains(SNOOZE_ACTION)) {
             String medId = "_" + intent.getAction().split("_")[1];
 
@@ -49,6 +55,10 @@ public class EventReceiver extends BroadcastReceiver {
                     intent.getStringExtra(DOSE_TIME + medId),
                     db
             );
+        } else if (intent.getAction().contains(DISMISSED_ACTION)) {
+            String medId = "_" + intent.getAction().split("_")[1];
+
+            nativeDbHelper.deleteNotification(intent.getLongExtra(NOTIFICATION_ID, 0));
         } else {
             for (final Medication medication : medications) {
                 prepareNotification(context, medication);

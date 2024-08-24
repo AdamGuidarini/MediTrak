@@ -117,7 +117,11 @@ public class NativeDbHelper {
     }
 
     public long stashNotification(Notification notification) {
-        return 0;
+        return stashNotification(dbPath, notification);
+    }
+
+    public void deleteNotification(long notificationId) {
+        deleteNotification(dbPath, notificationId);
     }
 
     /**
@@ -136,4 +140,5 @@ public class NativeDbHelper {
     private native Dose getDoseById(String dbPath, long doseId, Medication med);
     private native boolean updateDose(String dbPath, Dose dose);
     private native long stashNotification(String dbPath, Notification notification);
+    private native void deleteNotification(String dbPath, long notificationId);
 }

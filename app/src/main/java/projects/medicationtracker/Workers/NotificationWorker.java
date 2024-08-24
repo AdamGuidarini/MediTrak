@@ -35,6 +35,7 @@ public class NotificationWorker extends Worker {
     public static final int SUMMARY_ID = Integer.MAX_VALUE;
     public static String MARK_AS_TAKEN_ACTION = "markAsTaken";
     public static String SNOOZE_ACTION = "snooze15";
+    public static String DISMISSED_ACTION = "dismissed";
 
     NotificationWorker(Context context, WorkerParameters params) {
         super(context, params);
@@ -102,6 +103,7 @@ public class NotificationWorker extends Worker {
     ) {
         Intent markTakenIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
         Intent snoozeIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
+        Intent deletedIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
         String embeddedMedId = "_" + medId;
 
         markTakenIntent.removeExtra(DOSE_TIME);
@@ -116,6 +118,11 @@ public class NotificationWorker extends Worker {
         snoozeIntent.putExtra(MEDICATION_ID + embeddedMedId, medId);
         snoozeIntent.putExtra(NOTIFICATION_ID + embeddedMedId, notificationId);
         snoozeIntent.putExtra(DOSE_TIME + embeddedMedId, doseTime);
+
+        deletedIntent.setAction(DISMISSED_ACTION + embeddedMedId);
+        deletedIntent.putExtra(MEDICATION_ID + embeddedMedId, medId);
+        deletedIntent.putExtra(NOTIFICATION_ID + embeddedMedId, notificationId);
+        deletedIntent.putExtra(DOSE_TIME + embeddedMedId, doseTime);
 
         PendingIntent markAsTakenPendingIntent =
                 PendingIntent.getBroadcast(
@@ -135,6 +142,15 @@ public class NotificationWorker extends Worker {
                                 PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
+        PendingIntent deleteIntent =
+            PendingIntent.getBroadcast(
+                getApplicationContext(),
+                0,
+                deletedIntent,
+                SDK_INT >= Build.VERSION_CODES.S ?
+                    PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
+            );
+
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, CHANNEL_ID)
                         .setContentTitle(context.getString(R.string.app_name))
@@ -152,7 +168,8 @@ public class NotificationWorker extends Worker {
                                 0,
                                 context.getString(R.string.snooze_message),
                                 snoozePendingIntent
-                        );
+                        )
+                        .setDeleteIntent(deleteIntent);
 
         Intent resIntent =
                 new Intent(context, MainActivity.class);
