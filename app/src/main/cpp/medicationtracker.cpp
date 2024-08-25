@@ -161,8 +161,17 @@ Notification javaNotificationToNativeNotificationMapper(jobject notification, JN
     );
 }
 
-jobject nativeNotificationToJavaNotificationConverter(JNIEnv* env, Notification notification) {
-    return nullptr;
+jobject nativeNotificationToJavaNotificationConverter(JNIEnv* env, Notification notification, jclass notificationClass) {
+    jmethodID constructor = env->GetMethodID(notificationClass, "<init>", "(JJJLjava/lang/String;)V");
+
+    return env->NewObject(
+        notificationClass,
+        constructor,
+        notification.id,
+        notification.medId,
+        notification.notificationId,
+        env->NewStringUTF(notification.doseTime.c_str())
+    );
 }
 
 extern "C"
@@ -517,11 +526,11 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getNotifications(
     );
 
     for (int i = 0; i < notifications.size(); i++) {
-//        env->SetObjectArrayElement(
-//          jNotifications,
-//          i,
-//
-//        );
+        env->SetObjectArrayElement(
+          jNotifications,
+          i,
+          nativeNotificationToJavaNotificationConverter(env, notifications[i], jNotificationClass)
+        );
     }
 
     return jNotifications;
