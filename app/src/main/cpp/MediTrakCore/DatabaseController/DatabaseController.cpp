@@ -4,7 +4,7 @@
 
 #include "DatabaseController.h"
 
-#include <utility>
+using namespace std;
 
 DatabaseController::DatabaseController(string path) {
     manager = DbManager(std::move(path), true);
@@ -194,7 +194,7 @@ void DatabaseController::deleteRecord(string table, map<string, string> where) {
     manager.deleteRecord(std::move(table), std::move(where));
 }
 
-void DatabaseController::updateSettings(map<std::string, std::string> values) {
+void DatabaseController::updateSettings(map<string, string> values) {
     manager.update(SETTINGS_TABLE, std::move(values), {});
 }
 
@@ -430,20 +430,24 @@ bool DatabaseController::updateDose(const Dose& dose) {
 }
 
 bool DatabaseController::stashNotification(const Notification& notification) {
-    map<string, string> values;
+    string subquery = "SELECT " + NOTIFICATION_ID + " FROM " + NOTIFICATIONS
+            + " WHERE " + MED_ID + "=" + to_string(notification.medId)
+            + " AND " + DOSE_ID + "=" + to_string(notification.notificationId);
 
-    values.insert(pair<string, string>(MED_ID, to_string(notification.medId)));
-    values.insert(pair<string, string>(DOSE_TIME, notification.doseTime));
-    values.insert(pair<string, string>(DOSE_ID, to_string(notification.notificationId)));
+    string query = "INSERT OR REPLACE INTO " + NOTIFICATIONS
+            + "(" + NOTIFICATION_ID + "," + MED_ID + "," + DOSE_ID + "," + SCHEDULED_TIME + ")"
+            + " VALUES ("
+            + "(" + subquery + "),"
+            + to_string(notification.medId) + ","
+            + to_string(notification.notificationId) + ","
+            + "'" + notification.doseTime + "'"
+            +")";
 
     try {
-        manager.insert(
-            MEDICATION_TRACKER_TABLE,
-            values
-        );
+        manager.execSql(query);
 
         return true;
-    } catch (exception& e) {
+    } catch (runtime_error& e) {
         cerr << "Failed to save notification for medication " << notification.medId << endl;
 
         return false;

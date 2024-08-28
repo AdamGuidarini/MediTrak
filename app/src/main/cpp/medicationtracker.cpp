@@ -5,7 +5,6 @@
 #include <android/log.h>
 #include <string>
 #include <map>
-#include <cstdio>
 
 std::map<std::string, std::string> getValues(jobjectArray arr, JNIEnv *env) {
     const jclass pair = env->FindClass("android/util/Pair");
@@ -13,7 +12,7 @@ std::map<std::string, std::string> getValues(jobjectArray arr, JNIEnv *env) {
     _jfieldID *const firstFieldId = env->GetFieldID(pair, "first", "Ljava/lang/Object;");
     _jfieldID *const secondFieldId = env->GetFieldID(pair, "second", "Ljava/lang/Object;");
 
-    map<string, string> vals;
+    std::map<std::string, std::string> vals;
 
     for (int i = 0; i < env->GetArrayLength(arr); i++) {
         jstring firstField = (jstring) env->GetObjectField(env->GetObjectArrayElement(arr, i), firstFieldId);
@@ -190,7 +189,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbExporter(
 
     for (int i = 0; i < len; i++) {
         auto str = (jstring) (env->GetObjectArrayElement(ignoredTables, i));
-        string rawString = env->GetStringUTFChars(str, JNI_FALSE);
+        auto rawString = env->GetStringUTFChars(str, JNI_FALSE);
 
         ignoredTbls.push_back(rawString);
     }
@@ -225,7 +224,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(
 
     for (int i = 0; i < len; i++) {
         auto str = (jstring) (env->GetObjectArrayElement(ignored_tables, i));
-        string rawString = env->GetStringUTFChars(str, JNI_FALSE);
+        auto rawString = env->GetStringUTFChars(str, JNI_FALSE);
 
         ignoredTbls.push_back(rawString);
     }
@@ -489,7 +488,13 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_stashNotification(
 
     Notification notificationToStash = javaNotificationToNativeNotificationMapper(notification, env);
 
-    return controller.stashNotification(notificationToStash);
+    try {
+        return controller.stashNotification(notificationToStash);
+    } catch (exception& e) {
+        __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
+
+        return false;
+    }
 }
 
 extern "C"
@@ -517,7 +522,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getNotifications(
     std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
     DatabaseController controller(dbPath);
 
-    vector<Notification> notifications = controller.getStashedNotifications();
+    std::vector<Notification> notifications = controller.getStashedNotifications();
 
     jobjectArray jNotifications = env->NewObjectArray(
         notifications.size(),
@@ -529,7 +534,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getNotifications(
         env->SetObjectArrayElement(
           jNotifications,
           i,
-          nativeNotificationToJavaNotificationConverter(env, notifications[i], jNotificationClass)
+          nativeNotificationToJavaNotificationConverter(env, notifications.at(i), jNotificationClass)
         );
     }
 

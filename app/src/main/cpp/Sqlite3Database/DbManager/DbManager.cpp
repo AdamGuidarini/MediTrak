@@ -115,7 +115,7 @@ int DbManager::getVersionNumber() {
     return version;
 }
 
-void DbManager::execSql(string sql,  int (*callback) (void *, int, char**, char **)) {
+void DbManager::execSql(string sql, int (*callback) (void *, int, char**, char **)) {
     char *err;
     int rc = sqlite3_exec(db, sql.c_str(), callback, 0, &err);
 
