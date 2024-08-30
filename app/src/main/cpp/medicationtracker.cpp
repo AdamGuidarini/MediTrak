@@ -508,7 +508,12 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_deleteNotification(
     std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
     DatabaseController controller(dbPath);
 
-    controller.deleteNotification(notificationId);
+    try {
+        controller.deleteNotification(notificationId);
+    } catch (exception& e) {
+        std::string err = "Notification deletion failed. NotificationId: " + to_string(notificationId);
+        __android_log_write(ANDROID_LOG_ERROR, nullptr, err.c_str());
+    }
 }
 
 extern "C"

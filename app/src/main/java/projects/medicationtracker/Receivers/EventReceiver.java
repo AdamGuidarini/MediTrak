@@ -16,6 +16,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class EventReceiver extends BroadcastReceiver {
                     db
             );
 
-            nativeDbHelper.deleteNotification(intent.getLongExtra(NOTIFICATION_ID, 0));
+            nativeDbHelper.deleteNotification(intent.getLongExtra(NOTIFICATION_ID + medId, 0));
         } else if (intent.getAction().contains(SNOOZE_ACTION)) {
             String medId = "_" + intent.getAction().split("_")[1];
 
@@ -58,7 +59,9 @@ public class EventReceiver extends BroadcastReceiver {
                     db
             );
         } else if (intent.getAction().contains(DISMISSED_ACTION)) {
-            nativeDbHelper.deleteNotification(intent.getLongExtra(NOTIFICATION_ID, 0));
+            String medId = "_" + intent.getAction().split("_")[1];
+
+            nativeDbHelper.deleteNotification(intent.getLongExtra(MEDICATION_ID + medId, 0));
         } else {
             final ArrayList<Notification> notifications = nativeDbHelper.getNotifications();
 
