@@ -16,7 +16,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.service.notification.StatusBarNotification;
-import android.util.Log;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,6 +31,8 @@ import projects.medicationtracker.Workers.NotificationWorker;
 public class EventReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
+        DATABASE_PATH = context.getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
+
         final DBHelper db = new DBHelper(context);
         final NativeDbHelper nativeDbHelper = new NativeDbHelper(DATABASE_PATH);
         ArrayList<Medication> medications = db.getMedications();

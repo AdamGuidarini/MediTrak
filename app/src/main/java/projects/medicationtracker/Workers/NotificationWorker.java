@@ -25,6 +25,7 @@ import androidx.work.WorkerParameters;
 
 import java.util.Arrays;
 
+import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.MainActivity;
 import projects.medicationtracker.R;
