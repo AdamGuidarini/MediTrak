@@ -20,10 +20,10 @@ import android.util.Log;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
+import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Notification;
@@ -65,10 +65,19 @@ public class EventReceiver extends BroadcastReceiver {
         } else {
             final ArrayList<Notification> notifications = nativeDbHelper.getNotifications();
 
+            for (final Notification n : notifications) {
+                Medication med = medications.stream().filter(m -> m.getId() == n.getMedId()).findFirst().orElse(null);
+
+                if (med == null) {
+                    continue;
+                }
+
+                NotificationHelper.scheduleNotification(context, med, n.getDoseTime(), n.getNotificationId());
+            }
+
             for (final Medication medication : medications) {
                 prepareNotification(context, medication);
             }
-
         }
 
         NotificationManager manager = (NotificationManager) context.getSystemService(

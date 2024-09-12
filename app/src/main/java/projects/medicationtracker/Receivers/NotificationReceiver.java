@@ -4,7 +4,6 @@ import static projects.medicationtracker.Helpers.NotificationHelper.DOSE_TIME;
 import static projects.medicationtracker.Helpers.NotificationHelper.MEDICATION_ID;
 import static projects.medicationtracker.Helpers.NotificationHelper.MESSAGE;
 import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION_ID;
-import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -43,7 +42,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         Dose dose;
 
         // Set new Intent for a new notification
-        NotificationHelper.scheduleNotification(
+        NotificationHelper.scheduleNotificationInFuture(
                 context,
                 medication,
                 doseTime,
