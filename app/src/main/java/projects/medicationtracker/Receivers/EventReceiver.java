@@ -16,6 +16,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -70,6 +71,8 @@ public class EventReceiver extends BroadcastReceiver {
                 Medication med = medications.stream().filter(m -> m.getId() == n.getMedId()).findFirst().orElse(null);
 
                 if (med == null) {
+                    Log.e("EventReceiver", "Failed to create notification for Medication: " + med.getName());
+
                     continue;
                 }
 

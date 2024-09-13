@@ -464,7 +464,7 @@ vector<Notification> DatabaseController::getStashedNotifications() {
             stol(table->getItem(NOTIFICATION_ID)),
             stol(table->getItem(MED_ID)),
             stol(table->getItem(DOSE_ID)),
-            table->getItem(DOSE_TIME)
+            table->getItem(SCHEDULED_TIME)
         );
 
         notifications.push_back(note);
