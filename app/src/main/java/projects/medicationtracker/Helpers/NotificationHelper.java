@@ -31,15 +31,15 @@ public class NotificationHelper {
     public final static String NOTIFICATION_ID = "notification-id";
 
     /**
-     * Sets an alarm to create a notification.
+     * Sets an alarm to create a notification. Ensures notification will fire in the future
      *
      * @param notificationContext Context for the alarm.
      * @param medication          Medication form which the user will be notified.
      * @param time                Time the notification will be set.
      * @param notificationId      ID for the PendingIntent that stores data for the notification.
      */
-    public static void scheduleNotification(Context notificationContext, Medication medication,
-                                            LocalDateTime time, long notificationId) {
+    public static void scheduleNotificationInFuture(Context notificationContext, Medication medication,
+                                                    LocalDateTime time, long notificationId) {
         // Loops to increase time, prevents notification bombardment when editing time.
         while (time.isBefore(LocalDateTime.now())) {
             time = time.plusMinutes(medication.getFrequency());
@@ -49,6 +49,22 @@ public class NotificationHelper {
         long alarmTimeMillis = zdt.toInstant().toEpochMilli();
 
         createNotificationAlarm(notificationContext, alarmTimeMillis, medication, time, notificationId);
+    }
+
+    /**
+     * Sets alarm for notification without ensuring the alarm is scheduled for the future.
+     *
+     * @param context        Context for the alarm.
+     * @param medication     Medication form which the user will be notified.
+     * @param scheduledTime  Time the notification will be set.
+     * @param notificationId ID for the PendingIntent that stores data for the notification.
+     */
+    public static void scheduleNotification(Context context, Medication medication,
+                                LocalDateTime scheduledTime, long notificationId) {
+        ZonedDateTime zdt = scheduledTime.atZone(ZoneId.systemDefault());
+        long alarmTimeMillis = zdt.toInstant().toEpochMilli();
+
+        createNotificationAlarm(context, alarmTimeMillis, medication, scheduledTime, notificationId);
     }
 
     /**
@@ -185,7 +201,7 @@ public class NotificationHelper {
     }
 
     /**
-     * Creates any and all medications for a medication.
+     * Creates any and all notifications for a medication.
      *
      * @param medication Medication in need of notifications.
      * @param context    Application context.
@@ -200,7 +216,7 @@ public class NotificationHelper {
         }
 
         if (medicationTimeIds.length == 1) {
-            scheduleNotification(
+            scheduleNotificationInFuture(
                     context,
                     medication,
                     LocalDateTime.of(
@@ -211,7 +227,7 @@ public class NotificationHelper {
             );
         } else {
             for (int i = 0; i < medicationTimeIds.length; i++) {
-                scheduleNotification(
+                scheduleNotificationInFuture(
                         context,
                         medication,
                         LocalDateTime.of(

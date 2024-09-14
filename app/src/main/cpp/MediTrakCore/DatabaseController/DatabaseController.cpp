@@ -4,8 +4,10 @@
 
 #include "DatabaseController.h"
 
+using namespace std;
+
 DatabaseController::DatabaseController(string path) {
-    manager = DbManager(path, true);
+    manager = DbManager(std::move(path), true);
 
     manager.openDb();
 
@@ -22,7 +24,7 @@ DatabaseController::DatabaseController(string path) {
     }
 }
 
-DatabaseController::~DatabaseController() {}
+DatabaseController::~DatabaseController() = default;
 
 void DatabaseController::create() {
     manager.execSql("CREATE TABLE IF NOT EXISTS " + MEDICATION_TABLE + "("
@@ -32,7 +34,7 @@ void DatabaseController::create() {
         + MED_DOSAGE + " DECIMAL(3,2),"
         + MED_UNITS + " TEXT,"
         + START_DATE + " DATETIME,"
-        + MED_FREQUENCY + " INT,"
+        + MED_FREQUENCY + " INTEGER,"
         + ALIAS + " TEXT,"
         + ACTIVE + " BOOLEAN DEFAULT 1,"
         + PARENT_ID + " INTEGER,"
@@ -45,68 +47,70 @@ void DatabaseController::create() {
 
     manager.execSql("CREATE TABLE IF NOT EXISTS " + MEDICATION_TRACKER_TABLE + "("
         + DOSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-        + MED_ID + " INT,"
+        + MED_ID + " INTEGER,"
         + DOSE_TIME + " DATETIME,"
         + TAKEN + " BOOLEAN,"
         + TIME_TAKEN + " DATETIME,"
-        + OVERRIDE_DOSE_AMOUNT + " INT,"
+        + OVERRIDE_DOSE_AMOUNT + " INTEGER,"
         + OVERRIDE_DOSE_UNIT + " TEXT,"
         + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
         + ");"
     );
 
     manager.execSql(
-            "CREATE TABLE IF NOT EXISTS " + MEDICATION_TIMES + "("
-            + TIME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + MED_ID + " INT,"
-            + DRUG_TIME + " TEXT,"
-            + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-            + ");"
+        "CREATE TABLE IF NOT EXISTS " + MEDICATION_TIMES + "("
+        + TIME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+        + MED_ID + " INTEGER,"
+        + DRUG_TIME + " TEXT,"
+        + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
+        + ");"
     );
 
     manager.execSql(
-            "CREATE TABLE IF NOT EXISTS " + NOTES_TABLE + "("
-            + NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + MED_ID + " INT, "
-            + NOTE + " TEXT, "
-            + ENTRY_TIME + " DATETIME,"
-            + TIME_EDITED + " DATETIME,"
-            + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-            + ");"
+        "CREATE TABLE IF NOT EXISTS " + NOTES_TABLE + "("
+        + NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+        + MED_ID + " INTEGER, "
+        + NOTE + " TEXT, "
+        + ENTRY_TIME + " DATETIME,"
+        + TIME_EDITED + " DATETIME,"
+        + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
+        + ");"
     );
 
     manager.execSql(
-            "CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
-            + TIME_BEFORE_DOSE + " INT DEFAULT 2, "
-            + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1, "
-            + THEME + " TEXT DEFAULT '" + DEFAULT + "',"
-            + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0,"
-            + DATE_FORMAT + " TEXT DEFAULT '" + DateFormats::MM_DD_YYYY + "',"
-            + TIME_FORMAT + " TEXT DEFAULT '" + TimeFormats::_12_HOUR + "',"
-            + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0);"
+        "CREATE TABLE IF NOT EXISTS " + SETTINGS_TABLE + "("
+        + TIME_BEFORE_DOSE + " INTEGER DEFAULT 2, "
+        + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1, "
+        + THEME + " TEXT DEFAULT '" + DEFAULT + "',"
+        + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0,"
+        + DATE_FORMAT + " TEXT DEFAULT '" + DateFormats::MM_DD_YYYY + "',"
+        + TIME_FORMAT + " TEXT DEFAULT '" + TimeFormats::_12_HOUR + "',"
+        + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0);"
     );
 
     manager.execSql(
-            "INSERT INTO " + SETTINGS_TABLE + " (" + TIME_BEFORE_DOSE + ")"
-            + " VALUES (2);"
+        "INSERT INTO " + SETTINGS_TABLE + " (" + TIME_BEFORE_DOSE + ")"
+        + " VALUES (2);"
     );
 
     manager.execSql(
-            "CREATE TABLE IF NOT EXISTS " + ACTIVITY_CHANGE_TABLE + "("
-            + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + MED_ID + " INT,"
-            + CHANGE_DATE + " DATETIME,"
-            + PAUSED + " BOOLEAN,"
-            + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-            + ");"
+        "CREATE TABLE IF NOT EXISTS " + ACTIVITY_CHANGE_TABLE + "("
+        + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+        + MED_ID + " INTEGER,"
+        + CHANGE_DATE + " DATETIME,"
+        + PAUSED + " BOOLEAN,"
+        + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
+        + ");"
     );
 
     manager.execSql(
-            "CREATE TABLE IF NOT EXISTS " + NOTIFICATIONS + "("
-            + NOTIFICATION_ID + " INT PRIMARY KEY,"
-            + MED_ID + " INT, "
-            + DOSE_ID + " INT, "
-            + SCHEDULED_TIME + " DATETIME);"
+        "CREATE TABLE IF NOT EXISTS " + NOTIFICATIONS + "("
+        + NOTIFICATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+        + MED_ID + " INTEGER, "
+        + DOSE_ID + " INTEGER, "
+        + SCHEDULED_TIME + " DATETIME,"
+        + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
+        + ");"
     );
 
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
@@ -123,14 +127,14 @@ void DatabaseController::upgrade(int currentVersion) {
 
     if (currentVersion < 4) {
         manager.execSql(
-                "CREATE TABLE IF NOT EXISTS " + ACTIVITY_CHANGE_TABLE + "("
-                + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + MED_ID + " INT,"
-                + CHANGE_DATE + " DATETIME,"
-                + PAUSED + " BOOLEAN,"
-                + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                + ");"
-                );
+            "CREATE TABLE IF NOT EXISTS " + ACTIVITY_CHANGE_TABLE + "("
+            + CHANGE_EVENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + MED_ID + " INTEGER,"
+            + CHANGE_DATE + " DATETIME,"
+            + PAUSED + " BOOLEAN,"
+            + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
+            + ");"
+        );
     }
 
     if (currentVersion < 5) {
@@ -156,37 +160,42 @@ void DatabaseController::upgrade(int currentVersion) {
     }
 
     if (currentVersion < 13) {
-        manager.execSql(
-                "CREATE TABLE IF NOT EXISTS " + NOTIFICATIONS + "("
-                + NOTIFICATION_ID + " INT PRIMARY KEY,"
-                + MED_ID + " INT, "
-                + DOSE_ID + " INT, "
-                + SCHEDULED_TIME + " DATETIME);"
-        );
-
-
         manager.execSql("ALTER TABLE " + MEDICATION_TRACKER_TABLE + " ADD COLUMN " + OVERRIDE_DOSE_AMOUNT + " INT;");
         manager.execSql("ALTER TABLE " + MEDICATION_TRACKER_TABLE + " ADD COLUMN " + OVERRIDE_DOSE_UNIT + " TEXT;");
         manager.execSql("ALTER TABLE " + MEDICATION_TABLE + " ADD COLUMN " + INSTRUCTIONS + " TEXT;");
     }
 
+    if (currentVersion < 14) {
+        manager.execSql(
+            "BEGIN TRANSACTION; DROP TABLE IF EXISTS " + NOTIFICATIONS
+            + "; CREATE TABLE IF NOT EXISTS " + NOTIFICATIONS + "("
+            + NOTIFICATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + MED_ID + " INTEGER, "
+            + DOSE_ID + " INTEGER, "
+            + SCHEDULED_TIME + " DATETIME,"
+            + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
+            + ");"
+            + "END TRANSACTION;"
+        );
+    }
+
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
 }
 
-long DatabaseController::insert(string table, map<string, string> values) {
-    return manager.insert(table, values);
+long DatabaseController::insert(const string& table, map<string, string> values) {
+    return manager.insert(table, std::move(values));
 }
 
 void DatabaseController::update(string table, map<string, string> values, map<string, string> where) {
-    manager.update(table, values, where);
+    manager.update(std::move(table), std::move(values), std::move(where));
 }
 
 void DatabaseController::deleteRecord(string table, map<string, string> where) {
-    manager.deleteRecord(table, where);
+    manager.deleteRecord(std::move(table), std::move(where));
 }
 
-void DatabaseController::updateSettings(map<std::string, std::string> values) {
-    manager.update(SETTINGS_TABLE, values, {});
+void DatabaseController::updateSettings(map<string, string> values) {
+    manager.update(SETTINGS_TABLE, std::move(values), {});
 }
 
 void DatabaseController::exportJSON(
@@ -210,10 +219,10 @@ void DatabaseController::importJSONString(
     manager.importData(data, ignoreTables);
 }
 
-void DatabaseController::exportCsv(string exportPath, map<string, vector<string>> data) {
+void DatabaseController::exportCsv(const string& exportPath, map<string, vector<string>> data) {
     ofstream file(exportPath, std::fstream::trunc);
     stringstream fileContents;
-    int longestValue = 0;
+    unsigned int longestValue = 0;
 
     for (auto& item : data) {
         fileContents << item.first << ',';
@@ -241,6 +250,7 @@ void DatabaseController::exportCsv(string exportPath, map<string, vector<string>
     }
 
     file << fileContents.rdbuf();
+    file.close();
 }
 
 Medication DatabaseController::getMedication(long medicationId) {
@@ -256,16 +266,16 @@ Medication DatabaseController::getMedication(long medicationId) {
     table->moveToFirst();
 
     medication = Medication(
-            table->getItem(MED_NAME),
-            table->getItem(PATIENT_NAME),
-            table->getItem(MED_UNITS),
-            {},
-            table->getItem(START_DATE),
-            stol(table->getItem(MED_ID)),
-            stoi(table->getItem(MED_DOSAGE)),
-            stoi(table->getItem(MED_FREQUENCY)),
-            table->getItem(ACTIVE) == "1",
-            table->getItem(ALIAS)
+        table->getItem(MED_NAME),
+        table->getItem(PATIENT_NAME),
+        table->getItem(MED_UNITS),
+        {},
+        table->getItem(START_DATE),
+        stol(table->getItem(MED_ID)),
+        stoi(table->getItem(MED_DOSAGE)),
+        stoi(table->getItem(MED_FREQUENCY)),
+        table->getItem(ACTIVE) == "1",
+        table->getItem(ALIAS)
     );
 
     if (!table->getItem(PARENT_ID).empty()) {
@@ -303,7 +313,7 @@ vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
 
     while (table->getCount() > 0 && !table->isAfterLast()) {
         int overrideDose = -1;
-        string overrideUnit = "";
+        string overrideUnit;
 
         if (!empty(table->getItem(OVERRIDE_DOSE_AMOUNT))) {
             overrideDose = stoi(table->getItem(OVERRIDE_DOSE_AMOUNT));
@@ -313,8 +323,7 @@ vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
             overrideUnit = table->getItem(OVERRIDE_DOSE_UNIT);
         }
 
-        doses.push_back(
-            Dose(
+        doses.emplace_back(
                 stol(table->getItem(DOSE_ID)),
                 stol(table->getItem(MED_ID)),
                 table->getItem(TAKEN) == "1",
@@ -322,7 +331,6 @@ vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
                 table->getItem(TIME_TAKEN),
                 overrideDose,
                 overrideUnit
-            )
         );
 
         table->moveToNext();
@@ -340,7 +348,7 @@ Dose* DatabaseController::setDose(Table* table) {
         table->moveToFirst();
 
         int overrideDose = -1;
-        string overrideUnit = "";
+        string overrideUnit;
 
         if (!empty(table->getItem(OVERRIDE_DOSE_AMOUNT))) {
             overrideDose = stoi(table->getItem(OVERRIDE_DOSE_AMOUNT));
@@ -351,20 +359,20 @@ Dose* DatabaseController::setDose(Table* table) {
         }
 
         dose = new Dose(
-                stol(table->getItem(DOSE_ID)),
-                stol(table->getItem(MED_ID)),
-                table->getItem(TAKEN) == "1",
-                table->getItem(DOSE_TIME),
-                table->getItem(TIME_TAKEN),
-                overrideDose,
-                overrideUnit
+            stol(table->getItem(DOSE_ID)),
+            stol(table->getItem(MED_ID)),
+            table->getItem(TAKEN) == "1",
+            table->getItem(DOSE_TIME),
+            table->getItem(TIME_TAKEN),
+            overrideDose,
+            overrideUnit
         );
     }
 
     return dose;
 }
 
-Dose* DatabaseController::findDose(long medicationId, std::string scheduledTime) {
+Dose* DatabaseController::findDose(long medicationId, const string& scheduledTime) {
     Table* result = manager.execSqlWithReturn(
         "SELECT * FROM " + MEDICATION_TRACKER_TABLE
         + " WHERE " + MED_ID + "=" + to_string(medicationId)
@@ -392,7 +400,7 @@ Dose* DatabaseController::getDoseById(long doseId) {
     return dose;
 }
 
-bool DatabaseController::updateDose(Dose dose) {
+bool DatabaseController::updateDose(const Dose& dose) {
     map<string, string> values;
 
     values.insert(pair<string, string>(TIME_TAKEN, dose.timeTaken));
@@ -414,9 +422,61 @@ bool DatabaseController::updateDose(Dose dose) {
         );
 
         return true;
-    } catch (exception e) {
+    } catch (exception& e) {
         cerr << "Failed to update dose " << dose.id << endl;
 
         return false;
     }
+}
+
+bool DatabaseController::stashNotification(const Notification& notification) {
+    string subquery = "SELECT " + NOTIFICATION_ID + " FROM " + NOTIFICATIONS
+            + " WHERE " + MED_ID + "=" + to_string(notification.medId)
+            + " AND " + DOSE_ID + "=" + to_string(notification.notificationId);
+
+    string query = "INSERT OR REPLACE INTO " + NOTIFICATIONS
+            + "(" + NOTIFICATION_ID + "," + MED_ID + "," + DOSE_ID + "," + SCHEDULED_TIME + ")"
+            + " VALUES ("
+            + "(" + subquery + "),"
+            + to_string(notification.medId) + ","
+            + to_string(notification.notificationId) + ","
+            + "'" + notification.doseTime + "'"
+            +")";
+
+    try {
+        manager.execSql(query);
+
+        return true;
+    } catch (runtime_error& e) {
+        cerr << "Failed to save notification for medication " << notification.medId << endl;
+
+        return false;
+    }
+}
+
+vector<Notification> DatabaseController::getStashedNotifications() {
+    vector<Notification> notifications;
+
+    Table* table = manager.execSqlWithReturn("SELECT * FROM " + NOTIFICATIONS);
+
+    while (table->getCount() > 0 && !table->isAfterLast()) {
+        Notification note(
+            stol(table->getItem(NOTIFICATION_ID)),
+            stol(table->getItem(MED_ID)),
+            stol(table->getItem(DOSE_ID)),
+            table->getItem(SCHEDULED_TIME)
+        );
+
+        notifications.push_back(note);
+
+        table->moveToNext();
+    }
+
+    delete table;
+
+    return notifications;
+}
+
+void DatabaseController::deleteNotification(long id) {
+    manager.deleteRecord(NOTIFICATIONS, { pair(DOSE_ID, to_string(id)) });
 }

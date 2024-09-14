@@ -3,9 +3,12 @@ package projects.medicationtracker.Helpers;
 import android.util.Pair;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import projects.medicationtracker.Models.Dose;
 import projects.medicationtracker.Models.Medication;
+import projects.medicationtracker.Models.Notification;
 
 public class NativeDbHelper {
     static {
@@ -115,6 +118,18 @@ public class NativeDbHelper {
         return updateDose(dbPath, dose);
     }
 
+    public long stashNotification(Notification notification) {
+        return stashNotification(dbPath, notification);
+    }
+
+    public void deleteNotification(long notificationId) {
+        deleteNotification(dbPath, notificationId);
+    }
+
+    public ArrayList<Notification> getNotifications() {
+        return new ArrayList<>(Arrays.asList(getNotifications(dbPath, Notification.class)));
+    }
+
     /**
      * Native methods
      */
@@ -130,4 +145,7 @@ public class NativeDbHelper {
     private native Dose findDose(String dbPath, long medicationId, String doseTime, Medication med);
     private native Dose getDoseById(String dbPath, long doseId, Medication med);
     private native boolean updateDose(String dbPath, Dose dose);
+    private native long stashNotification(String dbPath, Notification notification);
+    private native void deleteNotification(String dbPath, long notificationId);
+    private native Notification[] getNotifications(String dbPath, Class<Notification> notificationClass);
 }

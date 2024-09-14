@@ -7,6 +7,7 @@ import static projects.medicationtracker.Helpers.NotificationHelper.GROUP_KEY;
 import static projects.medicationtracker.Helpers.NotificationHelper.MEDICATION_ID;
 import static projects.medicationtracker.Helpers.NotificationHelper.MESSAGE;
 import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION_ID;
+import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -24,6 +25,8 @@ import androidx.work.WorkerParameters;
 
 import java.util.Arrays;
 
+import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.MainActivity;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Receivers.EventReceiver;
@@ -33,6 +36,7 @@ public class NotificationWorker extends Worker {
     public static final int SUMMARY_ID = Integer.MAX_VALUE;
     public static String MARK_AS_TAKEN_ACTION = "markAsTaken";
     public static String SNOOZE_ACTION = "snooze15";
+    public static String DISMISSED_ACTION = "dismissed";
 
     NotificationWorker(Context context, WorkerParameters params) {
         super(context, params);
@@ -66,7 +70,16 @@ public class NotificationWorker extends Worker {
 
             // Only fire notification if not other active notification has the same ID
             if (Arrays.stream(notificationManager.getActiveNotifications()).filter(n -> n.getId() == notificationId).toArray().length == 0) {
+                NativeDbHelper nativeDb = new NativeDbHelper(DATABASE_PATH);
+                String doseTimeDb = doseTime.replace("T", " ") + ":00";
+
+                projects.medicationtracker.Models.Notification alert = new projects.medicationtracker.Models.Notification(
+                    -1, medId, notificationId, doseTimeDb
+                );
+
                 notificationManager.notify((int) notificationId, notification);
+
+                nativeDb.stashNotification(alert);
             }
         } catch (Exception e) {
             Log.e("MediTrak:Notifications", e.getMessage());
@@ -91,6 +104,7 @@ public class NotificationWorker extends Worker {
     ) {
         Intent markTakenIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
         Intent snoozeIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
+        Intent deletedIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
         String embeddedMedId = "_" + medId;
 
         markTakenIntent.removeExtra(DOSE_TIME);
@@ -105,6 +119,11 @@ public class NotificationWorker extends Worker {
         snoozeIntent.putExtra(MEDICATION_ID + embeddedMedId, medId);
         snoozeIntent.putExtra(NOTIFICATION_ID + embeddedMedId, notificationId);
         snoozeIntent.putExtra(DOSE_TIME + embeddedMedId, doseTime);
+
+        deletedIntent.setAction(DISMISSED_ACTION + embeddedMedId);
+        deletedIntent.putExtra(MEDICATION_ID + embeddedMedId, medId);
+        deletedIntent.putExtra(NOTIFICATION_ID + embeddedMedId, notificationId);
+        deletedIntent.putExtra(DOSE_TIME + embeddedMedId, doseTime);
 
         PendingIntent markAsTakenPendingIntent =
                 PendingIntent.getBroadcast(
@@ -124,6 +143,15 @@ public class NotificationWorker extends Worker {
                                 PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
+        PendingIntent deleteIntent =
+            PendingIntent.getBroadcast(
+                getApplicationContext(),
+                0,
+                deletedIntent,
+                SDK_INT >= Build.VERSION_CODES.S ?
+                    PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
+            );
+
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, CHANNEL_ID)
                         .setContentTitle(context.getString(R.string.app_name))
@@ -141,7 +169,8 @@ public class NotificationWorker extends Worker {
                                 0,
                                 context.getString(R.string.snooze_message),
                                 snoozePendingIntent
-                        );
+                        )
+                        .setDeleteIntent(deleteIntent);
 
         Intent resIntent =
                 new Intent(context, MainActivity.class);

@@ -115,7 +115,7 @@ int DbManager::getVersionNumber() {
     return version;
 }
 
-void DbManager::execSql(string sql,  int (*callback) (void *, int, char**, char **)) {
+void DbManager::execSql(string sql, int (*callback) (void *, int, char**, char **)) {
     char *err;
     int rc = sqlite3_exec(db, sql.c_str(), callback, 0, &err);
 
@@ -126,7 +126,7 @@ void DbManager::execSql(string sql,  int (*callback) (void *, int, char**, char 
     }
 }
 
-long DbManager::insert(string table, map<string, string> values) {
+long DbManager::insert(const string& table, map<string, string> values) {
     stringstream query;
     map<string, string>::iterator it;
     sqlite3_stmt *stmt;
@@ -213,6 +213,32 @@ void DbManager::update(string table,  map<string, string> values, map<string, st
     query << ';';
 
     execSql(query.str());
+}
+
+void DbManager::update(string table, map<string, string> values, string whereClause, string whereArgs[]) {
+    int argIndex = 0;
+    stringstream query;
+    map<string, string>::iterator it;
+    vector<size_t> positions;
+    size_t pos;
+
+    query << "UPDATE " << table << " SET ";
+
+    for (it = values.begin(); it != values.end();) {
+        query << it->first << "=\'" << it->second << "\'";
+
+        if (++it != values.end()) {
+            query << ',';
+        }
+    }
+
+    pos = whereClause.find('?', 0);
+    while(pos != string::npos) {
+        positions.push_back(pos);
+        pos = whereClause.find('?', pos + 1);
+    }
+
+    // TODO map where args to ?s and fire query
 }
 
 void DbManager::deleteRecord(string table, map<string, string> where) {

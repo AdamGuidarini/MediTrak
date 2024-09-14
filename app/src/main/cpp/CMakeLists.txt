@@ -66,6 +66,7 @@ target_link_libraries( # Specifies the target library.
         DatabaseController
         Medication
         Dose
+        Notification
         DbManager
         # Links the target library to the log library
         # included in the NDK.

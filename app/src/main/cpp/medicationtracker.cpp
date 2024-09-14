@@ -5,7 +5,6 @@
 #include <android/log.h>
 #include <string>
 #include <map>
-#include <cstdio>
 
 std::map<std::string, std::string> getValues(jobjectArray arr, JNIEnv *env) {
     const jclass pair = env->FindClass("android/util/Pair");
@@ -13,7 +12,7 @@ std::map<std::string, std::string> getValues(jobjectArray arr, JNIEnv *env) {
     _jfieldID *const firstFieldId = env->GetFieldID(pair, "first", "Ljava/lang/Object;");
     _jfieldID *const secondFieldId = env->GetFieldID(pair, "second", "Ljava/lang/Object;");
 
-    map<string, string> vals;
+    std::map<std::string, std::string> vals;
 
     for (int i = 0; i < env->GetArrayLength(arr); i++) {
         jstring firstField = (jstring) env->GetObjectField(env->GetObjectArrayElement(arr, i), firstFieldId);
@@ -35,8 +34,6 @@ jobject doseToJavaConverter(Dose dose, JNIEnv* env, jobject &jMedication) {
 
     jmethodID setOverrideDoseAmount = env->GetMethodID(jDose, "setOverrideDoseAmount", "(I)V");
     jmethodID setOverrideDoseUnit = env->GetMethodID(jDose, "setOverrideDoseUnit", "(Ljava/lang/String;)V");
-
-//    jDoses = env->NewObjectArray(doses.size(), jDose, NULL);
 
     jmethodID constructor = env->GetMethodID(
         jDose,
@@ -148,6 +145,34 @@ jobject medicationToJavaConverter(Medication med, JNIEnv* env, jclass jMedicatio
     return jMedicationInstance;
 }
 
+Notification javaNotificationToNativeNotificationMapper(jobject notification, JNIEnv* env) {
+    jclass jNotificationClass = env->GetObjectClass(notification);
+    jmethodID getId = env->GetMethodID(jNotificationClass, "getId", "()J");
+    jmethodID getMedId = env->GetMethodID(jNotificationClass, "getMedId", "()J");
+    jmethodID getNotificationId = env->GetMethodID(jNotificationClass, "getNotificationId", "()J");
+    jmethodID getDoseTime = env->GetMethodID(jNotificationClass, "getDoseTimeString", "()Ljava/lang/String;");
+
+    return Notification(
+        env->CallLongMethod(notification, getId),
+        env->CallLongMethod(notification, getMedId),
+        env->CallLongMethod(notification, getNotificationId),
+        env->GetStringUTFChars((jstring) env->CallObjectMethod(notification, getDoseTime), new jboolean(true))
+    );
+}
+
+jobject nativeNotificationToJavaNotificationConverter(JNIEnv* env, Notification notification, jclass notificationClass) {
+    jmethodID constructor = env->GetMethodID(notificationClass, "<init>", "(JJJLjava/lang/String;)V");
+
+    return env->NewObject(
+        notificationClass,
+        constructor,
+        notification.id,
+        notification.medId,
+        notification.notificationId,
+        env->NewStringUTF(notification.doseTime.c_str())
+    );
+}
+
 extern "C"
 JNIEXPORT jboolean JNICALL
 Java_projects_medicationtracker_Helpers_NativeDbHelper_dbExporter(
@@ -164,7 +189,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbExporter(
 
     for (int i = 0; i < len; i++) {
         auto str = (jstring) (env->GetObjectArrayElement(ignoredTables, i));
-        string rawString = env->GetStringUTFChars(str, JNI_FALSE);
+        auto rawString = env->GetStringUTFChars(str, JNI_FALSE);
 
         ignoredTbls.push_back(rawString);
     }
@@ -199,7 +224,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(
 
     for (int i = 0; i < len; i++) {
         auto str = (jstring) (env->GetObjectArrayElement(ignored_tables, i));
-        string rawString = env->GetStringUTFChars(str, JNI_FALSE);
+        auto rawString = env->GetStringUTFChars(str, JNI_FALSE);
 
         ignoredTbls.push_back(rawString);
     }
@@ -448,4 +473,75 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_updateDose(
     Dose nDose = javaDoseToNativeDoseConverter(dose, env);
 
     return controller.updateDose(nDose);
+}
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_stashNotification(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jobject notification
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    DatabaseController controller(dbPath);
+
+    Notification notificationToStash = javaNotificationToNativeNotificationMapper(notification, env);
+
+    try {
+        return controller.stashNotification(notificationToStash);
+    } catch (exception& e) {
+        __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
+
+        return false;
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_deleteNotification(
+    JNIEnv *env,
+    jobject thiz,
+    jstring db_path,
+    jlong notificationId
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    DatabaseController controller(dbPath);
+
+    try {
+        controller.deleteNotification(notificationId);
+    } catch (exception& e) {
+        std::string err = "Notification deletion failed. NotificationId: " + to_string(notificationId);
+        __android_log_write(ANDROID_LOG_ERROR, nullptr, err.c_str());
+    }
+}
+
+extern "C"
+JNIEXPORT jobjectArray JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_getNotifications(
+    JNIEnv *env,
+    jobject thiz,
+    jstring db_path,
+    jclass jNotificationClass
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    DatabaseController controller(dbPath);
+
+    std::vector<Notification> notifications = controller.getStashedNotifications();
+
+    jobjectArray jNotifications = env->NewObjectArray(
+        notifications.size(),
+        jNotificationClass,
+        nullptr
+    );
+
+    for (int i = 0; i < notifications.size(); i++) {
+        env->SetObjectArrayElement(
+          jNotifications,
+          i,
+          nativeNotificationToJavaNotificationConverter(env, notifications.at(i), jNotificationClass)
+        );
+    }
+
+    return jNotifications;
 }
