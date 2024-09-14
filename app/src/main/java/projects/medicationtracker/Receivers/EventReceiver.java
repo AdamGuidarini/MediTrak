@@ -67,6 +67,10 @@ public class EventReceiver extends BroadcastReceiver {
         } else {
             final ArrayList<Notification> notifications = nativeDbHelper.getNotifications();
 
+            for (final Medication medication : medications) {
+                prepareNotification(context, medication);
+            }
+
             for (final Notification n : notifications) {
                 Medication med = medications.stream().filter(m -> m.getId() == n.getMedId()).findFirst().orElse(null);
 
@@ -77,10 +81,6 @@ public class EventReceiver extends BroadcastReceiver {
                 }
 
                 NotificationHelper.scheduleNotification(context, med, n.getDoseTime(), n.getNotificationId());
-            }
-
-            for (final Medication medication : medications) {
-                prepareNotification(context, medication);
             }
         }
 
