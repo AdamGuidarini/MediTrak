@@ -4,6 +4,7 @@ import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
 import static projects.medicationtracker.MediTrak.DATABASE_PATH;
+import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -306,6 +307,10 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
 
                 manager.cancel(notificationId);
                 nativeDb.deleteNotification(notificationId);
+
+                if (manager.getActiveNotifications().length == 1 && manager.getActiveNotifications()[0].getId() == SUMMARY_ID) {
+                    manager.cancel(SUMMARY_ID);
+                }
             }
         });
 
