@@ -85,9 +85,11 @@ Thanks to [IzzySoft](https://github.com/IzzySoft), this app is available in the 
 
 ## Screenshots
 
-<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/63f322c3-8006-4ba9-8c2f-fa27cbb7001e" width="15%">
-<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/5a8bdc42-ee52-426a-bc2c-6f898fdb825e" width="15%">
-<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/e4da8dca-804b-4280-9315-9835f80d9e69" width="15%">
-<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/09d363b6-1514-4d92-a1fd-81cdf05b9644" width="15%">
-<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/19f32b0c-2ff5-4bff-9e2a-e65c285b247e" width="15%">
-<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/a8b4bd89-00a1-411e-ae69-6868ef85247f" width="15%">
+<div style="display: flex;">
+ <img src="https://github.com/AdamGuidarini/MediTrak/blob/vc29/fastlane/metadata/android/en-US/images/phoneScreenshots/01.png?raw=true" width="15%">
+ <img src="https://github.com/AdamGuidarini/MediTrak/blob/vc29/fastlane/metadata/android/en-US/images/phoneScreenshots/02.png?raw=true" width="15%">
+ <img src="https://github.com/AdamGuidarini/MediTrak/blob/vc29/fastlane/metadata/android/en-US/images/phoneScreenshots/03.png?raw=true" width="15%">
+ <img src="https://github.com/AdamGuidarini/MediTrak/blob/vc29/fastlane/metadata/android/en-US/images/phoneScreenshots/04.png?raw=true" width="15%">
+ <img src="https://github.com/AdamGuidarini/MediTrak/blob/vc29/fastlane/metadata/android/en-US/images/phoneScreenshots/06.png?raw=true" width="15%">
+ <img src="https://github.com/AdamGuidarini/MediTrak/blob/vc29/fastlane/metadata/android/en-US/images/phoneScreenshots/05.png?raw=true" width="15%">
+</div>
