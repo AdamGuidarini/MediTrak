@@ -75,7 +75,7 @@ public class EventReceiver extends BroadcastReceiver {
                 Medication med = medications.stream().filter(m -> m.getId() == n.getMedId()).findFirst().orElse(null);
 
                 if (med == null) {
-                    Log.e("EventReceiver", "Failed to create notification for Medication: " + med.getName());
+                    Log.e("EventReceiver", "Failed to create notification for Medication: " + n.getMedId());
 
                     continue;
                 }
