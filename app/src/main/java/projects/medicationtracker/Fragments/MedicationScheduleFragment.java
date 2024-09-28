@@ -4,10 +4,15 @@ import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
 import static projects.medicationtracker.MediTrak.DATABASE_PATH;
+import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.service.notification.StatusBarNotification;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +30,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -251,8 +259,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
 
         if (doseRowId != -1 && db.getTaken(doseRowId)) ((CheckBox) thisMedication).setChecked(true);
 
-        ((CheckBox) thisMedication).setOnCheckedChangeListener((compoundButton, b) ->
-        {
+        ((CheckBox) thisMedication).setOnCheckedChangeListener((compoundButton, b) -> {
             Triple<Medication, Long, LocalDateTime> tvTag =
                     (Triple<Medication, Long, LocalDateTime>) thisMedication.getTag();
             final Long doseId = tvTag.getSecond();
@@ -283,6 +290,27 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
                         TimeFormatting.localDateTimeToDbString(LocalDateTime.now().withSecond(0)),
                         true
                 );
+            }
+
+            long[] timeIds = db.getMedicationTimeIds(medication);
+            NotificationManager manager = (NotificationManager) rootView.getContext().getSystemService(
+                    Context.NOTIFICATION_SERVICE
+            );
+            StatusBarNotification[] notifications = manager.getActiveNotifications();
+
+            List<StatusBarNotification> validNotifications = Arrays.stream(notifications).filter(
+                    n -> n.getId() == medId || Arrays.stream(timeIds).anyMatch(t -> (t * -1) == n.getId())
+            ).collect(Collectors.toList());
+
+            if (!validNotifications.isEmpty()) {
+                int notificationId = validNotifications.get(0).getId();
+
+                manager.cancel(notificationId);
+                nativeDb.deleteNotification(notificationId);
+
+                if (manager.getActiveNotifications().length == 1 && manager.getActiveNotifications()[0].getId() == SUMMARY_ID) {
+                    manager.cancel(SUMMARY_ID);
+                }
             }
         });
 

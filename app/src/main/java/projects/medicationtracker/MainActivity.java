@@ -425,10 +425,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private void prepareNotifications() {
         ArrayList<Medication> medications = db.getMedications();
-        NotificationManager notificationManager =
-                (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        notificationManager.cancelAll();
 
         for (Medication medication : medications) {
             NotificationHelper.clearPendingNotifications(medication, this);
