@@ -14,6 +14,7 @@
     <string name="ok">OK</string>
     <string name="delete">Delete</string>
     <string name="i_agree">I agree</string>
+    <string name="select_all">Select All</string>
 
     <!-- Filters -->
     <string name="clear">Clear</string>
@@ -228,6 +229,7 @@
     <string name="its_time_your_med">It\'s time to take your %1$s of %2$s</string>
     <string name="time_for_other_med">It\'s time for %1$s\'s %2$s of %3$s</string>
     <string name="add_dose">Add Dose</string>
+    <string name="open_notifications">Open Notifications</string>
 
     <!-- Med History -->
     <string name="history">History</string>

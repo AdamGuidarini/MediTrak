@@ -228,6 +228,7 @@
     <string name="its_time_your_med">%2$s ilacınızın %1$s dozunu alma zamanı</string>
     <string name="time_for_other_med">%1$s\'nin %3$s ilacının %2$s dozunu alma zamanı</string>
     <string name="add_dose">Doz Ekle</string>
+    <string name="open_notifications">Açık Bildirimler</string>
 
     <!-- İlaç Geçmişi -->
     <string name="history">Geçmiş</string>
@@ -236,4 +237,5 @@
     <string name="filter">Filtre</string>
     <string name="export_csv">CSV Olarak Dışa Aktar</string>
     <string name="no_records">Kayıt Yok</string>
+    <string name="select_all">Tümünü seç</string>
 </resources>

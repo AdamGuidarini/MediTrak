@@ -228,6 +228,7 @@
     <string name="its_time_your_med">Es hora de tomar tu %1$s de %2$s</string>
     <string name="time_for_other_med">Es la hora de los %2$s de %3$s de %1$s</string>
     <string name="add_dose">Añadir dosis</string>
+    <string name="open_notifications">Notificaciones Abiertas</string>
 
     <!-- Med History -->
     <string name="history">Historia</string>
@@ -236,4 +237,5 @@
     <string name="filter">Filtro</string>
     <string name="export_csv">Exportar CSV</string>
     <string name="no_records">Sin registros</string>
+    <string name="select_all">Seleccionar Todos</string>
 </resources>
