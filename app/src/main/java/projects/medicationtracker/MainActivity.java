@@ -126,12 +126,12 @@ public class MainActivity extends AppCompatActivity {
 
         createMainActivityViews();
 
-//        if (openNotifications.length > 0) {
+        if (openNotifications.length > 0) {
             OpenNotificationsDialog notificationsDialog = new OpenNotificationsDialog(
                     openNotifications, medications
             );
             notificationsDialog.show(getSupportFragmentManager(), null);
-//        }
+        }
     }
 
     @Override
