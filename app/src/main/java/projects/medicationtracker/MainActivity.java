@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.service.notification.StatusBarNotification;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Pair;
@@ -44,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
+import projects.medicationtracker.Dialogs.OpenNotificationsDialog;
 import projects.medicationtracker.Dialogs.WelcomeDialog;
 import projects.medicationtracker.Fragments.MedicationScheduleFragment;
 import projects.medicationtracker.Helpers.DBHelper;
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
             new ActivityResultContracts.RequestPermission(),
             isGranted -> db.seenPermissionRequest(SEEN_NOTIFICATION_REQUEST)
     );
+    private ArrayList<Medication> medications;
 
     /**
      * Runs at start of activity, builds MainActivity
@@ -74,11 +77,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        NotificationManager manager = (NotificationManager) getSystemService(
+                Context.NOTIFICATION_SERVICE
+        );
+        StatusBarNotification[] openNotifications = manager.getActiveNotifications();
 
         DATABASE_PATH = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
 
         nativeDb = new NativeDbHelper(DATABASE_PATH);
         nativeDb.create();
+
+        medications = db.getMedications();
 
         preferences = db.getPreferences();
 
@@ -116,6 +125,13 @@ public class MainActivity extends AppCompatActivity {
         namesLayout = findViewById(R.id.names_layout_main);
 
         createMainActivityViews();
+
+//        if (openNotifications.length > 0) {
+            OpenNotificationsDialog notificationsDialog = new OpenNotificationsDialog(
+                    openNotifications, medications
+            );
+            notificationsDialog.show(getSupportFragmentManager(), null);
+//        }
     }
 
     @Override
@@ -240,7 +256,6 @@ public class MainActivity extends AppCompatActivity {
      * @return List of all Medications for this week
      */
     public ArrayList<Medication> medicationsForThisWeek() {
-        ArrayList<Medication> medications = db.getMedications();
         ArrayList<LocalDateTime> validTimes;
         // Add times to custom frequency
         LocalDate thisSunday = TimeFormatting.whenIsSunday(aDayThisWeek);
@@ -424,8 +439,6 @@ public class MainActivity extends AppCompatActivity {
      * Clears all open notifications as well
      */
     private void prepareNotifications() {
-        ArrayList<Medication> medications = db.getMedications();
-
         for (Medication medication : medications) {
             NotificationHelper.clearPendingNotifications(medication, this);
         }
