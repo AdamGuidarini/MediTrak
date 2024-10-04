@@ -38,6 +38,7 @@ import androidx.fragment.app.FragmentContainerView;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             new ActivityResultContracts.RequestPermission(),
             isGranted -> db.seenPermissionRequest(SEEN_NOTIFICATION_REQUEST)
     );
-    private ArrayList<Medication> medications;
+    private ArrayList<Medication> allMeds;
 
     /**
      * Runs at start of activity, builds MainActivity
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         nativeDb = new NativeDbHelper(DATABASE_PATH);
         nativeDb.create();
 
-        medications = db.getMedications();
+        allMeds = db.getMedications();
 
         preferences = db.getPreferences();
 
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (openNotifications.length > 0) {
             OpenNotificationsDialog notificationsDialog = new OpenNotificationsDialog(
-                    openNotifications, medications
+                    openNotifications, allMeds
             );
             notificationsDialog.show(getSupportFragmentManager(), null);
         }
@@ -257,6 +258,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public ArrayList<Medication> medicationsForThisWeek() {
         ArrayList<LocalDateTime> validTimes;
+        ArrayList<Medication> medications = db.getMedications();
         // Add times to custom frequency
         LocalDate thisSunday = TimeFormatting.whenIsSunday(aDayThisWeek);
 
@@ -439,11 +441,11 @@ public class MainActivity extends AppCompatActivity {
      * Clears all open notifications as well
      */
     private void prepareNotifications() {
-        for (Medication medication : medications) {
+        for (Medication medication : allMeds) {
             NotificationHelper.clearPendingNotifications(medication, this);
         }
 
-        for (Medication medication : medications) {
+        for (Medication medication : allMeds) {
             NotificationHelper.createNotifications(medication, this);
         }
     }
