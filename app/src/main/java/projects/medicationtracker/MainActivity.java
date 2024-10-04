@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,6 +55,7 @@ import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Models.Medication;
+import projects.medicationtracker.Models.Notification;
 import projects.medicationtracker.Views.StandardCardView;
 
 public class MainActivity extends AppCompatActivity {
@@ -456,12 +458,26 @@ public class MainActivity extends AppCompatActivity {
      * Clears all open notifications as well
      */
     private void prepareNotifications() {
+        final ArrayList<Notification> notifications = nativeDb.getNotifications();
+
         for (Medication medication : allMeds) {
             NotificationHelper.clearPendingNotifications(medication, this);
         }
 
         for (Medication medication : allMeds) {
             NotificationHelper.createNotifications(medication, this);
+        }
+
+        for (final Notification n : notifications) {
+            Medication med = allMeds.stream().filter(m -> m.getId() == n.getMedId()).findFirst().orElse(null);
+
+            if (med == null) {
+                Log.e("EventReceiver", "Failed to create notification for Medication: " + n.getMedId());
+
+                continue;
+            }
+
+            NotificationHelper.scheduleNotification(this, med, n.getDoseTime(), n.getNotificationId());
         }
     }
 
