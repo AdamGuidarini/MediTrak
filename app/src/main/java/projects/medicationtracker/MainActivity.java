@@ -119,7 +119,9 @@ public class MainActivity extends AppCompatActivity {
             welcomeDialog.show(getSupportFragmentManager(), null);
         }
 
-        if (Build.VERSION.SDK_INT >= 33 && !preferences.getBoolean(SEEN_NOTIFICATION_REQUEST) && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= 33 && !preferences.getBoolean(SEEN_NOTIFICATION_REQUEST)
+            && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) {
             notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
         }
 
@@ -138,8 +140,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        NotificationManager manager = (NotificationManager) getSystemService(
+                Context.NOTIFICATION_SERVICE
+        );
+        StatusBarNotification[] openNotifications = manager.getActiveNotifications();
+
         scheduleLayout.removeAllViews();
         createMainActivityViews();
+
+        if (openNotifications.length > 0) {
+            OpenNotificationsDialog notificationsDialog = new OpenNotificationsDialog(
+                    openNotifications, allMeds
+            );
+            notificationsDialog.show(getSupportFragmentManager(), null);
+        }
     }
 
     /**

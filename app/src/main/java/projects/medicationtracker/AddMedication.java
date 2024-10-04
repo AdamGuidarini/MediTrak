@@ -3,8 +3,11 @@ package projects.medicationtracker;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
+import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -48,6 +51,7 @@ import projects.medicationtracker.Fragments.ConfirmMedicationDeleteFragment;
 import projects.medicationtracker.Fragments.SelectDateFragment;
 import projects.medicationtracker.Fragments.TimePickerFragment;
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Models.Medication;
@@ -1128,6 +1132,7 @@ public class AddMedication extends AppCompatActivity {
             long childId;
             String changesNotes = createChangesNote(medication, parentMed);
             boolean applyRetroactively = applyRetroActiveSwitch.isChecked();
+            NativeDbHelper nativeDb = new NativeDbHelper(DATABASE_PATH);
 
             if (!changesNotes.isEmpty() && createClone && !applyRetroactively) {
                 medication.setParent(parentMed);
@@ -1152,6 +1157,21 @@ public class AddMedication extends AppCompatActivity {
 
                 db.updateMedication(parentMed);
                 db.addNote(changesNotes, childId);
+
+                long[] ids = db.getMedicationTimeIds(parentMed);
+                NotificationManager manager = (NotificationManager) getSystemService(
+                        Context.NOTIFICATION_SERVICE
+                );
+
+                if (ids.length > 1) {
+                    for (long id : ids) {
+                        nativeDb.deleteNotification(id * -1);
+                        manager.cancel((int) (id * -1));
+                    }
+                } else {
+                    nativeDb.deleteNotification(parentMed.getId());
+                    manager.cancel((int) parentMed.getId());
+                }
             } else if (!changesNotes.isEmpty()) {
                 db.updateMedication(medication);
                 db.addNote(changesNotes, medId);
