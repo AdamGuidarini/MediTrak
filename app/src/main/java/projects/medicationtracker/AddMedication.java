@@ -1107,7 +1107,7 @@ public class AddMedication extends AppCompatActivity {
         if (medId == -1) {
             intent = new Intent(this, MainActivity.class);
 
-            int id = db.addMedication(
+            long id = db.addMedication(
                     medication.getName(),
                     medication.getPatientName(),
                     String.valueOf(medication.getDosage()),
@@ -1129,7 +1129,7 @@ public class AddMedication extends AppCompatActivity {
         } else {
             intent = new Intent(this, MyMedications.class);
             Medication parentMed = db.getMedication(medId);
-            int childId;
+            long childId;
             String changesNotes = createChangesNote(medication, parentMed);
             boolean applyRetroactively = applyRetroActiveSwitch.isChecked();
             NativeDbHelper nativeDb = new NativeDbHelper(DATABASE_PATH);

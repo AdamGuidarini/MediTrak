@@ -179,13 +179,13 @@ public class OpenNotificationsDialog extends DialogFragment {
             ).findFirst().orElse(null);
 
             if (box.isChecked()) {
-                manager.cancel(notification.getNotificationId());
+                manager.cancel((int) notification.getNotificationId());
 
                 db.addToMedicationTracker(med, notification.getDoseTime());
 
                 nativeDbHelper.deleteNotification(notification.getNotificationId());
             } else if (dismissUnselected.isChecked()) {
-                manager.cancel(notification.getNotificationId());
+                manager.cancel((int) notification.getNotificationId());
                 nativeDbHelper.deleteNotification(notification.getNotificationId());
             }
         }
