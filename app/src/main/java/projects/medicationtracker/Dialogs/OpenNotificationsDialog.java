@@ -12,6 +12,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.DialogFragment;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
@@ -28,6 +30,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Notification;
@@ -41,6 +44,7 @@ public class OpenNotificationsDialog extends DialogFragment {
     private LinearLayout checkBoxHolder;
     private CheckBox checkAll;
     private SwitchCompat dismissUnselected;
+    private NotificationManager manager;
 
     public OpenNotificationsDialog(StatusBarNotification[] notifications, ArrayList<Medication> medications) {
         openNotifications = notifications;
@@ -68,6 +72,10 @@ public class OpenNotificationsDialog extends DialogFragment {
         checkBoxHolder = openNotificationsDialog.findViewById(R.id.checkboxes);
         checkAll = openNotificationsDialog.findViewById(R.id.check_all);
         dismissUnselected = openNotificationsDialog.findViewById(R.id.dismiss_unselected);
+
+        manager = (NotificationManager) getActivity().getSystemService(
+            Context.NOTIFICATION_SERVICE
+        );
 
         checkAll.setOnCheckedChangeListener((buttonView, isChecked) -> {
             for (final CheckBox cb : doseCheckBoxes) {
@@ -147,6 +155,29 @@ public class OpenNotificationsDialog extends DialogFragment {
     }
 
     private void onTake() {
+        DBHelper db = new DBHelper(getActivity());
 
+        for (final CheckBox box : doseCheckBoxes) {
+            Notification notification = (Notification) box.getTag();
+            Medication med = meds.stream().filter(
+                _m -> _m.getId() == notification.getMedId()
+            ).findFirst().orElse(null);
+
+            if (box.isChecked()) {
+                manager.cancel((int) notification.getNotificationId());
+
+                db.addToMedicationTracker(med, notification.getDoseTime());
+
+                nativeDbHelper.deleteNotification(notification.getNotificationId());
+                // Mark taken
+            } else if (dismissUnselected.isChecked()) {
+                // Delete
+
+                manager.cancel((int) notification.getNotificationId());
+                nativeDbHelper.deleteNotification(notification.getNotificationId());
+            }
+
+
+        }
     }
 }
