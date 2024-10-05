@@ -9,18 +9,18 @@ import projects.medicationtracker.Helpers.TimeFormatting;
 
 public class Notification {
     private final long id;
-    private final long medId;
+    private final int medId;
     private final int notificationId;
     private final LocalDateTime doseTime;
 
-    public Notification(long rowId, long medicationId, int notificationId, LocalDateTime dosageTime) {
+    public Notification(long rowId, int medicationId, int notificationId, LocalDateTime dosageTime) {
         id = rowId;
         medId = medicationId;
         this.notificationId = notificationId;
         doseTime = dosageTime;
     }
 
-    public Notification(long rowId, long medicationId, int notificationId, String dosageTime) {
+    public Notification(long rowId, int medicationId, int notificationId, String dosageTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DBHelper.DateFormats.DB_DATE_FORMAT, Locale.getDefault());
 
         id = rowId;
@@ -33,11 +33,11 @@ public class Notification {
         return id;
     }
 
-    public long getMedId() {
+    public int getMedId() {
         return medId;
     }
 
-    public long getNotificationId() {
+    public int getNotificationId() {
         return notificationId;
     }
 

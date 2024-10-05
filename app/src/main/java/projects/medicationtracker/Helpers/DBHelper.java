@@ -153,11 +153,11 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param alias       Alias for Medication, appears in notifications
      * @return rowid on success, -1 on failure
      */
-    public long addMedication(String medName, String patientName, String dosage, String units,
+    public int addMedication(String medName, String patientName, String dosage, String units,
                               String startDate, int frequency, String alias, String instructions) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues medTableValues = new ContentValues();
-        long row;
+        int row;
 
         medTableValues.put(MED_NAME, medName);
         medTableValues.put(PATIENT_NAME, patientName);
@@ -168,7 +168,7 @@ public class DBHelper extends SQLiteOpenHelper {
         medTableValues.put(ALIAS, alias);
         medTableValues.put(INSTRUCTIONS, instructions);
 
-        row = db.insert(MEDICATION_TABLE, null, medTableValues);
+        row = (int) db.insert(MEDICATION_TABLE, null, medTableValues);
 
         return row;
     }
@@ -426,7 +426,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String units = cursor.getString(cursor.getColumnIndexOrThrow(MED_UNITS));
         LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(cursor.getString(
                 cursor.getColumnIndexOrThrow(START_DATE)));
-        long medId = cursor.getLong(cursor.getColumnIndexOrThrow(MED_ID));
+        int medId = cursor.getInt(cursor.getColumnIndexOrThrow(MED_ID));
         int frequency = cursor.getInt(cursor.getColumnIndexOrThrow(MED_FREQUENCY));
         int dosage = cursor.getInt(cursor.getColumnIndexOrThrow(MED_DOSAGE));
         String alias = cursor.getString(cursor.getColumnIndexOrThrow(ALIAS));
@@ -568,7 +568,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * Adds a new medication when when an existing one is updated, the existing medication is updated
      * @return the id of the newly created child medication
      */
-    public long createChildMedication(Medication medication) {
+    public int createChildMedication(Medication medication) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues pauseOldMedContent = new ContentValues();
         ContentValues updateChildMedContent = new ContentValues();
@@ -576,7 +576,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues updateParentCv = new ContentValues();
         ContentValues notesUpdate = new ContentValues();
         String where = MED_ID + " = ?";
-        long row;
+        int row;
 
         pauseOldMedContent.put(PAUSED, 1);
         pauseOldMedContent.put(CHANGE_DATE, TimeFormatting.localDateTimeToDbString(medication.getStartDate()));

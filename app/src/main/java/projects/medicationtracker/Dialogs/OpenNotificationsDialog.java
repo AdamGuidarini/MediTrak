@@ -63,7 +63,7 @@ public class OpenNotificationsDialog extends DialogFragment {
         builder.setView(inflater.inflate(R.layout.dialog_open_notifications, null));
         builder.setTitle(R.string.open_notifications);
 
-        builder.setPositiveButton(R.string.mark_as_taken, ((dialog, which) -> dismiss()));
+        builder.setPositiveButton(R.string.mark_as_taken, ((dialog, which) -> onTake()));
         builder.setNegativeButton(R.string.cancel, ((dialog, which) -> dismiss()));
 
         openNotificationsDialog = builder.create();
@@ -164,20 +164,15 @@ public class OpenNotificationsDialog extends DialogFragment {
             ).findFirst().orElse(null);
 
             if (box.isChecked()) {
-                manager.cancel((int) notification.getNotificationId());
+                manager.cancel(notification.getNotificationId());
 
                 db.addToMedicationTracker(med, notification.getDoseTime());
 
                 nativeDbHelper.deleteNotification(notification.getNotificationId());
-                // Mark taken
             } else if (dismissUnselected.isChecked()) {
-                // Delete
-
-                manager.cancel((int) notification.getNotificationId());
+                manager.cancel(notification.getNotificationId());
                 nativeDbHelper.deleteNotification(notification.getNotificationId());
             }
-
-
         }
     }
 }

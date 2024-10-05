@@ -26,7 +26,7 @@ public class Medication implements Cloneable, Parcelable {
     private String alias;
     private LocalDateTime[] times;
     private Dose[] doses;
-    private long medId;
+    private int medId;
     private int medFrequency;
     private int medDosage;
     private boolean active;
@@ -48,7 +48,7 @@ public class Medication implements Cloneable, Parcelable {
      * @param medAlias  An alias for the Medication to appear in notifications
      */
     public Medication(String thisMed, String patient, String units, LocalDateTime[] time,
-                      LocalDateTime firstDate, long id, int frequency, int dosage, String medAlias) {
+                      LocalDateTime firstDate, int id, int frequency, int dosage, String medAlias) {
         medName = thisMed;
         patientName = patient;
         medDosageUnits = units;
@@ -62,7 +62,7 @@ public class Medication implements Cloneable, Parcelable {
     }
 
     public Medication(String thisMed, String patient, String units, String[] times,
-                      String firstDate, long id, int frequency, int dosage, String medAlias) {
+                      String firstDate, int id, int frequency, int dosage, String medAlias) {
         final String dateFormat = "yyyy-MM-dd HH:mm:ss";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat, Locale.getDefault());
         LocalDateTime[] medTimes = new LocalDateTime[times.length];
@@ -111,7 +111,7 @@ public class Medication implements Cloneable, Parcelable {
         medDosageUnits = in.readString();
         patientName = in.readString();
         alias = in.readString();
-        medId = in.readLong();
+        medId = in.readInt();
         medFrequency = in.readInt();
         medDosage = in.readInt();
     }
@@ -241,7 +241,7 @@ public class Medication implements Cloneable, Parcelable {
      *
      * @param medId The Medication's ID
      */
-    public void setId(long medId) {
+    public void setId(int medId) {
         this.medId = medId;
     }
 
@@ -427,7 +427,7 @@ public class Medication implements Cloneable, Parcelable {
         parcel.writeString(medDosageUnits);
         parcel.writeString(patientName);
         parcel.writeString(alias);
-        parcel.writeLong(medId);
+        parcel.writeInt(medId);
         parcel.writeLong(medFrequency);
         parcel.writeInt(medDosage);
     }

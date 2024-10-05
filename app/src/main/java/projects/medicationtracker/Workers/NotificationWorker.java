@@ -52,8 +52,8 @@ public class NotificationWorker extends Worker {
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             final String message = getInputData().getString(MESSAGE);
             final String doseTime = getInputData().getString(DOSE_TIME);
-            final long notificationId = getInputData().getLong(NOTIFICATION_ID, System.currentTimeMillis());
-            final long medId = getInputData().getLong(MEDICATION_ID, -1);
+            final int notificationId = getInputData().getInt(NOTIFICATION_ID, (int) System.currentTimeMillis());
+            final int medId = getInputData().getInt(MEDICATION_ID, -1);
 
             Notification notification = createNotification(message, doseTime, notificationId, medId);
             Notification notificationSummary = new NotificationCompat.Builder(context, CHANNEL_ID)
