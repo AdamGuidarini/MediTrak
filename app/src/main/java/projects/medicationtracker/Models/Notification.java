@@ -13,14 +13,14 @@ public class Notification {
     private final long notificationId;
     private final LocalDateTime doseTime;
 
-    public Notification(long rowId, int medicationId, int notificationId, LocalDateTime dosageTime) {
+    public Notification(long rowId, long medicationId, long notificationId, LocalDateTime dosageTime) {
         id = rowId;
         medId = medicationId;
         this.notificationId = notificationId;
         doseTime = dosageTime;
     }
 
-    public Notification(long rowId, int medicationId, int notificationId, String dosageTime) {
+    public Notification(long rowId, long medicationId, long notificationId, String dosageTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DBHelper.DateFormats.DB_DATE_FORMAT, Locale.getDefault());
 
         id = rowId;
