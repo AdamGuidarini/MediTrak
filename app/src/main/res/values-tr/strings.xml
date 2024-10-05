@@ -126,7 +126,7 @@
     <string name="unitExample">Örn. mg, g, damla</string>
     <string name="patient_name">Hasta Adı:</string>
     <string name="no_alias">Takma ad yok</string>
-    <string name="at">Saat:</string>
+    <string name="at">saat</string>
     <string name="apply_retroactive">Değişiklikleri Geriye Dönük Uygula</string>
     <string name="retroactive_warning">Uyarı: Sıklıktaki değişiklikler, önceden alınan dozların programda artık görünmemesine neden olabilir.</string>
     <string name="would_like_apply_retroactively">Doz ve sıklık değişiklikleri önceki değişiklikten itibaren geriye dönük olarak uygulanabilir. Bu değişiklikleri geriye dönük olarak uygulamak ister misiniz?</string>

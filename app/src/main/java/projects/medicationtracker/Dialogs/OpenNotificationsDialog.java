@@ -4,22 +4,29 @@ import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
 import static projects.medicationtracker.MediTrak.DATABASE_PATH;
+import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
 
 import android.app.Dialog;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.DialogFragment;
+
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Models.Medication;
@@ -27,10 +34,13 @@ import projects.medicationtracker.Models.Notification;
 import projects.medicationtracker.R;
 
 public class OpenNotificationsDialog extends DialogFragment {
-    NativeDbHelper nativeDbHelper;
-    StatusBarNotification[] openNotifications;
-    ArrayList<Medication> meds;
-    ArrayList<CheckBox> doseCheckBoxes;
+    private NativeDbHelper nativeDbHelper;
+    private StatusBarNotification[] openNotifications;
+    private ArrayList<Medication> meds;
+    private ArrayList<CheckBox> doseCheckBoxes = new ArrayList<>();
+    private LinearLayout checkBoxHolder;
+    private CheckBox checkAll;
+    private SwitchCompat dismissUnselected;
 
     public OpenNotificationsDialog(StatusBarNotification[] notifications, ArrayList<Medication> medications) {
         openNotifications = notifications;
@@ -55,21 +65,88 @@ public class OpenNotificationsDialog extends DialogFragment {
         openNotificationsDialog = builder.create();
         openNotificationsDialog.show();
 
+        checkBoxHolder = openNotificationsDialog.findViewById(R.id.checkboxes);
+        checkAll = openNotificationsDialog.findViewById(R.id.check_all);
+        dismissUnselected = openNotificationsDialog.findViewById(R.id.dismiss_unselected);
+
+        checkAll.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            for (final CheckBox cb : doseCheckBoxes) {
+                cb.setChecked(isChecked);
+            }
+        });
+
         generateCheckBoxes();
 
         return openNotificationsDialog;
     }
 
+    /**
+     * Set checkboxes and
+     */
     private void generateCheckBoxes() {
-        String timeFormat = preferences.getString(TIME_FORMAT);
-        String dateFormat = preferences.getString(DATE_FORMAT);
+        ArrayList<Notification> notes = nativeDbHelper.getNotifications();
 
         for (final StatusBarNotification notification : openNotifications) {
             CheckBox box = new CheckBox(getActivity());
+            Medication m;
+            String label;
+            Notification thisNotification = notes.stream().filter(
+                _n -> _n.getId() == notification.getId()
+            ).findFirst().orElse(null);
 
-            box.setTag(notification);
+            if (thisNotification == null || notification.getId() == SUMMARY_ID) {
+                Log.e(
+                    "Notifications Dialog",
+                    "Cannot find notification with ID: " + notification.getId()
+                );
 
+                continue;
+            }
 
+            m = meds.stream().filter(
+                _m -> _m.getId() == thisNotification.getMedId()
+            ).findFirst().orElse(null);
+
+            if (m == null) {
+                Log.e(
+                    "Notifications Dialog",
+                    "Cannot find notification for med: " + thisNotification.getMedId()
+                );
+
+                continue;
+            }
+
+            label = m.getName() + " - " + m.getDosage() + " " + m.getDosageUnits() + " - ";
+
+            label += DateTimeFormatter.ofPattern(
+                preferences.getString(DATE_FORMAT),
+                Locale.getDefault()
+            ).format(thisNotification.getDoseTime().toLocalDate());
+
+            label += " " + getString(R.string.at) + " " + DateTimeFormatter.ofPattern(
+                preferences.getString(TIME_FORMAT),
+                Locale.getDefault()
+            ).format(thisNotification.getDoseTime().toLocalTime());
+
+            box.setText(label);
+            box.setTag(thisNotification);
+
+            box.setOnCheckedChangeListener(
+                (buttonView, isChecked) -> {
+                    final long selectedLength = doseCheckBoxes.stream().filter(
+                        cb -> cb.isChecked()
+                    ).count();
+
+                    checkAll.setChecked(selectedLength == doseCheckBoxes.size());
+                }
+            );
+
+            doseCheckBoxes.add(box);
+            checkBoxHolder.addView(box);
         }
+    }
+
+    private void onTake() {
+
     }
 }

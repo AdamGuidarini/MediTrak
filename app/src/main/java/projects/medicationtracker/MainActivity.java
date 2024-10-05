@@ -39,7 +39,6 @@ import androidx.fragment.app.FragmentContainerView;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -130,13 +129,6 @@ public class MainActivity extends AppCompatActivity {
         namesLayout = findViewById(R.id.names_layout_main);
 
         createMainActivityViews();
-
-        if (openNotifications.length > 0) {
-            OpenNotificationsDialog notificationsDialog = new OpenNotificationsDialog(
-                    openNotifications, allMeds
-            );
-            notificationsDialog.show(getSupportFragmentManager(), null);
-        }
     }
 
     @Override
