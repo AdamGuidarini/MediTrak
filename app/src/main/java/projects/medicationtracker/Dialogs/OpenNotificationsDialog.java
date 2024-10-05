@@ -26,6 +26,7 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -150,7 +151,21 @@ public class OpenNotificationsDialog extends DialogFragment {
             );
 
             doseCheckBoxes.add(box);
-            checkBoxHolder.addView(box);
+        }
+
+        doseCheckBoxes.sort((a, b) -> {
+            LocalDateTime timeA = ((Notification) a.getTag()).getDoseTime();
+            LocalDateTime timeB = ((Notification) b.getTag()).getDoseTime();
+
+            if (timeA.isEqual(timeB)) {
+                return 0;
+            }
+
+            return timeA.isBefore(timeB) ? 1: -1;
+        });
+
+        for (final CheckBox cb : doseCheckBoxes) {
+            checkBoxHolder.addView(cb);
         }
     }
 

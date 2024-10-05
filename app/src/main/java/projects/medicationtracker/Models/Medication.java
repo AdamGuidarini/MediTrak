@@ -26,7 +26,7 @@ public class Medication implements Cloneable, Parcelable {
     private String alias;
     private LocalDateTime[] times;
     private Dose[] doses;
-    private int medId;
+    private long medId;
     private int medFrequency;
     private int medDosage;
     private boolean active;
@@ -241,7 +241,7 @@ public class Medication implements Cloneable, Parcelable {
      *
      * @param medId The Medication's ID
      */
-    public void setId(int medId) {
+    public void setId(long medId) {
         this.medId = medId;
     }
 
@@ -427,7 +427,7 @@ public class Medication implements Cloneable, Parcelable {
         parcel.writeString(medDosageUnits);
         parcel.writeString(patientName);
         parcel.writeString(alias);
-        parcel.writeInt(medId);
+        parcel.writeLong(medId);
         parcel.writeLong(medFrequency);
         parcel.writeInt(medDosage);
     }

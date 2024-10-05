@@ -9,8 +9,8 @@ import projects.medicationtracker.Helpers.TimeFormatting;
 
 public class Notification {
     private final long id;
-    private final int medId;
-    private final int notificationId;
+    private final long medId;
+    private final long notificationId;
     private final LocalDateTime doseTime;
 
     public Notification(long rowId, int medicationId, int notificationId, LocalDateTime dosageTime) {
@@ -33,11 +33,11 @@ public class Notification {
         return id;
     }
 
-    public int getMedId() {
+    public long getMedId() {
         return medId;
     }
 
-    public int getNotificationId() {
+    public long getNotificationId() {
         return notificationId;
     }
 
