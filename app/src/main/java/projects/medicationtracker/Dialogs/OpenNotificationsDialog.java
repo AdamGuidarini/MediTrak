@@ -189,5 +189,9 @@ public class OpenNotificationsDialog extends DialogFragment {
                 nativeDbHelper.deleteNotification(notification.getNotificationId());
             }
         }
+
+        if (manager.getActiveNotifications().length == 1 && manager.getActiveNotifications()[0].getId() == SUMMARY_ID) {
+            manager.cancelAll();
+        }
     }
 }
