@@ -96,6 +96,11 @@ public class OpenNotificationsDialog extends DialogFragment {
         ArrayList<Notification> notes = nativeDbHelper.getNotifications();
 
         for (final StatusBarNotification notification : openNotifications) {
+
+            if (notification.getId() == SUMMARY_ID) {
+                continue;
+            }
+
             CheckBox box = new CheckBox(getActivity());
             Medication m;
             String label;
@@ -103,7 +108,7 @@ public class OpenNotificationsDialog extends DialogFragment {
                 _n -> _n.getId() == notification.getId()
             ).findFirst().orElse(null);
 
-            if (thisNotification == null || notification.getId() == SUMMARY_ID) {
+            if (thisNotification == null) {
                 Log.e(
                     "Notifications Dialog",
                     "Cannot find notification with ID: " + notification.getId()

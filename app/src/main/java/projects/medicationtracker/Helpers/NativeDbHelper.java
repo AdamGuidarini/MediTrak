@@ -130,6 +130,10 @@ public class NativeDbHelper {
         return new ArrayList<>(Arrays.asList(getNotifications(dbPath, Notification.class)));
     }
 
+    public long addDose(long medId, LocalDateTime time, boolean taken) {
+        return -1;
+    }
+
     /**
      * Native methods
      */
@@ -148,4 +152,5 @@ public class NativeDbHelper {
     private native long stashNotification(String dbPath, Notification notification);
     private native void deleteNotification(String dbPath, long notificationId);
     private native Notification[] getNotifications(String dbPath, Class<Notification> notificationClass);
+    private native long addDose(String dbPath, long medId, String dateTime, boolean taken);
 }
