@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 import projects.medicationtracker.Models.Dose;
 import projects.medicationtracker.Models.Medication;
@@ -134,7 +135,7 @@ public class NativeDbHelper {
 
     public long addDose(long medId, LocalDateTime scheduledTime, LocalDateTime timeTaken, boolean taken) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
-            DBHelper.DateFormats.DB_DATE_FORMAT, null
+            DBHelper.DateFormats.DB_DATE_FORMAT, Locale.getDefault()
         );
 
         return addDose(

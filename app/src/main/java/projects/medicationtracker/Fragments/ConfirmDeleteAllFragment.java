@@ -1,6 +1,8 @@
 package projects.medicationtracker.Fragments;
 
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import projects.medicationtracker.Models.Medication;
 public class ConfirmDeleteAllFragment extends DialogFragment {
     private final DBHelper db;
     private ArrayList<Medication> medications;
+    private NotificationManager manager;
 
     public ConfirmDeleteAllFragment(DBHelper database) {
         db = database;
@@ -28,6 +31,9 @@ public class ConfirmDeleteAllFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstances) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+        manager = (NotificationManager) getActivity().getSystemService(
+            Context.NOTIFICATION_SERVICE
+        );
 
         builder.setTitle(getString(R.string.delete_all_data));
 
@@ -59,6 +65,10 @@ public class ConfirmDeleteAllFragment extends DialogFragment {
                     NotificationHelper.deletePendingNotification(timeId * -1, getContext());
                 }
             }
+        }
+
+        if (manager.getActiveNotifications().length > 0) {
+            manager.cancelAll();
         }
     }
 }
