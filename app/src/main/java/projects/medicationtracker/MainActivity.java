@@ -53,11 +53,12 @@ import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Notification;
 import projects.medicationtracker.Views.StandardCardView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IDialogCloseListener {
     public static Bundle preferences;
     private final DBHelper db = new DBHelper(this);
     private LinearLayout scheduleLayout;
@@ -504,5 +505,10 @@ public class MainActivity extends AppCompatActivity {
         scheduleLayout.removeAllViews();
 
         createMainActivityViews();
+    }
+
+    @Override
+    public void handleDialogClose(Action action, Object data) {
+        
     }
 }
