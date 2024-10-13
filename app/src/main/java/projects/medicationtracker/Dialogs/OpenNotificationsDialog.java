@@ -182,16 +182,33 @@ public class OpenNotificationsDialog extends DialogFragment {
             Medication med = meds.stream().filter(
                 _m -> _m.getId() == notification.getMedId()
             ).findFirst().orElse(null);
+            long newDoseId = -1;
 
             if (box.isChecked()) {
                 manager.cancel((int) notification.getNotificationId());
 
-                db.addToMedicationTracker(med, notification.getDoseTime());
-
+                newDoseId = nativeDbHelper.addDose(
+                    med.getId(),
+                    notification.getDoseTime(),
+                    LocalDateTime.now().withSecond(0).withNano(0),
+                    true
+                );
                 nativeDbHelper.deleteNotification(notification.getNotificationId());
             } else if (dismissUnselected.isChecked()) {
                 manager.cancel((int) notification.getNotificationId());
                 nativeDbHelper.deleteNotification(notification.getNotificationId());
+            }
+
+            if (newDoseId == -1 && box.isChecked()) {
+                final String err = "Could not save dose for medication: "
+                    + med.getId()
+                    + " at time: "
+                    + notification.getDoseTime().toString();
+
+                Log.e(
+                    "Notifications Dialog",
+                    err
+                );
             }
         }
 

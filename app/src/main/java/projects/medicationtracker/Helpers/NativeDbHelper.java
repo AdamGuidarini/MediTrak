@@ -3,6 +3,8 @@ package projects.medicationtracker.Helpers;
 import android.util.Pair;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -130,8 +132,18 @@ public class NativeDbHelper {
         return new ArrayList<>(Arrays.asList(getNotifications(dbPath, Notification.class)));
     }
 
-    public long addDose(long medId, LocalDateTime time, boolean taken) {
-        return -1;
+    public long addDose(long medId, LocalDateTime scheduledTime, LocalDateTime timeTaken, boolean taken) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
+            DBHelper.DateFormats.DB_DATE_FORMAT, null
+        );
+
+        return addDose(
+            dbPath,
+            medId,
+            formatter.format(scheduledTime),
+            formatter.format(timeTaken),
+            taken
+        );
     }
 
     /**
@@ -152,5 +164,5 @@ public class NativeDbHelper {
     private native long stashNotification(String dbPath, Notification notification);
     private native void deleteNotification(String dbPath, long notificationId);
     private native Notification[] getNotifications(String dbPath, Class<Notification> notificationClass);
-    private native long addDose(String dbPath, long medId, String dateTime, boolean taken);
+    private native long addDose(String dbPath, long medId, String scheduledTime, String timeTaken, boolean taken);
 }

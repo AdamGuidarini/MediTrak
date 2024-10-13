@@ -400,6 +400,17 @@ Dose* DatabaseController::getDoseById(long doseId) {
     return dose;
 }
 
+long DatabaseController::addDose(long medId, string scheduledTime,  string timeTaken, bool isTaken) {
+    map<string, string> vals = {
+        pair(MED_ID, to_string(medId)),
+        pair(DOSE_TIME, timeTaken),
+        pair(TIME_TAKEN, timeTaken),
+        pair(TAKEN, to_string(isTaken ? 1 : 0))
+    };
+
+    return manager.insert(MEDICATION_TRACKER_TABLE, vals);
+}
+
 bool DatabaseController::updateDose(const Dose& dose) {
     map<string, string> values;
 

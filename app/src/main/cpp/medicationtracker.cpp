@@ -545,3 +545,36 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getNotifications(
 
     return jNotifications;
 }
+
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_addDose(
+    JNIEnv *env,
+    jobject thiz,
+    jstring db_path,
+    jlong medId,
+    jstring scheduled_time,
+    jstring taken_time,
+    jboolean taken
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string scheduledTime = env->GetStringUTFChars(scheduled_time, new jboolean(true));
+    std::string takenTime = env->GetStringUTFChars(taken_time, new jboolean(true));
+    long rowId = -1;
+
+    DatabaseController controller(dbPath);
+
+    try {
+        rowId = controller.addDose(medId, scheduledTime, takenTime, taken);
+    } catch (exception& e) {
+        std::string err =
+            "Could not create dose for medication: "
+            + to_string(medId)
+            + "at time: "
+            + scheduledTime;
+
+        __android_log_write(ANDROID_LOG_ERROR, nullptr, err.c_str());
+    }
+
+    return rowId;
+}

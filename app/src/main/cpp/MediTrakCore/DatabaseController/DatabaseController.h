@@ -214,6 +214,16 @@ public:
     Dose* getDoseById(long doseId);
 
     /**
+     * Stores a new dose in the database
+     * @param medId ID of medication related to dose
+     * @param scheduledTime Time dose was scheduled to be taken
+     * @param timeTaken Time dose is scheduled for
+     * @param isTaken Whether or no the dose is taken
+     * @return ID of new dose or -1
+     */
+    long addDose(long medId, string scheduledTime, string timeTaken, bool isTaken);
+
+    /**
      * Updates a dose record
      * @param dose Dose to update
      * @return true if update succeeded
