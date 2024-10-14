@@ -14,15 +14,19 @@ import androidx.fragment.app.DialogFragment;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -31,8 +35,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
+import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Notification;
 import projects.medicationtracker.R;
@@ -79,12 +83,22 @@ public class OpenNotificationsDialog extends DialogFragment {
         );
 
         checkAll.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            long len = doseCheckBoxes.stream().filter(CompoundButton::isChecked).count();
+
+            openNotificationsDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(len != 0);
+        });
+
+        checkAll.setOnClickListener(view -> {
+            boolean isChecked = checkAll.isChecked();
+
             for (final CheckBox cb : doseCheckBoxes) {
                 cb.setChecked(isChecked);
             }
         });
 
-        generateCheckBoxes();
+        generateCheckBoxes(openNotificationsDialog);
+
+        checkAll.performClick();
 
         return openNotificationsDialog;
     }
@@ -92,7 +106,7 @@ public class OpenNotificationsDialog extends DialogFragment {
     /**
      * Set checkboxes and
      */
-    private void generateCheckBoxes() {
+    private void generateCheckBoxes(AlertDialog dialog) {
         ArrayList<Notification> notes = nativeDbHelper.getNotifications();
 
         for (final StatusBarNotification notification : openNotifications) {
@@ -147,11 +161,10 @@ public class OpenNotificationsDialog extends DialogFragment {
 
             box.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> {
-                    final long selectedLength = doseCheckBoxes.stream().filter(
-                        cb -> cb.isChecked()
-                    ).count();
+                    long len = doseCheckBoxes.stream().filter(CompoundButton::isChecked).count();
 
-                    checkAll.setChecked(selectedLength == doseCheckBoxes.size());
+                    checkAll.setChecked(len == doseCheckBoxes.size());
+                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(len != 0);
                 }
             );
 
@@ -175,7 +188,7 @@ public class OpenNotificationsDialog extends DialogFragment {
     }
 
     private void onTake() {
-        DBHelper db = new DBHelper(getActivity());
+        Fragment parent = getParentFragment();
 
         for (final CheckBox box : doseCheckBoxes) {
             Notification notification = (Notification) box.getTag();
@@ -214,6 +227,10 @@ public class OpenNotificationsDialog extends DialogFragment {
 
         if (manager.getActiveNotifications().length == 1 && manager.getActiveNotifications()[0].getId() == SUMMARY_ID) {
             manager.cancelAll();
+        }
+
+        if (parent instanceof IDialogCloseListener) {
+            ((IDialogCloseListener) parent).handleDialogClose(IDialogCloseListener.Action.EDIT, null);
         }
     }
 }
