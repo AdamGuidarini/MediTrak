@@ -510,7 +510,8 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
     @Override
     public void handleDialogClose(Action action, Object data) {
         if (action == Action.EDIT) {
-            onTodayClick(findViewById(R.id.todayButton));
+            scheduleLayout.removeAllViews();
+            createMainActivityViews();
         }
     }
 }

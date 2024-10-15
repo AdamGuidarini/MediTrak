@@ -6,6 +6,7 @@ import static projects.medicationtracker.MainActivity.preferences;
 import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
 
+import android.app.Activity;
 import android.app.Dialog;
 
 import androidx.appcompat.app.AlertDialog;
@@ -188,7 +189,7 @@ public class OpenNotificationsDialog extends DialogFragment {
     }
 
     private void onTake() {
-        Fragment parent = getParentFragment();
+        Activity parent = getActivity();
 
         for (final CheckBox box : doseCheckBoxes) {
             Notification notification = (Notification) box.getTag();
@@ -232,5 +233,7 @@ public class OpenNotificationsDialog extends DialogFragment {
         if (parent instanceof IDialogCloseListener) {
             ((IDialogCloseListener) parent).handleDialogClose(IDialogCloseListener.Action.EDIT, null);
         }
+
+        dismiss();
     }
 }
