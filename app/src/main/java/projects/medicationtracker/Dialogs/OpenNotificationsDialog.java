@@ -122,7 +122,7 @@ public class OpenNotificationsDialog extends DialogFragment {
             Medication m;
             String label;
             Notification thisNotification = notes.stream().filter(
-                _n -> _n.getId() == notification.getId()
+                _n -> _n.getNotificationId() == notification.getId()
             ).findFirst().orElse(null);
 
             if (thisNotification == null) {
