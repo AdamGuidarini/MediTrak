@@ -507,6 +507,11 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
         createMainActivityViews();
     }
 
+    /**
+     * Handles closing of notification dialog
+     * @param action Action performed in dialog
+     * @param data Object returned by dialog
+     */
     @Override
     public void handleDialogClose(Action action, Object data) {
         if (action == Action.EDIT) {
