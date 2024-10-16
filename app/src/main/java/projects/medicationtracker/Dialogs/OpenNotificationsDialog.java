@@ -34,6 +34,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Locale;
 
 import projects.medicationtracker.Helpers.NativeDbHelper;
@@ -182,6 +184,15 @@ public class OpenNotificationsDialog extends DialogFragment {
 
             return timeA.isBefore(timeB) ? 1: -1;
         });
+
+        doseCheckBoxes.sort(
+                (a, b) -> {
+                    final Notification notA = (Notification) a.getTag();
+                    final Notification notB = (Notification) b.getTag();
+
+                    return -1 * notB.getDoseTime().compareTo(notA.getDoseTime());
+                }
+        );
 
         for (final CheckBox cb : doseCheckBoxes) {
             checkBoxHolder.addView(cb);

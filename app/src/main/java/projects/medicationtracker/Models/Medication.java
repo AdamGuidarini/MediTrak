@@ -62,7 +62,7 @@ public class Medication implements Cloneable, Parcelable {
     }
 
     public Medication(String thisMed, String patient, String units, String[] times,
-                      String firstDate, int id, int frequency, int dosage, String medAlias) {
+                      String firstDate, long id, int frequency, int dosage, String medAlias) {
         final String dateFormat = "yyyy-MM-dd HH:mm:ss";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat, Locale.getDefault());
         LocalDateTime[] medTimes = new LocalDateTime[times.length];
