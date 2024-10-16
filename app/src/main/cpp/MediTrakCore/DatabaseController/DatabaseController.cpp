@@ -403,7 +403,7 @@ Dose* DatabaseController::getDoseById(long doseId) {
 long DatabaseController::addDose(long medId, string scheduledTime,  string timeTaken, bool isTaken) {
     map<string, string> vals = {
         pair(MED_ID, to_string(medId)),
-        pair(DOSE_TIME, timeTaken),
+        pair(DOSE_TIME, scheduledTime),
         pair(TIME_TAKEN, timeTaken),
         pair(TAKEN, to_string(isTaken ? 1 : 0))
     };
