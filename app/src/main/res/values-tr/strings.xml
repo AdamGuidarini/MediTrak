@@ -229,6 +229,7 @@
     <string name="time_for_other_med">%1$s\'nin %3$s ilacının %2$s dozunu alma zamanı</string>
     <string name="add_dose">Doz Ekle</string>
     <string name="open_notifications">Açık Bildirimler</string>
+    <string name="skip_unselected">Seçilmemişleri atla</string>
 
     <!-- İlaç Geçmişi -->
     <string name="history">Geçmiş</string>

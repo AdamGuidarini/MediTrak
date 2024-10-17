@@ -48,7 +48,7 @@ public class OpenNotificationsDialog extends DialogFragment {
     private NativeDbHelper nativeDbHelper;
     private StatusBarNotification[] openNotifications;
     private ArrayList<Medication> meds;
-    private ArrayList<CheckBox> doseCheckBoxes = new ArrayList<>();
+    private final ArrayList<CheckBox> doseCheckBoxes = new ArrayList<>();
     private LinearLayout checkBoxHolder;
     private CheckBox checkAll;
     private SwitchCompat dismissUnselected;
@@ -171,6 +171,14 @@ public class OpenNotificationsDialog extends DialogFragment {
                 }
             );
 
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(0, 10, 0, 10);
+
+            box.setLayoutParams(params);
+
             doseCheckBoxes.add(box);
         }
 
@@ -194,9 +202,7 @@ public class OpenNotificationsDialog extends DialogFragment {
                 }
         );
 
-        for (final CheckBox cb : doseCheckBoxes) {
-            checkBoxHolder.addView(cb);
-        }
+        doseCheckBoxes.forEach(checkBoxHolder::addView);
     }
 
     private void onTake() {

@@ -229,6 +229,7 @@
     <string name="time_for_other_med">Es la hora de los %2$s de %3$s de %1$s</string>
     <string name="add_dose">Añadir dosis</string>
     <string name="open_notifications">Notificaciones Abiertas</string>
+    <string name="skip_unselected">Saltar deseleccionadas</string>
 
     <!-- Med History -->
     <string name="history">Historia</string>

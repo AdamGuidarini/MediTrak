@@ -230,6 +230,7 @@
     <string name="time_for_other_med">It\'s time for %1$s\'s %2$s of %3$s</string>
     <string name="add_dose">Add Dose</string>
     <string name="open_notifications">Open Notifications</string>
+    <string name="skip_unselected">Skip Unselected</string>
 
     <!-- Med History -->
     <string name="history">History</string>
