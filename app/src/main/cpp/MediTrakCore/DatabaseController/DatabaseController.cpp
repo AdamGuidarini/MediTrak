@@ -405,7 +405,7 @@ long DatabaseController::addDose(long medId, string scheduledTime,  string timeT
         pair(MED_ID, to_string(medId)),
         pair(DOSE_TIME, scheduledTime),
         pair(TIME_TAKEN, timeTaken),
-        pair(TAKEN, to_string(isTaken ? 1 : 0))
+        pair(TAKEN, isTaken ? "1" : "0")
     };
 
     return manager.insert(MEDICATION_TRACKER_TABLE, vals);
