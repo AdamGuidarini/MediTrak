@@ -73,5 +73,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
             WorkManager.getInstance(context).enqueue(workRequest);
         }
+
+        db.close();
     }
 }
