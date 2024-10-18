@@ -60,7 +60,7 @@ This project uses the ````sqlite3.c```` and ````sqlite3.h```` files in its NDK p
  <a href="https://github.com/AdamGuidarini/MediTrak/releases">
   <img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="90" alt="Get it on GitHub"/>
  </a>
- <a href="https://apt.izzysoft.de/fdroid/index/apk/projects.medicationtracker">
+ <a href="https://apt.izzysoft.de/fdroid/index/apk/projects.medicationtracker" style="text-decoration: none !important;">
   <img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height=90 alt="Get it on IzzyOnDroid"/>
  </a>
 </div>
@@ -85,7 +85,7 @@ Thanks to [IzzySoft](https://github.com/IzzySoft), this app is available in the 
 
 ## Screenshots
 
-<div style="display: flex;">
+<div style="display: flex;" align="center">
  <img src="https://github.com/AdamGuidarini/MediTrak/blob/vc29/fastlane/metadata/android/en-US/images/phoneScreenshots/01.png?raw=true" width="15%">
  <img src="https://github.com/AdamGuidarini/MediTrak/blob/vc29/fastlane/metadata/android/en-US/images/phoneScreenshots/02.png?raw=true" width="15%">
  <img src="https://github.com/AdamGuidarini/MediTrak/blob/vc29/fastlane/metadata/android/en-US/images/phoneScreenshots/03.png?raw=true" width="15%">
