@@ -128,7 +128,7 @@
     <string name="unitExample">z.B. mg, g, Tropfen</string>
     <string name="patient_name">Patientenname:</string>
     <string name="no_alias">Keine Aliase</string>
-    <string name="at">Um:</string>
+    <string name="at">um</string>
     <string name="apply_retroactive">Änderungen rückwirkend anwenden</string>
     <string name="retroactive_warning">Warnung: Änderungen der Häufigkeit können dazu führen, dass zuvor eingenommene Dosen nicht mehr im Zeitplan sichtbar sind.</string>
     <string name="would_like_apply_retroactively">Änderungen der Dosierung und Häufigkeit können rückwirkend ab der vorherigen Änderung angewendet werden. Möchten Sie diese Änderungen rückwirkend anwenden?</string>
@@ -230,6 +230,8 @@
     <string name="its_time_your_med">Es ist Zeit, dein %1$s %2$s zu nehmen</string>
     <string name="time_for_other_med">Es ist Zeit für die %2$s %3$s von %1$s</string>
     <string name="add_dose">Dosis hinzufügen</string>
+    <string name="open_notifications">Offenen Benachrichtigungen</string>
+    <string name="skip_unselected">Überspringen nicht ausgewählt</string>
 
     <!-- Med History -->
     <string name="history">Geschichte</string>
@@ -238,4 +240,5 @@
     <string name="filter">Filtern</string>
     <string name="export_csv">CSV Exportieren</string>
     <string name="no_records">Keine Datensätze</string>
+    <string name="select_all">Alle Auswählen</string>
 </resources>

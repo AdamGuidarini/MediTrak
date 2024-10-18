@@ -17,8 +17,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.service.notification.StatusBarNotification;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,16 +46,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
+import projects.medicationtracker.Dialogs.OpenNotificationsDialog;
 import projects.medicationtracker.Dialogs.WelcomeDialog;
 import projects.medicationtracker.Fragments.MedicationScheduleFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.Models.Medication;
+import projects.medicationtracker.Models.Notification;
 import projects.medicationtracker.Views.StandardCardView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IDialogCloseListener {
     public static Bundle preferences;
     private final DBHelper db = new DBHelper(this);
     private LinearLayout scheduleLayout;
@@ -64,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
             new ActivityResultContracts.RequestPermission(),
             isGranted -> db.seenPermissionRequest(SEEN_NOTIFICATION_REQUEST)
     );
+    private ArrayList<Medication> allMeds;
 
     /**
      * Runs at start of activity, builds MainActivity
@@ -74,11 +80,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        NotificationManager manager = (NotificationManager) getSystemService(
+                Context.NOTIFICATION_SERVICE
+        );
+        StatusBarNotification[] openNotifications = manager.getActiveNotifications();
 
         DATABASE_PATH = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
 
         nativeDb = new NativeDbHelper(DATABASE_PATH);
         nativeDb.create();
+
+        allMeds = db.getMedications();
 
         preferences = db.getPreferences();
 
@@ -109,7 +121,9 @@ public class MainActivity extends AppCompatActivity {
             welcomeDialog.show(getSupportFragmentManager(), null);
         }
 
-        if (Build.VERSION.SDK_INT >= 33 && !preferences.getBoolean(SEEN_NOTIFICATION_REQUEST) && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= 33 && !preferences.getBoolean(SEEN_NOTIFICATION_REQUEST)
+            && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) {
             notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
         }
 
@@ -121,8 +135,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        NotificationManager manager = (NotificationManager) getSystemService(
+                Context.NOTIFICATION_SERVICE
+        );
+        StatusBarNotification[] openNotifications = manager.getActiveNotifications();
+
         scheduleLayout.removeAllViews();
         createMainActivityViews();
+
+        if (openNotifications.length > 0) {
+            OpenNotificationsDialog notificationsDialog = new OpenNotificationsDialog(
+                    openNotifications, allMeds
+            );
+            notificationsDialog.show(getSupportFragmentManager(), null);
+        }
     }
 
     /**
@@ -240,8 +267,8 @@ public class MainActivity extends AppCompatActivity {
      * @return List of all Medications for this week
      */
     public ArrayList<Medication> medicationsForThisWeek() {
-        ArrayList<Medication> medications = db.getMedications();
         ArrayList<LocalDateTime> validTimes;
+        ArrayList<Medication> medications = db.getMedications();
         // Add times to custom frequency
         LocalDate thisSunday = TimeFormatting.whenIsSunday(aDayThisWeek);
 
@@ -424,14 +451,26 @@ public class MainActivity extends AppCompatActivity {
      * Clears all open notifications as well
      */
     private void prepareNotifications() {
-        ArrayList<Medication> medications = db.getMedications();
+        final ArrayList<Notification> notifications = nativeDb.getNotifications();
 
-        for (Medication medication : medications) {
+        for (Medication medication : allMeds) {
             NotificationHelper.clearPendingNotifications(medication, this);
         }
 
-        for (Medication medication : medications) {
+        for (Medication medication : allMeds) {
             NotificationHelper.createNotifications(medication, this);
+        }
+
+        for (final Notification n : notifications) {
+            Medication med = allMeds.stream().filter(m -> m.getId() == n.getMedId()).findFirst().orElse(null);
+
+            if (med == null) {
+                Log.e("EventReceiver", "Failed to create notification for Medication: " + n.getMedId());
+
+                continue;
+            }
+
+            NotificationHelper.scheduleNotification(this, med, n.getDoseTime(), n.getNotificationId());
         }
     }
 
@@ -466,5 +505,18 @@ public class MainActivity extends AppCompatActivity {
         scheduleLayout.removeAllViews();
 
         createMainActivityViews();
+    }
+
+    /**
+     * Handles closing of notification dialog
+     * @param action Action performed in dialog
+     * @param data Object returned by dialog
+     */
+    @Override
+    public void handleDialogClose(Action action, Object data) {
+        if (action == Action.EDIT) {
+            scheduleLayout.removeAllViews();
+            createMainActivityViews();
+        }
     }
 }

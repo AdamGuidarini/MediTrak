@@ -127,7 +127,7 @@
     <string name="unitExample">Es. mg, g, drops</string>
     <string name="patient_name">Nome del paziente:</string>
     <string name="no_alias">Nessun alias</string>
-    <string name="at">Alle:</string>
+    <string name="at">alle</string>
     <string name="apply_retroactive">Applicare le modifiche con effetto retroattivo</string>
     <string name="retroactive_warning">Avviso: Le modifiche alla frequenza possono rendere le dosi precedentemente prese non sono più visibili nel programma.</string>
     <string name="would_like_apply_retroactively">Le modifiche al dosaggio si possono applicare con effetto retroattivo a partire all\'ultima modifica. Vorrersti applicare queste modifiche con effetto retroattivo?</string>
@@ -229,6 +229,8 @@
     <string name="its_time_your_med">È ora di prendere il tuo %1$s di %2$s</string>
     <string name="time_for_other_med">È il momento dei %2$s di %3$s  di %1$s</string>
     <string name="add_dose">Aggiungere dose</string>
+    <string name="open_notifications">Notifiche Aperte</string>
+    <string name="skip_unselected">Saltare non selezionate</string>
 
     <!-- Med History -->
     <string name="history">Storia</string>
@@ -237,4 +239,5 @@
     <string name="filter">Filtrare</string>
     <string name="export_csv">Esporta CSV</string>
     <string name="no_records">Nessun registro</string>
+    <string name="select_all">Scegliere Tutti</string>
 </resources>

@@ -14,6 +14,7 @@
     <string name="ok">OK</string>
     <string name="delete">Delete</string>
     <string name="i_agree">I agree</string>
+    <string name="select_all">Select All</string>
 
     <!-- Filters -->
     <string name="clear">Clear</string>
@@ -126,7 +127,7 @@
     <string name="unitExample">Ex. mg, g, drops</string>
     <string name="patient_name">Patient Name:</string>
     <string name="no_alias">No alias</string>
-    <string name="at">At:</string>
+    <string name="at">at</string>
     <string name="apply_retroactive">Apply Changes Retroactively</string>
     <string name="retroactive_warning">Warning: Changes to frequency may cause previously taken doses to no longer be visible in the schedule.</string>
     <string name="would_like_apply_retroactively">Changes to dosage and frequency can be applied retroactively as of the previous change. Would you like to apply these changes retroactively?</string>
@@ -228,6 +229,8 @@
     <string name="its_time_your_med">It\'s time to take your %1$s of %2$s</string>
     <string name="time_for_other_med">It\'s time for %1$s\'s %2$s of %3$s</string>
     <string name="add_dose">Add Dose</string>
+    <string name="open_notifications">Open Notifications</string>
+    <string name="skip_unselected">Skip Unselected</string>
 
     <!-- Med History -->
     <string name="history">History</string>

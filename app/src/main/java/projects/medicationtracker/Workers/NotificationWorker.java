@@ -24,6 +24,7 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
@@ -52,24 +53,30 @@ public class NotificationWorker extends Worker {
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             final String message = getInputData().getString(MESSAGE);
             final String doseTime = getInputData().getString(DOSE_TIME);
-            final long notificationId = getInputData().getLong(NOTIFICATION_ID, System.currentTimeMillis());
+            final long notificationId = getInputData().getLong(NOTIFICATION_ID, (int) System.currentTimeMillis());
             final long medId = getInputData().getLong(MEDICATION_ID, -1);
 
             Notification notification = createNotification(message, doseTime, notificationId, medId);
-            Notification notificationSummary = new NotificationCompat.Builder(context, CHANNEL_ID)
-                    .setContentTitle(context.getString(R.string.app_name))
-                    .setSmallIcon(R.drawable.pill)
-                    .setStyle(new NotificationCompat.InboxStyle())
-                    .setGroup(GROUP_KEY)
-                    .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
-                    .setGroupSummary(true)
-                    .setAutoCancel(true)
-                    .build();
 
-            notificationManager.notify(SUMMARY_ID, notificationSummary);
+            if (Arrays.stream(notificationManager.getActiveNotifications()).noneMatch(n -> n.getId() == SUMMARY_ID)) {
+                Notification notificationSummary = new NotificationCompat.Builder(context, CHANNEL_ID)
+                        .setContentTitle(context.getString(R.string.app_name))
+                        .setSmallIcon(R.drawable.pill)
+                        .setStyle(new NotificationCompat.InboxStyle())
+                        .setGroup(GROUP_KEY)
+                        .setSilent(true)
+                        .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
+                        .setGroupSummary(true)
+                        .setAutoCancel(true)
+                        .build();
+
+                notificationManager.notify(SUMMARY_ID, notificationSummary);
+
+                Thread.sleep(500);
+            }
 
             // Only fire notification if not other active notification has the same ID
-            if (Arrays.stream(notificationManager.getActiveNotifications()).filter(n -> n.getId() == notificationId).toArray().length == 0) {
+            if (Arrays.stream(notificationManager.getActiveNotifications()).noneMatch(n -> n.getId() == notificationId)) {
                 NativeDbHelper nativeDb = new NativeDbHelper(DATABASE_PATH);
                 String doseTimeDb = doseTime.replace("T", " ") + ":00";
 
@@ -77,9 +84,11 @@ public class NotificationWorker extends Worker {
                     -1, medId, notificationId, doseTimeDb
                 );
 
+                nativeDb.stashNotification(alert);
                 notificationManager.notify((int) notificationId, notification);
 
-                nativeDb.stashNotification(alert);
+                // Force wait thread to prevent Muting recently noisy 0 error
+                Thread.sleep(5000);
             }
         } catch (Exception e) {
             Log.e("MediTrak:Notifications", e.getMessage());
@@ -159,6 +168,7 @@ public class NotificationWorker extends Worker {
                         .setSmallIcon(R.drawable.pill)
                         .setGroup(GROUP_KEY)
                         .setAutoCancel(false)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setStyle(new NotificationCompat.BigTextStyle())
                         .addAction(
                                 0,

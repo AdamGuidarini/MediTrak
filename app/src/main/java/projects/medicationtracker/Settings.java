@@ -73,8 +73,8 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.settings));
 
-        Button purgeButton = findViewById(R.id.purgeButton);
-        purgeButton.setBackgroundColor(Color.RED);
+        Button deleteAllButton = findViewById(R.id.deleteAllButton);
+        deleteAllButton.setBackgroundColor(Color.parseColor("#DD2222"));
 
         Button enableNotificationsButton = findViewById(R.id.enableNotifications);
         SwitchCompat notificationToggle = findViewById(R.id.enableNotificationSwitch);
