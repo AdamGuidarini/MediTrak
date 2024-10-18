@@ -23,6 +23,10 @@ public class Notification {
     public Notification(long rowId, long medicationId, long notificationId, String dosageTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DBHelper.DateFormats.DB_DATE_FORMAT, Locale.getDefault());
 
+        if (dosageTime.length() < DBHelper.DateFormats.DB_DATE_FORMAT.length()) {
+            dosageTime += "0";
+        }
+
         id = rowId;
         medId = medicationId;
         this.notificationId = notificationId;

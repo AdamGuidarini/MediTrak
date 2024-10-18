@@ -527,7 +527,19 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getNotifications(
     std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
     DatabaseController controller(dbPath);
 
-    std::vector<Notification> notifications = controller.getStashedNotifications();
+    std::vector<Notification> notifications;
+
+    try {
+        notifications = controller.getStashedNotifications();
+    } catch (exception& e) {
+        __android_log_write(
+            ANDROID_LOG_ERROR,
+            nullptr,
+            "Failed to retrieve notifications"
+        );
+
+        notifications = {};
+    }
 
     jobjectArray jNotifications = env->NewObjectArray(
         notifications.size(),

@@ -88,7 +88,9 @@ public class OpenNotificationsDialog extends DialogFragment {
         checkAll.setOnCheckedChangeListener((buttonView, isChecked) -> {
             long len = doseCheckBoxes.stream().filter(CompoundButton::isChecked).count();
 
-            openNotificationsDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(len != 0);
+            openNotificationsDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(
+                    len != 0 || dismissUnselected.isChecked()
+            );
         });
 
         checkAll.setOnClickListener(view -> {
@@ -98,6 +100,16 @@ public class OpenNotificationsDialog extends DialogFragment {
                 cb.setChecked(isChecked);
             }
         });
+
+        dismissUnselected.setOnCheckedChangeListener(
+                (buttonView, isChecked) -> {
+                    long len = doseCheckBoxes.stream().filter(CompoundButton::isChecked).count();
+
+                    openNotificationsDialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(
+                            len != 0 || isChecked
+                    );
+                }
+        );
 
         generateCheckBoxes(openNotificationsDialog);
 
@@ -167,7 +179,9 @@ public class OpenNotificationsDialog extends DialogFragment {
                     long len = doseCheckBoxes.stream().filter(CompoundButton::isChecked).count();
 
                     checkAll.setChecked(len == doseCheckBoxes.size());
-                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(len != 0);
+                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(
+                            len != 0 || dismissUnselected.isChecked()
+                    );
                 }
             );
 
