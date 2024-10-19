@@ -16,6 +16,7 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -34,9 +35,11 @@ import projects.medicationtracker.Receivers.EventReceiver;
 
 public class NotificationWorker extends Worker {
     private final Context context;
+    private NotificationManager notificationManager;
     public static final int SUMMARY_ID = Integer.MAX_VALUE;
     public static String MARK_AS_TAKEN_ACTION = "markAsTaken";
     public static String SNOOZE_ACTION = "snooze15";
+    public static String TAKE_ALL_ACTION = "markAllAsTaken";
     public static String DISMISSED_ACTION = "dismissed";
 
     NotificationWorker(Context context, WorkerParameters params) {
@@ -49,7 +52,7 @@ public class NotificationWorker extends Worker {
     @Override
     public Result doWork() {
         try {
-            NotificationManager notificationManager =
+            notificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             final String message = getInputData().getString(MESSAGE);
             final String doseTime = getInputData().getString(DOSE_TIME);
@@ -90,6 +93,8 @@ public class NotificationWorker extends Worker {
                 // Force wait thread to prevent Muting recently noisy 0 error
                 Thread.sleep(5000);
             }
+
+            // TODO re-trigger old notifications with take all button
         } catch (Exception e) {
             Log.e("MediTrak:Notifications", e.getMessage());
 
@@ -181,6 +186,25 @@ public class NotificationWorker extends Worker {
                                 snoozePendingIntent
                         )
                         .setDeleteIntent(deleteIntent);
+
+        if (Arrays.stream(notificationManager.getActiveNotifications()).filter(n -> n.getId() != SUMMARY_ID).count() > 1) {
+            Intent takeAllIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
+
+            takeAllIntent.setAction(MARK_AS_TAKEN_ACTION + embeddedMedId);
+            markTakenIntent.putExtra(MEDICATION_ID + embeddedMedId, medId);
+            markTakenIntent.putExtra(NOTIFICATION_ID + embeddedMedId, notificationId);
+            markTakenIntent.putExtra(DOSE_TIME + embeddedMedId, doseTime);
+
+            PendingIntent takeAllPendingIntent = PendingIntent.getBroadcast(
+                    getApplicationContext(),
+                    0,
+                    deletedIntent,
+                    SDK_INT >= Build.VERSION_CODES.S ?
+                            PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
+            );
+
+            builder.addAction(0, "=TAKE ALL=", takeAllPendingIntent);
+        }
 
         Intent resIntent =
                 new Intent(context, MainActivity.class);
