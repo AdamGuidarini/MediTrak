@@ -14,6 +14,7 @@
     <string name="ok">OK</string>
     <string name="delete">Eliminar</string>
     <string name="i_agree">Estoy de acuerdo</string>
+    <string name="select_all">Seleccionar Todo</string>
 
     <!-- Filters -->
     <string name="clear">Limpiar</string>
@@ -230,6 +231,8 @@
     <string name="add_dose">Añadir dosis</string>
     <string name="open_notifications">Notificaciones Abiertas</string>
     <string name="skip_unselected">Saltar deseleccionadas</string>
+    <string name="take_all">Tomar Todo</string>
+    <string name="take_selected">Tomar Seleccionados</string>
 
     <!-- Med History -->
     <string name="history">Historia</string>
@@ -238,5 +241,4 @@
     <string name="filter">Filtro</string>
     <string name="export_csv">Exportar CSV</string>
     <string name="no_records">Sin registros</string>
-    <string name="select_all">Seleccionar Todos</string>
 </resources>

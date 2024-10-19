@@ -1,6 +1,7 @@
 package projects.medicationtracker.Workers;
 
 import static android.os.Build.VERSION.SDK_INT;
+import static android.os.SystemClock.sleep;
 import static projects.medicationtracker.Helpers.NotificationHelper.CHANNEL_ID;
 import static projects.medicationtracker.Helpers.NotificationHelper.DOSE_TIME;
 import static projects.medicationtracker.Helpers.NotificationHelper.GROUP_KEY;
@@ -25,9 +26,7 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
-import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.MainActivity;
 import projects.medicationtracker.R;
@@ -51,18 +50,24 @@ public class NotificationWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
+        notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        final String message = getInputData().getString(MESSAGE);
+        final String doseTime = getInputData().getString(DOSE_TIME);
+        final long notificationId = getInputData().getLong(
+                NOTIFICATION_ID, (int) System.currentTimeMillis()
+        );
+        final long medId = getInputData().getLong(MEDICATION_ID, -1);
+        final StatusBarNotification[] openNotes = notificationManager.getActiveNotifications();
+
         try {
-            notificationManager =
-                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            final String message = getInputData().getString(MESSAGE);
-            final String doseTime = getInputData().getString(DOSE_TIME);
-            final long notificationId = getInputData().getLong(NOTIFICATION_ID, (int) System.currentTimeMillis());
-            final long medId = getInputData().getLong(MEDICATION_ID, -1);
+            Notification notification = createNotification(
+                    message, doseTime, notificationId, medId
+            );
 
-            Notification notification = createNotification(message, doseTime, notificationId, medId);
-
-            if (Arrays.stream(notificationManager.getActiveNotifications()).noneMatch(n -> n.getId() == SUMMARY_ID)) {
-                Notification notificationSummary = new NotificationCompat.Builder(context, CHANNEL_ID)
+            if (Arrays.stream(openNotes).noneMatch(n -> n.getId() == SUMMARY_ID)) {
+                Notification notificationSummary
+                        = new NotificationCompat.Builder(context, CHANNEL_ID)
                         .setContentTitle(context.getString(R.string.app_name))
                         .setSmallIcon(R.drawable.pill)
                         .setStyle(new NotificationCompat.InboxStyle())
@@ -75,28 +80,53 @@ public class NotificationWorker extends Worker {
 
                 notificationManager.notify(SUMMARY_ID, notificationSummary);
 
-                Thread.sleep(500);
+                sleep(500);
             }
 
             // Only fire notification if not other active notification has the same ID
-            if (Arrays.stream(notificationManager.getActiveNotifications()).noneMatch(n -> n.getId() == notificationId)) {
+            if (Arrays.stream(openNotes).noneMatch(n -> n.getId() == notificationId)) {
                 NativeDbHelper nativeDb = new NativeDbHelper(DATABASE_PATH);
                 String doseTimeDb = doseTime.replace("T", " ") + ":00";
 
-                projects.medicationtracker.Models.Notification alert = new projects.medicationtracker.Models.Notification(
-                    -1, medId, notificationId, doseTimeDb
+                projects.medicationtracker.Models.Notification alert
+                        = new projects.medicationtracker.Models.Notification(
+                        -1, medId, notificationId, doseTimeDb
                 );
 
                 nativeDb.stashNotification(alert);
                 notificationManager.notify((int) notificationId, notification);
 
                 // Force wait thread to prevent Muting recently noisy 0 error
-                Thread.sleep(5000);
+                sleep(5000);
             }
-
-            // TODO re-trigger old notifications with take all button
         } catch (Exception e) {
-            Log.e("MediTrak:Notifications", e.getMessage());
+            Log.e("NotificationWorker:CreateNotification", e.getMessage());
+
+            return Result.failure();
+        }
+
+        try {
+            StatusBarNotification[] filteredNotifications = Arrays.stream(
+                    notificationManager.getActiveNotifications()
+            ).filter(
+                    n -> n.getId() != notificationId || n.getId() != SUMMARY_ID
+            ).toArray(StatusBarNotification[]::new);
+
+            for (final StatusBarNotification n : filteredNotifications) {
+                Notification note = n.getNotification();
+                long thisMedId = note.extras.getLong(MEDICATION_ID);
+                String time = note.extras.getString(DOSE_TIME);
+
+                PendingIntent takeAllIntent = createTakeAllIntent(thisMedId, n.getId(), time);
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context, note)
+                        .addAction(0, context.getString(R.string.take_all), takeAllIntent);
+                builder.setSilent(true);
+
+                notificationManager.notify(n.getId(), builder.build());
+            }
+        } catch (Exception e) {
+            Log.e("NotificationWorker:AddTakeAll", e.getMessage());
 
             return Result.failure();
         }
@@ -145,7 +175,8 @@ public class NotificationWorker extends Worker {
                         0,
                         markTakenIntent,
                         SDK_INT >= Build.VERSION_CODES.S ?
-                                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
+                                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+                                : PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
         PendingIntent snoozePendingIntent =
@@ -154,17 +185,19 @@ public class NotificationWorker extends Worker {
                         0,
                         snoozeIntent,
                         SDK_INT >= Build.VERSION_CODES.S ?
-                                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
+                                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+                                : PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
         PendingIntent deleteIntent =
-            PendingIntent.getBroadcast(
-                getApplicationContext(),
-                0,
-                deletedIntent,
-                SDK_INT >= Build.VERSION_CODES.S ?
-                    PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
-            );
+                PendingIntent.getBroadcast(
+                        getApplicationContext(),
+                        0,
+                        deletedIntent,
+                        SDK_INT >= Build.VERSION_CODES.S ?
+                                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+                                : PendingIntent.FLAG_UPDATE_CURRENT
+                );
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, CHANNEL_ID)
@@ -187,23 +220,14 @@ public class NotificationWorker extends Worker {
                         )
                         .setDeleteIntent(deleteIntent);
 
-        if (Arrays.stream(notificationManager.getActiveNotifications()).filter(n -> n.getId() != SUMMARY_ID).count() > 1) {
-            Intent takeAllIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
+        StatusBarNotification[] open = notificationManager.getActiveNotifications();
 
-            takeAllIntent.setAction(MARK_AS_TAKEN_ACTION + embeddedMedId);
-            markTakenIntent.putExtra(MEDICATION_ID + embeddedMedId, medId);
-            markTakenIntent.putExtra(NOTIFICATION_ID + embeddedMedId, notificationId);
-            markTakenIntent.putExtra(DOSE_TIME + embeddedMedId, doseTime);
-
-            PendingIntent takeAllPendingIntent = PendingIntent.getBroadcast(
-                    getApplicationContext(),
+        if (Arrays.stream(open).filter(n -> n.getId() != SUMMARY_ID).count() >= 1) {
+            builder.addAction(
                     0,
-                    deletedIntent,
-                    SDK_INT >= Build.VERSION_CODES.S ?
-                            PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
+                    context.getString(R.string.take_all),
+                    createTakeAllIntent(medId, notificationId, doseTime)
             );
-
-            builder.addAction(0, "=TAKE ALL=", takeAllPendingIntent);
         }
 
         Intent resIntent =
@@ -217,10 +241,30 @@ public class NotificationWorker extends Worker {
                 stackBuilder.getPendingIntent(
                         0,
                         SDK_INT >= Build.VERSION_CODES.S ?
-                                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
+                                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+                                : PendingIntent.FLAG_UPDATE_CURRENT
                 );
         builder.setContentIntent(resPendingIntent);
 
         return builder.build();
+    }
+
+    private PendingIntent createTakeAllIntent(long medId, long notificationId, String doseTime) {
+        String embeddedMedId = "_" + medId;
+        Intent takeAllIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
+
+        takeAllIntent.setAction(TAKE_ALL_ACTION + embeddedMedId);
+        takeAllIntent.putExtra(MEDICATION_ID + embeddedMedId, medId);
+        takeAllIntent.putExtra(NOTIFICATION_ID + embeddedMedId, notificationId);
+        takeAllIntent.putExtra(DOSE_TIME + embeddedMedId, doseTime);
+
+        return PendingIntent.getBroadcast(
+                getApplicationContext(),
+                0,
+                takeAllIntent,
+                SDK_INT >= Build.VERSION_CODES.S ?
+                        PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+                        : PendingIntent.FLAG_UPDATE_CURRENT
+        );
     }
 }
