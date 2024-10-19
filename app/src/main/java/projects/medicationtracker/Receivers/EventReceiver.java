@@ -10,6 +10,7 @@ import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 import static projects.medicationtracker.Workers.NotificationWorker.DISMISSED_ACTION;
 import static projects.medicationtracker.Workers.NotificationWorker.SNOOZE_ACTION;
 import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
+import static projects.medicationtracker.Workers.NotificationWorker.TAKE_ALL_ACTION;
 
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -20,6 +21,7 @@ import android.util.Log;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
@@ -36,6 +38,9 @@ public class EventReceiver extends BroadcastReceiver {
 
         final DBHelper db = new DBHelper(context);
         final NativeDbHelper nativeDbHelper = new NativeDbHelper(DATABASE_PATH);
+        final NotificationManager manager
+                = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
         ArrayList<Medication> medications = db.getMedications();
 
         if (intent.getAction().contains(NotificationWorker.MARK_AS_TAKEN_ACTION)) {
@@ -64,6 +69,8 @@ public class EventReceiver extends BroadcastReceiver {
             String medId = "_" + intent.getAction().split("_")[1];
 
             nativeDbHelper.deleteNotification(intent.getLongExtra(MEDICATION_ID + medId, 0));
+        } else if (intent.getAction().contains(TAKE_ALL_ACTION)) {
+            takeAll(manager, nativeDbHelper);
         } else {
             final ArrayList<Notification> notifications = nativeDbHelper.getNotifications();
 
@@ -84,9 +91,6 @@ public class EventReceiver extends BroadcastReceiver {
             }
         }
 
-        NotificationManager manager = (NotificationManager) context.getSystemService(
-                Context.NOTIFICATION_SERVICE
-        );
         StatusBarNotification[] notifications = manager.getActiveNotifications();
 
         if (notifications.length == 1 && notifications[0].getId() == SUMMARY_ID) {
@@ -115,7 +119,9 @@ public class EventReceiver extends BroadcastReceiver {
      * @param medId          ID of medication taken
      * @param doseTimeString Dose time for DB.
      */
-    private void markDoseTaken(Context context, long notificationId, long medId, String doseTimeString, DBHelper db) {
+    private void markDoseTaken(
+            Context context, long notificationId, long medId, String doseTimeString, DBHelper db
+    ) {
         Medication med;
         LocalDateTime doseTime = LocalDateTime.parse(doseTimeString);
         NotificationManager notificationManager =
@@ -134,10 +140,11 @@ public class EventReceiver extends BroadcastReceiver {
         );
 
         notificationManager.cancel((int) notificationId);
-        db.close();
     }
 
-    private void snoozeFor15(Context context, long notificationId, long medId, String doseTimeString, DBHelper db) {
+    private void snoozeFor15(
+            Context context, long notificationId, long medId, String doseTimeString, DBHelper db
+    ) {
         Medication med;
         LocalDateTime doseTime = LocalDateTime.parse(doseTimeString);
         NotificationManager notificationManager =
@@ -153,6 +160,39 @@ public class EventReceiver extends BroadcastReceiver {
         );
 
         notificationManager.cancel((int) notificationId);
-        db.close();
+    }
+
+    private void takeAll(NotificationManager manager, NativeDbHelper nativeDbHelper) {
+        StatusBarNotification[] activeNotifications
+                = Arrays.stream(manager.getActiveNotifications()).filter(
+                n -> n.getId() != SUMMARY_ID
+        ).toArray(StatusBarNotification[]::new);
+        ArrayList<Notification> notifications = nativeDbHelper.getNotifications();
+
+        for (final StatusBarNotification n : activeNotifications) {
+            Notification thisNotification = notifications.stream().filter(
+                    _n -> _n.getNotificationId() == n.getId()
+            ).findFirst().orElse(null);
+
+            if (thisNotification == null) {
+                Log.e(
+                        "EventReceiver",
+                        "Failed to find notification with ID: "
+                                + n.getId() + ". Continuing to next notification."
+                );
+
+                continue;
+            }
+
+            nativeDbHelper.addDose(
+                    thisNotification.getMedId(),
+                    thisNotification.getDoseTime(),
+                    LocalDateTime.now().withSecond(0).withNano(0),
+                    true
+            );
+
+            nativeDbHelper.deleteNotification(thisNotification.getId());
+            manager.cancel(n.getId());
+        }
     }
 }

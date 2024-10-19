@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
         }
 
         if (Build.VERSION.SDK_INT >= 33 && !preferences.getBoolean(SEEN_NOTIFICATION_REQUEST)
-            && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+                && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) {
             notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
         }
@@ -235,8 +235,13 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
             patientNames.setAdapter(patientAdapter);
 
             patientNames.addTextChangedListener(new TextWatcher() {
-                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
 
                 @Override
                 public void afterTextChanged(Editable s) {
@@ -509,8 +514,9 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
 
     /**
      * Handles closing of notification dialog
+     *
      * @param action Action performed in dialog
-     * @param data Object returned by dialog
+     * @param data   Object returned by dialog
      */
     @Override
     public void handleDialogClose(Action action, Object data) {
