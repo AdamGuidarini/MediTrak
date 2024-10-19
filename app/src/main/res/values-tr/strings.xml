@@ -14,6 +14,7 @@
     <string name="ok">Tamam</string>
     <string name="delete">Sil</string>
     <string name="i_agree">Kabul ediyorum</string>
+    <string name="select_all">Tümünü seç</string>
 
     <!-- Filtreler -->
     <string name="clear">Temizle</string>
@@ -230,6 +231,8 @@
     <string name="add_dose">Doz Ekle</string>
     <string name="open_notifications">Açık Bildirimler</string>
     <string name="skip_unselected">Seçilmemişleri atla</string>
+    <string name="take_all">Hepsini Al</string>
+    <string name="take_selected">Seçilenleri al</string>
 
     <!-- İlaç Geçmişi -->
     <string name="history">Geçmiş</string>
@@ -238,5 +241,4 @@
     <string name="filter">Filtre</string>
     <string name="export_csv">CSV Olarak Dışa Aktar</string>
     <string name="no_records">Kayıt Yok</string>
-    <string name="select_all">Tümünü seç</string>
 </resources>

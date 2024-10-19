@@ -71,7 +71,7 @@ public class OpenNotificationsDialog extends DialogFragment {
         builder.setView(inflater.inflate(R.layout.dialog_open_notifications, null));
         builder.setTitle(R.string.open_notifications);
 
-        builder.setPositiveButton(R.string.mark_as_taken, ((dialog, which) -> onTake()));
+        builder.setPositiveButton(R.string.take_selected, ((dialog, which) -> onTake()));
         builder.setNegativeButton(R.string.cancel, ((dialog, which) -> dismiss()));
 
         openNotificationsDialog = builder.create();
@@ -82,7 +82,7 @@ public class OpenNotificationsDialog extends DialogFragment {
         dismissUnselected = openNotificationsDialog.findViewById(R.id.dismiss_unselected);
 
         manager = (NotificationManager) getActivity().getSystemService(
-            Context.NOTIFICATION_SERVICE
+                Context.NOTIFICATION_SERVICE
         );
 
         checkAll.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -118,6 +118,13 @@ public class OpenNotificationsDialog extends DialogFragment {
         return openNotificationsDialog;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        dismiss();
+    }
+
     /**
      * Set checkboxes and
      */
@@ -134,26 +141,26 @@ public class OpenNotificationsDialog extends DialogFragment {
             Medication m;
             String label;
             Notification thisNotification = notes.stream().filter(
-                _n -> _n.getNotificationId() == notification.getId()
+                    _n -> _n.getNotificationId() == notification.getId()
             ).findFirst().orElse(null);
 
             if (thisNotification == null) {
                 Log.e(
-                    "Notifications Dialog",
-                    "Cannot find notification with ID: " + notification.getId()
+                        "Notifications Dialog",
+                        "Cannot find notification with ID: " + notification.getId()
                 );
 
                 continue;
             }
 
             m = meds.stream().filter(
-                _m -> _m.getId() == thisNotification.getMedId()
+                    _m -> _m.getId() == thisNotification.getMedId()
             ).findFirst().orElse(null);
 
             if (m == null) {
                 Log.e(
-                    "Notifications Dialog",
-                    "Cannot find notification for med: " + thisNotification.getMedId()
+                        "Notifications Dialog",
+                        "Cannot find notification for med: " + thisNotification.getMedId()
                 );
 
                 continue;
@@ -162,27 +169,27 @@ public class OpenNotificationsDialog extends DialogFragment {
             label = m.getName() + " - " + m.getDosage() + " " + m.getDosageUnits() + " - ";
 
             label += DateTimeFormatter.ofPattern(
-                preferences.getString(DATE_FORMAT),
-                Locale.getDefault()
+                    preferences.getString(DATE_FORMAT),
+                    Locale.getDefault()
             ).format(thisNotification.getDoseTime().toLocalDate());
 
             label += " " + getString(R.string.at) + " " + DateTimeFormatter.ofPattern(
-                preferences.getString(TIME_FORMAT),
-                Locale.getDefault()
+                    preferences.getString(TIME_FORMAT),
+                    Locale.getDefault()
             ).format(thisNotification.getDoseTime().toLocalTime());
 
             box.setText(label);
             box.setTag(thisNotification);
 
             box.setOnCheckedChangeListener(
-                (buttonView, isChecked) -> {
-                    long len = doseCheckBoxes.stream().filter(CompoundButton::isChecked).count();
+                    (buttonView, isChecked) -> {
+                        long len = doseCheckBoxes.stream().filter(CompoundButton::isChecked).count();
 
-                    checkAll.setChecked(len == doseCheckBoxes.size());
-                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(
-                            len != 0 || dismissUnselected.isChecked()
-                    );
-                }
+                        checkAll.setChecked(len == doseCheckBoxes.size());
+                        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(
+                                len != 0 || dismissUnselected.isChecked()
+                        );
+                    }
             );
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -204,7 +211,7 @@ public class OpenNotificationsDialog extends DialogFragment {
                 return 0;
             }
 
-            return timeA.isBefore(timeB) ? 1: -1;
+            return timeA.isBefore(timeB) ? 1 : -1;
         });
 
         doseCheckBoxes.sort(
@@ -225,7 +232,7 @@ public class OpenNotificationsDialog extends DialogFragment {
         for (final CheckBox box : doseCheckBoxes) {
             Notification notification = (Notification) box.getTag();
             Medication med = meds.stream().filter(
-                _m -> _m.getId() == notification.getMedId()
+                    _m -> _m.getId() == notification.getMedId()
             ).findFirst().orElse(null);
             long newDoseId = -1;
 
@@ -233,10 +240,10 @@ public class OpenNotificationsDialog extends DialogFragment {
                 manager.cancel((int) notification.getNotificationId());
 
                 newDoseId = nativeDbHelper.addDose(
-                    med.getId(),
-                    notification.getDoseTime(),
-                    LocalDateTime.now().withSecond(0).withNano(0),
-                    true
+                        med.getId(),
+                        notification.getDoseTime(),
+                        LocalDateTime.now().withSecond(0).withNano(0),
+                        true
                 );
                 nativeDbHelper.deleteNotification(notification.getNotificationId());
             } else if (dismissUnselected.isChecked()) {
@@ -246,13 +253,13 @@ public class OpenNotificationsDialog extends DialogFragment {
 
             if (newDoseId == -1 && box.isChecked()) {
                 final String err = "Could not save dose for medication: "
-                    + med.getId()
-                    + " at time: "
-                    + notification.getDoseTime().toString();
+                        + med.getId()
+                        + " at time: "
+                        + notification.getDoseTime().toString();
 
                 Log.e(
-                    "Notifications Dialog",
-                    err
+                        "Notifications Dialog",
+                        err
                 );
             }
         }

@@ -231,6 +231,8 @@
     <string name="add_dose">Add Dose</string>
     <string name="open_notifications">Open Notifications</string>
     <string name="skip_unselected">Skip Unselected</string>
+    <string name="take_all">Take All</string>
+    <string name="take_selected">Take Selected</string>
 
     <!-- Med History -->
     <string name="history">History</string>
