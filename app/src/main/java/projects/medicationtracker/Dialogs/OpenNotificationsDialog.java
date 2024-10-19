@@ -118,6 +118,13 @@ public class OpenNotificationsDialog extends DialogFragment {
         return openNotificationsDialog;
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        dismiss();
+    }
+
     /**
      * Set checkboxes and
      */
