@@ -29,7 +29,6 @@ import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Notification;
-import projects.medicationtracker.R;
 import projects.medicationtracker.Workers.NotificationWorker;
 
 public class EventReceiver extends BroadcastReceiver {

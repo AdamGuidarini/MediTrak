@@ -79,10 +79,6 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        NotificationManager manager = (NotificationManager) getSystemService(
-                Context.NOTIFICATION_SERVICE
-        );
-        StatusBarNotification[] openNotifications = manager.getActiveNotifications();
 
         nativeDb = new NativeDbHelper(getApplicationContext());
         nativeDb.create();
@@ -124,8 +120,6 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
             notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
         }
 
-//        Log.i("MainAct", "Got permissions shown");
-
         namesLayout = findViewById(R.id.names_layout_main);
 
         createMainActivityViews();
@@ -137,13 +131,13 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
     public void onResume() {
         super.onResume();
 
+        scheduleLayout.removeAllViews();
+        createMainActivityViews();
+
         NotificationManager manager = (NotificationManager) getSystemService(
                 Context.NOTIFICATION_SERVICE
         );
         StatusBarNotification[] openNotifications = manager.getActiveNotifications();
-
-        scheduleLayout.removeAllViews();
-        createMainActivityViews();
 
         if (openNotifications.length > 0) {
             OpenNotificationsDialog notificationsDialog = new OpenNotificationsDialog(
