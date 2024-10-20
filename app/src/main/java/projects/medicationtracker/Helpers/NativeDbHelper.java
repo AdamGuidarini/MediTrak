@@ -1,5 +1,8 @@
 package projects.medicationtracker.Helpers;
 
+import static projects.medicationtracker.Helpers.DBHelper.DATABASE_NAME;
+
+import android.content.Context;
 import android.util.Pair;
 
 import java.time.LocalDateTime;
@@ -22,6 +25,11 @@ public class NativeDbHelper {
 
     public NativeDbHelper(String databasePath) {
         dbPath = databasePath;
+        dbCreate(dbPath);
+    }
+
+    public NativeDbHelper(Context context) {
+        dbPath = context.getDatabasePath(DATABASE_NAME).getAbsolutePath();
         dbCreate(dbPath);
     }
 

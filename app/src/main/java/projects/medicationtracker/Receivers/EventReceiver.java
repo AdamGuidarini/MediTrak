@@ -43,7 +43,6 @@ public class EventReceiver extends BroadcastReceiver {
         DATABASE_PATH = context.getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
 
         final DBHelper db = new DBHelper(context);
-        final NativeDbHelper nativeDbHelper = new NativeDbHelper(DATABASE_PATH);
         final NotificationManager manager
                 = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
