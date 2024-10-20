@@ -3,10 +3,8 @@ package projects.medicationtracker.Fragments;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
-import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
@@ -31,7 +29,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -116,7 +113,6 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         LocalDate thisDate;
-        nativeDb = new NativeDbHelper(getContext());
 
         assert getArguments() != null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -175,6 +171,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         ArrayList<RelativeLayout> scheduledMeds = new ArrayList<>();
         ArrayList<RelativeLayout> asNeededMeds = new ArrayList<>();
         db = new DBHelper(rootView.getContext());
+        nativeDb = new NativeDbHelper(rootView.getContext());
 
         String date = DateTimeFormatter.ofPattern(
                 preferences.getString(DATE_FORMAT),

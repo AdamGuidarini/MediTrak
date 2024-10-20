@@ -24,7 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -81,7 +80,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
         Button enableNotificationsButton = findViewById(R.id.enableNotifications);
         SwitchCompat notificationToggle = findViewById(R.id.enableNotificationSwitch);
 
-        nativeDb = new NativeDbHelper(getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath());
+        nativeDb = new NativeDbHelper(this);
 
         if (Build.VERSION.SDK_INT >= 33) {
             enableNotificationsButton.setVisibility(View.VISIBLE);
@@ -134,8 +133,6 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
-
-                            inputStream.markSupported();
 
                             contents = new String(bytes, 0, length);
 

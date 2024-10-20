@@ -1,7 +1,5 @@
 package projects.medicationtracker.Helpers;
 
-import static projects.medicationtracker.MediTrak.DATABASE_PATH;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;

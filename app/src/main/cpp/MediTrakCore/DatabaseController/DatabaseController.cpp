@@ -356,7 +356,7 @@ vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
     string query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE
                    + " WHERE " + MED_ID + "=" + to_string(medicationId)
                    + " AND " + TAKEN + " = TRUE";
-    vector<Dose> doses;
+    vector<Dose> doses = {};
 
     Table *table = manager.execSqlWithReturn(query);
 

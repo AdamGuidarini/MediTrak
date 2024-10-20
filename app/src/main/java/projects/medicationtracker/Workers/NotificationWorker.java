@@ -8,7 +8,6 @@ import static projects.medicationtracker.Helpers.NotificationHelper.GROUP_KEY;
 import static projects.medicationtracker.Helpers.NotificationHelper.MEDICATION_ID;
 import static projects.medicationtracker.Helpers.NotificationHelper.MESSAGE;
 import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION_ID;
-import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -26,7 +25,6 @@ import androidx.core.app.NotificationCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import projects.medicationtracker.Helpers.NativeDbHelper;
@@ -88,7 +86,7 @@ public class NotificationWorker extends Worker {
 
             // Only fire notification if not other active notification has the same ID
             if (Arrays.stream(openNotes).noneMatch(n -> n.getId() == notificationId)) {
-                NativeDbHelper nativeDb = new NativeDbHelper(DATABASE_PATH);
+                NativeDbHelper nativeDb = new NativeDbHelper(context);
                 String doseTimeDb = doseTime.replace("T", " ") + ":00";
 
                 projects.medicationtracker.Models.Notification alert

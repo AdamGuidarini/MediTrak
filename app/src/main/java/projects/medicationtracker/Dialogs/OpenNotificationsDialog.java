@@ -3,7 +3,6 @@ package projects.medicationtracker.Dialogs;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
-import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
 
 import android.app.Activity;
@@ -66,7 +65,7 @@ public class OpenNotificationsDialog extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         AlertDialog openNotificationsDialog;
 
-        nativeDbHelper = new NativeDbHelper(DATABASE_PATH);
+        nativeDbHelper = new NativeDbHelper(getActivity());
 
         builder.setView(inflater.inflate(R.layout.dialog_open_notifications, null));
         builder.setTitle(R.string.open_notifications);

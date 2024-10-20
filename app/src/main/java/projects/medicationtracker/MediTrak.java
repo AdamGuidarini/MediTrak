@@ -1,5 +1,7 @@
 package projects.medicationtracker;
 
+import static projects.medicationtracker.Helpers.DBHelper.DATABASE_NAME;
+
 import android.app.Application;
 
 import androidx.annotation.NonNull;
@@ -9,8 +11,6 @@ import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
 
 public class MediTrak extends Application implements Configuration.Provider {
-
-    public static String DATABASE_PATH;
 
     @NonNull
     @Override

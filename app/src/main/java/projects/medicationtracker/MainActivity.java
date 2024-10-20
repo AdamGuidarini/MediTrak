@@ -9,7 +9,6 @@ import static projects.medicationtracker.Helpers.DBHelper.DARK;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.SEEN_NOTIFICATION_REQUEST;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
-import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 
 import android.app.NotificationManager;
 import android.content.Context;
@@ -84,8 +83,6 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
                 Context.NOTIFICATION_SERVICE
         );
         StatusBarNotification[] openNotifications = manager.getActiveNotifications();
-
-        DATABASE_PATH = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
 
         nativeDb = new NativeDbHelper(getApplicationContext());
         nativeDb.create();

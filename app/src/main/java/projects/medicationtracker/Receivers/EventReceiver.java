@@ -6,7 +6,6 @@ import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION
 import static projects.medicationtracker.Helpers.NotificationHelper.clearPendingNotifications;
 import static projects.medicationtracker.Helpers.NotificationHelper.createNotifications;
 import static projects.medicationtracker.Helpers.NotificationHelper.scheduleIn15Minutes;
-import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 import static projects.medicationtracker.Workers.NotificationWorker.DISMISSED_ACTION;
 import static projects.medicationtracker.Workers.NotificationWorker.SNOOZE_ACTION;
 import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
@@ -19,9 +18,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,8 +36,6 @@ public class EventReceiver extends BroadcastReceiver {
     @SuppressLint("RestrictedApi")
     @Override
     public void onReceive(Context context, Intent intent) {
-        DATABASE_PATH = context.getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
-
         final DBHelper db = new DBHelper(context);
         final NativeDbHelper nativeDbHelper = new NativeDbHelper(context);
         final NotificationManager manager

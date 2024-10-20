@@ -3,7 +3,6 @@ package projects.medicationtracker.Dialogs;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
-import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -57,7 +56,7 @@ public class DoseInfoDialog extends DialogFragment {
         this.doseId = doseId;
         db = database;
         textView = tv;
-        nativeDb = new NativeDbHelper(DATABASE_PATH);
+        nativeDb = new NativeDbHelper(getActivity());
     }
 
     @NonNull
