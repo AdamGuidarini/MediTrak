@@ -1118,12 +1118,14 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " + ACTIVE + " FROM " + MEDICATION_TABLE
                 + " WHERE " + MED_ID + "=" + medication.getId();
-        boolean active;
+        boolean active = false;
 
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
 
-        active = cursor.getString(cursor.getColumnIndexOrThrow(ACTIVE)).equals("1");
+        if (cursor.getCount() > 0) {
+            active = cursor.getString(cursor.getColumnIndexOrThrow(ACTIVE)).equals("1");
+        }
 
         cursor.close();
         db.close();

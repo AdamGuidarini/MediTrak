@@ -10,6 +10,7 @@ import static projects.medicationtracker.Helpers.NotificationHelper.MESSAGE;
 import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION_ID;
 import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -25,6 +26,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import projects.medicationtracker.Helpers.NativeDbHelper;
@@ -47,6 +49,7 @@ public class NotificationWorker extends Worker {
         this.context = context;
     }
 
+    @SuppressLint("RestrictedApi")
     @NonNull
     @Override
     public Result doWork() {
@@ -109,18 +112,28 @@ public class NotificationWorker extends Worker {
             StatusBarNotification[] filteredNotifications = Arrays.stream(
                     notificationManager.getActiveNotifications()
             ).filter(
-                    n -> n.getId() != notificationId || n.getId() != SUMMARY_ID
+                    n -> n.getId() != SUMMARY_ID
             ).toArray(StatusBarNotification[]::new);
+
+            if (filteredNotifications.length == 1) {
+                return Result.success();
+            }
 
             for (final StatusBarNotification n : filteredNotifications) {
                 Notification note = n.getNotification();
+
                 long thisMedId = note.extras.getLong(MEDICATION_ID);
                 String time = note.extras.getString(DOSE_TIME);
 
                 PendingIntent takeAllIntent = createTakeAllIntent(thisMedId, n.getId(), time);
 
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context, note)
-                        .addAction(0, context.getString(R.string.take_all), takeAllIntent);
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context, note);
+
+                if (builder.mActions.stream().anyMatch(a -> a.getTitle() == context.getString(R.string.take_all))) {
+                    continue;
+                }
+
+                builder.addAction(0, context.getString(R.string.take_all), takeAllIntent);
                 builder.setSilent(true);
 
                 notificationManager.notify(n.getId(), builder.build());

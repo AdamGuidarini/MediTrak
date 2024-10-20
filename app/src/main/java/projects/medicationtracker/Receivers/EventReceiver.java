@@ -12,12 +12,16 @@ import static projects.medicationtracker.Workers.NotificationWorker.SNOOZE_ACTIO
 import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
 import static projects.medicationtracker.Workers.NotificationWorker.TAKE_ALL_ACTION;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,9 +33,11 @@ import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Notification;
+import projects.medicationtracker.R;
 import projects.medicationtracker.Workers.NotificationWorker;
 
 public class EventReceiver extends BroadcastReceiver {
+    @SuppressLint("RestrictedApi")
     @Override
     public void onReceive(Context context, Intent intent) {
         DATABASE_PATH = context.getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
@@ -79,19 +85,29 @@ public class EventReceiver extends BroadcastReceiver {
             }
 
             for (final Notification n : notifications) {
-                Medication med = medications.stream().filter(m -> m.getId() == n.getMedId()).findFirst().orElse(null);
+                Medication med = medications.stream().filter(
+                        m -> m.getId() == n.getMedId()
+                ).findFirst().orElse(null);
 
                 if (med == null) {
-                    Log.e("EventReceiver", "Failed to create notification for Medication: " + n.getMedId());
+                    Log.e(
+                            "EventReceiver",
+                            "Failed to create notification for Medication: " + n.getMedId()
+                    );
 
                     continue;
                 }
 
-                NotificationHelper.scheduleNotification(context, med, n.getDoseTime(), n.getNotificationId());
+                NotificationHelper.scheduleNotification(
+                        context, med, n.getDoseTime(), n.getNotificationId()
+                );
             }
         }
 
         StatusBarNotification[] notifications = manager.getActiveNotifications();
+        StatusBarNotification[] notTheSummary = Arrays.stream(notifications).filter(
+                _n -> _n.getId() != SUMMARY_ID
+        ).toArray(StatusBarNotification[]::new);
 
         if (notifications.length == 1 && notifications[0].getId() == SUMMARY_ID) {
             manager.cancel(SUMMARY_ID);
