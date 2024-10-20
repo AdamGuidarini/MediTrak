@@ -64,7 +64,7 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
             startActivity(returnToMyMeds);
         }
 
-        db = new NativeDbHelper(DATABASE_PATH);
+        db = new NativeDbHelper(this);
 
         medication = db.getMedicationHistory(medId);
 

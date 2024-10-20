@@ -37,6 +37,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.os.LocaleListCompat;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.DataInputStream;
 import java.io.FileNotFoundException;
@@ -220,7 +221,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
             return;
 
         LinearLayout setHoursBeforeLayout = findViewById(R.id.timeBeforeDoseLayout);
-        EditText enterTimeBeforeDose = findViewById(R.id.enterTimeBeforeDose);
+        TextInputEditText enterTimeBeforeDose = findViewById(R.id.enterTimeBeforeDose);
 
         enterTimeBeforeDose.setText(String.valueOf(hoursBefore));
 

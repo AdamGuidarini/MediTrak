@@ -68,18 +68,18 @@ public class AddMedication extends AppCompatActivity {
     private TextInputLayout patientNameInputLayout;
     private MaterialAutoCompleteTextView patientNameInput;
     private TextInputLayout medicationNameInputLayout;
-    private EditText medNameInput;
+    private TextInputEditText medNameInput;
     private SwitchMaterial aliasSwitch;
     private TextInputLayout aliasInputLayout;
-    private EditText aliasInput;
+    private TextInputEditText aliasInput;
     private TextInputLayout dosageAmountInputLayout;
-    private EditText dosageAmountInput;
+    private TextInputEditText dosageAmountInput;
     private TextInputLayout dosageUnitsInputLayout;
-    private EditText dosageUnitsInput;
+    private TextInputEditText dosageUnitsInput;
     private TextInputLayout frequencyDropdownLayout;
     private TextInputLayout numberOfTimersPerDayLayout;
-    private EditText dailyMedTime;
-    private EditText dailyMedStartDate;
+    private TextInputEditText dailyMedTime;
+    private TextInputEditText dailyMedStartDate;
     private TextInputLayout customFreqStartDateLayout;
     private TextInputEditText customFreqStartDate;
     private TextInputLayout customFreqTakenEveryLayout;
@@ -88,8 +88,8 @@ public class AddMedication extends AppCompatActivity {
     private TextInputLayout customFreqTimeUnitLayout;
     private TextInputEditText customFreqMTakenEveryEnter;
     private MaterialAutoCompleteTextView customFreqTimeUnitEnter;
-    private EditText startDateMultiplePerDay;
-    private EditText numberOfTimersPerDay;
+    private TextInputEditText startDateMultiplePerDay;
+    private TextInputEditText numberOfTimersPerDay;
     private TextInputLayout asNeededStart;
     private TextInputEditText asNeededStartInput;
     private int selectedFrequencyTypeIndex = -1;
@@ -99,7 +99,7 @@ public class AddMedication extends AppCompatActivity {
     private Button saveButton;
     private boolean createClone = false;
     private LocalDateTime[] startingTimes;
-    private EditText instructions;
+    private TextInputEditText instructions;
 
     /*
     * Validators
@@ -1132,7 +1132,7 @@ public class AddMedication extends AppCompatActivity {
             long childId;
             String changesNotes = createChangesNote(medication, parentMed);
             boolean applyRetroactively = applyRetroActiveSwitch.isChecked();
-            NativeDbHelper nativeDb = new NativeDbHelper(DATABASE_PATH);
+            NativeDbHelper nativeDb = new NativeDbHelper(getApplicationContext());
 
             if (!changesNotes.isEmpty() && createClone && !applyRetroactively) {
                 medication.setParent(parentMed);

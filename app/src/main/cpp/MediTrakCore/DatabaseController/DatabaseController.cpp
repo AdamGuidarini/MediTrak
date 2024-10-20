@@ -11,7 +11,23 @@ DatabaseController::DatabaseController(string path) {
 
     manager.openDb();
 
-    int currentVersion = manager.getVersionNumber();
+    int currentVersion;
+
+    for (int i = 0; i < 5; i++) {
+        try {
+            currentVersion = manager.getVersionNumber();
+        } catch (exception& e) {
+            string err = "Failed to retrieve version number.";
+
+            if (i == 4) {
+                cerr << err << "Cancelling run.";
+
+                throw e;
+            }
+
+            cerr << err << " Retrying run " << (i + 1) << "/5.";
+        }
+    }
 
     if (currentVersion <= 1) {
         create();

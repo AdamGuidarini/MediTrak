@@ -116,7 +116,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         LocalDate thisDate;
-        nativeDb = new NativeDbHelper(DATABASE_PATH);
+        nativeDb = new NativeDbHelper(getContext());
 
         assert getArguments() != null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

@@ -35,7 +35,7 @@ public class EventReceiver extends BroadcastReceiver {
         DATABASE_PATH = context.getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
 
         final DBHelper db = new DBHelper(context);
-        final NativeDbHelper nativeDbHelper = new NativeDbHelper(DATABASE_PATH);
+        final NativeDbHelper nativeDbHelper = new NativeDbHelper(context);
         ArrayList<Medication> medications = db.getMedications();
 
         if (intent.getAction().contains(NotificationWorker.MARK_AS_TAKEN_ACTION)) {

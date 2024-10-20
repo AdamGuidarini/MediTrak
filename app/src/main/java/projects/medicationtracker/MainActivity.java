@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
 
         DATABASE_PATH = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
 
-        nativeDb = new NativeDbHelper(DATABASE_PATH);
+        nativeDb = new NativeDbHelper(getApplicationContext());
         nativeDb.create();
 
         allMeds = db.getMedications();
@@ -127,9 +127,13 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
             notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
         }
 
+//        Log.i("MainAct", "Got permissions shown");
+
         namesLayout = findViewById(R.id.names_layout_main);
 
         createMainActivityViews();
+
+        Log.i("MainAct", "Created views");
     }
 
     @Override

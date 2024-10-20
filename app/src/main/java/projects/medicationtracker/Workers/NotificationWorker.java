@@ -77,7 +77,7 @@ public class NotificationWorker extends Worker {
 
             // Only fire notification if not other active notification has the same ID
             if (Arrays.stream(notificationManager.getActiveNotifications()).noneMatch(n -> n.getId() == notificationId)) {
-                NativeDbHelper nativeDb = new NativeDbHelper(DATABASE_PATH);
+                NativeDbHelper nativeDb = new NativeDbHelper(context);
                 String doseTimeDb = doseTime.replace("T", " ") + ":00";
 
                 projects.medicationtracker.Models.Notification alert = new projects.medicationtracker.Models.Notification(
