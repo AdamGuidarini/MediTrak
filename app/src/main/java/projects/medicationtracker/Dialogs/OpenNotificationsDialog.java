@@ -181,7 +181,9 @@ public class OpenNotificationsDialog extends DialogFragment {
 
             box.setOnCheckedChangeListener(
                     (buttonView, isChecked) -> {
-                        long len = doseCheckBoxes.stream().filter(CompoundButton::isChecked).count();
+                        long len = doseCheckBoxes.stream().filter(
+                                CompoundButton::isChecked
+                        ).count();
 
                         checkAll.setChecked(len == doseCheckBoxes.size());
                         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(

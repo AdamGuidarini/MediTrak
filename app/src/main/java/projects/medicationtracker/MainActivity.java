@@ -284,7 +284,9 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
             }
 
             // If a medication is taken once per day
-            if (medications.get(i).getTimes().length == 1 && medications.get(i).getFrequency() == 1440) {
+            if (medications.get(i).getTimes().length == 1
+                    && medications.get(i).getFrequency() == 1440
+            ) {
                 // if the Medication is taken once per day just add the start of each date to
                 timeArr = new LocalDateTime[7];
                 LocalTime localtime = medications.get(i).getTimes()[0].toLocalTime();
@@ -294,7 +296,9 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
                             LocalDateTime.of(LocalDate.from(thisSunday.plusDays(j)), localtime);
             }
             // If a medication is taken multiple times per day
-            else if (medications.get(i).getTimes().length > 1 && medications.get(i).getFrequency() == 1440) {
+            else if (medications.get(i).getTimes().length > 1
+                    && medications.get(i).getFrequency() == 1440
+            ) {
                 int numberOfTimes = medications.get(i).getTimes().length;
                 int index = 0;
 
@@ -346,9 +350,15 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
                                 if (time.isBefore(pausedInterval.second)) {
                                     return true;
                                 }
-                            } else if (time.isAfter(pausedInterval.first) && pausedInterval.second == null) {
+                            } else if (
+                                    time.isAfter(pausedInterval.first)
+                                            && pausedInterval.second == null
+                            ) {
                                 return true;
-                            } else if (time.isAfter(pausedInterval.first) && time.isBefore(pausedInterval.second)) {
+                            } else if (
+                                    time.isAfter(pausedInterval.first)
+                                            && time.isBefore(pausedInterval.second)
+                            ) {
                                 return true;
                             }
                         }
@@ -460,7 +470,9 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
         }
 
         for (final Notification n : notifications) {
-            Medication med = allMeds.stream().filter(m -> m.getId() == n.getMedId()).findFirst().orElse(null);
+            Medication med = allMeds.stream().filter(
+                    m -> m.getId() == n.getMedId()
+            ).findFirst().orElse(null);
 
             if (med == null) {
                 Log.e(
@@ -471,7 +483,12 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
                 continue;
             }
 
-            NotificationHelper.scheduleNotification(this, med, n.getDoseTime(), n.getNotificationId());
+            NotificationHelper.scheduleNotification(
+                    this,
+                    med,
+                    n.getDoseTime(),
+                    n.getNotificationId()
+            );
         }
     }
 
