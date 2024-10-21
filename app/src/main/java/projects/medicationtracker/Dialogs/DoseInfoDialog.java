@@ -41,7 +41,7 @@ import projects.medicationtracker.Models.Medication;
 public class DoseInfoDialog extends DialogFragment {
     private final long doseId;
     private final DBHelper db;
-    private final NativeDbHelper nativeDb;
+    private NativeDbHelper nativeDb;
     private Dose thisDose;
     private final TextView textView;
     private TextInputEditText timeTaken;
@@ -56,13 +56,14 @@ public class DoseInfoDialog extends DialogFragment {
         this.doseId = doseId;
         db = database;
         textView = tv;
-        nativeDb = new NativeDbHelper(getActivity());
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstances) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+        nativeDb = new NativeDbHelper(getActivity());
+
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         medication = ((Triple<Medication, Long, LocalDateTime>) textView.getTag()).getFirst();
         AlertDialog infoDialog;

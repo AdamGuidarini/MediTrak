@@ -22,11 +22,6 @@ public class NativeDbHelper {
 
     private final String dbPath;
 
-//    public NativeDbHelper(String databasePath) {
-//        dbPath = databasePath;
-//        dbCreate(dbPath);
-//    }
-
     public NativeDbHelper(Context context) {
         dbPath = context.getDatabasePath(DATABASE_NAME).getAbsolutePath();
         dbCreate(dbPath);
@@ -125,7 +120,12 @@ public class NativeDbHelper {
     }
 
     public Dose findDose(long medicationId, LocalDateTime doseTime) {
-        return findDose(dbPath, medicationId, TimeFormatting.localDateTimeToDbString(doseTime), new Medication());
+        return findDose(
+                dbPath,
+                medicationId,
+                TimeFormatting.localDateTimeToDbString(doseTime),
+                new Medication()
+        );
     }
 
     public Dose getDoseById(long doseId) {

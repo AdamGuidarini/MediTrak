@@ -518,11 +518,19 @@ bool DatabaseController::stashNotification(const Notification &notification) {
 }
 
 vector<Notification> DatabaseController::getStashedNotifications() {
-    vector<Notification> notifications;
+    vector<Notification> notifications = {};
 
     Table *table = manager.execSqlWithReturn("SELECT * FROM " + NOTIFICATIONS);
 
     while (table->getCount() > 0 && !table->isAfterLast()) {
+
+        // The query went wrong. MED_ID cannot be 0
+        if (stol(table->getItem(MED_ID)) == 0) {
+            delete table;
+
+            return {};
+        }
+
         Notification note(
                 stol(table->getItem(NOTIFICATION_ID)),
                 stol(table->getItem(MED_ID)),

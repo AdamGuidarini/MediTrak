@@ -17,7 +17,7 @@ Table::Table(sqlite3_stmt* stmt) {
     // GetRows
     while (sqlite3_column_text(stmt, 0)) {
         for (int i = 0; i < sqlite3_column_count(stmt); i++) {
-            string colText = "";
+            string colText;
             string colName = string(sqlite3_column_name(stmt, i));
 
             if (sqlite3_column_text(stmt, i) != nullptr) {
@@ -31,11 +31,11 @@ Table::Table(sqlite3_stmt* stmt) {
             }
         }
 
+        rowCount++;
         sqlite3_step(stmt);
     }
 
     sqlite3_finalize(stmt);
-    rowCount = table.begin()->second.size() >= 0 ? table.begin()->second.size() : 0;
 }
 
 void Table::moveToFirst() {

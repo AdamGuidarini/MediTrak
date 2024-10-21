@@ -123,8 +123,6 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
         namesLayout = findViewById(R.id.names_layout_main);
 
         createMainActivityViews();
-
-        Log.i("MainAct", "Created views");
     }
 
     @Override
@@ -451,7 +449,10 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
      * Clears all open notifications as well
      */
     private void prepareNotifications() {
+        Log.i("Main", "0");
         final ArrayList<Notification> notifications = nativeDb.getNotifications();
+
+        Log.i("Main", "1");
 
         for (Medication medication : allMeds) {
             NotificationHelper.clearPendingNotifications(medication, this);

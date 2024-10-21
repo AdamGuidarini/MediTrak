@@ -20,12 +20,12 @@ class Table {
 private:
     map<string, vector<string>> table;
     int currentRow;
-    int rowCount;
+    unsigned int rowCount;
 public:
     /**
      * Class constructor - Initializes table
      */
-    Table(sqlite3_stmt* stmt);
+    explicit Table(sqlite3_stmt* stmt);
 
     /**
      * Set current row to first
