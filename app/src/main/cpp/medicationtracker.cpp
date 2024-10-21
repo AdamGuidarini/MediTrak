@@ -480,7 +480,15 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getDoseById(
     std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
     DatabaseController controller(dbPath);
 
-    Dose* d = controller.getDoseById(dose_id);
+    Dose* d;
+
+    try{
+        d = controller.getDoseById(dose_id);
+    } catch (exception& e) {
+        delete d;
+
+        return nullptr;
+    }
 
     auto jDose = doseToJavaConverter(*d, env, medication);
 

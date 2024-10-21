@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.service.notification.StatusBarNotification;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -218,7 +219,8 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         long medId = medication.getId();
         Triple<Medication, Long, LocalDateTime> tag;
         long doseRowId = db.getDoseId(medId, TimeFormatting.localDateTimeToDbString(time));
-        Dose dose = doseRowId != -1 ? nativeDb.getDoseById(doseRowId) : new Dose();
+        Dose dose = doseRowId >= 0 ? nativeDb.getDoseById(doseRowId) : new Dose();
+
         ImageButton button = new ImageButton(rootView.getContext());
 
         button.setBackgroundResource(android.R.drawable.ic_menu_info_details);

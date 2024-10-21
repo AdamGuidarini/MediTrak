@@ -449,10 +449,7 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
      * Clears all open notifications as well
      */
     private void prepareNotifications() {
-        Log.i("Main", "0");
         final ArrayList<Notification> notifications = nativeDb.getNotifications();
-
-        Log.i("Main", "1");
 
         for (Medication medication : allMeds) {
             NotificationHelper.clearPendingNotifications(medication, this);
@@ -466,7 +463,10 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
             Medication med = allMeds.stream().filter(m -> m.getId() == n.getMedId()).findFirst().orElse(null);
 
             if (med == null) {
-                Log.e("EventReceiver", "Failed to create notification for Medication: " + n.getMedId());
+                Log.e(
+                        "EventReceiver",
+                        "Failed to create notification for Medication: " + n.getMedId()
+                );
 
                 continue;
             }
