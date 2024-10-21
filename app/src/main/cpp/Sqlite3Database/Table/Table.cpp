@@ -58,24 +58,24 @@ void Table::moveToRow(int row) {
     currentRow = row > rowCount - 1 ? -1 : row;
 }
 
-int Table::getCount() {
+unsigned int Table::getCount() const {
     return rowCount;
 }
 
-string Table::getItem(string columnName) {
+string Table::getItem(const string& columnName) {
     try {
         return table.at(columnName).at(currentRow);
-    } catch (exception e) {
+    } catch (exception& e) {
         cerr << "OUT OF RANGE. No item found in column " << columnName << " in row " << currentRow;
 
         return "0";
     }
 }
 
-bool Table::isFirst() {
+bool Table::isFirst() const {
     return currentRow == 0;
 }
 
-bool Table::isAfterLast() {
+bool Table::isAfterLast() const {
     return currentRow == -1;
 }
