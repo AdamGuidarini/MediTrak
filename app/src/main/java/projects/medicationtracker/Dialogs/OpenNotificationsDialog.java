@@ -19,22 +19,18 @@ import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Locale;
 
 import projects.medicationtracker.Helpers.NativeDbHelper;
@@ -53,7 +49,10 @@ public class OpenNotificationsDialog extends DialogFragment {
     private SwitchCompat dismissUnselected;
     private NotificationManager manager;
 
-    public OpenNotificationsDialog(StatusBarNotification[] notifications, ArrayList<Medication> medications) {
+    public OpenNotificationsDialog(
+            StatusBarNotification[] notifications,
+            ArrayList<Medication> medications
+    ) {
         openNotifications = notifications;
         meds = medications;
     }
@@ -244,10 +243,10 @@ public class OpenNotificationsDialog extends DialogFragment {
                         LocalDateTime.now().withSecond(0).withNano(0),
                         true
                 );
-                nativeDbHelper.deleteNotification(notification.getNotificationId());
+                nativeDbHelper.deleteNotification(notification.getId());
             } else if (dismissUnselected.isChecked()) {
                 manager.cancel((int) notification.getNotificationId());
-                nativeDbHelper.deleteNotification(notification.getNotificationId());
+                nativeDbHelper.deleteNotification(notification.getId());
             }
 
             if (newDoseId == -1 && box.isChecked()) {
@@ -263,12 +262,16 @@ public class OpenNotificationsDialog extends DialogFragment {
             }
         }
 
-        if (manager.getActiveNotifications().length == 1 && manager.getActiveNotifications()[0].getId() == SUMMARY_ID) {
+        if (manager.getActiveNotifications().length == 1
+                && manager.getActiveNotifications()[0].getId() == SUMMARY_ID
+        ) {
             manager.cancelAll();
         }
 
         if (parent instanceof IDialogCloseListener) {
-            ((IDialogCloseListener) parent).handleDialogClose(IDialogCloseListener.Action.EDIT, null);
+            ((IDialogCloseListener) parent).handleDialogClose(
+                    IDialogCloseListener.Action.EDIT, null
+            );
         }
 
         dismiss();
