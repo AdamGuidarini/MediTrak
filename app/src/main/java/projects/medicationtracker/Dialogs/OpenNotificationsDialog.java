@@ -3,7 +3,6 @@ package projects.medicationtracker.Dialogs;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
-import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
 
 import android.app.Activity;
@@ -20,22 +19,18 @@ import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Locale;
 
 import projects.medicationtracker.Helpers.NativeDbHelper;
@@ -54,7 +49,10 @@ public class OpenNotificationsDialog extends DialogFragment {
     private SwitchCompat dismissUnselected;
     private NotificationManager manager;
 
-    public OpenNotificationsDialog(StatusBarNotification[] notifications, ArrayList<Medication> medications) {
+    public OpenNotificationsDialog(
+            StatusBarNotification[] notifications,
+            ArrayList<Medication> medications
+    ) {
         openNotifications = notifications;
         meds = medications;
     }
@@ -66,7 +64,7 @@ public class OpenNotificationsDialog extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         AlertDialog openNotificationsDialog;
 
-        nativeDbHelper = new NativeDbHelper(DATABASE_PATH);
+        nativeDbHelper = new NativeDbHelper(getActivity());
 
         builder.setView(inflater.inflate(R.layout.dialog_open_notifications, null));
         builder.setTitle(R.string.open_notifications);
@@ -183,7 +181,9 @@ public class OpenNotificationsDialog extends DialogFragment {
 
             box.setOnCheckedChangeListener(
                     (buttonView, isChecked) -> {
-                        long len = doseCheckBoxes.stream().filter(CompoundButton::isChecked).count();
+                        long len = doseCheckBoxes.stream().filter(
+                                CompoundButton::isChecked
+                        ).count();
 
                         checkAll.setChecked(len == doseCheckBoxes.size());
                         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(
@@ -245,10 +245,10 @@ public class OpenNotificationsDialog extends DialogFragment {
                         LocalDateTime.now().withSecond(0).withNano(0),
                         true
                 );
-                nativeDbHelper.deleteNotification(notification.getNotificationId());
+                nativeDbHelper.deleteNotification(notification.getId());
             } else if (dismissUnselected.isChecked()) {
                 manager.cancel((int) notification.getNotificationId());
-                nativeDbHelper.deleteNotification(notification.getNotificationId());
+                nativeDbHelper.deleteNotification(notification.getId());
             }
 
             if (newDoseId == -1 && box.isChecked()) {
@@ -264,12 +264,16 @@ public class OpenNotificationsDialog extends DialogFragment {
             }
         }
 
-        if (manager.getActiveNotifications().length == 1 && manager.getActiveNotifications()[0].getId() == SUMMARY_ID) {
+        if (manager.getActiveNotifications().length == 1
+                && manager.getActiveNotifications()[0].getId() == SUMMARY_ID
+        ) {
             manager.cancelAll();
         }
 
         if (parent instanceof IDialogCloseListener) {
-            ((IDialogCloseListener) parent).handleDialogClose(IDialogCloseListener.Action.EDIT, null);
+            ((IDialogCloseListener) parent).handleDialogClose(
+                    IDialogCloseListener.Action.EDIT, null
+            );
         }
 
         dismiss();

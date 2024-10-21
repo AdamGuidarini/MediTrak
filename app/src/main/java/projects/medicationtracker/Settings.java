@@ -24,7 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -37,6 +36,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.os.LocaleListCompat;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.DataInputStream;
 import java.io.FileNotFoundException;
@@ -56,7 +56,8 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
     private ActivityResultLauncher<Intent> chooseFileLauncher;
     private final ActivityResultLauncher<String> permissionRequester = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
-            isGranted -> {}
+            isGranted -> {
+            }
     );
     private NativeDbHelper nativeDb;
 
@@ -79,7 +80,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
         Button enableNotificationsButton = findViewById(R.id.enableNotifications);
         SwitchCompat notificationToggle = findViewById(R.id.enableNotificationSwitch);
 
-        nativeDb = new NativeDbHelper(getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath());
+        nativeDb = new NativeDbHelper(this);
 
         if (Build.VERSION.SDK_INT >= 33) {
             enableNotificationsButton.setVisibility(View.VISIBLE);
@@ -133,8 +134,6 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
                                 throw new RuntimeException(e);
                             }
 
-                            inputStream.markSupported();
-
                             contents = new String(bytes, 0, length);
 
                             try {
@@ -143,18 +142,33 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
                                 throw new RuntimeException(e);
                             }
 
-                            success = nativeDb.dbImport(contents, new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE});
+                            success = nativeDb.dbImport(
+                                    contents,
+                                    new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE}
+                            );
                         } catch (Exception e) {
                             Log.e("Import Error", "Error occurred when reading file");
                         } finally {
                             if (success) {
-                                Toast.makeText(this, getString(R.string.import_success), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(
+                                        this,
+                                        getString(R.string.import_success),
+                                        Toast.LENGTH_SHORT
+                                ).show();
                             } else {
-                                Toast.makeText(this, getString(R.string.failed_import), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(
+                                        this,
+                                        getString(R.string.failed_import),
+                                        Toast.LENGTH_SHORT
+                                ).show();
                             }
                         }
                     } else {
-                        Toast.makeText(this, getString(R.string.could_not_retrieve_file), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(
+                                this,
+                                getString(R.string.could_not_retrieve_file),
+                                Toast.LENGTH_SHORT
+                        ).show();
                     }
                 }
         );
@@ -220,7 +234,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
             return;
 
         LinearLayout setHoursBeforeLayout = findViewById(R.id.timeBeforeDoseLayout);
-        EditText enterTimeBeforeDose = findViewById(R.id.enterTimeBeforeDose);
+        TextInputEditText enterTimeBeforeDose = findViewById(R.id.enterTimeBeforeDose);
 
         enterTimeBeforeDose.setText(String.valueOf(hoursBefore));
 
@@ -281,7 +295,9 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
         {
             switch (position) {
                 case 0:
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                    AppCompatDelegate.setDefaultNightMode(
+                            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    );
                     db.saveTheme(DEFAULT);
                     break;
                 case 1:
@@ -298,8 +314,13 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
         });
 
         themeSelector.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -317,7 +338,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
 
         dateSelector.setAdapter(createDateFormatMenuAdapter());
 
-        switch(dateFormat) {
+        switch (dateFormat) {
             case DBHelper.DateFormats.MM_DD_YYYY:
                 dateSelector.setText(dateSelector.getAdapter().getItem(0).toString(), false);
                 break;
@@ -389,12 +410,12 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
      */
     private void setLanguageMenu() {
         MaterialAutoCompleteTextView langSelector = findViewById(R.id.language_selector);
-        String[] langOpts = { "Deutsch", "English", "Español", "Italiano", "Türkçe" };
+        String[] langOpts = {"Deutsch", "English", "Español", "Italiano", "Türkçe"};
         String[] langCodes = {"de", "en", "es", "it", "tr"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
-            this,
-            android.R.layout.simple_dropdown_item_1line,
-            langOpts
+                this,
+                android.R.layout.simple_dropdown_item_1line,
+                langOpts
         );
 
         Configuration config = getResources().getConfiguration();
@@ -430,10 +451,12 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
 
         langSelector.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -442,11 +465,11 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
                 setDateFormatMenu();
 
                 langSelector.setAdapter(
-                    new ArrayAdapter<>(
-                        langSelector.getContext(),
-                        android.R.layout.simple_dropdown_item_1line,
-                        langOpts
-                    )
+                        new ArrayAdapter<>(
+                                langSelector.getContext(),
+                                android.R.layout.simple_dropdown_item_1line,
+                                langOpts
+                        )
                 );
             }
         });
@@ -454,6 +477,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
 
     /**
      * Creates array adapter for themes selector
+     *
      * @return ArrayAdapter of theme options
      */
     private ArrayAdapter<String> createThemeMenuAdapter() {
@@ -470,6 +494,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
 
     /**
      * Creates ArrayAdapter for date format options
+     *
      * @return ArrayAdapter of date format options
      */
     private ArrayAdapter<String> createDateFormatMenuAdapter() {
@@ -485,6 +510,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
 
     /**
      * Creates ArrayAdapter for time format options
+     *
      * @return ArrayAdapter of time format options
      */
     private ArrayAdapter<String> createTimeFormatMenuAdapter() {
@@ -502,7 +528,9 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
      * Listener for export data button
      */
     public void onExportClick(View view) {
-        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED
+        ) {
             permissionRequester.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
 
@@ -511,12 +539,14 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
     }
 
     public void onImportClick(View view) {
-        String type= Build.VERSION.SDK_INT >= 30 ? "application/json" : "*/*";
+        String type = Build.VERSION.SDK_INT >= 30 ? "application/json" : "*/*";
         Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
         i.setType(type);
 
-        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED
+        ) {
             permissionRequester.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
         }
 
@@ -548,7 +578,10 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
     }
 
     public void OnEnableNotificationsClick(View view) {
-        if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= 33
+                && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED
+        ) {
             permissionRequester.launch(android.Manifest.permission.POST_NOTIFICATIONS);
         } else {
             Toast.makeText(this, getString(R.string.notifications_already_enabled), Toast.LENGTH_SHORT).show();

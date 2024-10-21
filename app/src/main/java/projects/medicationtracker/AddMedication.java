@@ -3,7 +3,6 @@ package projects.medicationtracker;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
-import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
@@ -21,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -68,18 +68,18 @@ public class AddMedication extends AppCompatActivity {
     private TextInputLayout patientNameInputLayout;
     private MaterialAutoCompleteTextView patientNameInput;
     private TextInputLayout medicationNameInputLayout;
-    private EditText medNameInput;
+    private TextInputEditText medNameInput;
     private SwitchMaterial aliasSwitch;
     private TextInputLayout aliasInputLayout;
-    private EditText aliasInput;
+    private TextInputEditText aliasInput;
     private TextInputLayout dosageAmountInputLayout;
-    private EditText dosageAmountInput;
+    private TextInputEditText dosageAmountInput;
     private TextInputLayout dosageUnitsInputLayout;
-    private EditText dosageUnitsInput;
+    private TextInputEditText dosageUnitsInput;
     private TextInputLayout frequencyDropdownLayout;
     private TextInputLayout numberOfTimersPerDayLayout;
-    private EditText dailyMedTime;
-    private EditText dailyMedStartDate;
+    private TextInputEditText dailyMedTime;
+    private TextInputEditText dailyMedStartDate;
     private TextInputLayout customFreqStartDateLayout;
     private TextInputEditText customFreqStartDate;
     private TextInputLayout customFreqTakenEveryLayout;
@@ -88,8 +88,8 @@ public class AddMedication extends AppCompatActivity {
     private TextInputLayout customFreqTimeUnitLayout;
     private TextInputEditText customFreqMTakenEveryEnter;
     private MaterialAutoCompleteTextView customFreqTimeUnitEnter;
-    private EditText startDateMultiplePerDay;
-    private EditText numberOfTimersPerDay;
+    private TextInputEditText startDateMultiplePerDay;
+    private TextInputEditText numberOfTimersPerDay;
     private TextInputLayout asNeededStart;
     private TextInputEditText asNeededStartInput;
     private int selectedFrequencyTypeIndex = -1;
@@ -99,7 +99,7 @@ public class AddMedication extends AppCompatActivity {
     private Button saveButton;
     private boolean createClone = false;
     private LocalDateTime[] startingTimes;
-    private EditText instructions;
+    private TextInputEditText instructions;
 
     /*
     * Validators
@@ -664,11 +664,16 @@ public class AddMedication extends AppCompatActivity {
                 for (int ind = 0; ind < timesPerDay; ind++) {
                     @SuppressLint("PrivateResource")
                     TextInputLayout textLayout = new TextInputLayout(
-                            new ContextThemeWrapper(numberOfTimersPerDayLayout.getContext(),
-                                    com.google.android.material.R.style.Base_Widget_MaterialComponents_TextInputLayout)
+                            new ContextThemeWrapper(
+                                    numberOfTimersPerDayLayout.getContext(),
+                                    com.google.android.material.R.style.Base_Widget_MaterialComponents_TextInputLayout
+                            )
                     );
                     TextInputEditText timeEntry = new TextInputEditText(textLayout.getContext());
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
+                    ViewGroup.LayoutParams frameLayoutParams = new FrameLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
                     );
 
@@ -680,6 +685,8 @@ public class AddMedication extends AppCompatActivity {
                     textLayout.setBoxBackgroundColor(ContextCompat.getColor(getBaseContext(), android.R.color.transparent));
                     textLayout.setBoxCornerRadii(10, 10, 10, 10);
                     textLayout.addView(timeEntry);
+
+                    timeEntry.setLayoutParams(frameLayoutParams);
 
                     timeEntry.setId(ind);
                     timeEntry.setShowSoftInputOnFocus(false);
@@ -1132,7 +1139,7 @@ public class AddMedication extends AppCompatActivity {
             long childId;
             String changesNotes = createChangesNote(medication, parentMed);
             boolean applyRetroactively = applyRetroActiveSwitch.isChecked();
-            NativeDbHelper nativeDb = new NativeDbHelper(DATABASE_PATH);
+            NativeDbHelper nativeDb = new NativeDbHelper(getApplicationContext());
 
             if (!changesNotes.isEmpty() && createClone && !applyRetroactively) {
                 medication.setParent(parentMed);

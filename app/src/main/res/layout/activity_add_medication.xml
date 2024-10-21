@@ -107,7 +107,7 @@
                         android:layout_marginBottom="15dp"
                         android:gravity="center">
 
-                        <EditText
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/medicationName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -129,7 +129,7 @@
                         android:layout_marginBottom="15dp"
                         android:visibility="gone">
 
-                        <EditText
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/enterAlias"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -157,7 +157,7 @@
                                 android:layout_alignParentStart="true"
                                 android:layout_marginBottom="15dp">
 
-                                <EditText
+                                <com.google.android.material.textfield.TextInputEditText
                                     android:id="@+id/dosageAmount"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
@@ -181,8 +181,8 @@
                                 android:layout_alignParentEnd="true"
                                 android:layout_marginBottom="15dp">
 
-                                <EditText
-                                    android:id="@+id/dosageUnits"
+                                <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/dosageUnits"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:hint="@string/units"
@@ -199,7 +199,7 @@
                         android:layout_marginBottom="15dp"
                         android:gravity="center">
 
-                        <EditText
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/enter_instructions"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -335,7 +335,7 @@
                                     android:layout_alignParentStart="true"
                                     android:hint="@string/start_date">
 
-                                    <EditText
+                                    <com.google.android.material.textfield.TextInputEditText
                                         android:id="@+id/startDateMultiplePerDay"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"

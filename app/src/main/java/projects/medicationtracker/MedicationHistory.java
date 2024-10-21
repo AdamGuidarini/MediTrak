@@ -1,8 +1,8 @@
 package projects.medicationtracker;
 
+import static android.view.View.GONE;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
-import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -53,24 +53,25 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medication_history);
+        Intent returnToMyMeds = new Intent(this, MyMedications.class);
 
         medId = getIntent().getLongExtra("ID", -1);
         barrier = findViewById(R.id.table_barrier);
         headerText = findViewById(R.id.schedule_label);
+        barrier.setBackgroundColor(headerText.getCurrentTextColor());
 
         if (medId == -1) {
-            Intent returnToMyMeds = new Intent(this, MyMedications.class);
             finish();
             startActivity(returnToMyMeds);
         }
 
-        db = new NativeDbHelper(DATABASE_PATH);
+        db = new NativeDbHelper(this);
 
         medication = db.getMedicationHistory(medId);
 
         if (medication == null) {
-            medication = new Medication();
-            medication.setDoses(new Dose[]{});
+            finish();
+            startActivity(returnToMyMeds);
         }
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -84,6 +85,17 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
 
         dateFormat = MainActivity.preferences.getString(DATE_FORMAT);
         timeFormat = MainActivity.preferences.getString(TIME_FORMAT);
+
+        noRecords = findViewById(R.id.no_records);
+
+        if (medication.getDoses() == null || medication.getDoses().length == 0) {
+            noRecords.setVisibility(View.VISIBLE);
+            findViewById(R.id.export_history).setEnabled(false);
+            findViewById(R.id.filter_button).setEnabled(false);
+            findViewById(R.id.history_view).setVisibility(GONE);
+
+            return;
+        }
 
         Medication ultimateParent = getUltimateParent(medication);
 
@@ -99,14 +111,6 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
         );
         recyclerView.setAdapter(historyAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        noRecords = findViewById(R.id.no_records);
-
-        if (combinedDoses.length == 0) {
-            noRecords.setVisibility(View.VISIBLE);
-        }
-
-        barrier.setBackgroundColor(headerText.getCurrentTextColor());
     }
 
     /**
@@ -256,7 +260,7 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
                 recyclerView.setAdapter(historyAdapter);
 
                 if (filteredDoses.length > 0) {
-                    noRecords.setVisibility(View.GONE);
+                    noRecords.setVisibility(GONE);
                 } else {
                     noRecords.setVisibility(View.VISIBLE);
                 }

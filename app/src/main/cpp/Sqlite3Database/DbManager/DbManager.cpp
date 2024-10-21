@@ -7,7 +7,7 @@
 DbManager::DbManager() {}
 
 DbManager::DbManager(string databasePath, bool enableForeignKeys) {
-    char* err;
+    char *err;
 
     database_name = std::move(databasePath);
     openDb();
@@ -26,7 +26,7 @@ string DbManager::escapeUnsafeChars(string str) {
         replaceAll(str, " ", "&dbsp;");
     }
 
-    if(str.find('\"') != string::npos) {
+    if (str.find('\"') != string::npos) {
         replaceAll(str, "\"", "&qout;");
     }
 
@@ -54,7 +54,7 @@ string DbManager::unescapeSafeChars(string str) {
         replaceAll(str, "&dbsp;", " ");
     }
 
-    if(str.find("&qout;") != string::npos) {
+    if (str.find("&qout;") != string::npos) {
         replaceAll(str, "&qout;", "\"");
     }
 
@@ -77,9 +77,9 @@ string DbManager::unescapeSafeChars(string str) {
     return str;
 }
 
-void DbManager::replaceAll(string &str, const string& from, const string& to) {
+void DbManager::replaceAll(string &str, const string &from, const string &to) {
     size_t start_pos = 0;
-    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+    while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
         str.replace(start_pos, from.length(), to);
         start_pos += to.length();
     }
@@ -92,6 +92,7 @@ void DbManager::openDb() {
         throw runtime_error("Failed to open database file at: " + database_name);
     }
 }
+
 void DbManager::closeDb() { sqlite3_close(db); }
 
 int DbManager::getVersionNumber() {
@@ -115,18 +116,19 @@ int DbManager::getVersionNumber() {
     return version;
 }
 
-void DbManager::execSql(string sql, int (*callback) (void *, int, char**, char **)) {
+void DbManager::execSql(string sql, int (*callback)(void *, int, char **, char **)) {
     char *err;
     int rc = sqlite3_exec(db, sql.c_str(), callback, 0, &err);
 
     if (rc != SQLITE_OK) {
-        string errorMessage = "An error occurred while attempting to execute query: " + sql + "\n" + err;
+        string errorMessage =
+                "An error occurred while attempting to execute query: " + sql + "\n" + err;
 
         throw runtime_error(errorMessage);
     }
 }
 
-long DbManager::insert(const string& table, map<string, string> values) {
+long DbManager::insert(const string &table, map<string, string> values) {
     stringstream query;
     map<string, string>::iterator it;
     sqlite3_stmt *stmt;
@@ -147,7 +149,7 @@ long DbManager::insert(const string& table, map<string, string> values) {
     for (it = values.begin(); it != values.end();) {
         if (isNumber(it->second)) {
             query << it->second;
-        } else if (it->second .empty()) {
+        } else if (it->second.empty()) {
             query << "NULL";
         } else {
             query << "\'" << it->second << "\'";
@@ -165,10 +167,10 @@ long DbManager::insert(const string& table, map<string, string> values) {
     sqlite3_prepare_v2(db, "SELECT last_insert_rowid()", -1, &stmt, nullptr);
     sqlite3_step(stmt);
 
-    string colName = string(reinterpret_cast<const char*>(sqlite3_column_name(stmt, 0)));
+    string colName = string(reinterpret_cast<const char *>(sqlite3_column_name(stmt, 0)));
 
     if (colName == "last_insert_rowid()") {
-        rowId = stol(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0)));
+        rowId = stol(reinterpret_cast<const char *>(sqlite3_column_text(stmt, 0)));
     }
 
     sqlite3_finalize(stmt);
@@ -176,7 +178,7 @@ long DbManager::insert(const string& table, map<string, string> values) {
     return rowId;
 }
 
-void DbManager::update(string table,  map<string, string> values, map<string, string> where) {
+void DbManager::update(string table, map<string, string> values, map<string, string> where) {
     stringstream query;
     map<string, string>::iterator it;
 
@@ -198,7 +200,7 @@ void DbManager::update(string table,  map<string, string> values, map<string, st
 
             if (isNumber(it->second)) {
                 query << it->second;
-            } else if (it->second .empty()) {
+            } else if (it->second.empty()) {
                 query << "NULL";
             } else {
                 query << "\'" << it->second << "\'";
@@ -215,7 +217,9 @@ void DbManager::update(string table,  map<string, string> values, map<string, st
     execSql(query.str());
 }
 
-void DbManager::update(string table, map<string, string> values, string whereClause, string whereArgs[]) {
+void DbManager::update(
+        string table, map<string, string> values, string whereClause, string whereArgs[]
+) {
     int argIndex = 0;
     stringstream query;
     map<string, string>::iterator it;
@@ -233,7 +237,7 @@ void DbManager::update(string table, map<string, string> values, string whereCla
     }
 
     pos = whereClause.find('?', 0);
-    while(pos != string::npos) {
+    while (pos != string::npos) {
         positions.push_back(pos);
         pos = whereClause.find('?', pos + 1);
     }
@@ -256,7 +260,7 @@ void DbManager::deleteRecord(string table, map<string, string> where) {
 
             if (isNumber(it->second)) {
                 query << it->second;
-            } else if (it->second .empty()) {
+            } else if (it->second.empty()) {
                 query << "NULL";
             } else {
                 query << "\'" << it->second << "\'";
@@ -271,13 +275,13 @@ void DbManager::deleteRecord(string table, map<string, string> where) {
     execSql(query.str());
 }
 
-vector<string> DbManager::getTables(const vector<string>& ignoreTables) {
+vector<string> DbManager::getTables(const vector<string> &ignoreTables) {
     int rc;
     sqlite3_stmt *stmt;
     string query = "SELECT name FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlite_%'";
     vector<string> tables;
 
-    for (auto &tbl : ignoreTables) {
+    for (auto &tbl: ignoreTables) {
         query += " AND name != '" + tbl + "'";
     }
 
@@ -296,14 +300,14 @@ vector<string> DbManager::getTables(const vector<string>& ignoreTables) {
             string colText;
 
             if (sqlite3_column_text(stmt, 0) != nullptr) {
-                colText = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0)));
+                colText = string(reinterpret_cast<const char *>(sqlite3_column_text(stmt, 0)));
             }
 
             tables.push_back(colText);
 
             sqlite3_step(stmt);
         }
-    } catch (runtime_error& error) {
+    } catch (runtime_error &error) {
         cerr << error.what();
         throw error;
     }
@@ -313,7 +317,7 @@ vector<string> DbManager::getTables(const vector<string>& ignoreTables) {
     return tables;
 }
 
-vector<map<string, string>> DbManager::readAllValuesInTable(const string& table) {
+vector<map<string, string>> DbManager::readAllValuesInTable(const string &table) {
     sqlite3_stmt *stmt = nullptr;
     string query = "SELECT * FROM " + table + ";";
     vector<map<string, string>> results;
@@ -336,16 +340,18 @@ vector<map<string, string>> DbManager::readAllValuesInTable(const string& table)
                 string colText;
 
                 if (sqlite3_column_text(stmt, i) != nullptr) {
-                    colText = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, i)));
+                    colText = string(
+                            reinterpret_cast<const char *>(sqlite3_column_text(stmt, i))
+                    );
                 }
 
-                m.insert({ string(sqlite3_column_name(stmt, i)), colText });
+                m.insert({string(sqlite3_column_name(stmt, i)), colText});
             }
 
             results.push_back(m);
             sqlite3_step(stmt);
         }
-    } catch (runtime_error& error) {
+    } catch (runtime_error &error) {
         cerr << "SQLITE READ ERROR | Return Code: " << rc << endl;
         throw error;
     }
@@ -355,18 +361,19 @@ vector<map<string, string>> DbManager::readAllValuesInTable(const string& table)
     return results;
 }
 
-map<string, vector<map<string, string>>> DbManager::getAllRowFromAllTables(const vector<string>& ignoreTables) {
+map<string, vector<map<string, string>>>
+DbManager::getAllRowFromAllTables(const vector<string> &ignoreTables) {
     map<string, vector<map<string, string>>> tableData;
     vector<string> tables = getTables(ignoreTables);
 
-    for (const string& tbl : tables) {
-        tableData.insert({ tbl, readAllValuesInTable(tbl) });
+    for (const string &tbl: tables) {
+        tableData.insert({tbl, readAllValuesInTable(tbl)});
     }
 
     return tableData;
 }
 
-void DbManager::exportData(const string& exportFilePath, const vector<string>& ignoreTables) {
+void DbManager::exportData(const string &exportFilePath, const vector<string> &ignoreTables) {
     ofstream outFile;
     map<string, vector<map<string, string>>> data = getAllRowFromAllTables(ignoreTables);
     string outData;
@@ -375,7 +382,7 @@ void DbManager::exportData(const string& exportFilePath, const vector<string>& i
 
     try {
         outFile.open(exportFilePath, fstream::trunc);
-    } catch (system_error& error) {
+    } catch (system_error &error) {
         const string errMessage = "File failed to open at '" + exportFilePath
                                   + "' with error '" + error.code().message() + "'"
                                   + " error number: " + to_string(errno);
@@ -391,14 +398,14 @@ void DbManager::exportData(const string& exportFilePath, const vector<string>& i
 
     outFile << "{";
 
-    for (const auto& tbl : data) {
+    for (const auto &tbl: data) {
         outData += "\"" + tbl.first + "\":[";
 
 
-        for (const auto& tblInfo : tbl.second) {
+        for (const auto &tblInfo: tbl.second) {
             outData += "{";
 
-            for (const auto& col : tblInfo) {
+            for (const auto &col: tblInfo) {
                 outData += "\"" + col.first + "\":\"" + escapeUnsafeChars(col.second) + "\",";
             }
 
@@ -425,7 +432,8 @@ void DbManager::exportData(const string& exportFilePath, const vector<string>& i
     outFile.close();
 }
 
-void DbManager::importDataFromFile(const std::string &importFilePath, const vector<string>& ignoreTables) {
+void DbManager::importDataFromFile(const std::string &importFilePath,
+                                   const vector<string> &ignoreTables) {
     string inData;
     ifstream fin;
 
@@ -441,7 +449,7 @@ void DbManager::importDataFromFile(const std::string &importFilePath, const vect
         inData = string(istreambuf_iterator<char>{fin}, {});
 
         fin.close();
-    }  catch (system_error& error) {
+    } catch (system_error &error) {
         const string errMessage = "File failed to open at '" + importFilePath
                                   + "' with error '" + error.code().message() + "'"
                                   + " error number: " + to_string(errno);
@@ -453,7 +461,7 @@ void DbManager::importDataFromFile(const std::string &importFilePath, const vect
         }
 
         throw runtime_error(errMessage);
-    } catch (runtime_error& error) {
+    } catch (runtime_error &error) {
         cerr << error.what() << ": " << importFilePath << endl;
 
         throw error;
@@ -462,15 +470,16 @@ void DbManager::importDataFromFile(const std::string &importFilePath, const vect
     importData(inData, ignoreTables);
 }
 
-void DbManager::importData(string& inData, const vector<string>& ignoreTables) {
+void DbManager::importData(string &inData, const vector<string> &ignoreTables) {
     map<string, vector<map<string, string>>> data;
     vector<string> tables = getTables(ignoreTables);
     stringstream importQuery;
-    char* err;
+    char *err;
 
     // Remove unneeded chars
     inData.erase(
-            remove_if(inData.begin(), inData.end(), [](unsigned char x) { return std::isspace(x); }),
+            remove_if(inData.begin(), inData.end(),
+                      [](unsigned char x) { return std::isspace(x); }),
             inData.end()
     );
 
@@ -478,12 +487,16 @@ void DbManager::importData(string& inData, const vector<string>& ignoreTables) {
     inData.erase(inData.end() - 1, inData.end());
 
     inData.erase(
-            remove_if(inData.begin(), inData.end(), [](unsigned char x) { return x == '\"'; }),
+            remove_if(
+                    inData.begin(),
+                    inData.end(),
+                    [](unsigned char x) { return x == '\"'; }
+            ),
             inData.end()
     );
 
     try {
-        for (const string &tbl : tables) {
+        for (const string &tbl: tables) {
             vector<map<string, string>> table;
             size_t pos;
             string tblStr;
@@ -499,7 +512,7 @@ void DbManager::importData(string& inData, const vector<string>& ignoreTables) {
             tblStr.erase(0, (tbl + ":[").size());
 
             if (tblStr.empty()) {
-                data.insert({ tbl, {} });
+                data.insert({tbl, {}});
                 continue;
             }
 
@@ -510,7 +523,8 @@ void DbManager::importData(string& inData, const vector<string>& ignoreTables) {
             table.resize(count(tblStr.begin(), tblStr.end(), '}') + 1);
 
             while ((pos = tblStr.find(',')) != string::npos || tblStr.length() > 0) {
-                unsigned int end = tblStr.find(',') != string::npos ? tblStr.find(',') : tblStr.length() - 1;
+                unsigned int end =
+                        tblStr.find(',') != string::npos ? tblStr.find(',') : tblStr.length() - 1;
                 string token = tblStr.substr(0, end);
                 bool incrementInd = false;
 
@@ -522,7 +536,9 @@ void DbManager::importData(string& inData, const vector<string>& ignoreTables) {
 
                 pair<string, string> col = {
                         token.substr(0, token.find(':')),
-                        unescapeSafeChars(token.substr(token.find(':') + 1, token.size() - 1))
+                        unescapeSafeChars(
+                                token.substr(token.find(':') + 1, token.size() - 1)
+                        )
                 };
 
                 table.at(ind).insert(col);
@@ -535,9 +551,9 @@ void DbManager::importData(string& inData, const vector<string>& ignoreTables) {
                 }
             }
 
-            data.insert({tbl, table });
+            data.insert({tbl, table});
         }
-    } catch (exception& e) {
+    } catch (exception &e) {
         cerr << e.what() << endl;
 
         throw e;
@@ -545,29 +561,29 @@ void DbManager::importData(string& inData, const vector<string>& ignoreTables) {
 
     importQuery << "BEGIN TRANSACTION;";
 
-    for (const string &tbl : tables) {
+    for (const string &tbl: tables) {
         importQuery << "DELETE FROM " << tbl << ';';
     }
 
     map<string, string>::iterator it;
 
-    for (const auto& tbl : data) {
+    for (const auto &tbl: data) {
         if (tbl.second.empty()) continue;
 
         importQuery << "INSERT INTO "
                     << tbl.first
                     << "(";
 
-        for (auto& col : tbl.second.at(0)) {
+        for (auto &col: tbl.second.at(0)) {
             importQuery << col.first << ',';
         }
 
         importQuery.seekp(-1, ios_base::end);
         importQuery << ") VALUES ";
 
-        for (auto& row : tbl.second) {
+        for (auto &row: tbl.second) {
             importQuery << '(';
-            for (auto& col : row) {
+            for (auto &col: row) {
                 if (isNumber(col.second)) {
                     importQuery << col.second << ',';
                 } else if (col.second.empty()) {
@@ -588,12 +604,14 @@ void DbManager::importData(string& inData, const vector<string>& ignoreTables) {
     importQuery << "COMMIT;";
 
     try {
-        const int retVal = sqlite3_exec(db, importQuery.str().c_str(), nullptr, nullptr, &err);
+        const int retVal = sqlite3_exec(
+                db, importQuery.str().c_str(), nullptr, nullptr, &err
+        );
 
         if (retVal != SQLITE_OK) {
             throw runtime_error(err);
         }
-    } catch (exception& e) {
+    } catch (exception &e) {
         cerr << e.what() << endl;
 
         string error = "SQLite Error: ";
@@ -610,9 +628,9 @@ bool DbManager::isNumber(string str) {
     return !str.empty() && it == str.end();
 }
 
-Table* DbManager::execSqlWithReturn(string sql) {
+Table *DbManager::execSqlWithReturn(string sql) {
     sqlite3_stmt *stmt = nullptr;
-    Table* table;
+    Table *table;
     map<string, vector<string>> data;
 
     int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
@@ -623,7 +641,7 @@ Table* DbManager::execSqlWithReturn(string sql) {
 
             throw runtime_error("Error reading from SQLite database.");
         }
-    } catch (runtime_error& error) {
+    } catch (runtime_error &error) {
         cerr << "SQLITE READ ERROR | Return Code: " << rc << endl;
         throw error;
     }

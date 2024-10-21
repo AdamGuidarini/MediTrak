@@ -1,10 +1,12 @@
 package projects.medicationtracker.Helpers;
 
+import static projects.medicationtracker.Helpers.DBHelper.DATABASE_NAME;
+
+import android.content.Context;
 import android.util.Pair;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
@@ -20,8 +22,8 @@ public class NativeDbHelper {
 
     private final String dbPath;
 
-    public NativeDbHelper(String databasePath) {
-        dbPath = databasePath;
+    public NativeDbHelper(Context context) {
+        dbPath = context.getDatabasePath(DATABASE_NAME).getAbsolutePath();
         dbCreate(dbPath);
     }
 
@@ -34,6 +36,7 @@ public class NativeDbHelper {
 
     /**
      * Upgrades existing database
+     *
      * @param version new database version number
      */
     public void upgrade(int version) {
@@ -42,7 +45,8 @@ public class NativeDbHelper {
 
     /**
      * Inserts a new record into table
-     * @param table Table in which to insert record
+     *
+     * @param table  Table in which to insert record
      * @param values values to add
      * @return Row id of new record
      */
@@ -52,9 +56,10 @@ public class NativeDbHelper {
 
     /**
      * Update a row in a database
-     * @param table Table in which to update row
+     *
+     * @param table  Table in which to update row
      * @param values Values to update
-     * @param where Where clause values
+     * @param where  Where clause values
      * @return true if success
      */
     public boolean update(String table, Pair<String, String>[] values, Pair<String, String>[] where) {
@@ -63,6 +68,7 @@ public class NativeDbHelper {
 
     /**
      * Update a row in a database
+     *
      * @param table Table in which to update row
      * @param where Where clause values
      */
@@ -72,7 +78,8 @@ public class NativeDbHelper {
 
     /**
      * Exports a database
-     * @param exportPath Path where exported file will be created
+     *
+     * @param exportPath    Path where exported file will be created
      * @param ignoredTables Tables to ignore in database
      * @return true if success
      */
@@ -82,7 +89,8 @@ public class NativeDbHelper {
 
     /**
      * Imports a database
-     * @param fileContents Contents of import file
+     *
+     * @param fileContents  Contents of import file
      * @param ignoredTables Tables to ignore while importing
      * @return true if import succeeded
      */
@@ -92,6 +100,7 @@ public class NativeDbHelper {
 
     /**
      * Retrieves medication and all past doses
+     *
      * @param medId ID of medication
      * @return Medication with all doses - Includes any parents/children
      */
@@ -101,8 +110,9 @@ public class NativeDbHelper {
 
     /**
      * Exports history to a csv file
+     *
      * @param filePath Where the file will be stored
-     * @param data Medication history data
+     * @param data     Medication history data
      * @return true on success, false on failure
      */
     public boolean exportMedicationHistory(String filePath, Pair<String, String[]>[] data) {
@@ -110,7 +120,12 @@ public class NativeDbHelper {
     }
 
     public Dose findDose(long medicationId, LocalDateTime doseTime) {
-        return findDose(dbPath, medicationId, TimeFormatting.localDateTimeToDbString(doseTime), new Medication());
+        return findDose(
+                dbPath,
+                medicationId,
+                TimeFormatting.localDateTimeToDbString(doseTime),
+                new Medication()
+        );
     }
 
     public Dose getDoseById(long doseId) {
@@ -135,15 +150,15 @@ public class NativeDbHelper {
 
     public long addDose(long medId, LocalDateTime scheduledTime, LocalDateTime timeTaken, boolean taken) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
-            DBHelper.DateFormats.DB_DATE_FORMAT, Locale.getDefault()
+                DBHelper.DateFormats.DB_DATE_FORMAT, Locale.getDefault()
         );
 
         return addDose(
-            dbPath,
-            medId,
-            formatter.format(scheduledTime),
-            formatter.format(timeTaken),
-            taken
+                dbPath,
+                medId,
+                formatter.format(scheduledTime),
+                formatter.format(timeTaken),
+                taken
         );
     }
 
@@ -151,19 +166,34 @@ public class NativeDbHelper {
      * Native methods
      */
     private native void dbCreate(String dbPath);
+
     private native void dbUpgrade(String dbPath, int version);
+
     private native long insert(String dbPath, String table, Pair<String, String>[] values);
-    private native boolean update(String dbPath, String table, Pair<String, String>[] values, Pair<String, String >[] where);
+
+    private native boolean update(String dbPath, String table, Pair<String, String>[] values, Pair<String, String>[] where);
+
     private native long delete(String dbPath, String table, Pair<String, String>[] values);
+
     private native boolean dbExporter(String databaseName, String exportDirectory, String[] ignoredTables);
+
     private native boolean dbImporter(String dbPath, String fileContents, String[] ignoredTables);
+
     private native Medication getMedHistory(String dbPath, long medId, Class<Medication> medicationClass);
+
     private native boolean exportMedHistory(String dbPath, String exportPath, Pair<String, String[]>[] data);
+
     private native Dose findDose(String dbPath, long medicationId, String doseTime, Medication med);
+
     private native Dose getDoseById(String dbPath, long doseId, Medication med);
+
     private native boolean updateDose(String dbPath, Dose dose);
+
     private native long stashNotification(String dbPath, Notification notification);
+
     private native void deleteNotification(String dbPath, long notificationId);
+
     private native Notification[] getNotifications(String dbPath, Class<Notification> notificationClass);
+
     private native long addDose(String dbPath, long medId, String scheduledTime, String timeTaken, boolean taken);
 }

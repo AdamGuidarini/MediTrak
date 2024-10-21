@@ -19,13 +19,13 @@ using namespace std;
 class Table {
 private:
     map<string, vector<string>> table;
-    int currentRow;
-    int rowCount;
+    unsigned int currentRow;
+    unsigned int rowCount{};
 public:
     /**
      * Class constructor - Initializes table
      */
-    Table(sqlite3_stmt* stmt);
+    explicit Table(sqlite3_stmt* stmt);
 
     /**
      * Set current row to first
@@ -52,26 +52,26 @@ public:
      * Get number of rows
      * @return
      */
-    int getCount();
+    unsigned int getCount() const;
 
     /**
      * Gets item in current row in columnName - returns nullptr if it does not exist
      * @param columnName
      * @return
      */
-    string getItem(string columnName);
+    string getItem(const string& columnName);
 
     /**
      * Is first selected
      * @return true if on first
      */
-    bool isFirst();
+    bool isFirst() const;
 
     /**
      * if currentRow is beyond final retrieved row
      * @return
      */
-    bool isAfterLast();
+    bool isAfterLast() const;
 };
 
 #endif //MEDICATIONTRACKER_TABLE_H

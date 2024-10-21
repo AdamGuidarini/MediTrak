@@ -9,7 +9,6 @@ import static projects.medicationtracker.Helpers.DBHelper.DARK;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.SEEN_NOTIFICATION_REQUEST;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
-import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 
 import android.app.NotificationManager;
 import android.content.Context;
@@ -80,14 +79,8 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        NotificationManager manager = (NotificationManager) getSystemService(
-                Context.NOTIFICATION_SERVICE
-        );
-        StatusBarNotification[] openNotifications = manager.getActiveNotifications();
 
-        DATABASE_PATH = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
-
-        nativeDb = new NativeDbHelper(DATABASE_PATH);
+        nativeDb = new NativeDbHelper(getApplicationContext());
         nativeDb.create();
 
         allMeds = db.getMedications();
@@ -136,13 +129,13 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
     public void onResume() {
         super.onResume();
 
+        scheduleLayout.removeAllViews();
+        createMainActivityViews();
+
         NotificationManager manager = (NotificationManager) getSystemService(
                 Context.NOTIFICATION_SERVICE
         );
         StatusBarNotification[] openNotifications = manager.getActiveNotifications();
-
-        scheduleLayout.removeAllViews();
-        createMainActivityViews();
 
         if (openNotifications.length > 0) {
             OpenNotificationsDialog notificationsDialog = new OpenNotificationsDialog(
@@ -291,7 +284,9 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
             }
 
             // If a medication is taken once per day
-            if (medications.get(i).getTimes().length == 1 && medications.get(i).getFrequency() == 1440) {
+            if (medications.get(i).getTimes().length == 1
+                    && medications.get(i).getFrequency() == 1440
+            ) {
                 // if the Medication is taken once per day just add the start of each date to
                 timeArr = new LocalDateTime[7];
                 LocalTime localtime = medications.get(i).getTimes()[0].toLocalTime();
@@ -301,7 +296,9 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
                             LocalDateTime.of(LocalDate.from(thisSunday.plusDays(j)), localtime);
             }
             // If a medication is taken multiple times per day
-            else if (medications.get(i).getTimes().length > 1 && medications.get(i).getFrequency() == 1440) {
+            else if (medications.get(i).getTimes().length > 1
+                    && medications.get(i).getFrequency() == 1440
+            ) {
                 int numberOfTimes = medications.get(i).getTimes().length;
                 int index = 0;
 
@@ -353,9 +350,15 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
                                 if (time.isBefore(pausedInterval.second)) {
                                     return true;
                                 }
-                            } else if (time.isAfter(pausedInterval.first) && pausedInterval.second == null) {
+                            } else if (
+                                    time.isAfter(pausedInterval.first)
+                                            && pausedInterval.second == null
+                            ) {
                                 return true;
-                            } else if (time.isAfter(pausedInterval.first) && time.isBefore(pausedInterval.second)) {
+                            } else if (
+                                    time.isAfter(pausedInterval.first)
+                                            && time.isBefore(pausedInterval.second)
+                            ) {
                                 return true;
                             }
                         }
@@ -467,15 +470,25 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
         }
 
         for (final Notification n : notifications) {
-            Medication med = allMeds.stream().filter(m -> m.getId() == n.getMedId()).findFirst().orElse(null);
+            Medication med = allMeds.stream().filter(
+                    m -> m.getId() == n.getMedId()
+            ).findFirst().orElse(null);
 
             if (med == null) {
-                Log.e("EventReceiver", "Failed to create notification for Medication: " + n.getMedId());
+                Log.e(
+                        "EventReceiver",
+                        "Failed to create notification for Medication: " + n.getMedId()
+                );
 
                 continue;
             }
 
-            NotificationHelper.scheduleNotification(this, med, n.getDoseTime(), n.getNotificationId());
+            NotificationHelper.scheduleNotification(
+                    this,
+                    med,
+                    n.getDoseTime(),
+                    n.getNotificationId()
+            );
         }
     }
 

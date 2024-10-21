@@ -6,12 +6,12 @@ import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION
 import static projects.medicationtracker.Helpers.NotificationHelper.clearPendingNotifications;
 import static projects.medicationtracker.Helpers.NotificationHelper.createNotifications;
 import static projects.medicationtracker.Helpers.NotificationHelper.scheduleIn15Minutes;
-import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 import static projects.medicationtracker.Workers.NotificationWorker.DISMISSED_ACTION;
 import static projects.medicationtracker.Workers.NotificationWorker.SNOOZE_ACTION;
 import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
 import static projects.medicationtracker.Workers.NotificationWorker.TAKE_ALL_ACTION;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,12 +32,11 @@ import projects.medicationtracker.Models.Notification;
 import projects.medicationtracker.Workers.NotificationWorker;
 
 public class EventReceiver extends BroadcastReceiver {
+    @SuppressLint("RestrictedApi")
     @Override
     public void onReceive(Context context, Intent intent) {
-        DATABASE_PATH = context.getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
-
         final DBHelper db = new DBHelper(context);
-        final NativeDbHelper nativeDbHelper = new NativeDbHelper(DATABASE_PATH);
+        final NativeDbHelper nativeDbHelper = new NativeDbHelper(context);
         final NotificationManager manager
                 = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -79,19 +78,29 @@ public class EventReceiver extends BroadcastReceiver {
             }
 
             for (final Notification n : notifications) {
-                Medication med = medications.stream().filter(m -> m.getId() == n.getMedId()).findFirst().orElse(null);
+                Medication med = medications.stream().filter(
+                        m -> m.getId() == n.getMedId()
+                ).findFirst().orElse(null);
 
                 if (med == null) {
-                    Log.e("EventReceiver", "Failed to create notification for Medication: " + n.getMedId());
+                    Log.e(
+                            "EventReceiver",
+                            "Failed to create notification for Medication: " + n.getMedId()
+                    );
 
                     continue;
                 }
 
-                NotificationHelper.scheduleNotification(context, med, n.getDoseTime(), n.getNotificationId());
+                NotificationHelper.scheduleNotification(
+                        context, med, n.getDoseTime(), n.getNotificationId()
+                );
             }
         }
 
         StatusBarNotification[] notifications = manager.getActiveNotifications();
+        StatusBarNotification[] notTheSummary = Arrays.stream(notifications).filter(
+                _n -> _n.getId() != SUMMARY_ID
+        ).toArray(StatusBarNotification[]::new);
 
         if (notifications.length == 1 && notifications[0].getId() == SUMMARY_ID) {
             manager.cancel(SUMMARY_ID);

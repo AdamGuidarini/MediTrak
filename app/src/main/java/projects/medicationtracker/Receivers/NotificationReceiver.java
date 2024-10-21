@@ -36,7 +36,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Bundle extras = intent.getExtras();
         DBHelper db = new DBHelper(context);
-        long medicationId = extras.getLong(MEDICATION_ID);
+        long medicationId = extras.getLong(MEDICATION_ID, -1);
         Medication medication = db.getMedication(medicationId);
         LocalDateTime doseTime = (LocalDateTime) extras.get(DOSE_TIME);
         Dose dose;
@@ -50,7 +50,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         );
 
         try {
-            NativeDbHelper nativeDbHelper = new NativeDbHelper(context.getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath());
+            NativeDbHelper nativeDbHelper = new NativeDbHelper(context);
 
             dose = nativeDbHelper.findDose(medicationId, doseTime);
         } catch (Exception e) {
@@ -62,12 +62,16 @@ public class NotificationReceiver extends BroadcastReceiver {
         // Fire notification if enabled or fire and let the OS block it in Android 13+
         if ((db.getNotificationEnabled() || Build.VERSION.SDK_INT >= 33) && !dose.isTaken()) {
             Data workerData = new Data.Builder()
-                    .putLong(NOTIFICATION_ID, extras.getLong(NOTIFICATION_ID, System.currentTimeMillis()))
+                    .putLong(
+                            NOTIFICATION_ID,
+                            extras.getLong(NOTIFICATION_ID, System.currentTimeMillis())
+                    )
                     .putString(MESSAGE, extras.getString(MESSAGE))
                     .putString(DOSE_TIME, doseTime.toString())
                     .putLong(MEDICATION_ID, medicationId)
                     .build();
-            OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(NotificationWorker.class)
+            OneTimeWorkRequest workRequest =
+                    new OneTimeWorkRequest.Builder(NotificationWorker.class)
                     .setInputData(workerData)
                     .build();
 
