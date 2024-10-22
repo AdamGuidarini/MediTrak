@@ -7,7 +7,7 @@ MediTrak is an Android application designed to make it easier for users to keep 
 
 ## Requirements
 
-- Android 8 Oreo or newer
+- Android 9+
 
 ## Languages
  - English
@@ -56,14 +56,8 @@ This project uses the ````sqlite3.c```` and ````sqlite3.h```` files in its NDK p
 
 ## Installation
 
-<div style="display: flex;">
- <a href="https://github.com/AdamGuidarini/MediTrak/releases">
-  <img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="90" alt="Get it on GitHub"/>
- </a>
- <a href="https://apt.izzysoft.de/fdroid/index/apk/projects.medicationtracker">
-  <img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height=90 alt="Get it on IzzyOnDroid"/>
- </a>
-</div>
+[<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="90" alt="Get it on GitHub"/>](https://github.com/AdamGuidarini/MediTrak/releases)
+[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height=90 alt="Get it on IzzyOnDroid"/>](https://apt.izzysoft.de/fdroid/index/apk/projects.medicationtracker)
 
 ### GitHub
 
@@ -85,9 +79,11 @@ Thanks to [IzzySoft](https://github.com/IzzySoft), this app is available in the 
 
 ## Screenshots
 
-<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/63f322c3-8006-4ba9-8c2f-fa27cbb7001e" width="15%">
-<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/5a8bdc42-ee52-426a-bc2c-6f898fdb825e" width="15%">
-<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/e4da8dca-804b-4280-9315-9835f80d9e69" width="15%">
-<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/09d363b6-1514-4d92-a1fd-81cdf05b9644" width="15%">
-<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/19f32b0c-2ff5-4bff-9e2a-e65c285b247e" width="15%">
-<img src="https://github.com/AdamGuidarini/MediTrak/assets/45023561/a8b4bd89-00a1-411e-ae69-6868ef85247f" width="15%">
+<div style="display: flex;" align="center">
+ <img src="https://github.com/AdamGuidarini/MediTrak/blob/vc29/fastlane/metadata/android/en-US/images/phoneScreenshots/01.png?raw=true" width="15%">
+ <img src="https://github.com/AdamGuidarini/MediTrak/blob/vc29/fastlane/metadata/android/en-US/images/phoneScreenshots/02.png?raw=true" width="15%">
+ <img src="https://github.com/AdamGuidarini/MediTrak/blob/vc29/fastlane/metadata/android/en-US/images/phoneScreenshots/03.png?raw=true" width="15%">
+ <img src="https://github.com/AdamGuidarini/MediTrak/blob/vc29/fastlane/metadata/android/en-US/images/phoneScreenshots/04.png?raw=true" width="15%">
+ <img src="https://github.com/AdamGuidarini/MediTrak/blob/vc29/fastlane/metadata/android/en-US/images/phoneScreenshots/06.png?raw=true" width="15%">
+ <img src="https://github.com/AdamGuidarini/MediTrak/blob/vc29/fastlane/metadata/android/en-US/images/phoneScreenshots/05.png?raw=true" width="15%">
+</div>

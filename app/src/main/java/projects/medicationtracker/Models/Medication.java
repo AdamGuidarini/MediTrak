@@ -48,7 +48,7 @@ public class Medication implements Cloneable, Parcelable {
      * @param medAlias  An alias for the Medication to appear in notifications
      */
     public Medication(String thisMed, String patient, String units, LocalDateTime[] time,
-                      LocalDateTime firstDate, long id, int frequency, int dosage, String medAlias) {
+                      LocalDateTime firstDate, int id, int frequency, int dosage, String medAlias) {
         medName = thisMed;
         patientName = patient;
         medDosageUnits = units;
@@ -111,7 +111,7 @@ public class Medication implements Cloneable, Parcelable {
         medDosageUnits = in.readString();
         patientName = in.readString();
         alias = in.readString();
-        medId = in.readLong();
+        medId = in.readInt();
         medFrequency = in.readInt();
         medDosage = in.readInt();
     }

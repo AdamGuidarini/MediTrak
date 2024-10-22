@@ -9,7 +9,6 @@ import static projects.medicationtracker.Helpers.DBHelper.DARK;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.SEEN_NOTIFICATION_REQUEST;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
-import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 
 import android.app.NotificationManager;
 import android.content.Context;
@@ -17,8 +16,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.service.notification.StatusBarNotification;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,16 +45,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
+import projects.medicationtracker.Dialogs.OpenNotificationsDialog;
 import projects.medicationtracker.Dialogs.WelcomeDialog;
 import projects.medicationtracker.Fragments.MedicationScheduleFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.Models.Medication;
+import projects.medicationtracker.Models.Notification;
 import projects.medicationtracker.Views.StandardCardView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IDialogCloseListener {
     public static Bundle preferences;
     private final DBHelper db = new DBHelper(this);
     private LinearLayout scheduleLayout;
@@ -64,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
             new ActivityResultContracts.RequestPermission(),
             isGranted -> db.seenPermissionRequest(SEEN_NOTIFICATION_REQUEST)
     );
+    private ArrayList<Medication> allMeds;
 
     /**
      * Runs at start of activity, builds MainActivity
@@ -75,10 +80,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DATABASE_PATH = getDatabasePath(DBHelper.DATABASE_NAME).getAbsolutePath();
-
-        nativeDb = new NativeDbHelper(DATABASE_PATH);
+        nativeDb = new NativeDbHelper(getApplicationContext());
         nativeDb.create();
+
+        allMeds = db.getMedications();
 
         preferences = db.getPreferences();
 
@@ -109,7 +114,9 @@ public class MainActivity extends AppCompatActivity {
             welcomeDialog.show(getSupportFragmentManager(), null);
         }
 
-        if (Build.VERSION.SDK_INT >= 33 && !preferences.getBoolean(SEEN_NOTIFICATION_REQUEST) && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= 33 && !preferences.getBoolean(SEEN_NOTIFICATION_REQUEST)
+                && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) {
             notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
         }
 
@@ -121,8 +128,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+
         scheduleLayout.removeAllViews();
         createMainActivityViews();
+
+        NotificationManager manager = (NotificationManager) getSystemService(
+                Context.NOTIFICATION_SERVICE
+        );
+        StatusBarNotification[] openNotifications = manager.getActiveNotifications();
+
+        if (openNotifications.length > 0) {
+            OpenNotificationsDialog notificationsDialog = new OpenNotificationsDialog(
+                    openNotifications, allMeds
+            );
+            notificationsDialog.show(getSupportFragmentManager(), null);
+        }
     }
 
     /**
@@ -208,8 +228,13 @@ public class MainActivity extends AppCompatActivity {
             patientNames.setAdapter(patientAdapter);
 
             patientNames.addTextChangedListener(new TextWatcher() {
-                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-                @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
 
                 @Override
                 public void afterTextChanged(Editable s) {
@@ -240,8 +265,8 @@ public class MainActivity extends AppCompatActivity {
      * @return List of all Medications for this week
      */
     public ArrayList<Medication> medicationsForThisWeek() {
-        ArrayList<Medication> medications = db.getMedications();
         ArrayList<LocalDateTime> validTimes;
+        ArrayList<Medication> medications = db.getMedications();
         // Add times to custom frequency
         LocalDate thisSunday = TimeFormatting.whenIsSunday(aDayThisWeek);
 
@@ -259,7 +284,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // If a medication is taken once per day
-            if (medications.get(i).getTimes().length == 1 && medications.get(i).getFrequency() == 1440) {
+            if (medications.get(i).getTimes().length == 1
+                    && medications.get(i).getFrequency() == 1440
+            ) {
                 // if the Medication is taken once per day just add the start of each date to
                 timeArr = new LocalDateTime[7];
                 LocalTime localtime = medications.get(i).getTimes()[0].toLocalTime();
@@ -269,7 +296,9 @@ public class MainActivity extends AppCompatActivity {
                             LocalDateTime.of(LocalDate.from(thisSunday.plusDays(j)), localtime);
             }
             // If a medication is taken multiple times per day
-            else if (medications.get(i).getTimes().length > 1 && medications.get(i).getFrequency() == 1440) {
+            else if (medications.get(i).getTimes().length > 1
+                    && medications.get(i).getFrequency() == 1440
+            ) {
                 int numberOfTimes = medications.get(i).getTimes().length;
                 int index = 0;
 
@@ -321,9 +350,15 @@ public class MainActivity extends AppCompatActivity {
                                 if (time.isBefore(pausedInterval.second)) {
                                     return true;
                                 }
-                            } else if (time.isAfter(pausedInterval.first) && pausedInterval.second == null) {
+                            } else if (
+                                    time.isAfter(pausedInterval.first)
+                                            && pausedInterval.second == null
+                            ) {
                                 return true;
-                            } else if (time.isAfter(pausedInterval.first) && time.isBefore(pausedInterval.second)) {
+                            } else if (
+                                    time.isAfter(pausedInterval.first)
+                                            && time.isBefore(pausedInterval.second)
+                            ) {
                                 return true;
                             }
                         }
@@ -424,18 +459,36 @@ public class MainActivity extends AppCompatActivity {
      * Clears all open notifications as well
      */
     private void prepareNotifications() {
-        ArrayList<Medication> medications = db.getMedications();
-        NotificationManager notificationManager =
-                (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        final ArrayList<Notification> notifications = nativeDb.getNotifications();
 
-        notificationManager.cancelAll();
-
-        for (Medication medication : medications) {
+        for (Medication medication : allMeds) {
             NotificationHelper.clearPendingNotifications(medication, this);
         }
 
-        for (Medication medication : medications) {
+        for (Medication medication : allMeds) {
             NotificationHelper.createNotifications(medication, this);
+        }
+
+        for (final Notification n : notifications) {
+            Medication med = allMeds.stream().filter(
+                    m -> m.getId() == n.getMedId()
+            ).findFirst().orElse(null);
+
+            if (med == null) {
+                Log.e(
+                        "EventReceiver",
+                        "Failed to create notification for Medication: " + n.getMedId()
+                );
+
+                continue;
+            }
+
+            NotificationHelper.scheduleNotification(
+                    this,
+                    med,
+                    n.getDoseTime(),
+                    n.getNotificationId()
+            );
         }
     }
 
@@ -470,5 +523,19 @@ public class MainActivity extends AppCompatActivity {
         scheduleLayout.removeAllViews();
 
         createMainActivityViews();
+    }
+
+    /**
+     * Handles closing of notification dialog
+     *
+     * @param action Action performed in dialog
+     * @param data   Object returned by dialog
+     */
+    @Override
+    public void handleDialogClose(Action action, Object data) {
+        if (action == Action.EDIT) {
+            scheduleLayout.removeAllViews();
+            createMainActivityViews();
+        }
     }
 }

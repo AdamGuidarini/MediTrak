@@ -111,7 +111,7 @@ public:
      * @param values Values to add to new row
      * @return Row id of added row
      */
-    long insert(string table, map<string, string> values);
+    long insert(const string& table, map<string, string> values);
 
     /**
      * Performs an update query
@@ -120,6 +120,29 @@ public:
      * @param where Where clause arguments where the key is the column to check and value is the value to match
      */
     void update(string table,  map<string, string> values, map<string, string> where);
+
+    /**
+     * Update records into the database
+     *
+     *  Based on the Android's SQLiteDatabase.insert method.
+     *
+     *  use "?" in the where argument where a value in where args should replace it.
+     *
+     *  ex:
+     *
+     *  string clause = "val1=? AND val2=?";
+     *  string args[] = { "foo", "bar" };
+     *  map<string, string> vals = { pair("foo", "bar") };
+     *
+     *  long rowId = dbManager.update("myTable", clause, args);
+     *
+     * @param table Table in which to update records
+     * @param values Values to change where key is the column name and value is the updated value
+     * @param whereClause Where clause in which a "?" will be replaced by the corresponding whereArg
+     * @param whereArgs Values to with which to replace instances of "?" in where clause
+     * @return Row id of added row or -1 on failure
+     */
+    void update(string table, map<string, string> values, string whereClause, string whereArgs[]);
 
     /**
      * Delete row in table

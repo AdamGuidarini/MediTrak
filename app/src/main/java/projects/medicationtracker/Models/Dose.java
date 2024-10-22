@@ -1,11 +1,14 @@
 package projects.medicationtracker.Models;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
 
 /**
@@ -36,7 +39,7 @@ public class Dose {
     }
 
     public Dose(long id, long medicationId, boolean isTaken, @Nullable String timeTaken, @Nullable String doseTime) {
-        final String dateFormat = "yyyy-MM-dd HH:mm:ss";
+        final String dateFormat = DBHelper.DateFormats.DB_DATE_FORMAT;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat, Locale.getDefault());
 
         // Some times seem to be 1 character short, this protects against that
@@ -139,6 +142,13 @@ public class Dose {
         return TimeFormatting.localDateTimeToDbString(timeTaken);
     }
 
+    public void setTimeTaken(String timeTaken) {
+        final String dateFormat = DBHelper.DateFormats.DB_DATE_FORMAT;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat, Locale.getDefault());
+
+        this.timeTaken = LocalDateTime.parse(timeTaken, formatter);
+    }
+
     public void setTimeTaken(LocalDateTime timeTaken) {
         this.timeTaken = timeTaken;
     }
@@ -149,6 +159,13 @@ public class Dose {
 
     public String getDoseTimeText() {
         return TimeFormatting.localDateTimeToDbString(doseTime);
+    }
+
+    public void setDoseTime(String doseTime) {
+        final String dateFormat = DBHelper.DateFormats.DB_DATE_FORMAT;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat, Locale.getDefault());
+
+        this.doseTime = LocalDateTime.parse(doseTime, formatter);
     }
 
     public void setDoseTime(LocalDateTime doseTime) {

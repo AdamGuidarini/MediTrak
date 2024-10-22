@@ -11,6 +11,7 @@
 #include "DbManager.h"
 #include "../Medication/Medication.h"
 #include "../Dose/Dose.h"
+#include "../Notification/Notification.h"
 
 using namespace std;
 
@@ -26,7 +27,7 @@ namespace DateFormats {
 
 class DatabaseController {
 private:
-    const int DB_VERSION = 13;
+    const int DB_VERSION = 14;
     const string DATABASE_NAME = "Medications.db";
     vector<string> tablesToIgnore;
     DbManager manager;
@@ -129,7 +130,7 @@ public:
      * @param values Values to add to new row
      * @return Row id of added row
      */
-    long insert(string table, map<string, string> values);
+    long insert(const string& table, map<string, string> values);
 
     /**
      * Updates rows matching where clause with with new values
@@ -181,7 +182,7 @@ public:
      * One element from each record will be added to the row corresponding to its key
      * @param data Data to export - The first row of the file will consist of the keys of the data map
      */
-    void exportCsv(string exportPath, map<string, vector<string>> data);
+    void exportCsv(const string& exportPath, map<string, vector<string>> data);
 
     /**
      * Retrieves a Medication from the database
@@ -203,7 +204,7 @@ public:
      * @param scheduledTime Time dose should be taken
      * @return The dose for the given med ID & scheduled time or nullptr
      */
-    Dose* findDose(long medicationId, string scheduledTime);
+    Dose* findDose(long medicationId, const string& scheduledTime);
 
     /**
      * Retrieves Dose by its ID
@@ -212,12 +213,40 @@ public:
      */
     Dose* getDoseById(long doseId);
 
-    /**\
+    /**
+     * Stores a new dose in the database
+     * @param medId ID of medication related to dose
+     * @param scheduledTime Time dose was scheduled to be taken
+     * @param timeTaken Time dose is scheduled for
+     * @param isTaken Whether or no the dose is taken
+     * @return ID of new dose or -1
+     */
+    long addDose(long medId, string scheduledTime, string timeTaken, bool isTaken);
+
+    /**
      * Updates a dose record
      * @param dose Dose to update
      * @return true if update succeeded
      */
-    bool updateDose(Dose dose);
+    bool updateDose(const Dose& dose);
+
+    /**
+     * Stores a notification
+     * @param notification notification to store
+     */
+    bool stashNotification(const Notification& notification);
+
+    /**
+     * Retrieves all stashed notifications
+     * @return All notifications currently stored in DB
+     */
+    vector<Notification> getStashedNotifications();
+
+    /**
+     * Deletes a stored notification
+     * @param id ID of notification to delete
+     */
+     void deleteNotification(long id);
 };
 
 #endif //MEDICATIONTRACKER_DATABASECONTROLLER_H

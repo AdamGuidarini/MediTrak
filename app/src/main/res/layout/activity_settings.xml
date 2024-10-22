@@ -76,7 +76,7 @@
                             android:hint="@string/hours"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
-                            <EditText
+                            <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/enterTimeBeforeDose"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -283,11 +283,10 @@
                     </LinearLayout>
 
                     <Button
-                        android:id="@+id/purgeButton"
+                        android:id="@+id/deleteAllButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="15dp"
-                        android:backgroundTint="@color/red"
                         android:onClick="onPurgeButtonClick"
                         app:cornerRadius="30dp"
                         android:text="@string/delete_all" />

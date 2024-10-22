@@ -3,9 +3,7 @@ package projects.medicationtracker.Dialogs;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
-import static projects.medicationtracker.MediTrak.DATABASE_PATH;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -16,9 +14,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -33,7 +33,6 @@ import projects.medicationtracker.Fragments.SelectDateFragment;
 import projects.medicationtracker.Fragments.TimePickerFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
-import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Models.Dose;
@@ -42,7 +41,7 @@ import projects.medicationtracker.Models.Medication;
 public class DoseInfoDialog extends DialogFragment {
     private final long doseId;
     private final DBHelper db;
-    private final NativeDbHelper nativeDb;
+    private NativeDbHelper nativeDb;
     private Dose thisDose;
     private final TextView textView;
     private TextInputEditText timeTaken;
@@ -57,13 +56,14 @@ public class DoseInfoDialog extends DialogFragment {
         this.doseId = doseId;
         db = database;
         textView = tv;
-        nativeDb = new NativeDbHelper(DATABASE_PATH);
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstances) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+        nativeDb = new NativeDbHelper(getActivity());
+
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         medication = ((Triple<Medication, Long, LocalDateTime>) textView.getTag()).getFirst();
         AlertDialog infoDialog;

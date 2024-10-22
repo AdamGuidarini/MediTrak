@@ -14,6 +14,7 @@
     <string name="ok">OK</string>
     <string name="delete">Eliminar</string>
     <string name="i_agree">Estoy de acuerdo</string>
+    <string name="select_all">Seleccionar Todo</string>
 
     <!-- Filters -->
     <string name="clear">Limpiar</string>
@@ -126,7 +127,7 @@
     <string name="unitExample">P. Ej. mg, g, gotas</string>
     <string name="patient_name">Nombre del paciente:</string>
     <string name="no_alias">Sin alias</string>
-    <string name="at">A las:</string>
+    <string name="at">a las</string>
     <string name="apply_retroactive">Aplicar cambios retroactivamente</string>
     <string name="retroactive_warning">Atención: Los cambios en la frecuencia pueden hacer que las dosis tomadas anteriormente ya no sean visibles en el horario.</string>
     <string name="would_like_apply_retroactively">Los cambios de dosis y frecuencia pueden aplicarse retroactivamente a partir del cambio anterior. ¿Desea aplicar estos cambios retroactivamente?</string>
@@ -228,6 +229,10 @@
     <string name="its_time_your_med">Es hora de tomar tu %1$s de %2$s</string>
     <string name="time_for_other_med">Es la hora de los %2$s de %3$s de %1$s</string>
     <string name="add_dose">Añadir dosis</string>
+    <string name="open_notifications">Notificaciones Abiertas</string>
+    <string name="skip_unselected">Saltar deseleccionadas</string>
+    <string name="take_all">Tomar Todo</string>
+    <string name="take_selected">Tomar Seleccionados</string>
 
     <!-- Med History -->
     <string name="history">Historia</string>

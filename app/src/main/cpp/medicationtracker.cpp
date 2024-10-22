@@ -5,7 +5,6 @@
 #include <android/log.h>
 #include <string>
 #include <map>
-#include <cstdio>
 
 std::map<std::string, std::string> getValues(jobjectArray arr, JNIEnv *env) {
     const jclass pair = env->FindClass("android/util/Pair");
@@ -13,46 +12,65 @@ std::map<std::string, std::string> getValues(jobjectArray arr, JNIEnv *env) {
     _jfieldID *const firstFieldId = env->GetFieldID(pair, "first", "Ljava/lang/Object;");
     _jfieldID *const secondFieldId = env->GetFieldID(pair, "second", "Ljava/lang/Object;");
 
-    map<string, string> vals;
+    std::map<std::string, std::string> vals;
 
     for (int i = 0; i < env->GetArrayLength(arr); i++) {
-        jstring firstField = (jstring) env->GetObjectField(env->GetObjectArrayElement(arr, i), firstFieldId);
-        jstring secondField = (jstring) env->GetObjectField(env->GetObjectArrayElement(arr, i), secondFieldId);
+        jstring firstField = (jstring) env->GetObjectField(env->GetObjectArrayElement(arr, i),
+                                                           firstFieldId);
+        jstring secondField = (jstring) env->GetObjectField(env->GetObjectArrayElement(arr, i),
+                                                            secondFieldId);
 
         std::string first = env->GetStringUTFChars(firstField, new jboolean(true));
         std::string second = env->GetStringUTFChars(secondField, new jboolean(true));
 
-        vals.insert({ first, second });
+        vals.insert({first, second});
     }
 
     return vals;
 }
 
-jobject doseToJavaConverter(Dose dose, JNIEnv* env, jobject &jMedication) {
-    jfieldID medDoses = env->GetFieldID(env->GetObjectClass(jMedication), "doses", "[Lprojects/medicationtracker/Models/Dose;");
-    jobjectArray jDoses = static_cast<jobjectArray>(env->GetObjectField(jMedication, medDoses));
+jobject doseToJavaConverter(const Dose& dose, JNIEnv *env, jobject &jMedication) {
+    jfieldID medDoses = env->GetFieldID(env->GetObjectClass(jMedication), "doses",
+                                        "[Lprojects/medicationtracker/Models/Dose;");
+    auto jDoses = static_cast<jobjectArray>(env->GetObjectField(jMedication, medDoses));
     jclass jDose = env->GetObjectClass(env->GetObjectArrayElement(jDoses, 0));
 
     jmethodID setOverrideDoseAmount = env->GetMethodID(jDose, "setOverrideDoseAmount", "(I)V");
-    jmethodID setOverrideDoseUnit = env->GetMethodID(jDose, "setOverrideDoseUnit", "(Ljava/lang/String;)V");
+    jmethodID setOverrideDoseUnit = env->GetMethodID(jDose, "setOverrideDoseUnit",
+                                                     "(Ljava/lang/String;)V");
 
-//    jDoses = env->NewObjectArray(doses.size(), jDose, NULL);
+    jmethodID setDoseId = env->GetMethodID(jDose, "setDoseId", "(J)V");
+    jmethodID setTaken = env->GetMethodID(jDose, "setTaken", "(Z)V");
+    jmethodID setMedId = env->GetMethodID(jDose, "setMedId", "(J)V");
+    jmethodID setTimeTaken = env->GetMethodID(jDose, "setTimeTaken", "(Ljava/lang/String;)V");
+    jmethodID setDoseTime = env->GetMethodID(jDose, "setDoseTime", "(Ljava/lang/String;)V");
 
     jmethodID constructor = env->GetMethodID(
-        jDose,
-        "<init>",
-        "(JJZLjava/lang/String;Ljava/lang/String;)V"
+            jDose,
+            "<init>",
+            "(JJZLjava/lang/String;Ljava/lang/String;)V"
     );
 
-    jobject javaDose = env->NewObject(
-        jDose,
-        constructor,
-        dose.id,
-        dose.medicationId,
-        dose.taken,
-        env->NewStringUTF(dose.timeTaken.c_str()),
-        env->NewStringUTF(dose.doseTime.c_str())
+    jmethodID constructorDefault = env->GetMethodID(
+            jDose,
+            "<init>",
+            "()V"
     );
+
+    jobject javaDose = env->NewObject(jDose, constructorDefault);
+
+    if (dose.id == -1) {
+        return javaDose;
+    }
+
+    env->CallVoidMethod(javaDose, setDoseId, dose.id);
+    env->CallVoidMethod(javaDose, setTaken, dose.taken);
+    env->CallVoidMethod(javaDose, setMedId, dose.medicationId);
+    env->CallVoidMethod(javaDose, setDoseTime, env->NewStringUTF(dose.doseTime.c_str()));
+
+    if (dose.timeTaken.length() > 0) {
+        env->CallVoidMethod(javaDose, setTimeTaken, env->NewStringUTF(dose.timeTaken.c_str()));
+    }
 
     if (dose.overrideDoseAmount != -1) {
         env->CallVoidMethod(javaDose, setOverrideDoseAmount, dose.overrideDoseAmount);
@@ -60,92 +78,140 @@ jobject doseToJavaConverter(Dose dose, JNIEnv* env, jobject &jMedication) {
 
     if (!dose.overrideDoseUnit.empty()) {
         env->CallVoidMethod(
-            javaDose,
-            setOverrideDoseUnit,
-            env->NewStringUTF(dose.overrideDoseUnit.c_str())
+                javaDose,
+                setOverrideDoseUnit,
+                env->NewStringUTF(dose.overrideDoseUnit.c_str())
         );
     }
-
     return javaDose;
 }
 
-Dose javaDoseToNativeDoseConverter(jobject jDose, JNIEnv* env) {
+Dose javaDoseToNativeDoseConverter(jobject jDose, JNIEnv *env) {
     jclass jDoseClass = env->GetObjectClass(jDose);
     jmethodID getDoseId = env->GetMethodID(jDoseClass, "getDoseId", "()J");
     jmethodID getMedId = env->GetMethodID(jDoseClass, "getMedId", "()J");
     jmethodID isTaken = env->GetMethodID(jDoseClass, "isTaken", "()Z");
-    jmethodID getTimeTakenText = env->GetMethodID(jDoseClass, "getTimeTakenText", "()Ljava/lang/String;");
-    jmethodID getDoseTimeText = env->GetMethodID(jDoseClass, "getDoseTimeText", "()Ljava/lang/String;");
+    jmethodID getTimeTakenText = env->GetMethodID(jDoseClass, "getTimeTakenText",
+                                                  "()Ljava/lang/String;");
+    jmethodID getDoseTimeText = env->GetMethodID(jDoseClass, "getDoseTimeText",
+                                                 "()Ljava/lang/String;");
     jmethodID getOverrideDoseAmount = env->GetMethodID(jDoseClass, "getOverrideDoseAmount", "()I");
-    jmethodID getOverrideDoseUnit = env->GetMethodID(jDoseClass, "getOverrideDoseUnit", "()Ljava/lang/String;");
+    jmethodID getOverrideDoseUnit = env->GetMethodID(jDoseClass, "getOverrideDoseUnit",
+                                                     "()Ljava/lang/String;");
 
     return Dose(
-        env->CallLongMethod(jDose, getDoseId),
-        env->CallLongMethod(jDose, getMedId),
-        env->CallBooleanMethod(jDose, isTaken),
-        env->GetStringUTFChars((jstring) env->CallObjectMethod(jDose, getDoseTimeText), new jboolean (false)),
-        env->GetStringUTFChars((jstring) env->CallObjectMethod(jDose, getTimeTakenText), new jboolean (false)),
-        env->CallIntMethod(jDose, getOverrideDoseAmount),
-        env->GetStringUTFChars((jstring) env->CallObjectMethod(jDose, getOverrideDoseUnit), new jboolean (false))
+            env->CallLongMethod(jDose, getDoseId),
+            env->CallLongMethod(jDose, getMedId),
+            env->CallBooleanMethod(jDose, isTaken),
+            env->GetStringUTFChars((jstring) env->CallObjectMethod(jDose, getDoseTimeText),
+                                   new jboolean(false)),
+            env->GetStringUTFChars((jstring) env->CallObjectMethod(jDose, getTimeTakenText),
+                                   new jboolean(false)),
+            env->CallIntMethod(jDose, getOverrideDoseAmount),
+            env->GetStringUTFChars((jstring) env->CallObjectMethod(jDose, getOverrideDoseUnit),
+                                   new jboolean(false))
     );
 }
 
-jobject medicationToJavaConverter(Medication med, JNIEnv* env, jclass jMedication) {
+jobject medicationToJavaConverter(Medication med, JNIEnv *env, jclass jMedication) {
     jclass String = env->FindClass("java/lang/String");
     jobjectArray medTimes = env->NewObjectArray(med.times.size(), String, NULL);
     jmethodID medConstructor = env->GetMethodID(
-        jMedication,
-        "<init>",
-        "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;JIILjava/lang/String;)V"
+            jMedication,
+            "<init>",
+            "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;JIILjava/lang/String;)V"
     );
 
     for (int i = 0; i < med.times.size(); i++) {
-        std::string dateString = med.startDate.substr(0, med.startDate.find(" ")) + " " + med.times.at(i);
+        std::string dateString =
+                med.startDate.substr(0, med.startDate.find(" ")) + " " + med.times.at(i);
 
         env->SetObjectArrayElement(medTimes, i, env->NewStringUTF(dateString.c_str()));
     }
 
     jobject jMedicationInstance = env->NewObject(
-        jMedication,
-        medConstructor,
-        env->NewStringUTF(med.medicationName.c_str()),
-        env->NewStringUTF(med.patientName.c_str()),
-        env->NewStringUTF(med.dosageUnit.c_str()),
-        medTimes,
-        env->NewStringUTF(med.startDate.c_str()),
-        med.id,
-        jint(med.frequency),
-        jint(med.dosage),
-        env->NewStringUTF(med.alias.c_str())
+            jMedication,
+            medConstructor,
+            env->NewStringUTF(med.medicationName.c_str()),
+            env->NewStringUTF(med.patientName.c_str()),
+            env->NewStringUTF(med.dosageUnit.c_str()),
+            medTimes,
+            env->NewStringUTF(med.startDate.c_str()),
+            med.id,
+            jint(med.frequency),
+            jint(med.dosage),
+            env->NewStringUTF(med.alias.c_str())
     );
 
     jmethodID setActiveStatus = env->GetMethodID(jMedication, "setActiveStatus", "(Z)V");
-    jmethodID setParent = env->GetMethodID(jMedication, "setParent", "(Lprojects/medicationtracker/Models/Medication;)V");
-    jmethodID setDoses = env->GetMethodID(jMedication, "setDoses", "([Lprojects/medicationtracker/Models/Dose;)V");
+    jmethodID setParent = env->GetMethodID(jMedication, "setParent",
+                                           "(Lprojects/medicationtracker/Models/Medication;)V");
+    jmethodID setDoses = env->GetMethodID(jMedication, "setDoses",
+                                          "([Lprojects/medicationtracker/Models/Dose;)V");
 
     env->CallVoidMethod(jMedicationInstance, setActiveStatus, med.active);
 
     if (med.parent != nullptr) {
-        jmethodID setChild = env->GetMethodID(jMedication, "setChild", "(Lprojects/medicationtracker/Models/Medication;)V");
+        jmethodID setChild = env->GetMethodID(jMedication, "setChild",
+                                              "(Lprojects/medicationtracker/Models/Medication;)V");
         jobject medParent = medicationToJavaConverter(*med.parent, env, jMedication);
 
         env->CallVoidMethod(medParent, setChild, jMedicationInstance);
         env->CallVoidMethod(jMedicationInstance, setParent, medParent);
     }
 
-    jfieldID medDoses = env->GetFieldID(env->GetObjectClass(jMedicationInstance), "doses", "[Lprojects/medicationtracker/Models/Dose;");
-    jobjectArray jDoses = static_cast<jobjectArray>(env->GetObjectField(jMedicationInstance, medDoses));
+    jfieldID medDoses = env->GetFieldID(env->GetObjectClass(jMedicationInstance), "doses",
+                                        "[Lprojects/medicationtracker/Models/Dose;");
+    jobjectArray jDoses = static_cast<jobjectArray>(env->GetObjectField(jMedicationInstance,
+                                                                        medDoses));
     jclass jDose = env->GetObjectClass(env->GetObjectArrayElement(jDoses, 0));
 
     jDoses = env->NewObjectArray(med.doses.size(), jDose, NULL);
 
     for (int i = 0; i < med.doses.size(); i++) {
-        env->SetObjectArrayElement(jDoses, i, doseToJavaConverter(med.doses.at(i), env, jMedicationInstance));
+        env->SetObjectArrayElement(jDoses, i,
+                                   doseToJavaConverter(med.doses.at(i), env, jMedicationInstance));
     }
 
     env->CallVoidMethod(jMedicationInstance, setDoses, jDoses);
 
     return jMedicationInstance;
+}
+
+Notification javaNotificationToNativeNotificationMapper(jobject notification, JNIEnv *env) {
+    jclass jNotificationClass = env->GetObjectClass(notification);
+    jmethodID getId = env->GetMethodID(jNotificationClass, "getId", "()J");
+    jmethodID getMedId = env->GetMethodID(jNotificationClass, "getMedId", "()J");
+    jmethodID getNotificationId = env->GetMethodID(jNotificationClass, "getNotificationId", "()J");
+    jmethodID getDoseTime = env->GetMethodID(jNotificationClass, "getDoseTimeString",
+                                             "()Ljava/lang/String;");
+
+    std::string timeString = env->GetStringUTFChars(
+            (jstring) env->CallObjectMethod(notification, getDoseTime),
+            new jboolean(true)
+    );
+
+    return Notification(
+            env->CallLongMethod(notification, getId),
+            env->CallLongMethod(notification, getMedId),
+            env->CallLongMethod(notification, getNotificationId),
+            timeString
+    );
+}
+
+jobject nativeNotificationToJavaNotificationConverter(JNIEnv *env, Notification notification,
+                                                      jclass notificationClass) {
+    jmethodID constructor = env->GetMethodID(notificationClass, "<init>",
+                                             "(JJJLjava/lang/String;)V");
+
+    return env->NewObject(
+            notificationClass,
+            constructor,
+            notification.id,
+            notification.medId,
+            notification.notificationId,
+            env->NewStringUTF(notification.doseTime.c_str())
+    );
 }
 
 extern "C"
@@ -164,7 +230,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbExporter(
 
     for (int i = 0; i < len; i++) {
         auto str = (jstring) (env->GetObjectArrayElement(ignoredTables, i));
-        string rawString = env->GetStringUTFChars(str, JNI_FALSE);
+        auto rawString = env->GetStringUTFChars(str, JNI_FALSE);
 
         ignoredTbls.push_back(rawString);
     }
@@ -173,7 +239,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbExporter(
 
     try {
         controller.exportJSON(exportDir, ignoredTbls);
-    } catch (exception& e) {
+    } catch (exception &e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
 
         return false;
@@ -199,7 +265,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(
 
     for (int i = 0; i < len; i++) {
         auto str = (jstring) (env->GetObjectArrayElement(ignored_tables, i));
-        string rawString = env->GetStringUTFChars(str, JNI_FALSE);
+        auto rawString = env->GetStringUTFChars(str, JNI_FALSE);
 
         ignoredTbls.push_back(rawString);
     }
@@ -219,7 +285,8 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_projects_medicationtracker_Helpers_NativeDbHelper_dbCreate(JNIEnv *env, jobject thiz, jstring db_path) {
+Java_projects_medicationtracker_Helpers_NativeDbHelper_dbCreate(JNIEnv *env, jobject thiz,
+                                                                jstring db_path) {
     std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
 
     try {
@@ -231,7 +298,8 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbCreate(JNIEnv *env, job
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_projects_medicationtracker_Helpers_NativeDbHelper_dbUpgrade(JNIEnv *env, jobject thiz, jstring db_path, jint version) {
+Java_projects_medicationtracker_Helpers_NativeDbHelper_dbUpgrade(JNIEnv *env, jobject thiz,
+                                                                 jstring db_path, jint version) {
     std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
 
     try {
@@ -263,7 +331,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_update(
     try {
         if (tbl == dbController.SETTINGS_TABLE) {
             dbController.updateSettings(vals);
-        }  else {
+        } else {
             dbController.update(tbl, vals, whereVals);
         }
     } catch (exception &e) {
@@ -364,25 +432,27 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_exportMedHistory(
     _jfieldID *const secondFieldId = env->GetFieldID(pair, "second", "Ljava/lang/Object;");
 
     for (int i = 0; i < env->GetArrayLength(data); i++) {
-        jstring key = (jstring) env->GetObjectField(env->GetObjectArrayElement(data, i), firstFieldId);
-        jobjectArray values = (jobjectArray) env->GetObjectField(env->GetObjectArrayElement(data, i), secondFieldId);
+        jstring key = (jstring) env->GetObjectField(env->GetObjectArrayElement(data, i),
+                                                    firstFieldId);
+        jobjectArray values = (jobjectArray) env->GetObjectField(
+                env->GetObjectArrayElement(data, i), secondFieldId);
         std::vector<std::string> vals;
 
         for (int j = 0; j < env->GetArrayLength(values); j++) {
             std::string val = env->GetStringUTFChars(
-                (jstring) env->GetObjectArrayElement(values, j),
-                new jboolean(true)
+                    (jstring) env->GetObjectArrayElement(values, j),
+                    new jboolean(true)
             );
 
             vals.push_back(val);
         }
 
-        exportData.insert({ env->GetStringUTFChars(key, new jboolean (true)), vals });
+        exportData.insert({env->GetStringUTFChars(key, new jboolean(true)), vals});
     }
 
     try {
         controller.exportCsv(path, exportData);
-    } catch (exception& e) {
+    } catch (exception &e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
 
         return false;
@@ -394,13 +464,14 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_exportMedHistory(
 extern "C"
 JNIEXPORT jobject JNICALL
 Java_projects_medicationtracker_Helpers_NativeDbHelper_findDose(
-        JNIEnv *env, jobject thiz, jstring db_path, jlong medication_id, jstring dose_time, jobject medication
+        JNIEnv *env, jobject thiz, jstring db_path, jlong medication_id, jstring dose_time,
+        jobject medication
 ) {
     std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
     DatabaseController controller(dbPath);
     std::string doseTime = env->GetStringUTFChars(dose_time, new jboolean(true));
 
-    Dose* dose = controller.findDose(medication_id, doseTime);
+    Dose *dose = controller.findDose(medication_id, doseTime);
 
     if (dose == nullptr) {
         dose = new Dose();
@@ -425,7 +496,15 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getDoseById(
     std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
     DatabaseController controller(dbPath);
 
-    Dose* d = controller.getDoseById(dose_id);
+    Dose *d;
+
+    try {
+        d = controller.getDoseById(dose_id);
+    } catch (exception &e) {
+        delete d;
+
+        return nullptr;
+    }
 
     auto jDose = doseToJavaConverter(*d, env, medication);
 
@@ -448,4 +527,128 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_updateDose(
     Dose nDose = javaDoseToNativeDoseConverter(dose, env);
 
     return controller.updateDose(nDose);
+}
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_stashNotification(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jobject notification
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    DatabaseController controller(dbPath);
+
+    Notification notificationToStash = javaNotificationToNativeNotificationMapper(notification,
+                                                                                  env);
+
+    try {
+        return controller.stashNotification(notificationToStash);
+    } catch (exception &e) {
+        __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
+
+        return false;
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_deleteNotification(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jlong notificationId
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    DatabaseController controller(dbPath);
+
+    try {
+        controller.deleteNotification(notificationId);
+    } catch (exception &e) {
+        std::string err =
+                "Notification deletion failed. NotificationId: " + to_string(notificationId);
+        __android_log_write(ANDROID_LOG_ERROR, nullptr, err.c_str());
+    }
+}
+
+extern "C"
+JNIEXPORT jobjectArray JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_getNotifications(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jclass jNotificationClass
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    DatabaseController controller(dbPath);
+
+    std::vector<Notification> notifications;
+
+    try {
+        notifications = controller.getStashedNotifications();
+    } catch (exception &e) {
+        __android_log_write(
+                ANDROID_LOG_ERROR,
+                nullptr,
+                "Failed to retrieve notifications"
+        );
+
+        notifications = {};
+    }
+
+    jobjectArray jNotifications = env->NewObjectArray(
+            notifications.size(),
+            jNotificationClass,
+            nullptr
+    );
+
+    for (int i = 0; i < notifications.size(); i++) {
+        jobject noti = nativeNotificationToJavaNotificationConverter(
+                env,
+                notifications.at(i),
+                jNotificationClass
+        );
+
+        env->SetObjectArrayElement(
+                jNotifications,
+                i,
+                noti
+        );
+    }
+
+    return jNotifications;
+}
+
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_addDose(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jlong medId,
+        jstring scheduled_time,
+        jstring taken_time,
+        jboolean taken
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string scheduledTime = env->GetStringUTFChars(scheduled_time, new jboolean(true));
+    std::string takenTime = env->GetStringUTFChars(taken_time, new jboolean(true));
+    long rowId = -1;
+
+    DatabaseController controller(dbPath);
+
+    try {
+        rowId = controller.addDose(medId, scheduledTime, takenTime, taken);
+    } catch (exception &e) {
+        std::string err =
+                "Could not create dose for medication: "
+                + to_string(medId)
+                + "at time: "
+                + scheduledTime;
+
+        __android_log_write(ANDROID_LOG_ERROR, nullptr, err.c_str());
+    }
+
+    return rowId;
 }
