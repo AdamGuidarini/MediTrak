@@ -21,6 +21,10 @@ public class NativeDbHelper {
     }
 
     private final String dbPath;
+    private final String[] ignoredTables = {
+        DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE, DBHelper.NOTIFICATIONS
+    };
+
 
     public NativeDbHelper(Context context) {
         dbPath = context.getDatabasePath(DATABASE_NAME).getAbsolutePath();
@@ -80,10 +84,9 @@ public class NativeDbHelper {
      * Exports a database
      *
      * @param exportPath    Path where exported file will be created
-     * @param ignoredTables Tables to ignore in database
      * @return true if success
      */
-    public boolean dbExport(String exportPath, String[] ignoredTables) {
+    public boolean dbExport(String exportPath) {
         return dbExporter(dbPath, exportPath, ignoredTables);
     }
 
@@ -91,10 +94,9 @@ public class NativeDbHelper {
      * Imports a database
      *
      * @param fileContents  Contents of import file
-     * @param ignoredTables Tables to ignore while importing
      * @return true if import succeeded
      */
-    public boolean dbImport(String fileContents, String[] ignoredTables) {
+    public boolean dbImport(String fileContents) {
         return dbImporter(dbPath, fileContents, ignoredTables);
     }
 

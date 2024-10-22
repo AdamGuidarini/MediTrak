@@ -76,6 +76,11 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CHANGE_DATE = "ChangeDate";
     private static final String PAUSED = "Paused";
 
+    // Notifications
+    public static final String NOTIFICATIONS = "Notifications";
+    private static final String NOTIFICATION_ID = "NotificationId";
+    private static final String SCHEDULED_TIME = "ScheduledTime";
+
     public static class TimeFormats {
         public static final String _12_HOUR = "hh:mm a";
         public static final String _24_HOUR = "HH:mm";

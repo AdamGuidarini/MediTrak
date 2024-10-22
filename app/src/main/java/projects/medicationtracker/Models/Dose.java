@@ -1,5 +1,7 @@
 package projects.medicationtracker.Models;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 
 import java.time.LocalDateTime;
@@ -140,6 +142,13 @@ public class Dose {
         return TimeFormatting.localDateTimeToDbString(timeTaken);
     }
 
+    public void setTimeTaken(String timeTaken) {
+        final String dateFormat = DBHelper.DateFormats.DB_DATE_FORMAT;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat, Locale.getDefault());
+
+        this.timeTaken = LocalDateTime.parse(timeTaken, formatter);
+    }
+
     public void setTimeTaken(LocalDateTime timeTaken) {
         this.timeTaken = timeTaken;
     }
@@ -150,6 +159,13 @@ public class Dose {
 
     public String getDoseTimeText() {
         return TimeFormatting.localDateTimeToDbString(doseTime);
+    }
+
+    public void setDoseTime(String doseTime) {
+        final String dateFormat = DBHelper.DateFormats.DB_DATE_FORMAT;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat, Locale.getDefault());
+
+        this.doseTime = LocalDateTime.parse(doseTime, formatter);
     }
 
     public void setDoseTime(LocalDateTime doseTime) {

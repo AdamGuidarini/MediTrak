@@ -142,10 +142,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
                                 throw new RuntimeException(e);
                             }
 
-                            success = nativeDb.dbImport(
-                                    contents,
-                                    new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE}
-                            );
+                            success = nativeDb.dbImport(contents);
                         } catch (Exception e) {
                             Log.e("Import Error", "Error occurred when reading file");
                         } finally {
@@ -609,10 +606,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
         String fileExtension = dialogRes[2];
 
         String resMessage;
-        boolean res = nativeDb.dbExport(
-                exportDir + '/' + exportFile + "." + fileExtension,
-                new String[]{DBHelper.ANDROID_METADATA, DBHelper.SETTINGS_TABLE}
-        );
+        boolean res = nativeDb.dbExport(exportDir + '/' + exportFile + "." + fileExtension);
 
         resMessage = res ? getString(R.string.successful_export, exportDir + '/' + exportFile)
                 : getString(R.string.failed_export);
