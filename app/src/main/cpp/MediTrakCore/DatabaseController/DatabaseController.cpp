@@ -228,8 +228,53 @@ void DatabaseController::upgrade(int currentVersion) {
     }
 
     if (currentVersion < 15) {
-        // TODO copy, medication table and create a new one with "REAL" as type for dosage
-        // TODO copy dose table and create new one with "REAL" as type of override for dosage
+        manager.execSql(
+                "BEGIN TRANSACTION; CREATE TABLE " + MEDICATION_TABLE + "_1"
+                + " PRAGMA foreign_keys = OFF;"
+                + MED_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + MED_NAME + " TEXT,"
+                + PATIENT_NAME + " Text,"
+                + MED_DOSAGE + " REAL,"
+                + MED_UNITS + " TEXT,"
+                + START_DATE + " DATETIME,"
+                + MED_FREQUENCY + " INTEGER,"
+                + ALIAS + " TEXT,"
+                + ACTIVE + " BOOLEAN DEFAULT 1,"
+                + PARENT_ID + " INTEGER,"
+                + CHILD_ID + " INTEGER,"
+                + INSTRUCTIONS + " TEXT,"
+                + "FOREIGN KEY (" + PARENT_ID + ") REFERENCES "
+                + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE,"
+                + "FOREIGN KEY (" + CHILD_ID + ") REFERENCES "
+                + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
+                + ");"
+
+                + "INSERT INTO " + MEDICATION_TABLE + "_1" + " SELECT * FROM " + MEDICATION_TABLE +
+                ";"
+                + "DROP TABLE " + MEDICATION_TABLE + ";"
+                + "ALTER TABLE " + MEDICATION_TABLE + "_1" + " RENAME TO " + MEDICATION_TABLE + ";"
+
+                "CREATE TABLE " + MEDICATION_TRACKER_TABLE + "_1 ("
+                + DOSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + MED_ID + " INTEGER,"
+                + DOSE_TIME + " DATETIME,"
+                + TAKEN + " BOOLEAN,"
+                + TIME_TAKEN + " DATETIME,"
+                + OVERRIDE_DOSE_AMOUNT + " REAL,"
+                + OVERRIDE_DOSE_UNIT + " TEXT,"
+                + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +
+                ") ON DELETE CASCADE"
+                + ");"
+
+                + "INSERT INTO " + MEDICATION_TRACKER_TABLE + "_1"
+                + "SELECT * FROM " + MEDICATION_TRACKER_TABLE + ";"
+                + "DROP TABLE " + MEDICATION_TRACKER_TABLE + ";"
+                + "ALTER TABLE " + MEDICATION_TABLE + " RENAME TO " + MEDICATION_TRACKER_TABLE + ";"
+
+
+                + " PRAGMA foreign_keys = ON;"
+                + " COMMIT;"
+        );
     }
 
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
