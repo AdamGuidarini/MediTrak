@@ -358,7 +358,7 @@ public class AddMedication extends AppCompatActivity {
         });
 
         dosageAmountInput.addTextChangedListener(new TextWatcher() {
-            private final int amount = medication.getDosage();
+            private final float amount = medication.getDosage();
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
             @Override

@@ -119,7 +119,7 @@ jobject medicationToJavaConverter(Medication med, JNIEnv *env, jclass jMedicatio
     jmethodID medConstructor = env->GetMethodID(
             jMedication,
             "<init>",
-            "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;JIILjava/lang/String;)V"
+            "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;JIFLjava/lang/String;)V"
     );
 
     for (int i = 0; i < med.times.size(); i++) {
@@ -139,7 +139,7 @@ jobject medicationToJavaConverter(Medication med, JNIEnv *env, jclass jMedicatio
             env->NewStringUTF(med.startDate.c_str()),
             med.id,
             jint(med.frequency),
-            jint(med.dosage),
+            jfloat(med.dosage),
             env->NewStringUTF(med.alias.c_str())
     );
 

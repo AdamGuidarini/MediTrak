@@ -20,7 +20,7 @@ public class Dose {
     private long medId;
     private LocalDateTime timeTaken;
     private LocalDateTime doseTime;
-    private int overrideDoseAmount = -1;
+    private float overrideDoseAmount = -1;
     private String overrideDoseUnit = "";
 
     /**
@@ -58,7 +58,7 @@ public class Dose {
         this.doseTime = doseTime.length() == dateFormat.length() ? LocalDateTime.parse(doseTime, formatter) : null;
     }
 
-    public Dose(long id, long medicationId, boolean isTaken, @Nullable LocalDateTime timeTaken, @Nullable LocalDateTime doseTime, int overrideAmount, String overrideUnit) {
+    public Dose(long id, long medicationId, boolean isTaken, @Nullable LocalDateTime timeTaken, @Nullable LocalDateTime doseTime, float overrideAmount, String overrideUnit) {
         doseId = id;
         medId = medicationId;
         taken = isTaken;
@@ -68,7 +68,7 @@ public class Dose {
         overrideDoseUnit = overrideUnit;
     }
 
-    public Dose(long id, long medicationId, boolean isTaken, String timeTaken, String doseTime, int overrideAmount, String overrideUnit) {
+    public Dose(long id, long medicationId, boolean isTaken, String timeTaken, String doseTime, float overrideAmount, String overrideUnit) {
         final String dateFormat = "yyyy-MM-dd HH:mm:ss";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat, Locale.getDefault());
 
@@ -172,11 +172,11 @@ public class Dose {
         this.doseTime = doseTime;
     }
 
-    public int getOverrideDoseAmount() {
+    public float getOverrideDoseAmount() {
         return overrideDoseAmount;
     }
 
-    public void setOverrideDoseAmount(int overrideDoseValue) {
+    public void setOverrideDoseAmount(float overrideDoseValue) {
         this.overrideDoseAmount = overrideDoseValue;
     }
 

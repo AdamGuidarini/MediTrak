@@ -47,7 +47,7 @@ void DatabaseController::create() {
                     + MED_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + MED_NAME + " TEXT,"
                     + PATIENT_NAME + " Text,"
-                    + MED_DOSAGE + " DECIMAL(3,2),"
+                    + MED_DOSAGE + " REAL,"
                     + MED_UNITS + " TEXT,"
                     + START_DATE + " DATETIME,"
                     + MED_FREQUENCY + " INTEGER,"
@@ -69,7 +69,7 @@ void DatabaseController::create() {
                     + DOSE_TIME + " DATETIME,"
                     + TAKEN + " BOOLEAN,"
                     + TIME_TAKEN + " DATETIME,"
-                    + OVERRIDE_DOSE_AMOUNT + " INTEGER,"
+                    + OVERRIDE_DOSE_AMOUNT + " REAL,"
                     + OVERRIDE_DOSE_UNIT + " TEXT,"
                     + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +
                     ") ON DELETE CASCADE"
@@ -227,6 +227,11 @@ void DatabaseController::upgrade(int currentVersion) {
         );
     }
 
+    if (currentVersion < 15) {
+        // TODO copy, medication table and create a new one with "REAL" as type for dosage
+        // TODO copy dose table and create new one with "REAL" as type of override for dosage
+    }
+
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
 }
 
@@ -321,7 +326,7 @@ Medication DatabaseController::getMedication(long medicationId) {
             {},
             table->getItem(START_DATE),
             stol(table->getItem(MED_ID)),
-            stoi(table->getItem(MED_DOSAGE)),
+            stof(table->getItem(MED_DOSAGE)),
             stoi(table->getItem(MED_FREQUENCY)),
             table->getItem(ACTIVE) == "1",
             table->getItem(ALIAS)
@@ -400,7 +405,7 @@ Dose *DatabaseController::setDose(Table *table) {
         string overrideUnit;
 
         if (!empty(table->getItem(OVERRIDE_DOSE_AMOUNT))) {
-            overrideDose = stoi(table->getItem(OVERRIDE_DOSE_AMOUNT));
+            overrideDose = stof(table->getItem(OVERRIDE_DOSE_AMOUNT));
         }
 
         if (!empty(table->getItem(OVERRIDE_DOSE_UNIT))) {
