@@ -524,7 +524,7 @@ void DbManager::importData(string &inData, const vector<string> &ignoreTables) {
 
             while ((pos = tblStr.find(',')) != string::npos || tblStr.length() > 0) {
                 unsigned int end =
-                        tblStr.find(',') != string::npos ? tblStr.find(',') : tblStr.length() - 1;
+                        tblStr.find(',') != string::npos ? tblStr.find(',') : tblStr.length();
                 string token = tblStr.substr(0, end);
                 bool incrementInd = false;
 
