@@ -155,7 +155,7 @@ public class DoseInfoDialog extends DialogFragment {
                         inputLayout.setError(getString(R.string.err_required));
                     } else {
                         try {
-                            Integer.valueOf(editable.toString());
+                            Float.valueOf(editable.toString());
                             isDosageValid = true;
                         } catch (Exception e) {
                             inputLayout.setError(getString(R.string.val_too_big));
@@ -231,7 +231,7 @@ public class DoseInfoDialog extends DialogFragment {
         LocalDate date = (LocalDate) dateTaken.getTag();
         LocalTime time = (LocalTime) timeTaken.getTag();
         LocalDateTime dateTime = LocalDateTime.of(date, time).withSecond(0);
-        int overrideAmount = Integer.parseInt(dosageAmount.getText().toString());
+        float overrideAmount = Float.parseFloat(dosageAmount.getText().toString());
         String overrideUnits = dosageUnit.getText().toString();
         Fragment parent = getParentFragment();
 

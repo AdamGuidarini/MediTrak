@@ -102,7 +102,7 @@ public class AddMedication extends AppCompatActivity {
     private TextInputEditText instructions;
 
     /*
-    * Validators
+     * Validators
      */
     private boolean isPatientNameValid = true;
     private boolean isMedNameValid = false;
@@ -265,8 +265,13 @@ public class AddMedication extends AppCompatActivity {
         patientNameInput.setAdapter(patientNamesAdapter);
 
         patientNameInput.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -339,8 +344,13 @@ public class AddMedication extends AppCompatActivity {
         });
 
         medNameInput.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -359,10 +369,14 @@ public class AddMedication extends AppCompatActivity {
 
         dosageAmountInput.addTextChangedListener(new TextWatcher() {
             private final float amount = medication.getDosage();
+
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -383,7 +397,7 @@ public class AddMedication extends AppCompatActivity {
                     }
                 }
 
-                if (!editable.toString().isEmpty() && Integer.parseInt(editable.toString()) != amount && medId != -1) {
+                if (!editable.toString().isEmpty() && Float.parseFloat(editable.toString()) != amount && medId != -1) {
                     applyRetroactiveCard.setVisibility(View.VISIBLE);
                 }
 
@@ -395,9 +409,12 @@ public class AddMedication extends AppCompatActivity {
             private final String unit = medication.getDosageUnits();
 
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -420,10 +437,12 @@ public class AddMedication extends AppCompatActivity {
 
         instructions.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -514,7 +533,7 @@ public class AddMedication extends AppCompatActivity {
             }
         }
 
-        frequencyDropDown.setOnItemClickListener((adapterView, view, i, l) ->  {
+        frequencyDropDown.setOnItemClickListener((adapterView, view, i, l) -> {
             frequencyDropdownLayout.setErrorEnabled(false);
             isMedFrequencyValid = false;
 
@@ -563,8 +582,14 @@ public class AddMedication extends AppCompatActivity {
 
         frequencyDropDown.addTextChangedListener(new TextWatcher() {
             private final String selected = frequencyDropDown.getText().toString();
-            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -602,8 +627,13 @@ public class AddMedication extends AppCompatActivity {
 
         startDateMultiplePerDay.addTextChangedListener(
                 new TextWatcher() {
-                    @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-                    @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
 
                     @Override
                     public void afterTextChanged(Editable editable) {
@@ -614,8 +644,13 @@ public class AddMedication extends AppCompatActivity {
         );
 
         numberOfTimersPerDay.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -701,8 +736,13 @@ public class AddMedication extends AppCompatActivity {
                     });
 
                     timeEntry.addTextChangedListener(new TextWatcher() {
-                        @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-                        @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        }
 
                         @Override
                         public void afterTextChanged(Editable editable) {
@@ -740,16 +780,19 @@ public class AddMedication extends AppCompatActivity {
 
             numberOfTimersPerDay.addTextChangedListener(new TextWatcher() {
                 @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
                 @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
 
                 @Override
                 public void afterTextChanged(Editable s) {
                     if (s.toString().isEmpty()) return;
 
                     if (Integer.parseInt(s.toString()) != initialNumTimes) {
-                     applyRetroactiveCard.setVisibility(View.VISIBLE);
+                        applyRetroactiveCard.setVisibility(View.VISIBLE);
                     }
                 }
             });
@@ -798,9 +841,13 @@ public class AddMedication extends AppCompatActivity {
         dailyMedTime.addTextChangedListener(new TextWatcher() {
             private final LocalTime time = medication.getStartDate().toLocalTime();
 
-            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
-            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -815,11 +862,14 @@ public class AddMedication extends AppCompatActivity {
 
         dailyMedStartDate.addTextChangedListener(new TextWatcher() {
             private final LocalDate date = medication.getStartDate().toLocalDate();
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -889,9 +939,13 @@ public class AddMedication extends AppCompatActivity {
         customFreqMedTime.addTextChangedListener(new TextWatcher() {
             private final LocalTime time = medication.getStartDate().toLocalTime();
 
-            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
-            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -914,11 +968,14 @@ public class AddMedication extends AppCompatActivity {
 
         customFreqStartDate.addTextChangedListener(new TextWatcher() {
             private final LocalDate date = medication.getStartDate().toLocalDate();
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -941,8 +998,13 @@ public class AddMedication extends AppCompatActivity {
         });
 
         customFreqMTakenEveryEnter.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -1024,8 +1086,13 @@ public class AddMedication extends AppCompatActivity {
         }
 
         customFreqTimeUnitEnter.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -1059,8 +1126,13 @@ public class AddMedication extends AppCompatActivity {
 
         asNeededStartInput.addTextChangedListener(
                 new TextWatcher() {
-                    @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-                    @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
 
                     @Override
                     public void afterTextChanged(Editable editable) {
@@ -1247,7 +1319,7 @@ public class AddMedication extends AppCompatActivity {
         }
 
         if ((dosageAmountInputLayout.getError() == null || floatIsParsable(dosageAmountInput.getText().toString())) && !dosageAmountInput.getText().toString().isEmpty()) {
-            medication.setDosage(Integer.parseInt(dosageAmountInput.getText().toString()));
+            medication.setDosage(Float.parseFloat(dosageAmountInput.getText().toString()));
 
             dosageAmountInputLayout.setErrorEnabled(false);
         } else {
@@ -1319,7 +1391,7 @@ public class AddMedication extends AppCompatActivity {
 
                 childLayout.setErrorEnabled(false);
 
-                if ((time!= null && time.getText().toString().isEmpty()) || start == null || Objects.requireNonNull(time).getTag() == null) {
+                if ((time != null && time.getText().toString().isEmpty()) || start == null || Objects.requireNonNull(time).getTag() == null) {
                     errorCount++;
                 } else {
                     times[i] = LocalDateTime.of(start.toLocalDate(), (LocalTime) time.getTag());
@@ -1466,7 +1538,8 @@ public class AddMedication extends AppCompatActivity {
 
     /**
      * Compares changes to medication an adds notes for each
-     * @param child Newly modified medication
+     *
+     * @param child  Newly modified medication
      * @param parent Old version of medication
      * @return Notes for all changes made to medication or empty string
      */
@@ -1506,7 +1579,7 @@ public class AddMedication extends AppCompatActivity {
             createClone = true;
 
             note += getString(R.string.changed_dosage,
-                    parent.getDosage() + " " +parent.getDosageUnits(),
+                    parent.getDosage() + " " + parent.getDosageUnits(),
                     child.getDosage() + " " + child.getDosageUnits()
             );
         }
@@ -1539,7 +1612,7 @@ public class AddMedication extends AppCompatActivity {
         boolean allValid = isPatientNameValid
                 && isMedNameValid
                 && isMedDosageValid
-                && isMedDoseUnitValid 
+                && isMedDoseUnitValid
                 && isMedFrequencyValid;
 
         saveButton.setEnabled(allValid);
