@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <regex>
 #include "DbManager.h"
 #include "../Medication/Medication.h"
 #include "../Dose/Dose.h"
@@ -23,11 +24,12 @@ namespace TimeFormats {
 namespace DateFormats {
     const string MM_DD_YYYY = "MM/dd/yyyy";
     const string DD_MM_YYYY = "dd/MM/yyyy";
+    const string DB_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 }
 
 class DatabaseController {
 private:
-    const int DB_VERSION = 14;
+    const int DB_VERSION = 15;
     const string DATABASE_NAME = "Medications.db";
     vector<string> tablesToIgnore;
     DbManager manager;
@@ -102,6 +104,10 @@ private:
      */
     Dose* setDose(Table* table);
 
+    /**
+     * Resolves issues in caused by imports where the last character of the last record was removed
+     */
+    void repairImportErrors();
 public:
     const string NOTES_TABLE = "Notes";
     const string SETTINGS_TABLE = "Settings";
