@@ -104,6 +104,10 @@ private:
      */
     Dose* setDose(Table* table);
 
+    /**
+     * Resolves issues in caused by imports where the last character of the last record was removed
+     */
+    void repairImportErrors();
 public:
     const string NOTES_TABLE = "Notes";
     const string SETTINGS_TABLE = "Settings";
@@ -249,11 +253,6 @@ public:
      * @param id ID of notification to delete
      */
      void deleteNotification(long id);
-
-     /**
-      * Resolves issues in caused by imports where the last character of the last record was removed
-      */
-     void repairImportErrors();
 };
 
 #endif //MEDICATIONTRACKER_DATABASECONTROLLER_H
