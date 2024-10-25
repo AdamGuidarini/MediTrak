@@ -29,7 +29,7 @@ namespace DateFormats {
 
 class DatabaseController {
 private:
-    const int DB_VERSION = 16;
+    const int DB_VERSION = 15;
     const string DATABASE_NAME = "Medications.db";
     vector<string> tablesToIgnore;
     DbManager manager;

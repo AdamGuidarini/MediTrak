@@ -227,7 +227,7 @@ void DatabaseController::upgrade(int currentVersion) {
         );
     }
 
-    if (currentVersion < 16) {
+    if (currentVersion < 15) {
         repairImportErrors();
     }
 
@@ -580,7 +580,7 @@ void DatabaseController::repairImportErrors() {
         // take datetime is wrong
         if (!regex_match(timeTaken, dateRegex)) {
             if (timeTaken.length() == DateFormats::DB_DATE_FORMAT.length() - 1) {
-                doseTime += "0";
+                timeTaken += "0";
 
                 updateRequired = true;
             }
@@ -620,7 +620,7 @@ void DatabaseController::repairImportErrors() {
     while (!times->isAfterLast() && times->getCount() > 0) {
         auto schedTime = times->getItem(DRUG_TIME);
 
-        bool match = !regex_match(schedTime, dateRegex);
+        bool match = regex_match(schedTime, dateRegex);
 
         // scheduled datetime is wrong
         if (!match && schedTime.length() == DateFormats::DB_DATE_FORMAT.length() - 1) {
@@ -637,7 +637,7 @@ void DatabaseController::repairImportErrors() {
     while (!notes->isAfterLast() && notes->getCount() > 0) {
         string editTime = notes->getItem(TIME_EDITED);
         string timeEdited = TIME_EDITED;
-        bool match = !regex_match(editTime, dateRegex);
+        bool match = regex_match(editTime, dateRegex);
 
         timeEdited.pop_back();
 

@@ -68,11 +68,6 @@ public class Medication implements Cloneable, Parcelable {
         LocalDateTime[] medTimes = new LocalDateTime[times.length];
 
         for (int i = 0; i < times.length; i++) {
-            // Some times seem to be 1 character short, this protects against that
-            if (times[i].length() < dateFormat.length()) {
-                times[i] += "0";
-            }
-
             medTimes[i] = LocalDateTime.parse(times[i], formatter);
         }
 
