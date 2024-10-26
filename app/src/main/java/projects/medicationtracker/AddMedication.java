@@ -456,11 +456,7 @@ public class AddMedication extends AppCompatActivity {
                 aliasInput.setText(medication.getAlias());
             }
 
-            if (medication.getDosage() == medication.getDosage()) {
-                dosageAmountInput.setText(String.format(Locale.getDefault(), "%d", medication.getDosage()));
-            } else {
-                dosageAmountInput.setText(String.valueOf(medication.getDosage()));
-            }
+            dosageAmountInput.setText(String.valueOf(medication.getDosage()));
 
             dosageUnitsInput.setText(medication.getDosageUnits());
 

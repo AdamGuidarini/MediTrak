@@ -419,7 +419,7 @@ vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
         string overrideUnit;
 
         if (!empty(table->getItem(OVERRIDE_DOSE_AMOUNT))) {
-            overrideDose = stoi(table->getItem(OVERRIDE_DOSE_AMOUNT));
+            overrideDose = stof(table->getItem(OVERRIDE_DOSE_AMOUNT));
         }
 
         if (!empty(table->getItem(OVERRIDE_DOSE_UNIT))) {
