@@ -232,9 +232,9 @@ void DatabaseController::upgrade(int currentVersion) {
     }
 
     if (currentVersion < 16) {
-        manager.execSql(
-                "BEGIN TRANSACTION; CREATE TABLE " + MEDICATION_TABLE + "_1"
-                + " PRAGMA foreign_keys = OFF;"
+        string sql =
+                "BEGIN TRANSACTION; PRAGMA foreign_keys = OFF; CREATE TABLE "
+                + MEDICATION_TABLE + "_1("
                 + MED_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + MED_NAME + " TEXT,"
                 + PATIENT_NAME + " Text,"
@@ -253,12 +253,14 @@ void DatabaseController::upgrade(int currentVersion) {
                 + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
                 + ");"
 
-                + "INSERT INTO " + MEDICATION_TABLE + "_1" + " SELECT * FROM " + MEDICATION_TABLE +
+                + "INSERT INTO " + MEDICATION_TABLE + "_1" + " SELECT * FROM " +
+                MEDICATION_TABLE +
                 ";"
                 + "DROP TABLE " + MEDICATION_TABLE + ";"
-                + "ALTER TABLE " + MEDICATION_TABLE + "_1" + " RENAME TO " + MEDICATION_TABLE + ";"
+                + "ALTER TABLE " + MEDICATION_TABLE + "_1" + " RENAME TO '" +
+                MEDICATION_TABLE + "';"
 
-                "CREATE TABLE " + MEDICATION_TRACKER_TABLE + "_1 ("
+                + "CREATE TABLE " + MEDICATION_TRACKER_TABLE + "_1 ("
                 + DOSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + MED_ID + " INTEGER,"
                 + DOSE_TIME + " DATETIME,"
@@ -266,19 +268,22 @@ void DatabaseController::upgrade(int currentVersion) {
                 + TIME_TAKEN + " DATETIME,"
                 + OVERRIDE_DOSE_AMOUNT + " REAL,"
                 + OVERRIDE_DOSE_UNIT + " TEXT,"
-                + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +
+                + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" +
+                MED_ID +
                 ") ON DELETE CASCADE"
                 + ");"
 
-                + "INSERT INTO " + MEDICATION_TRACKER_TABLE + "_1"
+                + "INSERT INTO " + MEDICATION_TRACKER_TABLE + "_1 "
                 + "SELECT * FROM " + MEDICATION_TRACKER_TABLE + ";"
                 + "DROP TABLE " + MEDICATION_TRACKER_TABLE + ";"
-                + "ALTER TABLE " + MEDICATION_TABLE + " RENAME TO " + MEDICATION_TRACKER_TABLE + ";"
+                + "ALTER TABLE " + MEDICATION_TABLE + " RENAME TO '" +
+                MEDICATION_TRACKER_TABLE + "';"
 
 
                 + " PRAGMA foreign_keys = ON;"
-                + " COMMIT;"
-        );
+                + " COMMIT;";
+
+        manager.execSql(sql);
     }
 
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));

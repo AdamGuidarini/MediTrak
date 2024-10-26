@@ -1485,6 +1485,10 @@ public class AddMedication extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * Validates fields for as needed medications
+     * @return true if valid, false if invalid
+     */
     private boolean isAsNeededValid() {
         if (!Objects.requireNonNull(asNeededStartInput.getText()).toString().isEmpty()) {
             asNeededStart.setErrorEnabled(false);
@@ -1604,6 +1608,9 @@ public class AddMedication extends AppCompatActivity {
         return note;
     }
 
+    /**
+     * Enables the save button if all fields are valid
+     */
     private void validateForm() {
         boolean allValid = isPatientNameValid
                 && isMedNameValid
