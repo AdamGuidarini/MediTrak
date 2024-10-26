@@ -700,7 +700,7 @@ void DatabaseController::repairImportErrors() {
         } else if (!match && timeEdited.length() == DateFormats::DB_DATE_FORMAT.length() - 1) {
             manager.update(
                     NOTES_TABLE,
-                    {pair(TIME_EDITED, timeEdited += "0")},
+                    {pair(TIME_EDITED, timeEdited + "0")},
                     {pair(NOTE_ID, notes->getItem(NOTE_ID))}
             );
         }

@@ -7,7 +7,7 @@ MediTrak is an Android application designed to make it easier for users to keep 
 
 ## Requirements
 
-- Android 10+
+- Android 9+
 
 ## Languages
  - English

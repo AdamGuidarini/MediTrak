@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "projects.medicationtracker"
-        minSdkVersion 29
+        minSdkVersion 28
         targetSdkVersion 34
         compileSdk 34
 
