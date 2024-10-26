@@ -8,6 +8,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.Nullable;
@@ -882,11 +883,19 @@ public class DBHelper extends SQLiteOpenHelper {
 
             Note n = new Note(noteId, medId, note, entryTime);
 
-            if (cursor.getString(cursor.getColumnIndexOrThrow(TIME_EDITED)) != null && !cursor.getString((cursor.getColumnIndexOrThrow(TIME_EDITED))).isEmpty()) {
-                LocalDateTime editTime = TimeFormatting.stringToLocalDateTime(
-                        cursor.getString((cursor.getColumnIndexOrThrow(TIME_EDITED)))
-                );
-                n.setModifiedTime(editTime);
+            if (cursor.getString(cursor.getColumnIndexOrThrow(TIME_EDITED)) != null && !cursor.getString(cursor.getColumnIndexOrThrow(TIME_EDITED)).isEmpty()) {
+
+                try {
+                    LocalDateTime editTime = TimeFormatting.stringToLocalDateTime(
+                            cursor.getString(cursor.getColumnIndexOrThrow(TIME_EDITED))
+                    );
+                    n.setModifiedTime(editTime);
+                } catch (Exception e) {
+                    Log.e(
+                            "Notes",
+                            e.getMessage()
+                    );
+                }
             }
 
             notes.add(n);

@@ -42,15 +42,6 @@ public class Dose {
         final String dateFormat = DBHelper.DateFormats.DB_DATE_FORMAT;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat, Locale.getDefault());
 
-        // Some times seem to be 1 character short, this protects against that
-        if (timeTaken.length() < dateFormat.length()) {
-          timeTaken += "0";
-        }
-
-        if (doseTime.length() < dateFormat.length()) {
-            doseTime += "0";
-        }
-
         doseId = id;
         medId = medicationId;
         taken = isTaken;
@@ -71,15 +62,6 @@ public class Dose {
     public Dose(long id, long medicationId, boolean isTaken, String timeTaken, String doseTime, float overrideAmount, String overrideUnit) {
         final String dateFormat = "yyyy-MM-dd HH:mm:ss";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat, Locale.getDefault());
-
-        // Some times seem to be 1 character short, this protects against that
-        if (timeTaken.length() < dateFormat.length()) {
-            timeTaken += "0";
-        }
-
-        if (doseTime.length() < dateFormat.length()) {
-            doseTime += "0";
-        }
 
         doseId = id;
         medId = medicationId;

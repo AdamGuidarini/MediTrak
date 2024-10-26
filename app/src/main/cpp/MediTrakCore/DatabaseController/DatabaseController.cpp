@@ -228,6 +228,10 @@ void DatabaseController::upgrade(int currentVersion) {
     }
 
     if (currentVersion < 15) {
+        repairImportErrors();
+    }
+
+    if (currentVersion < 16) {
         manager.execSql(
                 "BEGIN TRANSACTION; CREATE TABLE " + MEDICATION_TABLE + "_1"
                 + " PRAGMA foreign_keys = OFF;"
@@ -600,4 +604,112 @@ vector<Notification> DatabaseController::getStashedNotifications() {
 
 void DatabaseController::deleteNotification(long id) {
     manager.deleteRecord(NOTIFICATIONS, {pair(DOSE_ID, to_string(id))});
+}
+
+void DatabaseController::repairImportErrors() {
+    auto doses = manager.execSqlWithReturn("SELECT * FROM " + MEDICATION_TRACKER_TABLE);
+    auto meds = manager.execSqlWithReturn("SELECT * FROM " + MEDICATION_TABLE);
+    auto times = manager.execSqlWithReturn("SELECT * FROM " + MEDICATION_TIMES);
+    auto notes = manager.execSqlWithReturn("SELECT * FROM " + NOTES_TABLE);
+    regex dateRegex("^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$");
+
+    while (!doses->isAfterLast() && doses->getCount() > 0) {
+        auto doseTime = doses->getItem(DOSE_TIME);
+        auto timeTaken = doses->getItem(TIME_TAKEN);
+        bool updateRequired = false;
+
+        // scheduled datetime is wrong
+        if (!regex_match(doseTime, dateRegex)) {
+            if (doseTime.length() == DateFormats::DB_DATE_FORMAT.length() - 1) {
+                doseTime += "0";
+
+                updateRequired = true;
+            }
+        }
+
+        // take datetime is wrong
+        if (!regex_match(timeTaken, dateRegex)) {
+            if (timeTaken.length() == DateFormats::DB_DATE_FORMAT.length() - 1) {
+                timeTaken += "0";
+
+                updateRequired = true;
+            }
+        }
+
+        if (updateRequired) {
+            map<string, string> vals = {
+                    pair(DOSE_TIME, doseTime),
+                    pair(TIME_TAKEN, timeTaken)
+            };
+
+            manager.update(
+                    MEDICATION_TRACKER_TABLE,
+                    vals,
+                    {pair(DOSE_ID, doses->getItem(DOSE_ID))}
+            );
+        }
+
+        doses->moveToNext();
+    }
+
+    while (!meds->isAfterLast() && meds->getCount() > 0) {
+        auto start = meds->getItem(START_DATE);
+
+        // scheduled datetime is wrong
+        if (!regex_match(start, dateRegex)) {
+            manager.update(
+                    MEDICATION_TABLE,
+                    {pair(START_DATE, start + "0")},
+                    {pair(MED_ID, meds->getItem(MED_ID))}
+            );
+        }
+
+        meds->moveToNext();
+    }
+
+    while (!times->isAfterLast() && times->getCount() > 0) {
+        auto schedTime = times->getItem(DRUG_TIME);
+
+        bool match = regex_match(schedTime, dateRegex);
+
+        // scheduled datetime is wrong
+        if (!match && schedTime.length() == DateFormats::DB_DATE_FORMAT.length() - 1) {
+            manager.update(
+                    MEDICATION_TIMES,
+                    {pair(DRUG_TIME, schedTime + "0")},
+                    {pair(TIME_ID, times->getItem(TIME_ID))}
+            );
+        }
+
+        times->moveToNext();
+    }
+
+    while (!notes->isAfterLast() && notes->getCount() > 0) {
+        string editTime = notes->getItem(TIME_EDITED);
+        string timeEdited = TIME_EDITED;
+        bool match = regex_match(editTime, dateRegex);
+
+        timeEdited.pop_back();
+
+        if (timeEdited == editTime) {
+            manager.update(
+                    NOTES_TABLE,
+                    {pair(TIME_EDITED, "")},
+                    {pair(NOTE_ID, notes->getItem(NOTE_ID))}
+            );
+        } else if (!match && timeEdited.length() == DateFormats::DB_DATE_FORMAT.length() - 1) {
+            manager.update(
+                    NOTES_TABLE,
+                    {pair(TIME_EDITED, timeEdited += "0")},
+                    {pair(NOTE_ID, notes->getItem(NOTE_ID))}
+            );
+        }
+
+        notes->moveToNext();
+    }
+
+    delete doses;
+    delete meds;
+    delete times;;
+    delete notes;
 }
