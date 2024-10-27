@@ -21,7 +21,7 @@ struct Medication {
         vector<string> times;
         vector<Dose> doses;
         long id;
-        int dosage;
+        float dosage;
         int frequency;
         bool active;
         shared_ptr<Medication> parent = nullptr;
@@ -52,7 +52,7 @@ struct Medication {
             vector<string> times,
             string startDate,
             long id,
-            int dosage,
+            float dosage,
             int frequency,
             bool active,
             string alias = ""

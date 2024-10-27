@@ -3,6 +3,7 @@ package projects.medicationtracker.Dialogs;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
+import static projects.medicationtracker.MediTrak.formatter;
 import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
 
 import android.app.Activity;
@@ -164,7 +165,7 @@ public class OpenNotificationsDialog extends DialogFragment {
                 continue;
             }
 
-            label = m.getName() + " - " + m.getDosage() + " " + m.getDosageUnits() + " - ";
+            label = m.getName() + " - " + formatter.format(m.getDosage()) + " " + m.getDosageUnits() + " - ";
 
             label += DateTimeFormatter.ofPattern(
                     preferences.getString(DATE_FORMAT),

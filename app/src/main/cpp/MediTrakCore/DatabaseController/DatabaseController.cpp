@@ -47,7 +47,7 @@ void DatabaseController::create() {
                     + MED_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + MED_NAME + " TEXT,"
                     + PATIENT_NAME + " Text,"
-                    + MED_DOSAGE + " DECIMAL(3,2),"
+                    + MED_DOSAGE + " REAL,"
                     + MED_UNITS + " TEXT,"
                     + START_DATE + " DATETIME,"
                     + MED_FREQUENCY + " INTEGER,"
@@ -69,7 +69,7 @@ void DatabaseController::create() {
                     + DOSE_TIME + " DATETIME,"
                     + TAKEN + " BOOLEAN,"
                     + TIME_TAKEN + " DATETIME,"
-                    + OVERRIDE_DOSE_AMOUNT + " INTEGER,"
+                    + OVERRIDE_DOSE_AMOUNT + " REAL,"
                     + OVERRIDE_DOSE_UNIT + " TEXT,"
                     + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +
                     ") ON DELETE CASCADE"
@@ -231,6 +231,60 @@ void DatabaseController::upgrade(int currentVersion) {
         repairImportErrors();
     }
 
+    if (currentVersion < 16) {
+        string sql =
+                "BEGIN TRANSACTION; PRAGMA foreign_keys = OFF; CREATE TABLE "
+                + MEDICATION_TABLE + "_1("
+                + MED_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + MED_NAME + " TEXT,"
+                + PATIENT_NAME + " Text,"
+                + MED_DOSAGE + " REAL,"
+                + MED_UNITS + " TEXT,"
+                + START_DATE + " DATETIME,"
+                + MED_FREQUENCY + " INTEGER,"
+                + ALIAS + " TEXT,"
+                + ACTIVE + " BOOLEAN DEFAULT 1,"
+                + PARENT_ID + " INTEGER,"
+                + CHILD_ID + " INTEGER,"
+                + INSTRUCTIONS + " TEXT,"
+                + "FOREIGN KEY (" + PARENT_ID + ") REFERENCES "
+                + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE,"
+                + "FOREIGN KEY (" + CHILD_ID + ") REFERENCES "
+                + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
+                + ");"
+
+                + "INSERT INTO " + MEDICATION_TABLE + "_1" + " SELECT * FROM " +
+                MEDICATION_TABLE +
+                ";"
+                + "DROP TABLE " + MEDICATION_TABLE + ";"
+                + "ALTER TABLE " + MEDICATION_TABLE + "_1" + " RENAME TO '" +
+                MEDICATION_TABLE + "';"
+
+                + "CREATE TABLE " + MEDICATION_TRACKER_TABLE + "_1 ("
+                + DOSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + MED_ID + " INTEGER,"
+                + DOSE_TIME + " DATETIME,"
+                + TAKEN + " BOOLEAN,"
+                + TIME_TAKEN + " DATETIME,"
+                + OVERRIDE_DOSE_AMOUNT + " REAL,"
+                + OVERRIDE_DOSE_UNIT + " TEXT,"
+                + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" +
+                MED_ID +
+                ") ON DELETE CASCADE"
+                + ");"
+
+                + "INSERT INTO " + MEDICATION_TRACKER_TABLE + "_1 "
+                + "SELECT * FROM " + MEDICATION_TRACKER_TABLE + ";"
+                + "DROP TABLE " + MEDICATION_TRACKER_TABLE + ";"
+                + "ALTER TABLE " + MEDICATION_TRACKER_TABLE + "_1 RENAME TO '" +
+                MEDICATION_TRACKER_TABLE + "';"
+
+                + " PRAGMA foreign_keys = ON;"
+                + " COMMIT;";
+
+        manager.execSql(sql);
+    }
+
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
 }
 
@@ -325,7 +379,7 @@ Medication DatabaseController::getMedication(long medicationId) {
             {},
             table->getItem(START_DATE),
             stol(table->getItem(MED_ID)),
-            stoi(table->getItem(MED_DOSAGE)),
+            stof(table->getItem(MED_DOSAGE)),
             stoi(table->getItem(MED_FREQUENCY)),
             table->getItem(ACTIVE) == "1",
             table->getItem(ALIAS)
@@ -365,11 +419,11 @@ vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
     Table *table = manager.execSqlWithReturn(query);
 
     while (table->getCount() > 0 && !table->isAfterLast()) {
-        int overrideDose = -1;
+        float overrideDose = -1;
         string overrideUnit;
 
         if (!empty(table->getItem(OVERRIDE_DOSE_AMOUNT))) {
-            overrideDose = stoi(table->getItem(OVERRIDE_DOSE_AMOUNT));
+            overrideDose = stof(table->getItem(OVERRIDE_DOSE_AMOUNT));
         }
 
         if (!empty(table->getItem(OVERRIDE_DOSE_UNIT))) {
@@ -400,11 +454,11 @@ Dose *DatabaseController::setDose(Table *table) {
     if (table->getCount() > 0) {
         table->moveToFirst();
 
-        int overrideDose = -1;
+        float overrideDose = -1;
         string overrideUnit;
 
         if (!empty(table->getItem(OVERRIDE_DOSE_AMOUNT))) {
-            overrideDose = stoi(table->getItem(OVERRIDE_DOSE_AMOUNT));
+            overrideDose = stof(table->getItem(OVERRIDE_DOSE_AMOUNT));
         }
 
         if (!empty(table->getItem(OVERRIDE_DOSE_UNIT))) {
@@ -650,7 +704,7 @@ void DatabaseController::repairImportErrors() {
         } else if (!match && timeEdited.length() == DateFormats::DB_DATE_FORMAT.length() - 1) {
             manager.update(
                     NOTES_TABLE,
-                    {pair(TIME_EDITED, timeEdited += "0")},
+                    {pair(TIME_EDITED, timeEdited + "0")},
                     {pair(NOTE_ID, notes->getItem(NOTE_ID))}
             );
         }

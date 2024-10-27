@@ -93,16 +93,8 @@ public class DBHelper extends SQLiteOpenHelper {
         public static final String DB_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     }
 
-    public static class Languages {
-        public static final String ENGLISH = "en";
-        public static final String GERMAN = "de";
-        public static final String SPANISH = "es";
-        public static final String ITALIAN = "it";
-    }
-
     private NativeDbHelper nativeHelper;
     private Context context;
-
     public DBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
@@ -240,7 +232,7 @@ public class DBHelper extends SQLiteOpenHelper {
             Medication medToAdd;
 
             int medId = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(MED_ID)));
-            int dosage = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(MED_DOSAGE)));
+            float dosage = Float.parseFloat(cursor.getString(cursor.getColumnIndexOrThrow(MED_DOSAGE)));
             int freq = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(MED_FREQUENCY)));
             String medName = cursor.getString(cursor.getColumnIndexOrThrow(MED_NAME));
             String units = cursor.getString(cursor.getColumnIndexOrThrow(MED_UNITS));
@@ -340,7 +332,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // Iterates through cursors to create instances of Medication object
         while (!meds.isAfterLast()) {
             int medId = Integer.parseInt(meds.getString(meds.getColumnIndexOrThrow(MED_ID)));
-            int dosage = meds.getInt(meds.getColumnIndexOrThrow(MED_DOSAGE));
+            float dosage = meds.getFloat(meds.getColumnIndexOrThrow(MED_DOSAGE));
             int frequency = Integer.parseInt(meds.getString(meds.getColumnIndexOrThrow(MED_FREQUENCY)));
             String medName = meds.getString(meds.getColumnIndexOrThrow(MED_NAME));
             String patient = meds.getString(meds.getColumnIndexOrThrow(PATIENT_NAME));
@@ -434,7 +426,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 cursor.getColumnIndexOrThrow(START_DATE)));
         int medId = cursor.getInt(cursor.getColumnIndexOrThrow(MED_ID));
         int frequency = cursor.getInt(cursor.getColumnIndexOrThrow(MED_FREQUENCY));
-        int dosage = cursor.getInt(cursor.getColumnIndexOrThrow(MED_DOSAGE));
+        float dosage = cursor.getFloat(cursor.getColumnIndexOrThrow(MED_DOSAGE));
         String alias = cursor.getString(cursor.getColumnIndexOrThrow(ALIAS));
         String instructions = cursor.getString(cursor.getColumnIndexOrThrow(INSTRUCTIONS));
 

@@ -24,7 +24,7 @@ Medication::Medication(
         vector<string> times,
         string startDate,
         long id,
-        int dosage,
+        float dosage,
         int frequency,
         bool active,
         string alias

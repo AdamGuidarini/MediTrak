@@ -3,6 +3,7 @@ package projects.medicationtracker.Fragments;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
+import static projects.medicationtracker.MediTrak.formatter;
 
 import android.content.Intent;
 import android.os.Build;
@@ -102,7 +103,7 @@ public class MyMedicationsFragment extends Fragment {
         medication.setTimes(dateTimes);
 
         name.setText(medication.getName());
-        dosage.setText(String.valueOf(medication.getDosage()));
+        dosage.setText(formatter.format(medication.getDosage()));
         doseUnit.setText(medication.getDosageUnits());
 
         String label = medication.generateFrequencyLabel(

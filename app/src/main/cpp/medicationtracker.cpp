@@ -35,7 +35,7 @@ jobject doseToJavaConverter(const Dose& dose, JNIEnv *env, jobject &jMedication)
     auto jDoses = static_cast<jobjectArray>(env->GetObjectField(jMedication, medDoses));
     jclass jDose = env->GetObjectClass(env->GetObjectArrayElement(jDoses, 0));
 
-    jmethodID setOverrideDoseAmount = env->GetMethodID(jDose, "setOverrideDoseAmount", "(I)V");
+    jmethodID setOverrideDoseAmount = env->GetMethodID(jDose, "setOverrideDoseAmount", "(F)V");
     jmethodID setOverrideDoseUnit = env->GetMethodID(jDose, "setOverrideDoseUnit",
                                                      "(Ljava/lang/String;)V");
 
@@ -44,12 +44,6 @@ jobject doseToJavaConverter(const Dose& dose, JNIEnv *env, jobject &jMedication)
     jmethodID setMedId = env->GetMethodID(jDose, "setMedId", "(J)V");
     jmethodID setTimeTaken = env->GetMethodID(jDose, "setTimeTaken", "(Ljava/lang/String;)V");
     jmethodID setDoseTime = env->GetMethodID(jDose, "setDoseTime", "(Ljava/lang/String;)V");
-
-    jmethodID constructor = env->GetMethodID(
-            jDose,
-            "<init>",
-            "(JJZLjava/lang/String;Ljava/lang/String;)V"
-    );
 
     jmethodID constructorDefault = env->GetMethodID(
             jDose,
@@ -95,7 +89,7 @@ Dose javaDoseToNativeDoseConverter(jobject jDose, JNIEnv *env) {
                                                   "()Ljava/lang/String;");
     jmethodID getDoseTimeText = env->GetMethodID(jDoseClass, "getDoseTimeText",
                                                  "()Ljava/lang/String;");
-    jmethodID getOverrideDoseAmount = env->GetMethodID(jDoseClass, "getOverrideDoseAmount", "()I");
+    jmethodID getOverrideDoseAmount = env->GetMethodID(jDoseClass, "getOverrideDoseAmount", "()F");
     jmethodID getOverrideDoseUnit = env->GetMethodID(jDoseClass, "getOverrideDoseUnit",
                                                      "()Ljava/lang/String;");
 
@@ -107,7 +101,7 @@ Dose javaDoseToNativeDoseConverter(jobject jDose, JNIEnv *env) {
                                    new jboolean(false)),
             env->GetStringUTFChars((jstring) env->CallObjectMethod(jDose, getTimeTakenText),
                                    new jboolean(false)),
-            env->CallIntMethod(jDose, getOverrideDoseAmount),
+            env->CallFloatMethod(jDose, getOverrideDoseAmount),
             env->GetStringUTFChars((jstring) env->CallObjectMethod(jDose, getOverrideDoseUnit),
                                    new jboolean(false))
     );
@@ -119,7 +113,7 @@ jobject medicationToJavaConverter(Medication med, JNIEnv *env, jclass jMedicatio
     jmethodID medConstructor = env->GetMethodID(
             jMedication,
             "<init>",
-            "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;JIILjava/lang/String;)V"
+            "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;JIFLjava/lang/String;)V"
     );
 
     for (int i = 0; i < med.times.size(); i++) {
@@ -139,7 +133,7 @@ jobject medicationToJavaConverter(Medication med, JNIEnv *env, jclass jMedicatio
             env->NewStringUTF(med.startDate.c_str()),
             med.id,
             jint(med.frequency),
-            jint(med.dosage),
+            med.dosage,
             env->NewStringUTF(med.alias.c_str())
     );
 
@@ -274,6 +268,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(
 
     try {
         controller.importJSONString(fileContents, ignoredTbls);
+        controller.repairImportErrors();
     } catch (exception &e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
 

@@ -3,6 +3,7 @@ package projects.medicationtracker.Dialogs;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
+import static projects.medicationtracker.MediTrak.formatter;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -33,6 +34,7 @@ import projects.medicationtracker.Fragments.SelectDateFragment;
 import projects.medicationtracker.Fragments.TimePickerFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
+import projects.medicationtracker.InputFilters.DecimalPlacesFilter;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Models.Dose;
@@ -111,9 +113,9 @@ public class DoseInfoDialog extends DialogFragment {
             dateTaken.setTag(doseDate.toLocalDate());
 
             if (thisDose.getOverrideDoseAmount() == -1) {
-                dosageAmount.setText(String.valueOf(medication.getDosage()));
+                dosageAmount.setText(formatter.format(medication.getDosage()));
             } else {
-                dosageAmount.setText(String.valueOf(thisDose.getOverrideDoseAmount()));
+                dosageAmount.setText(formatter.format(thisDose.getOverrideDoseAmount()));
             }
 
             if (thisDose.getOverrideDoseUnit().isEmpty()) {
@@ -138,6 +140,8 @@ public class DoseInfoDialog extends DialogFragment {
             timeTaken.addTextChangedListener(tw);
             dateTaken.addTextChangedListener(tw);
 
+            dosageAmount.setFilters(new DecimalPlacesFilter[]{new DecimalPlacesFilter()});
+
             dosageAmount.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
@@ -155,7 +159,7 @@ public class DoseInfoDialog extends DialogFragment {
                         inputLayout.setError(getString(R.string.err_required));
                     } else {
                         try {
-                            Integer.valueOf(editable.toString());
+                            Float.valueOf(editable.toString());
                             isDosageValid = true;
                         } catch (Exception e) {
                             inputLayout.setError(getString(R.string.val_too_big));
@@ -231,7 +235,7 @@ public class DoseInfoDialog extends DialogFragment {
         LocalDate date = (LocalDate) dateTaken.getTag();
         LocalTime time = (LocalTime) timeTaken.getTag();
         LocalDateTime dateTime = LocalDateTime.of(date, time).withSecond(0);
-        int overrideAmount = Integer.parseInt(dosageAmount.getText().toString());
+        float overrideAmount = Float.parseFloat(dosageAmount.getText().toString());
         String overrideUnits = dosageUnit.getText().toString();
         Fragment parent = getParentFragment();
 
