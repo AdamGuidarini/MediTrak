@@ -419,7 +419,7 @@ vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
     Table *table = manager.execSqlWithReturn(query);
 
     while (table->getCount() > 0 && !table->isAfterLast()) {
-        int overrideDose = -1;
+        float overrideDose = -1;
         string overrideUnit;
 
         if (!empty(table->getItem(OVERRIDE_DOSE_AMOUNT))) {
