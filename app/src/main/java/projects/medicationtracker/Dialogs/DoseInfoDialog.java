@@ -34,6 +34,7 @@ import projects.medicationtracker.Fragments.SelectDateFragment;
 import projects.medicationtracker.Fragments.TimePickerFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
+import projects.medicationtracker.InputFilters.DecimalPlacesFilter;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Models.Dose;
@@ -138,6 +139,8 @@ public class DoseInfoDialog extends DialogFragment {
 
             timeTaken.addTextChangedListener(tw);
             dateTaken.addTextChangedListener(tw);
+
+            dosageAmount.setFilters(new DecimalPlacesFilter[]{new DecimalPlacesFilter()});
 
             dosageAmount.addTextChangedListener(new TextWatcher() {
                 @Override

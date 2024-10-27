@@ -55,6 +55,7 @@ import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Helpers.NotificationHelper;
 import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.InputFilters.DecimalPlacesFilter;
 import projects.medicationtracker.Models.Medication;
 
 public class AddMedication extends AppCompatActivity {
@@ -367,6 +368,8 @@ public class AddMedication extends AppCompatActivity {
                 validateForm();
             }
         });
+
+        dosageAmountInput.setFilters(new DecimalPlacesFilter[]{new DecimalPlacesFilter()});
 
         dosageAmountInput.addTextChangedListener(new TextWatcher() {
             private final float amount = medication.getDosage();
