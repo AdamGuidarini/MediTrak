@@ -1,5 +1,7 @@
 package projects.medicationtracker.Adapters;
 
+import static projects.medicationtracker.MediTrak.formatter;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Locale;
-import java.util.stream.Stream;
 
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.R;
@@ -82,9 +82,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         String doseLbl = "";
 
         if (doses[position].getOverrideDoseAmount() != -1) {
-            doseLbl += doses[position].getOverrideDoseAmount() + " ";
+            doseLbl += formatter.format(doses[position].getOverrideDoseAmount()) + " ";
         } else {
-            doseLbl += currentMed.getDosage() + " ";
+            doseLbl += formatter.format(currentMed.getDosage()) + " ";
         }
 
         if (!doses[position].getOverrideDoseUnit().isEmpty()) {

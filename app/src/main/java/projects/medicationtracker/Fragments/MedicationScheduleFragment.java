@@ -3,6 +3,7 @@ package projects.medicationtracker.Fragments;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
+import static projects.medicationtracker.MediTrak.formatter;
 import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
 
 import android.app.NotificationManager;
@@ -11,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.service.notification.StatusBarNotification;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -320,9 +320,9 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         String dosage;
 
         if (dose.getDoseId() != -1 && !Objects.isNull(dose) && dose.getOverrideDoseAmount() != -1) {
-            dosage = String.valueOf(dose.getOverrideDoseAmount());
+            dosage = formatter.format(dose.getOverrideDoseAmount());
         } else {
-            dosage = String.valueOf(medication.getDosage());
+            dosage = formatter.format(medication.getDosage());
         }
 
         dosage += " ";

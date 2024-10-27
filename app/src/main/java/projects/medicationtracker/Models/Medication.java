@@ -28,7 +28,7 @@ public class Medication implements Cloneable, Parcelable {
     private Dose[] doses;
     private long medId;
     private int medFrequency;
-    private int medDosage;
+    private float medDosage;
     private boolean active;
     private Medication parent = null;
     private Medication child = null;
@@ -48,7 +48,7 @@ public class Medication implements Cloneable, Parcelable {
      * @param medAlias  An alias for the Medication to appear in notifications
      */
     public Medication(String thisMed, String patient, String units, LocalDateTime[] time,
-                      LocalDateTime firstDate, int id, int frequency, int dosage, String medAlias) {
+                      LocalDateTime firstDate, int id, int frequency, float dosage, String medAlias) {
         medName = thisMed;
         patientName = patient;
         medDosageUnits = units;
@@ -62,7 +62,7 @@ public class Medication implements Cloneable, Parcelable {
     }
 
     public Medication(String thisMed, String patient, String units, String[] times,
-                      String firstDate, long id, int frequency, int dosage, String medAlias) {
+                      String firstDate, long id, int frequency, float dosage, String medAlias) {
         final String dateFormat = "yyyy-MM-dd HH:mm:ss";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat, Locale.getDefault());
         LocalDateTime[] medTimes = new LocalDateTime[times.length];
@@ -103,7 +103,7 @@ public class Medication implements Cloneable, Parcelable {
         alias = in.readString();
         medId = in.readInt();
         medFrequency = in.readInt();
-        medDosage = in.readInt();
+        medDosage = in.readFloat();
     }
 
     public static final Creator<Medication> CREATOR = new Creator<Medication>() {
@@ -150,7 +150,7 @@ public class Medication implements Cloneable, Parcelable {
      *
      * @return Medication dosage
      */
-    public int getDosage() {
+    public float getDosage() {
         return medDosage;
     }
 
@@ -258,7 +258,7 @@ public class Medication implements Cloneable, Parcelable {
      *
      * @param medDosage dosage of Medication
      */
-    public void setDosage(int medDosage) {
+    public void setDosage(float medDosage) {
         this.medDosage = medDosage;
     }
 
@@ -419,6 +419,6 @@ public class Medication implements Cloneable, Parcelable {
         parcel.writeString(alias);
         parcel.writeLong(medId);
         parcel.writeLong(medFrequency);
-        parcel.writeInt(medDosage);
+        parcel.writeFloat(medDosage);
     }
 }
