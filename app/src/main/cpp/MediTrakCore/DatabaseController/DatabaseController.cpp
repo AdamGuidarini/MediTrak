@@ -276,9 +276,8 @@ void DatabaseController::upgrade(int currentVersion) {
                 + "INSERT INTO " + MEDICATION_TRACKER_TABLE + "_1 "
                 + "SELECT * FROM " + MEDICATION_TRACKER_TABLE + ";"
                 + "DROP TABLE " + MEDICATION_TRACKER_TABLE + ";"
-                + "ALTER TABLE " + MEDICATION_TABLE + " RENAME TO '" +
+                + "ALTER TABLE " + MEDICATION_TRACKER_TABLE + "_1 RENAME TO '" +
                 MEDICATION_TRACKER_TABLE + "';"
-
 
                 + " PRAGMA foreign_keys = ON;"
                 + " COMMIT;";
