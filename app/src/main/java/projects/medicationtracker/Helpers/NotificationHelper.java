@@ -3,6 +3,8 @@ package projects.medicationtracker.Helpers;
 import static android.content.Context.ALARM_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
 
+import static projects.medicationtracker.MediTrak.formatter;
+
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -126,7 +128,7 @@ public class NotificationHelper {
         String message;
         String patientName = medication.getPatientName();
         String medicationName = medication.getName();
-        String dosage = medication.getDosage() + " " + medication.getDosageUnits();
+        String dosage = formatter.format(medication.getDosage()) + " " + medication.getDosageUnits();
 
         if (medication.getAlias() != null && !medication.getAlias().isEmpty())
             medicationName = medication.getAlias();
