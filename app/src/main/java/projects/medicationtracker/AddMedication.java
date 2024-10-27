@@ -3,6 +3,7 @@ package projects.medicationtracker;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
+import static projects.medicationtracker.MediTrak.formatter;
 
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
@@ -456,7 +457,7 @@ public class AddMedication extends AppCompatActivity {
                 aliasInput.setText(medication.getAlias());
             }
 
-            dosageAmountInput.setText(String.valueOf(medication.getDosage()));
+            dosageAmountInput.setText(formatter.format(medication.getDosage()));
 
             dosageUnitsInput.setText(medication.getDosageUnits());
 

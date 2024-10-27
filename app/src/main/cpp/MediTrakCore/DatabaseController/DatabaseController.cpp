@@ -454,7 +454,7 @@ Dose *DatabaseController::setDose(Table *table) {
     if (table->getCount() > 0) {
         table->moveToFirst();
 
-        int overrideDose = -1;
+        float overrideDose = -1;
         string overrideUnit;
 
         if (!empty(table->getItem(OVERRIDE_DOSE_AMOUNT))) {

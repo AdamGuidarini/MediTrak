@@ -3,6 +3,7 @@ package projects.medicationtracker.Dialogs;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
+import static projects.medicationtracker.MediTrak.formatter;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -111,9 +112,9 @@ public class DoseInfoDialog extends DialogFragment {
             dateTaken.setTag(doseDate.toLocalDate());
 
             if (thisDose.getOverrideDoseAmount() == -1) {
-                dosageAmount.setText(String.valueOf(medication.getDosage()));
+                dosageAmount.setText(formatter.format(medication.getDosage()));
             } else {
-                dosageAmount.setText(String.valueOf(thisDose.getOverrideDoseAmount()));
+                dosageAmount.setText(formatter.format(thisDose.getOverrideDoseAmount()));
             }
 
             if (thisDose.getOverrideDoseUnit().isEmpty()) {

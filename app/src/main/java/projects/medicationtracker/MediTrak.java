@@ -7,10 +7,14 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.work.Configuration;
 
+import java.text.DecimalFormat;
+
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
 
 public class MediTrak extends Application implements Configuration.Provider {
+
+    public final static DecimalFormat formatter = new DecimalFormat("0.###");
 
     @NonNull
     @Override
