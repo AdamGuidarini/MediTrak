@@ -33,6 +33,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.radiobutton.MaterialRadioButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
@@ -102,6 +103,14 @@ public class AddMedication extends AppCompatActivity {
     private boolean createClone = false;
     private LocalDateTime[] startingTimes;
     private TextInputEditText instructions;
+    private RadioGroup limitRadioGroup;
+    private MaterialRadioButton dateLimitButton;
+    private MaterialRadioButton amountLimitButton;
+    private MaterialRadioButton noLimitButton;
+    private TextInputLayout dateInputLayout;
+    private TextInputEditText dateInputSelector;
+    private TextInputLayout amountLimitLayout;
+    private TextInputEditText amountLimitInput;
 
     /*
      * Validators
