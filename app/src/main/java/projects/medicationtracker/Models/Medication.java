@@ -10,8 +10,6 @@ import androidx.annotation.NonNull;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.util.Arrays;
 import java.util.Locale;
 
 import projects.medicationtracker.Helpers.TimeFormatting;
@@ -33,6 +31,8 @@ public class Medication implements Cloneable, Parcelable {
     private Medication parent = null;
     private Medication child = null;
     private String instructions;
+    private int doseLimit = -1;
+    private LocalDateTime endDate;
 
     /**
      * Creates a new object of type Medication
@@ -350,6 +350,22 @@ public class Medication implements Cloneable, Parcelable {
 
     public void setInstructions(String instructions) {
         this.instructions = instructions;
+    }
+
+    public void setDoseLimit(int limit) {
+        doseLimit = limit;
+    }
+
+    public int getDoseLimit() {
+        return doseLimit;
+    }
+
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    public LocalDateTime getEndDate() {
+        return endDate;
     }
 
     /**

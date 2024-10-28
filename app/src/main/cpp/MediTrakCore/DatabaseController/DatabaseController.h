@@ -29,7 +29,7 @@ namespace DateFormats {
 
 class DatabaseController {
 private:
-    const int DB_VERSION = 16;
+    const int DB_VERSION = 17;
     const string DATABASE_NAME = "Medications.db";
     vector<string> tablesToIgnore;
     DbManager manager;
@@ -48,6 +48,8 @@ private:
     const string CHILD_ID = "ChildId";
     const string MED_FREQUENCY = "DrugFrequency";
     const string INSTRUCTIONS = "Instructions";
+    const string END_DATE = "EndDate";
+    const string DOSE_LIMIT = "DoseLimit";
 
     const string MEDICATION_TRACKER_TABLE = "MedicationTracker";
     const string DOSE_TIME = "DoseTime";

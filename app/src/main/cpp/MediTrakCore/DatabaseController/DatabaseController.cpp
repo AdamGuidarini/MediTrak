@@ -56,6 +56,8 @@ void DatabaseController::create() {
                     + PARENT_ID + " INTEGER,"
                     + CHILD_ID + " INTEGER,"
                     + INSTRUCTIONS + " TEXT,"
+                    + END_DATE + " DATETIME,"
+                    + DOSE_LIMIT + " INTEGER DEFAULT -1,"
                     + "FOREIGN KEY (" + PARENT_ID + ") REFERENCES "
                     + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE,"
                     + "FOREIGN KEY (" + CHILD_ID + ") REFERENCES "
@@ -283,6 +285,15 @@ void DatabaseController::upgrade(int currentVersion) {
                 + " COMMIT;";
 
         manager.execSql(sql);
+    }
+
+    if (currentVersion < 17) {
+        manager.execSql(
+                "ALTER TABLE " + MEDICATION_TRACKER_TABLE
+                + " ADD COLUMN " + END_DATE + " DATETIME;"
+                + "ALTER TABLE " + MEDICATION_TRACKER_TABLE
+                + " ADD COLUMN " + DOSE_LIMIT + ";"
+        );
     }
 
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
