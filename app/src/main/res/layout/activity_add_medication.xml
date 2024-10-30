@@ -538,17 +538,18 @@
                         android:id="@+id/limit_radio_group"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
                         android:orientation="horizontal">
                         <com.google.android.material.radiobutton.MaterialRadioButton
                             android:id="@+id/limit_date_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="=Date=" />
+                            android:text="=End Date=" />
                         <com.google.android.material.radiobutton.MaterialRadioButton
                             android:id="@+id/limit_amount_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="=Amount=" />
+                            android:text="=Total Doses=" />
                         <com.google.android.material.radiobutton.MaterialRadioButton
                             android:id="@+id/limit_none_button"
                             android:layout_width="wrap_content"
@@ -565,7 +566,6 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="10dp"
-                        android:layout_alignParentStart="true"
                         android:hint="=Take Until="
                         android:visibility="gone">
                         <com.google.android.material.textfield.TextInputEditText
@@ -584,7 +584,6 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="10dp"
-                        android:layout_alignParentEnd="true"
                         android:hint="=Total Dose="
                         android:visibility="gone">
 

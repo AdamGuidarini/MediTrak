@@ -106,7 +106,6 @@ public class AddMedication extends AppCompatActivity {
     private RadioGroup limitRadioGroup;
     private MaterialRadioButton dateLimitButton;
     private MaterialRadioButton amountLimitButton;
-    private MaterialRadioButton noLimitButton;
     private TextInputLayout dateInputLayout;
     private TextInputEditText dateInputSelector;
     private TextInputLayout amountLimitLayout;
@@ -120,6 +119,7 @@ public class AddMedication extends AppCompatActivity {
     private boolean isMedDosageValid = false;
     private boolean isMedDoseUnitValid = false;
     private boolean isMedFrequencyValid = false;
+    private boolean isLimitValid = false;
 
     /**
      * Builds AddMedication Activity
@@ -245,6 +245,7 @@ public class AddMedication extends AppCompatActivity {
         setPatientCard();
         setMedNameAndDosageCard();
         setFrequencyCard();
+        setLimitCard();
 
         if (medId != -1) {
             saveButton.setEnabled(false);
@@ -344,8 +345,7 @@ public class AddMedication extends AppCompatActivity {
 
         aliasSwitch.setChecked(medId != -1 && !medication.getAlias().isEmpty());
 
-        aliasSwitch.setOnCheckedChangeListener((compoundButton, b) ->
-        {
+        aliasSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
             if (aliasInputLayout.getVisibility() == View.GONE) {
                 aliasInputLayout.setVisibility(View.VISIBLE);
             } else {
@@ -616,6 +616,101 @@ public class AddMedication extends AppCompatActivity {
     }
 
     /**
+     * Prepares UI for limits
+     */
+    private void setLimitCard() {
+        limitRadioGroup = findViewById(R.id.limit_radio_group);
+        dateLimitButton = findViewById(R.id.limit_date_button);
+        amountLimitButton = findViewById(R.id.limit_amount_button);
+
+        dateInputLayout = findViewById(R.id.limit_date_input_layout);
+        dateInputSelector = findViewById(R.id.limit_date_selector);
+        amountLimitLayout = findViewById(R.id.limit_amount_input_layout);
+        amountLimitInput = findViewById(R.id.limit_amount_text);
+
+        limitRadioGroup.setOnCheckedChangeListener(
+                (group, checkedId) -> {
+                    if (dateLimitButton.isChecked()) {
+                        dateInputLayout.setVisibility(View.VISIBLE);
+                        amountLimitLayout.setVisibility(View.GONE);
+
+                        isLimitValid = isDateLimitValid();
+                    } else if (amountLimitButton.isChecked()) {
+                        dateInputLayout.setVisibility(View.GONE);
+                        amountLimitLayout.setVisibility(View.VISIBLE);
+
+                        isLimitValid = isAmountLimitValid();
+                    } else {
+                        dateInputLayout.setVisibility(View.GONE);
+                        amountLimitLayout.setVisibility(View.GONE);
+
+                        isLimitValid = true;
+                    }
+
+                    validateForm();
+                }
+        );
+
+        dateInputSelector.setShowSoftInputOnFocus(false);
+        dateInputSelector.setOnFocusChangeListener((view, b) -> {
+            if (b) {
+                DialogFragment datePicker = new SelectDateFragment(dateInputSelector);
+                datePicker.show(getSupportFragmentManager(), null);
+            }
+        });
+
+        dateInputSelector.addTextChangedListener(
+                new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        dateInputLayout.setErrorEnabled(false);
+
+                        isLimitValid = isDateLimitValid();
+
+                        if (!isLimitValid) {
+                            dateInputLayout.setError("=Date must be in the future=");
+                        }
+
+                        validateForm();
+                    }
+                }
+        );
+
+        amountLimitInput.addTextChangedListener(
+                new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        amountLimitLayout.setErrorEnabled(false);
+
+                        isLimitValid = intIsParsable(s.toString());
+
+                        if (!isLimitValid && !s.toString().isEmpty()) {
+                            amountLimitLayout.setError("=value too large=");
+                        }
+
+                        validateForm();
+                    }
+                }
+        );
+    }
+
+    /**
      * Sets UI for multiple per day input
      */
     private void setMultiplePerDayFrequencyViews() {
@@ -626,8 +721,7 @@ public class AddMedication extends AppCompatActivity {
 
 
         startDateMultiplePerDay.setShowSoftInputOnFocus(false);
-        startDateMultiplePerDay.setOnFocusChangeListener((view, b) ->
-        {
+        startDateMultiplePerDay.setOnFocusChangeListener((view, b) -> {
             if (b) {
                 DialogFragment datePicker = new SelectDateFragment(startDateMultiplePerDay);
                 datePicker.show(getSupportFragmentManager(), null);
@@ -1518,6 +1612,20 @@ public class AddMedication extends AppCompatActivity {
     }
 
     /**
+     * Determines if limit date is valid
+     * @return true if valid, false if invalid
+     */
+    private boolean isDateLimitValid() {
+        LocalDate date = (LocalDate) dateInputSelector.getTag();
+
+        return date != null && !date.isBefore(LocalDate.now());
+    }
+
+    private boolean isAmountLimitValid() {
+        return intIsParsable(amountLimitInput.getText().toString());
+    }
+
+    /**
      * Determines if a string can be parsed to int
      *
      * @param intToParse String to try to convert
@@ -1629,7 +1737,8 @@ public class AddMedication extends AppCompatActivity {
                 && isMedNameValid
                 && isMedDosageValid
                 && isMedDoseUnitValid
-                && isMedFrequencyValid;
+                && isMedFrequencyValid
+                && isLimitValid;
 
         saveButton.setEnabled(allValid);
     }
