@@ -225,7 +225,7 @@ void DatabaseController::upgrade(int currentVersion) {
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +
                 ") ON DELETE CASCADE"
                 + ");"
-                + "END TRANSACTION;"
+                + "COMMIT;"
         );
     }
 
