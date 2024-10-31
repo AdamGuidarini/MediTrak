@@ -106,7 +106,8 @@ void DatabaseController::create() {
             + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0,"
             + DATE_FORMAT + " TEXT DEFAULT '" + DateFormats::MM_DD_YYYY + "',"
             + TIME_FORMAT + " TEXT DEFAULT '" + TimeFormats::_12_HOUR + "',"
-            + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0);"
+            + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0,"
+            + EXPORT_FREQUENCY + " INTEGER DEFAULT -1);"
     );
 
     manager.execSql(
@@ -223,7 +224,7 @@ void DatabaseController::upgrade(int currentVersion) {
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +
                 ") ON DELETE CASCADE"
                 + ");"
-                + "END TRANSACTION;"
+                + "COMMIT;"
         );
     }
 
@@ -283,6 +284,13 @@ void DatabaseController::upgrade(int currentVersion) {
                 + " COMMIT;";
 
         manager.execSql(sql);
+    }
+
+    if (currentVersion < 17) {
+        manager.execSql(
+                "ALTER TABLE " + SETTINGS_TABLE
+                + " ADD COLUMN " + EXPORT_FREQUENCY + " INTEGER DEFAULT -1;"
+        );
     }
 
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));

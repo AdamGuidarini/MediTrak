@@ -29,7 +29,7 @@ namespace DateFormats {
 
 class DatabaseController {
 private:
-    const int DB_VERSION = 16;
+    const int DB_VERSION = 17;
     const string DATABASE_NAME = "Medications.db";
     vector<string> tablesToIgnore;
     DbManager manager;
@@ -81,6 +81,7 @@ private:
     const string AGREED_TO_TERMS = "AgreedToTerms";
     const string DATE_FORMAT = "DateFormat";
     const string TIME_FORMAT = "TimeFormat";
+    const string EXPORT_FREQUENCY = "ExportFrequency";
 
     // Activity Change
     const string CHANGE_EVENT_ID = "ChangeId";
