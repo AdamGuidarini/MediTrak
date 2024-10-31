@@ -585,6 +585,17 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
         }
     }
 
+    public void onScheduleExportClick(View view) {
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED
+        ) {
+            permissionRequester.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+        BackupDestinationPicker picker = new BackupDestinationPicker("json", true);
+        picker.show(getSupportFragmentManager(), null);
+    }
+
     /**
      * Enable notifications for application
      */

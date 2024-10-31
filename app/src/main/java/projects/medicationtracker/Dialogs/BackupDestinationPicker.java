@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
@@ -18,7 +19,6 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -31,17 +31,25 @@ public class BackupDestinationPicker extends DialogFragment {
     private String exportFile;
     private TextInputLayout fileNameInputLayout;
     private final String fileExtension;
+    private boolean showPeriodic = false;
 
     public BackupDestinationPicker(String fileExtension, String defaultName) {
         this.fileExtension = fileExtension;
         exportFile = defaultName;
     }
 
+    public BackupDestinationPicker(String fileExtension, boolean showPeriodic) {
+        this.fileExtension = fileExtension;
+        this.showPeriodic = showPeriodic;
+
+        exportFile = "meditrak_backup";
+    }
+
     public BackupDestinationPicker(String fileExtension) {
         LocalDateTime now = LocalDateTime.now();
 
         this.fileExtension = fileExtension;
-        exportFile = "meditrak_"
+        exportFile = "meditrak"
                 + "_" + now.getYear()
                 + "_" + now.getMonthValue()
                 + "_" + now.getDayOfMonth()
@@ -58,7 +66,6 @@ public class BackupDestinationPicker extends DialogFragment {
         final String[] directories;
         ArrayAdapter<String> adapter;
         ArrayList<String> dirs = new ArrayList<>();
-
         builder.setView(inflater.inflate(R.layout.dialog_backup_destination_picker, null));
 
         builder.setTitle(getString(R.string.export_data));
@@ -75,6 +82,10 @@ public class BackupDestinationPicker extends DialogFragment {
         fileNameInputLayout = dialog.findViewById(R.id.export_file_layout);
         TextInputEditText fileName = dialog.findViewById(R.id.export_file);
         ((TextView) dialog.findViewById(R.id.file_extension)).setText("." + fileExtension);
+
+        if (showPeriodic) {
+            dialog.findViewById(R.id.export_schedule_layout).setVisibility(View.VISIBLE);
+        }
 
         dirs.add(getString(R.string.downloads));
         dirs.add(getString(R.string.documents));
@@ -129,11 +140,20 @@ public class BackupDestinationPicker extends DialogFragment {
     }
 
     private void onExportClick() {
-        if (getActivity() instanceof IDialogCloseListener) {
+        if (!(getActivity() instanceof IDialogCloseListener)) {
+            return;
+        }
+
+        if (!showPeriodic) {
             ((IDialogCloseListener) getActivity()).handleDialogClose(
                 IDialogCloseListener.Action.CREATE,
                 new String[] { exportDir, exportFile, fileExtension }
             );
         }
+
+        ((IDialogCloseListener) getActivity()).handleDialogClose(
+                IDialogCloseListener.Action.ADD,
+                new Object() // TODO get export frequency & export time
+        );
     }
 }
