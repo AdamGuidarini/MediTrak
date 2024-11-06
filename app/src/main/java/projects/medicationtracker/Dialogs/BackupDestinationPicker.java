@@ -1,5 +1,7 @@
 package projects.medicationtracker.Dialogs;
 
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FREQUENCY;
+
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -32,6 +34,9 @@ public class BackupDestinationPicker extends DialogFragment {
     private TextInputLayout fileNameInputLayout;
     private final String fileExtension;
     private boolean showPeriodic = false;
+    private boolean createNow;
+    private int frequency;
+    private LocalDateTime startDate;
 
     public BackupDestinationPicker(String fileExtension, String defaultName) {
         this.fileExtension = fileExtension;
@@ -144,16 +149,22 @@ public class BackupDestinationPicker extends DialogFragment {
             return;
         }
 
-        if (!showPeriodic) {
+        if (showPeriodic) {
+            Bundle options = new Bundle();
+
             ((IDialogCloseListener) getActivity()).handleDialogClose(
-                IDialogCloseListener.Action.CREATE,
-                new String[] { exportDir, exportFile, fileExtension }
+                    IDialogCloseListener.Action.ADD,
+                    options
             );
+
+            if (!createNow) {
+                return;
+            }
         }
 
         ((IDialogCloseListener) getActivity()).handleDialogClose(
-                IDialogCloseListener.Action.ADD,
-                new Object() // TODO get export frequency & export time
+            IDialogCloseListener.Action.CREATE,
+            new String[] { exportDir, exportFile, fileExtension }
         );
     }
 }

@@ -3,6 +3,7 @@ package projects.medicationtracker;
 import static projects.medicationtracker.Helpers.DBHelper.DARK;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FILE_NAME;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
@@ -619,7 +620,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
         String resMessage;
 
         if (action == Action.ADD) {
-
+            preferences.putString(EXPORT_FILE_NAME, );
         }
 
         res = nativeDb.dbExport(exportDir + '/' + exportFile + "." + fileExtension);
