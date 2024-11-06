@@ -82,6 +82,8 @@ private:
     const string DATE_FORMAT = "DateFormat";
     const string TIME_FORMAT = "TimeFormat";
     const string EXPORT_FREQUENCY = "ExportFrequency";
+    const string EXPORT_START = "ExportStart";
+    const string EXPORT_FILE_NAME = "ExportFileName";
 
     // Activity Change
     const string CHANGE_EVENT_ID = "ChangeId";

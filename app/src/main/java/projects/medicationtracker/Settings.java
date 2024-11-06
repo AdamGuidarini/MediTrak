@@ -615,9 +615,14 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
         String exportDir = dialogRes[0];
         String exportFile = dialogRes[1];
         String fileExtension = dialogRes[2];
-
+        boolean res;
         String resMessage;
-        boolean res = nativeDb.dbExport(exportDir + '/' + exportFile + "." + fileExtension);
+
+        if (action == Action.ADD) {
+
+        }
+
+        res = nativeDb.dbExport(exportDir + '/' + exportFile + "." + fileExtension);
 
         resMessage = res ? getString(R.string.successful_export, exportDir + '/' + exportFile)
                 : getString(R.string.failed_export);
