@@ -4,6 +4,7 @@ import static projects.medicationtracker.Helpers.DBHelper.DARK;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FILE_NAME;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FREQUENCY;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
@@ -611,21 +612,31 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
 
     @Override
     public void handleDialogClose(Action action, Object data) {
-        final String[] dialogRes = (String[]) data;
-
-        String exportDir = dialogRes[0];
-        String exportFile = dialogRes[1];
-        String fileExtension = dialogRes[2];
+        String exportPath = "";
         boolean res;
         String resMessage;
 
         if (action == Action.ADD) {
-            preferences.putString(EXPORT_FILE_NAME, );
+            Bundle dialogRes = (Bundle) data;
+            boolean createNow = dialogRes.getBoolean("CREATE_NOW");
+            dialogRes.remove("CREATE_NOW");
+
+            exportPath = dialogRes.getString(EXPORT_FILE_NAME);
+
+            preferences.putAll(dialogRes);
+
+            nativeDb.updateSettings(preferences);
+
+            if (!createNow) {
+                return;
+            }
+        } else {
+            exportPath = (String) data;
         }
 
-        res = nativeDb.dbExport(exportDir + '/' + exportFile + "." + fileExtension);
+        res = nativeDb.dbExport(exportPath);
 
-        resMessage = res ? getString(R.string.successful_export, exportDir + '/' + exportFile)
+        resMessage = res ? getString(R.string.successful_export, exportPath)
                 : getString(R.string.failed_export);
 
         Toast.makeText(this, resMessage, Toast.LENGTH_SHORT).show();

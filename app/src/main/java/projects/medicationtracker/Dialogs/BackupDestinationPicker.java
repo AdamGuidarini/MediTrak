@@ -1,6 +1,8 @@
 package projects.medicationtracker.Dialogs;
 
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FILE_NAME;
 import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FREQUENCY;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_START;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -11,9 +13,11 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -70,7 +74,10 @@ public class BackupDestinationPicker extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         final String[] directories;
         ArrayAdapter<String> adapter;
+        ArrayAdapter<String> frequencyOptions;
         ArrayList<String> dirs = new ArrayList<>();
+        ArrayList<String> timeUnits = new ArrayList<>();
+
         builder.setView(inflater.inflate(R.layout.dialog_backup_destination_picker, null));
 
         builder.setTitle(getString(R.string.export_data));
@@ -83,7 +90,17 @@ public class BackupDestinationPicker extends DialogFragment {
         dialog = builder.create();
         dialog.show();
 
+
+        MaterialAutoCompleteTextView frequencyDropDown = dialog.findViewById(R.id.export_unit);
         MaterialAutoCompleteTextView dirSelector = dialog.findViewById(R.id.export_dir);
+
+        TextInputLayout frequencyUnitLayout = dialog.findViewById(R.id.export_frequency_unit_layout);
+        SwitchCompat backupNow = dialog.findViewById(R.id.export_now);
+
+        backupNow.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            createNow = isChecked;
+        });
+
         fileNameInputLayout = dialog.findViewById(R.id.export_file_layout);
         TextInputEditText fileName = dialog.findViewById(R.id.export_file);
         ((TextView) dialog.findViewById(R.id.file_extension)).setText("." + fileExtension);
@@ -141,6 +158,30 @@ public class BackupDestinationPicker extends DialogFragment {
             }
         });
 
+        timeUnits.add(getString(R.string.minutes));
+        timeUnits.add(getString(R.string.hours));
+        timeUnits.add(getString(R.string.days));
+        timeUnits.add(getString(R.string.weeks));
+
+        frequencyOptions = new ArrayAdapter<>(
+                dialog.getContext(), android.R.layout.simple_dropdown_item_1line, timeUnits
+        );
+
+        frequencyDropDown.setAdapter(frequencyOptions);
+
+        frequencyDropDown.setOnItemClickListener((adapterView, view, i, l) -> {
+            frequencyUnitLayout.setErrorEnabled(false);
+
+            switch (i) {
+                case 3:
+                    frequency *= 7;
+                case 2:
+                    frequency *= 24;
+                case 1:
+                    frequency *= 60;
+            }
+        });
+
         return dialog;
     }
 
@@ -149,22 +190,27 @@ public class BackupDestinationPicker extends DialogFragment {
             return;
         }
 
+        String path = exportDir + '/' + exportFile + "." + fileExtension;
+
         if (showPeriodic) {
             Bundle options = new Bundle();
+
+            options.putString(EXPORT_FILE_NAME, path);
+            options.putInt(EXPORT_FREQUENCY, frequency);
+            options.putString(EXPORT_START, startDate.toString());
+            options.putBoolean("CREATE_NOW", createNow);
 
             ((IDialogCloseListener) getActivity()).handleDialogClose(
                     IDialogCloseListener.Action.ADD,
                     options
             );
 
-            if (!createNow) {
-                return;
-            }
+            return;
         }
 
         ((IDialogCloseListener) getActivity()).handleDialogClose(
             IDialogCloseListener.Action.CREATE,
-            new String[] { exportDir, exportFile, fileExtension }
+            path
         );
     }
 }
