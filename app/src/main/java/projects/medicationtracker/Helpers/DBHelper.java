@@ -439,6 +439,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 medName, patient, units, times, startDate, medId, frequency, dosage, alias
         );
 
+        medication.setActiveStatus(
+                cursor.getString(cursor.getColumnIndexOrThrow(ACTIVE)).equals("1")
+        );
+
         medication.setInstructions(instructions);
 
         cursor.close();

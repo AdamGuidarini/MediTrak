@@ -253,6 +253,12 @@ public:
      */
      void deleteNotification(long id);
 
+     /**
+      * Deleted all notifications with the given medication ID
+      * @param medicationId
+      */
+     void deleteNotificationsByMedicationId(long medicationId);
+
     /**
     * Resolves issues in caused by imports where the last character of the last record was removed
     */

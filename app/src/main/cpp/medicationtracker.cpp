@@ -676,3 +676,23 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_updateSettings(
         __android_log_write(ANDROID_LOG_ERROR, "SETTINGS UPDATE", err);
     }
 }
+extern "C"
+JNIEXPORT void JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_deleteNotificationsByMedId(
+    JNIEnv *env,
+    jobject thiz,
+    jstring db_path,
+    jlong medicationid
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+
+    DatabaseController controller(dbPath);
+
+    try {
+        controller.deleteNotificationsByMedicationId(medicationid);
+    } catch (exception& e) {
+        auto err = "Unable to delete notifications for medication: " + to_string(medicationid);
+
+        __android_log_write(ANDROID_LOG_ERROR, "SETTINGS UPDATE", err.c_str());
+    }
+}

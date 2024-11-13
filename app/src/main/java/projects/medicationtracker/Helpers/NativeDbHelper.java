@@ -155,6 +155,10 @@ public class NativeDbHelper {
         deleteNotification(dbPath, notificationId);
     }
 
+    public void deleteNotificationByMedicationId(long medicationId) {
+        deleteNotificationsByMedId(dbPath, medicationId);
+    }
+
     public ArrayList<Notification> getNotifications() {
         return new ArrayList<>(Arrays.asList(getNotifications(dbPath, Notification.class)));
     }
@@ -218,6 +222,7 @@ public class NativeDbHelper {
     private native long stashNotification(String dbPath, Notification notification);
 
     private native void deleteNotification(String dbPath, long notificationId);
+    private native void deleteNotificationsByMedId(String dbPath, long medicationid);
 
     private native Notification[] getNotifications(String dbPath, Class<Notification> notificationClass);
 

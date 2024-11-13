@@ -613,6 +613,10 @@ void DatabaseController::deleteNotification(long id) {
     manager.deleteRecord(NOTIFICATIONS, {pair(DOSE_ID, to_string(id))});
 }
 
+void DatabaseController::deleteNotificationsByMedicationId(long medicationId) {
+    manager.deleteRecord(NOTIFICATIONS, {pair(MED_ID, to_string(medicationId))})
+}
+
 void DatabaseController::repairImportErrors() {
     auto doses = manager.execSqlWithReturn("SELECT * FROM " + MEDICATION_TRACKER_TABLE);
     auto meds = manager.execSqlWithReturn("SELECT * FROM " + MEDICATION_TABLE);
