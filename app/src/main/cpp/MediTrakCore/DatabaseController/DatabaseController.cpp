@@ -614,7 +614,7 @@ void DatabaseController::deleteNotification(long id) {
 }
 
 void DatabaseController::deleteNotificationsByMedicationId(long medicationId) {
-    manager.deleteRecord(NOTIFICATIONS, {pair(MED_ID, to_string(medicationId))})
+    manager.deleteRecord(NOTIFICATIONS, {pair(MED_ID, to_string(medicationId))});
 }
 
 void DatabaseController::repairImportErrors() {

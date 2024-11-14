@@ -1036,6 +1036,9 @@ public class DBHelper extends SQLiteOpenHelper {
         );
         retVal.putString(DATE_FORMAT, cursor.getString(cursor.getColumnIndexOrThrow(DATE_FORMAT)));
         retVal.putString(TIME_FORMAT, cursor.getString(cursor.getColumnIndexOrThrow(TIME_FORMAT)));
+        retVal.putInt(EXPORT_FREQUENCY, Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(EXPORT_FREQUENCY))));
+        retVal.putString(EXPORT_START, cursor.getString(cursor.getColumnIndexOrThrow(EXPORT_START)));
+        retVal.putString(EXPORT_FILE_NAME, cursor.getString(cursor.getColumnIndexOrThrow(EXPORT_FILE_NAME)));
 
         cursor.close();
 

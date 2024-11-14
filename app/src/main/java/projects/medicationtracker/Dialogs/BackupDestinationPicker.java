@@ -3,6 +3,7 @@ package projects.medicationtracker.Dialogs;
 import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FILE_NAME;
 import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FREQUENCY;
 import static projects.medicationtracker.Helpers.DBHelper.EXPORT_START;
+import static projects.medicationtracker.MainActivity.preferences;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -87,9 +88,15 @@ public class BackupDestinationPicker extends DialogFragment {
         }));
         builder.setNegativeButton(R.string.cancel, ((dialogInterface, i) -> dismiss()));
 
+        if (preferences.getInt(EXPORT_FREQUENCY, -1) != -1) {
+            builder.setNegativeButton("=STOP=", (dialogInterface, i) -> {
+                onStopClick();
+                dismiss();
+            });
+        }
+
         dialog = builder.create();
         dialog.show();
-
 
         MaterialAutoCompleteTextView frequencyDropDown = dialog.findViewById(R.id.export_unit);
         MaterialAutoCompleteTextView dirSelector = dialog.findViewById(R.id.export_dir);
@@ -212,5 +219,13 @@ public class BackupDestinationPicker extends DialogFragment {
             IDialogCloseListener.Action.CREATE,
             path
         );
+    }
+
+    private void onStopClick() {
+        if (getActivity() instanceof IDialogCloseListener) {
+            ((IDialogCloseListener) getActivity()).handleDialogClose(
+                    IDialogCloseListener.Action.DELETE, null
+            );
+        }
     }
 }
