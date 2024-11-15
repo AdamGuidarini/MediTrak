@@ -5,11 +5,13 @@ import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FREQUENCY;
 import static projects.medicationtracker.Helpers.DBHelper.EXPORT_START;
 import static projects.medicationtracker.MainActivity.preferences;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,10 +28,14 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import projects.medicationtracker.Fragments.SelectDateFragment;
+import projects.medicationtracker.Fragments.TimePickerFragment;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
 
@@ -39,9 +45,10 @@ public class BackupDestinationPicker extends DialogFragment {
     private TextInputLayout fileNameInputLayout;
     private final String fileExtension;
     private boolean showPeriodic = false;
-    private boolean createNow;
-    private int frequency;
-    private LocalDateTime startDate;
+    private boolean createNow = false;
+    private int frequency = 0;
+    private LocalDate startDate;
+    private LocalTime startTime;
 
     public BackupDestinationPicker(String fileExtension, String defaultName) {
         this.fileExtension = fileExtension;
@@ -88,7 +95,7 @@ public class BackupDestinationPicker extends DialogFragment {
         }));
         builder.setNegativeButton(R.string.cancel, ((dialogInterface, i) -> dismiss()));
 
-        if (preferences.getInt(EXPORT_FREQUENCY, -1) != -1) {
+        if (preferences.getInt(EXPORT_FREQUENCY, -1) != -1 && showPeriodic) {
             builder.setNegativeButton("=STOP=", (dialogInterface, i) -> {
                 onStopClick();
                 dismiss();
@@ -170,24 +177,79 @@ public class BackupDestinationPicker extends DialogFragment {
         timeUnits.add(getString(R.string.days));
         timeUnits.add(getString(R.string.weeks));
 
-        frequencyOptions = new ArrayAdapter<>(
-                dialog.getContext(), android.R.layout.simple_dropdown_item_1line, timeUnits
-        );
+        if (showPeriodic) {
+            frequencyOptions = new ArrayAdapter<>(
+                    dialog.getContext(), android.R.layout.simple_dropdown_item_1line, timeUnits
+            );
 
-        frequencyDropDown.setAdapter(frequencyOptions);
+            frequencyDropDown.setAdapter(frequencyOptions);
 
-        frequencyDropDown.setOnItemClickListener((adapterView, view, i, l) -> {
-            frequencyUnitLayout.setErrorEnabled(false);
+            frequencyDropDown.setOnItemClickListener((adapterView, view, i, l) -> {
+                frequencyUnitLayout.setErrorEnabled(false);
 
-            switch (i) {
-                case 3:
-                    frequency *= 7;
-                case 2:
-                    frequency *= 24;
-                case 1:
-                    frequency *= 60;
-            }
-        });
+                switch (i) {
+                    case 3:
+                        frequency *= 7;
+                    case 2:
+                        frequency *= 24;
+                    case 1:
+                        frequency *= 60;
+                }
+            });
+
+            TextInputEditText dateEntry = dialog.findViewById(R.id.start_date);
+            TextInputEditText timeEntry = dialog.findViewById(R.id.start_time);
+
+            timeEntry.setShowSoftInputOnFocus(false);
+            timeEntry.setInputType(InputType.TYPE_NULL);
+
+            timeEntry.setOnFocusChangeListener((view, b) -> {
+                if (b) {
+                    DialogFragment dialogFragment = new TimePickerFragment(timeEntry);
+                    dialogFragment.show(getParentFragmentManager(), null);
+                }
+            });
+
+            dateEntry.setShowSoftInputOnFocus(false);
+            dateEntry.setInputType(InputType.TYPE_NULL);
+
+            dateEntry.setOnFocusChangeListener((view, b) -> {
+                if (b) {
+                    DialogFragment dialogFragment = new SelectDateFragment(dateEntry);
+                    dialogFragment.show(getParentFragmentManager(), null);
+                }
+            });
+
+            dateEntry.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    startDate = (LocalDate) dateEntry.getTag();
+                }
+            });
+
+            timeEntry.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    startTime = (LocalTime) timeEntry.getTag();
+                }
+            });
+        }
 
         return dialog;
     }

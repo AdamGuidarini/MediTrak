@@ -245,6 +245,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="15dp"
                         android:layout_marginEnd="15dp"
+                        android:layout_marginBottom="10dp"
                         android:baselineAligned="false"
                         android:orientation="horizontal">
 
@@ -290,7 +291,8 @@
                         android:layout_marginBottom="10dp"
                         android:onClick="onScheduleExportClick"
                         android:text="=SCHEDULE EXPORT="
-                        app:cornerRadius="30dp" />
+                        app:cornerRadius="30dp"
+                        android:visibility="gone"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
