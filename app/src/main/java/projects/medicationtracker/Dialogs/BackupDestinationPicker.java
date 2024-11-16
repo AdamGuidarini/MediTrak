@@ -1,16 +1,26 @@
 package projects.medicationtracker.Dialogs;
 
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FILE_NAME;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FREQUENCY;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_START;
+import static projects.medicationtracker.MainActivity.preferences;
+
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -20,9 +30,12 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import projects.medicationtracker.Fragments.SelectDateFragment;
+import projects.medicationtracker.Fragments.TimePickerFragment;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
 
@@ -31,17 +44,29 @@ public class BackupDestinationPicker extends DialogFragment {
     private String exportFile;
     private TextInputLayout fileNameInputLayout;
     private final String fileExtension;
+    private boolean showPeriodic = false;
+    private boolean createNow = false;
+    private int frequency = 0;
+    private LocalDate startDate;
+    private LocalTime startTime;
 
     public BackupDestinationPicker(String fileExtension, String defaultName) {
         this.fileExtension = fileExtension;
         exportFile = defaultName;
     }
 
+    public BackupDestinationPicker(String fileExtension, boolean showPeriodic) {
+        this.fileExtension = fileExtension;
+        this.showPeriodic = showPeriodic;
+
+        exportFile = "meditrak_backup";
+    }
+
     public BackupDestinationPicker(String fileExtension) {
         LocalDateTime now = LocalDateTime.now();
 
         this.fileExtension = fileExtension;
-        exportFile = "meditrak_"
+        exportFile = "meditrak"
                 + "_" + now.getYear()
                 + "_" + now.getMonthValue()
                 + "_" + now.getDayOfMonth()
@@ -57,7 +82,9 @@ public class BackupDestinationPicker extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         final String[] directories;
         ArrayAdapter<String> adapter;
+        ArrayAdapter<String> frequencyOptions;
         ArrayList<String> dirs = new ArrayList<>();
+        ArrayList<String> timeUnits = new ArrayList<>();
 
         builder.setView(inflater.inflate(R.layout.dialog_backup_destination_picker, null));
 
@@ -68,13 +95,33 @@ public class BackupDestinationPicker extends DialogFragment {
         }));
         builder.setNegativeButton(R.string.cancel, ((dialogInterface, i) -> dismiss()));
 
+        if (preferences.getInt(EXPORT_FREQUENCY, -1) != -1 && showPeriodic) {
+            builder.setNegativeButton("=STOP=", (dialogInterface, i) -> {
+                onStopClick();
+                dismiss();
+            });
+        }
+
         dialog = builder.create();
         dialog.show();
 
+        MaterialAutoCompleteTextView frequencyDropDown = dialog.findViewById(R.id.export_unit);
         MaterialAutoCompleteTextView dirSelector = dialog.findViewById(R.id.export_dir);
+
+        TextInputLayout frequencyUnitLayout = dialog.findViewById(R.id.export_frequency_unit_layout);
+        SwitchCompat backupNow = dialog.findViewById(R.id.export_now);
+
+        backupNow.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            createNow = isChecked;
+        });
+
         fileNameInputLayout = dialog.findViewById(R.id.export_file_layout);
         TextInputEditText fileName = dialog.findViewById(R.id.export_file);
         ((TextView) dialog.findViewById(R.id.file_extension)).setText("." + fileExtension);
+
+        if (showPeriodic) {
+            dialog.findViewById(R.id.export_schedule_layout).setVisibility(View.VISIBLE);
+        }
 
         dirs.add(getString(R.string.downloads));
         dirs.add(getString(R.string.documents));
@@ -125,14 +172,121 @@ public class BackupDestinationPicker extends DialogFragment {
             }
         });
 
+        timeUnits.add(getString(R.string.minutes));
+        timeUnits.add(getString(R.string.hours));
+        timeUnits.add(getString(R.string.days));
+        timeUnits.add(getString(R.string.weeks));
+
+        if (showPeriodic) {
+            frequencyOptions = new ArrayAdapter<>(
+                    dialog.getContext(), android.R.layout.simple_dropdown_item_1line, timeUnits
+            );
+
+            frequencyDropDown.setAdapter(frequencyOptions);
+
+            frequencyDropDown.setOnItemClickListener((adapterView, view, i, l) -> {
+                frequencyUnitLayout.setErrorEnabled(false);
+
+                switch (i) {
+                    case 3:
+                        frequency *= 7;
+                    case 2:
+                        frequency *= 24;
+                    case 1:
+                        frequency *= 60;
+                }
+            });
+
+            TextInputEditText dateEntry = dialog.findViewById(R.id.start_date);
+            TextInputEditText timeEntry = dialog.findViewById(R.id.start_time);
+
+            timeEntry.setShowSoftInputOnFocus(false);
+            timeEntry.setInputType(InputType.TYPE_NULL);
+
+            timeEntry.setOnFocusChangeListener((view, b) -> {
+                if (b) {
+                    DialogFragment dialogFragment = new TimePickerFragment(timeEntry);
+                    dialogFragment.show(getParentFragmentManager(), null);
+                }
+            });
+
+            dateEntry.setShowSoftInputOnFocus(false);
+            dateEntry.setInputType(InputType.TYPE_NULL);
+
+            dateEntry.setOnFocusChangeListener((view, b) -> {
+                if (b) {
+                    DialogFragment dialogFragment = new SelectDateFragment(dateEntry);
+                    dialogFragment.show(getParentFragmentManager(), null);
+                }
+            });
+
+            dateEntry.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    startDate = (LocalDate) dateEntry.getTag();
+                }
+            });
+
+            timeEntry.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    startTime = (LocalTime) timeEntry.getTag();
+                }
+            });
+        }
+
         return dialog;
     }
 
     private void onExportClick() {
+        if (!(getActivity() instanceof IDialogCloseListener)) {
+            return;
+        }
+
+        String path = exportDir + '/' + exportFile + "." + fileExtension;
+
+        if (showPeriodic) {
+            Bundle options = new Bundle();
+
+            options.putString(EXPORT_FILE_NAME, path);
+            options.putInt(EXPORT_FREQUENCY, frequency);
+            options.putString(EXPORT_START, startDate.toString());
+            options.putBoolean("CREATE_NOW", createNow);
+
+            ((IDialogCloseListener) getActivity()).handleDialogClose(
+                    IDialogCloseListener.Action.ADD,
+                    options
+            );
+
+            return;
+        }
+
+        ((IDialogCloseListener) getActivity()).handleDialogClose(
+            IDialogCloseListener.Action.CREATE,
+            path
+        );
+    }
+
+    private void onStopClick() {
         if (getActivity() instanceof IDialogCloseListener) {
             ((IDialogCloseListener) getActivity()).handleDialogClose(
-                IDialogCloseListener.Action.CREATE,
-                new String[] { exportDir, exportFile, fileExtension }
+                    IDialogCloseListener.Action.DELETE, null
             );
         }
     }

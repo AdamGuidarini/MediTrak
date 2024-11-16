@@ -29,7 +29,7 @@ namespace DateFormats {
 
 class DatabaseController {
 private:
-    const int DB_VERSION = 16;
+    const int DB_VERSION = 17;
     const string DATABASE_NAME = "Medications.db";
     vector<string> tablesToIgnore;
     DbManager manager;
@@ -81,6 +81,9 @@ private:
     const string AGREED_TO_TERMS = "AgreedToTerms";
     const string DATE_FORMAT = "DateFormat";
     const string TIME_FORMAT = "TimeFormat";
+    const string EXPORT_FREQUENCY = "ExportFrequency";
+    const string EXPORT_START = "ExportStart";
+    const string EXPORT_FILE_NAME = "ExportFileName";
 
     // Activity Change
     const string CHANGE_EVENT_ID = "ChangeId";
@@ -249,6 +252,12 @@ public:
      * @param id ID of notification to delete
      */
      void deleteNotification(long id);
+
+     /**
+      * Deleted all notifications with the given medication ID
+      * @param medicationId
+      */
+     void deleteNotificationsByMedicationId(long medicationId);
 
     /**
     * Resolves issues in caused by imports where the last character of the last record was removed

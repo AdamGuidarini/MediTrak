@@ -36,22 +36,30 @@ public class NotificationReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Bundle extras = intent.getExtras();
         DBHelper db = new DBHelper(context);
+        NativeDbHelper nativeDbHelper = new NativeDbHelper(context);
         long medicationId = extras.getLong(MEDICATION_ID, -1);
         Medication medication = db.getMedication(medicationId);
         LocalDateTime doseTime = (LocalDateTime) extras.get(DOSE_TIME);
         Dose dose;
+
+        long notificationId = extras.getLong(NOTIFICATION_ID, System.currentTimeMillis());
+
+        if (!medication.isActive()) {
+            db.close();
+            nativeDbHelper.deleteNotification(notificationId);
+
+            return;
+        }
 
         // Set new Intent for a new notification
         NotificationHelper.scheduleNotificationInFuture(
                 context,
                 medication,
                 doseTime,
-                extras.getLong(NOTIFICATION_ID, System.currentTimeMillis())
+                notificationId
         );
 
         try {
-            NativeDbHelper nativeDbHelper = new NativeDbHelper(context);
-
             dose = nativeDbHelper.findDose(medicationId, doseTime);
         } catch (Exception e) {
             Log.e("MediTrak", "An error occurred while retrieving a Dose for notifications");

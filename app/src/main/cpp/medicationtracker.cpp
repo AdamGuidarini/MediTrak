@@ -29,7 +29,7 @@ std::map<std::string, std::string> getValues(jobjectArray arr, JNIEnv *env) {
     return vals;
 }
 
-jobject doseToJavaConverter(const Dose& dose, JNIEnv *env, jobject &jMedication) {
+jobject doseToJavaConverter(const Dose &dose, JNIEnv *env, jobject &jMedication) {
     jfieldID medDoses = env->GetFieldID(env->GetObjectClass(jMedication), "doses",
                                         "[Lprojects/medicationtracker/Models/Dose;");
     auto jDoses = static_cast<jobjectArray>(env->GetObjectField(jMedication, medDoses));
@@ -280,8 +280,11 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_projects_medicationtracker_Helpers_NativeDbHelper_dbCreate(JNIEnv *env, jobject thiz,
-                                                                jstring db_path) {
+Java_projects_medicationtracker_Helpers_NativeDbHelper_dbCreate(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path
+) {
     std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
 
     try {
@@ -293,8 +296,12 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbCreate(JNIEnv *env, job
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_projects_medicationtracker_Helpers_NativeDbHelper_dbUpgrade(JNIEnv *env, jobject thiz,
-                                                                 jstring db_path, jint version) {
+Java_projects_medicationtracker_Helpers_NativeDbHelper_dbUpgrade(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jint version
+) {
     std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
 
     try {
@@ -646,4 +653,46 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_addDose(
     }
 
     return rowId;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_updateSettings(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jobjectArray settings
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::map<std::string, std::string> opts = getValues(settings, env);
+
+    DatabaseController controller(dbPath);
+
+    try {
+        controller.updateSettings(opts);
+    } catch (exception& e) {
+        auto err = "Unable to update settings";
+
+        __android_log_write(ANDROID_LOG_ERROR, "SETTINGS UPDATE", err);
+    }
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_deleteNotificationsByMedId(
+    JNIEnv *env,
+    jobject thiz,
+    jstring db_path,
+    jlong medicationid
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+
+    DatabaseController controller(dbPath);
+
+    try {
+        controller.deleteNotificationsByMedicationId(medicationid);
+    } catch (exception& e) {
+        auto err = "Unable to delete notifications for medication: " + to_string(medicationid);
+
+        __android_log_write(ANDROID_LOG_ERROR, "SETTINGS UPDATE", err.c_str());
+    }
 }

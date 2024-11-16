@@ -38,10 +38,10 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/standardTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/options"
-                        style="@style/standardTextView" />
+                        android:text="@string/options" />
 
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/disableTimeBeforeDose"
@@ -58,8 +58,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="15dp"
                         android:layout_marginEnd="15dp"
-                        android:orientation="horizontal"
                         android:layout_marginBottom="5dp"
+                        android:orientation="horizontal"
                         android:visibility="gone">
 
                         <TextView
@@ -71,10 +71,10 @@
                             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                         <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                             android:layout_width="70dp"
                             android:layout_height="wrap_content"
-                            android:hint="@string/hours"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+                            android:hint="@string/hours">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/enterTimeBeforeDose"
@@ -88,19 +88,19 @@
                         android:id="@+id/enableNotificationSwitch"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/enable_notifications"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
-                        android:layout_marginBottom="5dp" />
+                        android:layout_marginBottom="5dp"
+                        android:text="@string/enable_notifications" />
 
                     <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="15dp"
-                        android:hint="@string/theme"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
+                        android:hint="@string/theme">
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/themeSelector"
@@ -110,13 +110,13 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="15dp"
-                        android:hint="@string/date_format_title"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
+                        android:hint="@string/date_format_title">
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/date_format_selector"
@@ -126,13 +126,13 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="15dp"
-                        android:hint="@string/time_format"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
+                        android:hint="@string/time_format">
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/time_format_selector"
@@ -142,13 +142,13 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="15dp"
-                        android:hint="@string/language"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
+                        android:hint="@string/language">
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/language_selector"
@@ -163,9 +163,9 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="15dp"
                         android:onClick="OnEnableNotificationsClick"
+                        android:text="@string/enable_notifications"
                         android:visibility="gone"
-                        app:cornerRadius="30dp"
-                        android:text="@string/enable_notifications" />
+                        app:cornerRadius="30dp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -183,40 +183,40 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/standardTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/license"
-                        style="@style/standardTextView" />
+                        android:text="@string/license" />
 
                     <TextView
+                        style="@style/standardTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/purpose"
-                        style="@style/standardTextView" />
+                        android:text="@string/purpose" />
 
                     <TextView
+                        style="@style/standardTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/copyright"
-                        style="@style/standardTextView" />
+                        android:text="@string/copyright" />
 
                     <TextView
+                        style="@style/standardTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/licenseInfo"
-                        style="@style/standardTextView" />
+                        android:text="@string/licenseInfo" />
 
                     <TextView
+                        style="@style/standardTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/warranty"
-                        style="@style/standardTextView" />
+                        android:text="@string/warranty" />
 
                     <TextView
+                        style="@style/standardTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/copyOfGPL2"
-                        style="@style/standardTextView" />
+                        android:text="@string/copyOfGPL2" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -235,63 +235,75 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/standardTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/data"
-                        style="@style/standardTextView" />
+                        android:text="@string/data" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:baselineAligned="false"
                         android:layout_marginStart="15dp"
                         android:layout_marginEnd="15dp"
+                        android:layout_marginBottom="10dp"
+                        android:baselineAligned="false"
                         android:orientation="horizontal">
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
                             android:layout_marginEnd="5dp"
-                            android:layout_weight="1">
+                            android:layout_weight="1"
+                            android:gravity="center">
 
                             <com.google.android.material.button.MaterialButton
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:minWidth="100dp"
+                                android:onClick="onExportClick"
                                 android:text="@string/export"
-                                app:cornerRadius="30dp"
-                                android:onClick="onExportClick"/>
+                                app:cornerRadius="30dp" />
                         </LinearLayout>
-
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
                             android:layout_marginStart="5dp"
-                            android:layout_weight="1">
+                            android:layout_weight="1"
+                            android:gravity="center">
 
                             <com.google.android.material.button.MaterialButton
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:minWidth="100dp"
+                                android:onClick="onImportClick"
                                 android:text="@string/importData"
-                                app:cornerRadius="30dp"
-                                android:onClick="onImportClick"/>
+                                app:cornerRadius="30dp" />
                         </LinearLayout>
                     </LinearLayout>
 
                     <Button
-                        android:id="@+id/deleteAllButton"
+                        android:id="@+id/scheduleExports"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="15dp"
-                        android:onClick="onPurgeButtonClick"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_marginBottom="10dp"
+                        android:onClick="onScheduleExportClick"
+                        android:text="=SCHEDULE EXPORT="
                         app:cornerRadius="30dp"
-                        android:text="@string/delete_all" />
+                        android:visibility="gone"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/deleteAllButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:onClick="onPurgeButtonClick"
+                android:text="@string/delete_all"
+                app:cornerRadius="30dp" />
 
         </LinearLayout>
     </ScrollView>

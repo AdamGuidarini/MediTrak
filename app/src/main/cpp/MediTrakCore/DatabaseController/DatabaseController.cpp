@@ -59,8 +59,7 @@ void DatabaseController::create() {
                     + "FOREIGN KEY (" + PARENT_ID + ") REFERENCES "
                     + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE,"
                     + "FOREIGN KEY (" + CHILD_ID + ") REFERENCES "
-                    + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                    + ");"
+                    + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE);"
     );
 
     manager.execSql("CREATE TABLE IF NOT EXISTS " + MEDICATION_TRACKER_TABLE + "("
@@ -72,8 +71,7 @@ void DatabaseController::create() {
                     + OVERRIDE_DOSE_AMOUNT + " REAL,"
                     + OVERRIDE_DOSE_UNIT + " TEXT,"
                     + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +
-                    ") ON DELETE CASCADE"
-                    + ");"
+                    ") ON DELETE CASCADE);"
     );
 
     manager.execSql(
@@ -82,8 +80,7 @@ void DatabaseController::create() {
             + MED_ID + " INTEGER,"
             + DRUG_TIME + " TEXT,"
             + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +
-            ") ON DELETE CASCADE"
-            + ");"
+            ") ON DELETE CASCADE);"
     );
 
     manager.execSql(
@@ -94,8 +91,7 @@ void DatabaseController::create() {
             + ENTRY_TIME + " DATETIME,"
             + TIME_EDITED + " DATETIME,"
             + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +
-            ") ON DELETE CASCADE"
-            + ");"
+            ") ON DELETE CASCADE);"
     );
 
     manager.execSql(
@@ -106,7 +102,10 @@ void DatabaseController::create() {
             + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0,"
             + DATE_FORMAT + " TEXT DEFAULT '" + DateFormats::MM_DD_YYYY + "',"
             + TIME_FORMAT + " TEXT DEFAULT '" + TimeFormats::_12_HOUR + "',"
-            + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0);"
+            + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0,"
+            + EXPORT_FREQUENCY + " INTEGER DEFAULT -1,"
+            + EXPORT_START + " DATETIME,"
+            + EXPORT_FILE_NAME + " TEXT);"
     );
 
     manager.execSql(
@@ -121,8 +120,7 @@ void DatabaseController::create() {
             + CHANGE_DATE + " DATETIME,"
             + PAUSED + " BOOLEAN,"
             + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +
-            ") ON DELETE CASCADE"
-            + ");"
+            ") ON DELETE CASCADE);"
     );
 
     manager.execSql(
@@ -132,8 +130,7 @@ void DatabaseController::create() {
             + DOSE_ID + " INTEGER, "
             + SCHEDULED_TIME + " DATETIME,"
             + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +
-            ") ON DELETE CASCADE"
-            + ");"
+            ") ON DELETE CASCADE);"
     );
 
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
@@ -157,8 +154,7 @@ void DatabaseController::upgrade(int currentVersion) {
                 + CHANGE_DATE + " DATETIME,"
                 + PAUSED + " BOOLEAN,"
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +
-                ") ON DELETE CASCADE"
-                + ");"
+                ") ON DELETE CASCADE);"
         );
     }
 
@@ -221,9 +217,8 @@ void DatabaseController::upgrade(int currentVersion) {
                 + DOSE_ID + " INTEGER, "
                 + SCHEDULED_TIME + " DATETIME,"
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +
-                ") ON DELETE CASCADE"
-                + ");"
-                + "END TRANSACTION;"
+                ") ON DELETE CASCADE);"
+                + "COMMIT;"
         );
     }
 
@@ -250,12 +245,10 @@ void DatabaseController::upgrade(int currentVersion) {
                 + "FOREIGN KEY (" + PARENT_ID + ") REFERENCES "
                 + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE,"
                 + "FOREIGN KEY (" + CHILD_ID + ") REFERENCES "
-                + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE"
-                + ");"
+                + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE);"
 
-                + "INSERT INTO " + MEDICATION_TABLE + "_1" + " SELECT * FROM " +
-                MEDICATION_TABLE +
-                ";"
+                + "INSERT INTO " + MEDICATION_TABLE + "_1" + " SELECT * FROM "
+                + MEDICATION_TABLE + ";"
                 + "DROP TABLE " + MEDICATION_TABLE + ";"
                 + "ALTER TABLE " + MEDICATION_TABLE + "_1" + " RENAME TO '" +
                 MEDICATION_TABLE + "';"
@@ -270,8 +263,7 @@ void DatabaseController::upgrade(int currentVersion) {
                 + OVERRIDE_DOSE_UNIT + " TEXT,"
                 + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" +
                 MED_ID +
-                ") ON DELETE CASCADE"
-                + ");"
+                ") ON DELETE CASCADE);"
 
                 + "INSERT INTO " + MEDICATION_TRACKER_TABLE + "_1 "
                 + "SELECT * FROM " + MEDICATION_TRACKER_TABLE + ";"
@@ -283,6 +275,17 @@ void DatabaseController::upgrade(int currentVersion) {
                 + " COMMIT;";
 
         manager.execSql(sql);
+    }
+
+    if (currentVersion < 17) {
+        manager.execSql(
+                "ALTER TABLE " + SETTINGS_TABLE
+                + " ADD COLUMN " + EXPORT_FREQUENCY + " INTEGER DEFAULT -1;"
+                + "ALTER TABLE " + SETTINGS_TABLE
+                + " ADD COLUMN " + EXPORT_START + " DATETIME;"
+                + "ALTER TABLE " + SETTINGS_TABLE
+                + " ADD COLUMN " + EXPORT_FILE_NAME + " TEXT;"
+        );
     }
 
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
@@ -608,6 +611,10 @@ vector<Notification> DatabaseController::getStashedNotifications() {
 
 void DatabaseController::deleteNotification(long id) {
     manager.deleteRecord(NOTIFICATIONS, {pair(DOSE_ID, to_string(id))});
+}
+
+void DatabaseController::deleteNotificationsByMedicationId(long medicationId) {
+    manager.deleteRecord(NOTIFICATIONS, {pair(MED_ID, to_string(medicationId))});
 }
 
 void DatabaseController::repairImportErrors() {

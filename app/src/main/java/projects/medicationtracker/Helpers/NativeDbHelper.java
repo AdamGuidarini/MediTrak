@@ -1,8 +1,17 @@
 package projects.medicationtracker.Helpers;
 
+import static projects.medicationtracker.Helpers.DBHelper.AGREED_TO_TERMS;
 import static projects.medicationtracker.Helpers.DBHelper.DATABASE_NAME;
+import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FILE_NAME;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FREQUENCY;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_START;
+import static projects.medicationtracker.Helpers.DBHelper.SEEN_NOTIFICATION_REQUEST;
+import static projects.medicationtracker.Helpers.DBHelper.THEME;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Pair;
 
 import java.time.LocalDateTime;
@@ -146,6 +155,10 @@ public class NativeDbHelper {
         deleteNotification(dbPath, notificationId);
     }
 
+    public void deleteNotificationByMedicationId(long medicationId) {
+        deleteNotificationsByMedId(dbPath, medicationId);
+    }
+
     public ArrayList<Notification> getNotifications() {
         return new ArrayList<>(Arrays.asList(getNotifications(dbPath, Notification.class)));
     }
@@ -162,6 +175,21 @@ public class NativeDbHelper {
                 formatter.format(timeTaken),
                 taken
         );
+    }
+
+    public void updateSettings(Bundle preferences) {
+        Pair<String, String>[] settings = new Pair[]{
+                new Pair<>(THEME, preferences.getString(THEME)),
+                new Pair<>(AGREED_TO_TERMS, preferences.getString(AGREED_TO_TERMS)),
+                new Pair<>(SEEN_NOTIFICATION_REQUEST, preferences.getString(SEEN_NOTIFICATION_REQUEST)),
+                new Pair<>(DATE_FORMAT, preferences.getString(DATE_FORMAT)),
+                new Pair<>(TIME_FORMAT, preferences.getString(TIME_FORMAT)),
+                new Pair<>(EXPORT_FREQUENCY, preferences.getString(EXPORT_FREQUENCY)),
+                new Pair<>(EXPORT_START, preferences.getString(EXPORT_START)),
+                new Pair<>(EXPORT_FILE_NAME, preferences.getString(EXPORT_FILE_NAME))
+        };
+
+        updateSettings(dbPath, settings);
     }
 
     /**
@@ -194,8 +222,10 @@ public class NativeDbHelper {
     private native long stashNotification(String dbPath, Notification notification);
 
     private native void deleteNotification(String dbPath, long notificationId);
+    private native void deleteNotificationsByMedId(String dbPath, long medicationid);
 
     private native Notification[] getNotifications(String dbPath, Class<Notification> notificationClass);
 
     private native long addDose(String dbPath, long medId, String scheduledTime, String timeTaken, boolean taken);
+    private native void updateSettings(String dbPath, Pair<String, String>[] settings);
 }

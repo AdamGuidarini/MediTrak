@@ -65,11 +65,14 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String TIME_BEFORE_DOSE = "TimeBeforeDose";
     private static final String ENABLE_NOTIFICATIONS = "EnableNotifications";
     public static final String SEEN_NOTIFICATION_REQUEST = "SeenNotificationRequest";
+    public static final String AGREED_TO_TERMS = "AgreedToTerms";
+    public static final String EXPORT_FREQUENCY = "ExportFrequency";
+    public static final String EXPORT_START = "ExportStart";
+    public static final String EXPORT_FILE_NAME = "ExportFileName";
     public static final String THEME = "Theme";
     public static final String DEFAULT = "default";
     public static final String LIGHT = "light";
     public static final String DARK = "dark";
-    public static final String AGREED_TO_TERMS = "AgreedToTerms";
     public static String DATE_FORMAT = "DateFormat";
     public static String TIME_FORMAT = "TimeFormat";
 
@@ -434,6 +437,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         medication = new Medication(
                 medName, patient, units, times, startDate, medId, frequency, dosage, alias
+        );
+
+        medication.setActiveStatus(
+                cursor.getString(cursor.getColumnIndexOrThrow(ACTIVE)).equals("1")
         );
 
         medication.setInstructions(instructions);
@@ -1008,7 +1015,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 + AGREED_TO_TERMS + ","
                 + SEEN_NOTIFICATION_REQUEST + ","
                 + DATE_FORMAT + ","
-                + TIME_FORMAT
+                + TIME_FORMAT + ","
+                + EXPORT_FREQUENCY + ","
+                + EXPORT_START + ","
+                + EXPORT_FILE_NAME
                 + " FROM " + SETTINGS_TABLE;
         Bundle retVal = new Bundle();
 
@@ -1026,6 +1036,9 @@ public class DBHelper extends SQLiteOpenHelper {
         );
         retVal.putString(DATE_FORMAT, cursor.getString(cursor.getColumnIndexOrThrow(DATE_FORMAT)));
         retVal.putString(TIME_FORMAT, cursor.getString(cursor.getColumnIndexOrThrow(TIME_FORMAT)));
+        retVal.putInt(EXPORT_FREQUENCY, Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(EXPORT_FREQUENCY))));
+        retVal.putString(EXPORT_START, cursor.getString(cursor.getColumnIndexOrThrow(EXPORT_START)));
+        retVal.putString(EXPORT_FILE_NAME, cursor.getString(cursor.getColumnIndexOrThrow(EXPORT_FILE_NAME)));
 
         cursor.close();
 

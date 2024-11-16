@@ -1236,6 +1236,7 @@ public class AddMedication extends AppCompatActivity {
 
                 db.updateMedication(parentMed);
                 db.addNote(changesNotes, childId);
+                nativeDb.deleteNotificationByMedicationId(parentMed.getId());
 
                 long[] ids = db.getMedicationTimeIds(parentMed);
                 NotificationManager manager = (NotificationManager) getSystemService(
