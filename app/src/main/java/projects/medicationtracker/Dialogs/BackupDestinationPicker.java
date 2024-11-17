@@ -5,7 +5,6 @@ import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FREQUENCY;
 import static projects.medicationtracker.Helpers.DBHelper.EXPORT_START;
 import static projects.medicationtracker.MainActivity.preferences;
 
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -32,7 +30,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Optional;
 
 import projects.medicationtracker.Fragments.SelectDateFragment;
 import projects.medicationtracker.Fragments.TimePickerFragment;
@@ -49,6 +46,13 @@ public class BackupDestinationPicker extends DialogFragment {
     private int frequency = 0;
     private LocalDate startDate;
     private LocalTime startTime;
+
+    private boolean fileNameValid = false;
+    private boolean startDateValid = false;
+    private boolean startTimeValid = false;
+    private boolean frequencyValid = false;
+    private boolean timeUnitValid = false;
+//    private boolean
 
     public BackupDestinationPicker(String fileExtension, String defaultName) {
         this.fileExtension = fileExtension;
@@ -140,37 +144,28 @@ public class BackupDestinationPicker extends DialogFragment {
 
         dirSelector.setOnItemClickListener((parent, view, position, id) -> exportDir = directories[position]);
 
-        fileName.setText(exportFile);
-
         fileName.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
             @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void afterTextChanged(Editable editable) {
-                Optional<String> fileNameChecker;
                 exportFile = editable.toString();
-
-                fileNameChecker = Optional.of(exportFile)
-                        .filter(f -> f.contains("."))
-                        .map(f -> f.substring(exportFile.lastIndexOf(".") + 1));
+                fileNameInputLayout.setErrorEnabled(false);
 
                 if (exportFile.isEmpty()) {
                     fileNameInputLayout.setError(getString(R.string.err_missing_file_name));
-                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
 
-                    return;
-                } else if (fileNameChecker.isPresent() && !fileNameChecker.get().equals("json")) {
-                    fileNameInputLayout.setError(getString(R.string.err_file_must_be_json));
-                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
-
-                    return;
+                    fileNameValid = false;
+                } else {
+                    fileNameValid = true;
                 }
 
-                fileNameInputLayout.setErrorEnabled(false);
-                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
+                isValid(dialog);
             }
         });
+
+        fileName.setText(exportFile);
 
         timeUnits.add(getString(R.string.minutes));
         timeUnits.add(getString(R.string.hours));
@@ -197,7 +192,9 @@ public class BackupDestinationPicker extends DialogFragment {
                 }
             });
 
+            TextInputLayout dateLayout = dialog.findViewById(R.id.start_date_layout);
             TextInputEditText dateEntry = dialog.findViewById(R.id.start_date);
+            TextInputLayout timeLayout = dialog.findViewById(R.id.start_time_layout);
             TextInputEditText timeEntry = dialog.findViewById(R.id.start_time);
 
             timeEntry.setShowSoftInputOnFocus(false);
@@ -232,6 +229,17 @@ public class BackupDestinationPicker extends DialogFragment {
                 @Override
                 public void afterTextChanged(Editable s) {
                     startDate = (LocalDate) dateEntry.getTag();
+                    dateLayout.setErrorEnabled(false);
+
+                    startDateValid = startDate != null && !startDate.isBefore(LocalDate.now());
+
+                    if (!startDateValid) {
+                        dateLayout.setError("=Date cannot be in past=");
+
+                        timeEntry.setText(timeEntry.getText());
+                    }
+
+                    isValid(dialog);
                 }
             });
 
@@ -247,9 +255,21 @@ public class BackupDestinationPicker extends DialogFragment {
                 @Override
                 public void afterTextChanged(Editable s) {
                     startTime = (LocalTime) timeEntry.getTag();
+                    timeLayout.setErrorEnabled(false);
+
+                    startTimeValid = startDateValid
+                            && !LocalDateTime.of(startDate, startTime).isBefore(LocalDateTime.now());
+
+                    if (!startTimeValid) {
+                        timeLayout.setError("=Time must be in the future=");
+                    }
+
+                    isValid(dialog);
                 }
             });
         }
+
+        isValid(dialog);
 
         return dialog;
     }
@@ -266,7 +286,7 @@ public class BackupDestinationPicker extends DialogFragment {
 
             options.putString(EXPORT_FILE_NAME, path);
             options.putInt(EXPORT_FREQUENCY, frequency);
-            options.putString(EXPORT_START, startDate.toString());
+            options.putString(EXPORT_START, LocalDateTime.of(startDate, startTime).toString());
             options.putBoolean("CREATE_NOW", createNow);
 
             ((IDialogCloseListener) getActivity()).handleDialogClose(
@@ -289,5 +309,19 @@ public class BackupDestinationPicker extends DialogFragment {
                     IDialogCloseListener.Action.DELETE, null
             );
         }
+    }
+
+    private void isValid(AlertDialog dialog) {
+        boolean valid = fileNameValid;
+
+        if (showPeriodic) {
+            valid = valid
+                    && startDateValid
+                    && startTimeValid
+                    && timeUnitValid
+                    && frequencyValid;
+        }
+
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(valid);
     }
 }

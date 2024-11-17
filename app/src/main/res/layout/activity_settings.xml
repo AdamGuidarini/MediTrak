@@ -291,8 +291,7 @@
                         android:layout_marginBottom="10dp"
                         android:onClick="onScheduleExportClick"
                         android:text="=SCHEDULE EXPORT="
-                        app:cornerRadius="30dp"
-                        android:visibility="gone"/>
+                        app:cornerRadius="30dp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

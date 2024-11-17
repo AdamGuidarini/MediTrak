@@ -1,7 +1,5 @@
 package projects.medicationtracker.Models;
 
-import android.util.Log;
-
 import androidx.annotation.Nullable;
 
 import java.time.LocalDateTime;
