@@ -51,8 +51,6 @@ public class BackupDestinationPicker extends DialogFragment {
     private boolean startDateValid = false;
     private boolean startTimeValid = false;
     private boolean frequencyValid = false;
-    private boolean timeUnitValid = false;
-//    private boolean
 
     public BackupDestinationPicker(String fileExtension, String defaultName) {
         this.fileExtension = fileExtension;
@@ -167,7 +165,6 @@ public class BackupDestinationPicker extends DialogFragment {
 
         fileName.setText(exportFile);
 
-        timeUnits.add(getString(R.string.minutes));
         timeUnits.add(getString(R.string.hours));
         timeUnits.add(getString(R.string.days));
         timeUnits.add(getString(R.string.weeks));
@@ -178,19 +175,7 @@ public class BackupDestinationPicker extends DialogFragment {
             );
 
             frequencyDropDown.setAdapter(frequencyOptions);
-
-            frequencyDropDown.setOnItemClickListener((adapterView, view, i, l) -> {
-                frequencyUnitLayout.setErrorEnabled(false);
-
-                switch (i) {
-                    case 3:
-                        frequency *= 7;
-                    case 2:
-                        frequency *= 24;
-                    case 1:
-                        frequency *= 60;
-                }
-            });
+            frequencyDropDown.setText(frequencyDropDown.getAdapter().getItem(1).toString());
 
             TextInputLayout dateLayout = dialog.findViewById(R.id.start_date_layout);
             TextInputEditText dateEntry = dialog.findViewById(R.id.start_date);
@@ -267,6 +252,45 @@ public class BackupDestinationPicker extends DialogFragment {
                     isValid(dialog);
                 }
             });
+
+            TextInputLayout frequencyLayout = dialog.findViewById(R.id.export_frequency_layout);
+            TextInputEditText frequencyInput = dialog.findViewById(R.id.export_frequency_value);
+
+            frequencyInput.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    int selected = timeUnits.indexOf(frequencyDropDown.getText().toString());
+
+                    frequencyLayout.setErrorEnabled(false);
+
+                    try {
+                        frequency = Short.parseShort(s.toString());
+
+                        switch (selected) {
+                            case 2:
+                                frequency *= 7;
+                            case 1:
+                                frequency *= 24;
+                        }
+
+                        frequencyValid = true;
+                    } catch (Exception e) {
+                        frequencyLayout.setError(getString(R.string.invalid_value));
+
+                        frequencyValid = false;
+                    }
+
+                    isValid(dialog);
+                }
+            });
         }
 
         isValid(dialog);
@@ -318,7 +342,6 @@ public class BackupDestinationPicker extends DialogFragment {
             valid = valid
                     && startDateValid
                     && startTimeValid
-                    && timeUnitValid
                     && frequencyValid;
         }
 
