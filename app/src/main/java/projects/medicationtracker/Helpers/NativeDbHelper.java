@@ -180,11 +180,11 @@ public class NativeDbHelper {
     public void updateSettings(Bundle preferences) {
         Pair<String, String>[] settings = new Pair[]{
                 new Pair<>(THEME, preferences.getString(THEME)),
-                new Pair<>(AGREED_TO_TERMS, preferences.getString(AGREED_TO_TERMS)),
-                new Pair<>(SEEN_NOTIFICATION_REQUEST, preferences.getString(SEEN_NOTIFICATION_REQUEST)),
+                new Pair<>(AGREED_TO_TERMS, preferences.getBoolean(AGREED_TO_TERMS) ? "1" : "0"),
+                new Pair<>(SEEN_NOTIFICATION_REQUEST, preferences.getBoolean(SEEN_NOTIFICATION_REQUEST) ? "1" : "0"),
                 new Pair<>(DATE_FORMAT, preferences.getString(DATE_FORMAT)),
                 new Pair<>(TIME_FORMAT, preferences.getString(TIME_FORMAT)),
-                new Pair<>(EXPORT_FREQUENCY, preferences.getString(EXPORT_FREQUENCY)),
+                new Pair<>(EXPORT_FREQUENCY, String.valueOf(preferences.getInt(EXPORT_FREQUENCY))),
                 new Pair<>(EXPORT_START, preferences.getString(EXPORT_START)),
                 new Pair<>(EXPORT_FILE_NAME, preferences.getString(EXPORT_FILE_NAME))
         };
