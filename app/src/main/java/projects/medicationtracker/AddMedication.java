@@ -386,7 +386,7 @@ public class AddMedication extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
                 dosageAmountInputLayout.setErrorEnabled(false);
 
-                if (editable.toString().isEmpty()) {
+                if (editable.toString().isEmpty() || editable.toString().startsWith(".") || editable.toString().endsWith(".")) {
                     isMedDosageValid = false;
                     dosageAmountInputLayout.setError(getString(R.string.err_enter_dosage));
                 } else {
@@ -394,9 +394,9 @@ public class AddMedication extends AppCompatActivity {
                         Float.parseFloat(dosageAmountInput.getText().toString());
                         isMedDosageValid = true;
                     } catch (Exception e) {
+                        isMedDosageValid = false; //invalid dosage as not a valid float 
                         if (!dosageAmountInput.getText().toString().isEmpty()) {
                             dosageAmountInputLayout.setError(getString(R.string.val_too_big));
-                            isMedDosageValid = false;
                         }
                     }
                 }
