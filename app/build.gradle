@@ -16,8 +16,8 @@ android {
         targetSdkVersion 34
         compileSdk 34
 
-        versionCode 32
-        versionName "0.13.3"
+        versionCode 33
+        versionName "0.13.4"
         resourceConfigurations += ['en', 'de', 'es', 'it', 'tr']
 
         ndk {

@@ -385,24 +385,25 @@ public class AddMedication extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 dosageAmountInputLayout.setErrorEnabled(false);
+                String text = editable.toString();
 
-                if (editable.toString().isEmpty()) {
+                if (text.isEmpty() || text.endsWith(".")) {
                     isMedDosageValid = false;
                     dosageAmountInputLayout.setError(getString(R.string.err_enter_dosage));
                 } else {
                     try {
                         Float.parseFloat(dosageAmountInput.getText().toString());
                         isMedDosageValid = true;
+
+                        if (!text.isEmpty() && Float.parseFloat(text) != amount && medId != -1) {
+                            applyRetroactiveCard.setVisibility(View.VISIBLE);
+                        }
                     } catch (Exception e) {
+                        isMedDosageValid = false; //invalid dosage as not a valid float 
                         if (!dosageAmountInput.getText().toString().isEmpty()) {
                             dosageAmountInputLayout.setError(getString(R.string.val_too_big));
-                            isMedDosageValid = false;
                         }
                     }
-                }
-
-                if (!editable.toString().isEmpty() && Float.parseFloat(editable.toString()) != amount && medId != -1) {
-                    applyRetroactiveCard.setVisibility(View.VISIBLE);
                 }
 
                 validateForm();
