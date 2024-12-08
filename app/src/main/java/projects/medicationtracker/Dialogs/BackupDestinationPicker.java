@@ -1,8 +1,10 @@
 package projects.medicationtracker.Dialogs;
 
+import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FILE_NAME;
 import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FREQUENCY;
 import static projects.medicationtracker.Helpers.DBHelper.EXPORT_START;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
 
 import android.app.Dialog;
@@ -29,10 +31,13 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import projects.medicationtracker.Fragments.SelectDateFragment;
 import projects.medicationtracker.Fragments.TimePickerFragment;
+import projects.medicationtracker.Helpers.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
 
@@ -96,7 +101,7 @@ public class BackupDestinationPicker extends DialogFragment {
         builder.setNegativeButton(R.string.cancel, ((dialogInterface, i) -> dismiss()));
 
         if (preferences.getInt(EXPORT_FREQUENCY, -1) != -1 && showPeriodic) {
-            builder.setNegativeButton("=STOP=", (dialogInterface, i) -> {
+            builder.setNeutralButton("=STOP=", (dialogInterface, i) -> {
                 onStopClick();
                 dismiss();
             });
@@ -188,12 +193,35 @@ public class BackupDestinationPicker extends DialogFragment {
         );
 
         frequencyDropDown.setAdapter(frequencyOptions);
-        frequencyDropDown.setText(frequencyDropDown.getAdapter().getItem(1).toString());
+        frequencyDropDown.setText(
+                frequencyDropDown.getAdapter().getItem(1).toString(),
+                false
+        );
 
         TextInputLayout dateLayout = dialog.findViewById(R.id.start_date_layout);
         TextInputEditText dateEntry = dialog.findViewById(R.id.start_date);
         TextInputLayout timeLayout = dialog.findViewById(R.id.start_time_layout);
         TextInputEditText timeEntry = dialog.findViewById(R.id.start_time);
+
+        String exportStart = preferences.getString(EXPORT_START, "");
+
+        if (!exportStart.isEmpty()) {
+            LocalDateTime start = TimeFormatting.stringToLocalDateTime(exportStart);
+            String startDate = DateTimeFormatter.ofPattern(
+                    preferences.getString(DATE_FORMAT),
+                    Locale.getDefault()
+            ).format(start);
+            String startTime = DateTimeFormatter.ofPattern(
+                    preferences.getString(TIME_FORMAT),
+                    Locale.getDefault()
+            ).format(start);
+
+            dateEntry.setText(startDate);
+            dateEntry.setTag(start.toLocalDate());
+
+            timeEntry.setText(startTime);
+            timeEntry.setTag(startTime);
+        }
 
         timeEntry.setShowSoftInputOnFocus(false);
         timeEntry.setInputType(InputType.TYPE_NULL);
@@ -315,10 +343,11 @@ public class BackupDestinationPicker extends DialogFragment {
 
         if (showPeriodic) {
             Bundle options = new Bundle();
+            String time = TimeFormatting.localDateTimeToDbString(LocalDateTime.of(startDate, startTime));
 
             options.putString(EXPORT_FILE_NAME, path);
             options.putInt(EXPORT_FREQUENCY, frequency);
-            options.putString(EXPORT_START, LocalDateTime.of(startDate, startTime).toString());
+            options.putString(EXPORT_START, time);
             options.putBoolean("CREATE_NOW", createNow);
 
             ((IDialogCloseListener) getActivity()).handleDialogClose(
