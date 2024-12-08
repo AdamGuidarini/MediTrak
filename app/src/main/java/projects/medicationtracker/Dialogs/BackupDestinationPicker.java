@@ -84,9 +84,7 @@ public class BackupDestinationPicker extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         final String[] directories;
         ArrayAdapter<String> adapter;
-        ArrayAdapter<String> frequencyOptions;
         ArrayList<String> dirs = new ArrayList<>();
-        ArrayList<String> timeUnits = new ArrayList<>();
 
         builder.setView(inflater.inflate(R.layout.dialog_backup_destination_picker, null));
 
@@ -107,10 +105,8 @@ public class BackupDestinationPicker extends DialogFragment {
         dialog = builder.create();
         dialog.show();
 
-        MaterialAutoCompleteTextView frequencyDropDown = dialog.findViewById(R.id.export_unit);
         MaterialAutoCompleteTextView dirSelector = dialog.findViewById(R.id.export_dir);
 
-        TextInputLayout frequencyUnitLayout = dialog.findViewById(R.id.export_frequency_unit_layout);
         SwitchCompat backupNow = dialog.findViewById(R.id.export_now);
 
         backupNow.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -165,137 +161,149 @@ public class BackupDestinationPicker extends DialogFragment {
 
         fileName.setText(exportFile);
 
-        timeUnits.add(getString(R.string.hours));
-        timeUnits.add(getString(R.string.days));
-        timeUnits.add(getString(R.string.weeks));
+
 
         if (showPeriodic) {
-            frequencyOptions = new ArrayAdapter<>(
-                    dialog.getContext(), android.R.layout.simple_dropdown_item_1line, timeUnits
-            );
-
-            frequencyDropDown.setAdapter(frequencyOptions);
-            frequencyDropDown.setText(frequencyDropDown.getAdapter().getItem(1).toString());
-
-            TextInputLayout dateLayout = dialog.findViewById(R.id.start_date_layout);
-            TextInputEditText dateEntry = dialog.findViewById(R.id.start_date);
-            TextInputLayout timeLayout = dialog.findViewById(R.id.start_time_layout);
-            TextInputEditText timeEntry = dialog.findViewById(R.id.start_time);
-
-            timeEntry.setShowSoftInputOnFocus(false);
-            timeEntry.setInputType(InputType.TYPE_NULL);
-
-            timeEntry.setOnFocusChangeListener((view, b) -> {
-                if (b) {
-                    DialogFragment dialogFragment = new TimePickerFragment(timeEntry);
-                    dialogFragment.show(getParentFragmentManager(), null);
-                }
-            });
-
-            dateEntry.setShowSoftInputOnFocus(false);
-            dateEntry.setInputType(InputType.TYPE_NULL);
-
-            dateEntry.setOnFocusChangeListener((view, b) -> {
-                if (b) {
-                    DialogFragment dialogFragment = new SelectDateFragment(dateEntry);
-                    dialogFragment.show(getParentFragmentManager(), null);
-                }
-            });
-
-            dateEntry.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    startDate = (LocalDate) dateEntry.getTag();
-                    dateLayout.setErrorEnabled(false);
-
-                    startDateValid = startDate != null && !startDate.isBefore(LocalDate.now());
-
-                    if (!startDateValid) {
-                        dateLayout.setError("=Date cannot be in past=");
-
-                        timeEntry.setText(timeEntry.getText());
-                    }
-
-                    isValid(dialog);
-                }
-            });
-
-            timeEntry.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    startTime = (LocalTime) timeEntry.getTag();
-                    timeLayout.setErrorEnabled(false);
-
-                    startTimeValid = startDateValid
-                            && !LocalDateTime.of(startDate, startTime).isBefore(LocalDateTime.now());
-
-                    if (!startTimeValid) {
-                        timeLayout.setError("=Time must be in the future=");
-                    }
-
-                    isValid(dialog);
-                }
-            });
-
-            TextInputLayout frequencyLayout = dialog.findViewById(R.id.export_frequency_layout);
-            TextInputEditText frequencyInput = dialog.findViewById(R.id.export_frequency_value);
-
-            frequencyInput.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    int selected = timeUnits.indexOf(frequencyDropDown.getText().toString());
-
-                    frequencyLayout.setErrorEnabled(false);
-
-                    try {
-                        frequency = Short.parseShort(s.toString());
-
-                        switch (selected) {
-                            case 2:
-                                frequency *= 7;
-                            case 1:
-                                frequency *= 24;
-                        }
-
-                        frequencyValid = true;
-                    } catch (Exception e) {
-                        frequencyLayout.setError(getString(R.string.invalid_value));
-
-                        frequencyValid = false;
-                    }
-
-                    isValid(dialog);
-                }
-            });
+            buildScheduledExportViews(dialog);
         }
 
         isValid(dialog);
 
         return dialog;
+    }
+
+    private void buildScheduledExportViews(AlertDialog dialog) {
+        ArrayAdapter<String> frequencyOptions;
+        ArrayList<String> timeUnits = new ArrayList<>();
+
+        MaterialAutoCompleteTextView frequencyDropDown = dialog.findViewById(R.id.export_unit);
+        TextInputLayout frequencyUnitLayout = dialog.findViewById(R.id.export_frequency_unit_layout);
+
+        timeUnits.add(getString(R.string.hours));
+        timeUnits.add(getString(R.string.days));
+        timeUnits.add(getString(R.string.weeks));
+
+        frequencyOptions = new ArrayAdapter<>(
+                dialog.getContext(), android.R.layout.simple_dropdown_item_1line, timeUnits
+        );
+
+        frequencyDropDown.setAdapter(frequencyOptions);
+        frequencyDropDown.setText(frequencyDropDown.getAdapter().getItem(1).toString());
+
+        TextInputLayout dateLayout = dialog.findViewById(R.id.start_date_layout);
+        TextInputEditText dateEntry = dialog.findViewById(R.id.start_date);
+        TextInputLayout timeLayout = dialog.findViewById(R.id.start_time_layout);
+        TextInputEditText timeEntry = dialog.findViewById(R.id.start_time);
+
+        timeEntry.setShowSoftInputOnFocus(false);
+        timeEntry.setInputType(InputType.TYPE_NULL);
+
+        timeEntry.setOnFocusChangeListener((view, b) -> {
+            if (b) {
+                DialogFragment dialogFragment = new TimePickerFragment(timeEntry);
+                dialogFragment.show(getParentFragmentManager(), null);
+            }
+        });
+
+        dateEntry.setShowSoftInputOnFocus(false);
+        dateEntry.setInputType(InputType.TYPE_NULL);
+
+        dateEntry.setOnFocusChangeListener((view, b) -> {
+            if (b) {
+                DialogFragment dialogFragment = new SelectDateFragment(dateEntry);
+                dialogFragment.show(getParentFragmentManager(), null);
+            }
+        });
+
+        dateEntry.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                startDate = (LocalDate) dateEntry.getTag();
+                dateLayout.setErrorEnabled(false);
+
+                startDateValid = startDate != null && !startDate.isBefore(LocalDate.now());
+
+                if (!startDateValid) {
+                    dateLayout.setError("=Date cannot be in past=");
+
+                    timeEntry.setText(timeEntry.getText());
+                }
+
+                isValid(dialog);
+            }
+        });
+
+        timeEntry.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                startTime = (LocalTime) timeEntry.getTag();
+                timeLayout.setErrorEnabled(false);
+
+                startTimeValid = startDateValid
+                        && !LocalDateTime.of(startDate, startTime).isBefore(LocalDateTime.now());
+
+                if (!startTimeValid) {
+                    timeLayout.setError("=Time must be in the future=");
+                }
+
+                isValid(dialog);
+            }
+        });
+
+        TextInputLayout frequencyLayout = dialog.findViewById(R.id.export_frequency_layout);
+        TextInputEditText frequencyInput = dialog.findViewById(R.id.export_frequency_value);
+
+        frequencyInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int selected = timeUnits.indexOf(frequencyDropDown.getText().toString());
+
+                frequencyLayout.setErrorEnabled(false);
+
+                try {
+                    frequency = Short.parseShort(s.toString());
+
+                    switch (selected) {
+                        case 2:
+                            frequency *= 7;
+                        case 1:
+                            frequency *= 24;
+                    }
+
+                    frequencyValid = true;
+                } catch (Exception e) {
+                    frequencyLayout.setError(getString(R.string.invalid_value));
+
+                    frequencyValid = false;
+                }
+
+                isValid(dialog);
+            }
+        });
     }
 
     private void onExportClick() {
