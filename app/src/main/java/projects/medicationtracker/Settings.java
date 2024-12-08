@@ -629,6 +629,12 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
             if (!createNow) {
                 return;
             }
+        } else if (action == Action.DELETE) {
+            Toast.makeText(
+                    this,
+                    "Oops, this isn't implemented yet",
+                    Toast.LENGTH_SHORT
+            ).show();
         } else {
             exportPath = (String) data;
         }
