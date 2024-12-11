@@ -65,12 +65,18 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         LocalDateTime scheduledDateTime = doses[position].getDoseTime();
         LocalDateTime takenDateTime = doses[position].getTimeTaken();
 
-        String scheduleDate = DateTimeFormatter.ofPattern(
-                dateFormat, Locale.getDefault()
-        ).format(scheduledDateTime.toLocalDate());
-        String scheduleTime = DateTimeFormatter.ofPattern(
-                timeFormat, Locale.getDefault()
-        ).format(scheduledDateTime.toLocalTime());
+        if (currentMed.getFrequency() == 0) {
+            holder.scheduledDateLabel.setText("N/A");
+        } else {
+            String scheduleDate = DateTimeFormatter.ofPattern(
+                    dateFormat, Locale.getDefault()
+            ).format(scheduledDateTime.toLocalDate());
+            String scheduleTime = DateTimeFormatter.ofPattern(
+                    timeFormat, Locale.getDefault()
+            ).format(scheduledDateTime.toLocalTime());
+
+            holder.scheduledDateLabel.setText(scheduleDate + "\n" + scheduleTime);
+        }
 
         String takenDate = DateTimeFormatter.ofPattern(
                 dateFormat, Locale.getDefault()
@@ -93,7 +99,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             doseLbl += currentMed.getDosageUnits();
         }
 
-        holder.scheduledDateLabel.setText(scheduleDate + "\n" + scheduleTime);
         holder.takenDateLabel.setText(takenDate + "\n" + takenTime);
         holder.dosageAmount.setText(doseLbl);
 
