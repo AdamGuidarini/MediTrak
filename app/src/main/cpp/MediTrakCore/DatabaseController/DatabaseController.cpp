@@ -365,7 +365,7 @@ void DatabaseController::exportCsv(const string &exportPath, map<string, vector<
 
 Medication DatabaseController::getMedication(long medicationId) {
     string query = "SELECT * FROM " + MEDICATION_TABLE + " m "
-                   + " INNER JOIN " + MEDICATION_TIMES + " mt "
+                   + " LEFT JOIN " + MEDICATION_TIMES + " mt "
                    + " ON " + "m." + MED_ID + "= mt." + MED_ID
                    + " WHERE m." + MED_ID + "=" + to_string(medicationId);
     Medication medication;
@@ -393,7 +393,11 @@ Medication DatabaseController::getMedication(long medicationId) {
     }
 
     while (!table->isAfterLast()) {
-        times.push_back(table->getItem(DRUG_TIME));
+        string t = table->getItem(DRUG_TIME);
+
+        if (!t.empty()) {
+            times.push_back(table->getItem(DRUG_TIME));
+        }
 
         table->moveToNext();
     }
