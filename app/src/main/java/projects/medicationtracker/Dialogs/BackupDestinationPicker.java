@@ -205,24 +205,6 @@ public class BackupDestinationPicker extends DialogFragment {
 
         String exportStart = preferences.getString(EXPORT_START, "");
 
-        if (!exportStart.isEmpty()) {
-            LocalDateTime start = TimeFormatting.stringToLocalDateTime(exportStart);
-            String startDate = DateTimeFormatter.ofPattern(
-                    preferences.getString(DATE_FORMAT),
-                    Locale.getDefault()
-            ).format(start);
-            String startTime = DateTimeFormatter.ofPattern(
-                    preferences.getString(TIME_FORMAT),
-                    Locale.getDefault()
-            ).format(start);
-
-            dateEntry.setText(startDate);
-            dateEntry.setTag(start.toLocalDate());
-
-            timeEntry.setText(startTime);
-            timeEntry.setTag(startTime);
-        }
-
         timeEntry.setShowSoftInputOnFocus(false);
         timeEntry.setInputType(InputType.TYPE_NULL);
 
@@ -294,6 +276,30 @@ public class BackupDestinationPicker extends DialogFragment {
             }
         });
 
+        if (!exportStart.isEmpty()) {
+            LocalDateTime start = TimeFormatting.stringToLocalDateTime(exportStart);
+            String startDate = DateTimeFormatter.ofPattern(
+                    preferences.getString(DATE_FORMAT),
+                    Locale.getDefault()
+            ).format(start);
+            String startTime = DateTimeFormatter.ofPattern(
+                    preferences.getString(TIME_FORMAT),
+                    Locale.getDefault()
+            ).format(start);
+
+            dateEntry.setText(startDate);
+            dateEntry.setTag(start.toLocalDate());
+
+            timeEntry.setText(startTime);
+            timeEntry.setTag(startTime);
+
+            timeLayout.setErrorEnabled(false);
+            dateLayout.setErrorEnabled(false);
+
+            startTimeValid = true;
+            startDateValid = true;
+        }
+
         TextInputLayout frequencyLayout = dialog.findViewById(R.id.export_frequency_layout);
         TextInputEditText frequencyInput = dialog.findViewById(R.id.export_frequency_value);
 
@@ -332,6 +338,25 @@ public class BackupDestinationPicker extends DialogFragment {
                 isValid(dialog);
             }
         });
+
+        frequency = preferences.getInt(EXPORT_FREQUENCY, -1);
+
+        if (frequency != -1) {
+            int displayFreq = frequency;
+            frequencyDropDown.setText(timeUnits.get(0), false);
+
+            if (frequency % (24 * 7) == 0) {
+                displayFreq = frequency / (24 * 7);
+                frequencyDropDown.setText(timeUnits.get(2), false);
+            } else if (frequency % 24 == 0) {
+                displayFreq = frequency / 24;
+                frequencyDropDown.setText(timeUnits.get(1), false);
+            }
+
+            frequencyInput.setText(String.valueOf(displayFreq));
+
+            frequencyValid = true;
+        }
     }
 
     private void onExportClick() {
