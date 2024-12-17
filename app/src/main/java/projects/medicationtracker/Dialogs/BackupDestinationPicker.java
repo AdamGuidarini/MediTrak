@@ -180,9 +180,16 @@ public class BackupDestinationPicker extends DialogFragment {
     private void buildScheduledExportViews(AlertDialog dialog) {
         ArrayAdapter<String> frequencyOptions;
         ArrayList<String> timeUnits = new ArrayList<>();
-
         MaterialAutoCompleteTextView frequencyDropDown = dialog.findViewById(R.id.export_unit);
         TextInputLayout frequencyUnitLayout = dialog.findViewById(R.id.export_frequency_unit_layout);
+        TextInputLayout dateLayout = dialog.findViewById(R.id.start_date_layout);
+        TextInputEditText dateEntry = dialog.findViewById(R.id.start_date);
+        TextInputLayout timeLayout = dialog.findViewById(R.id.start_time_layout);
+        TextInputEditText timeEntry = dialog.findViewById(R.id.start_time);
+        TextInputLayout frequencyLayout = dialog.findViewById(R.id.export_frequency_layout);
+        TextInputEditText frequencyInput = dialog.findViewById(R.id.export_frequency_value);
+
+        String exportStart = preferences.getString(EXPORT_START, "");
 
         timeUnits.add(getString(R.string.hours));
         timeUnits.add(getString(R.string.days));
@@ -198,12 +205,28 @@ public class BackupDestinationPicker extends DialogFragment {
                 false
         );
 
-        TextInputLayout dateLayout = dialog.findViewById(R.id.start_date_layout);
-        TextInputEditText dateEntry = dialog.findViewById(R.id.start_date);
-        TextInputLayout timeLayout = dialog.findViewById(R.id.start_time_layout);
-        TextInputEditText timeEntry = dialog.findViewById(R.id.start_time);
+        frequencyDropDown.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
-        String exportStart = preferences.getString(EXPORT_START, "");
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (frequencyInput == null || frequencyInput.getText() == null) {
+                    return;
+                }
+
+                String frequency = frequencyInput.getText().toString();
+
+                if (!frequency.isEmpty()) {
+                    frequencyInput.setText(frequency);
+                }
+            }
+        });
 
         timeEntry.setShowSoftInputOnFocus(false);
         timeEntry.setInputType(InputType.TYPE_NULL);
@@ -287,11 +310,11 @@ public class BackupDestinationPicker extends DialogFragment {
                     Locale.getDefault()
             ).format(start);
 
-            dateEntry.setText(startDate);
             dateEntry.setTag(start.toLocalDate());
+            dateEntry.setText(startDate);
 
+            timeEntry.setTag(start.toLocalTime());
             timeEntry.setText(startTime);
-            timeEntry.setTag(startTime);
 
             timeLayout.setErrorEnabled(false);
             dateLayout.setErrorEnabled(false);
@@ -299,9 +322,6 @@ public class BackupDestinationPicker extends DialogFragment {
             startTimeValid = true;
             startDateValid = true;
         }
-
-        TextInputLayout frequencyLayout = dialog.findViewById(R.id.export_frequency_layout);
-        TextInputEditText frequencyInput = dialog.findViewById(R.id.export_frequency_value);
 
         frequencyInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -323,7 +343,7 @@ public class BackupDestinationPicker extends DialogFragment {
 
                     switch (selected) {
                         case 2:
-                            frequency *= 7;
+                            frequency *= 7 * 24;
                         case 1:
                             frequency *= 24;
                     }
