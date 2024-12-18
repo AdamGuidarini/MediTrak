@@ -37,7 +37,7 @@ import java.util.Locale;
 
 import projects.medicationtracker.Fragments.SelectDateFragment;
 import projects.medicationtracker.Fragments.TimePickerFragment;
-import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.Utils.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
 

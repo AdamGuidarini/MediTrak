@@ -22,6 +22,7 @@ import java.util.Collections;
 
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Note;
+import projects.medicationtracker.Utils.TimeFormatting;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Medications.db";

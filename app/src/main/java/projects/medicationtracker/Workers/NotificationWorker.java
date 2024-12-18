@@ -2,12 +2,12 @@ package projects.medicationtracker.Workers;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.SystemClock.sleep;
-import static projects.medicationtracker.Helpers.NotificationHelper.CHANNEL_ID;
-import static projects.medicationtracker.Helpers.NotificationHelper.DOSE_TIME;
-import static projects.medicationtracker.Helpers.NotificationHelper.GROUP_KEY;
-import static projects.medicationtracker.Helpers.NotificationHelper.MEDICATION_ID;
-import static projects.medicationtracker.Helpers.NotificationHelper.MESSAGE;
-import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION_ID;
+import static projects.medicationtracker.Utils.NotificationUtils.CHANNEL_ID;
+import static projects.medicationtracker.Utils.NotificationUtils.DOSE_TIME;
+import static projects.medicationtracker.Utils.NotificationUtils.GROUP_KEY;
+import static projects.medicationtracker.Utils.NotificationUtils.MEDICATION_ID;
+import static projects.medicationtracker.Utils.NotificationUtils.MESSAGE;
+import static projects.medicationtracker.Utils.NotificationUtils.NOTIFICATION_ID;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;

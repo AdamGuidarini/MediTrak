@@ -50,8 +50,8 @@ import projects.medicationtracker.Dialogs.WelcomeDialog;
 import projects.medicationtracker.Fragments.MedicationScheduleFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
-import projects.medicationtracker.Helpers.NotificationHelper;
-import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.Utils.NotificationUtils;
+import projects.medicationtracker.Utils.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Notification;
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.med_schedule));
 
-        NotificationHelper.createNotificationChannel(this);
+        NotificationUtils.createNotificationChannel(this);
         prepareNotifications();
 
         if (!preferences.getBoolean(AGREED_TO_TERMS)) {
@@ -462,11 +462,11 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
         final ArrayList<Notification> notifications = nativeDb.getNotifications();
 
         for (Medication medication : allMeds) {
-            NotificationHelper.clearPendingNotifications(medication, this);
+            NotificationUtils.clearPendingNotifications(medication, this);
         }
 
         for (Medication medication : allMeds) {
-            NotificationHelper.createNotifications(medication, this);
+            NotificationUtils.createNotifications(medication, this);
         }
 
         for (final Notification n : notifications) {
@@ -483,7 +483,7 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
                 continue;
             }
 
-            NotificationHelper.scheduleNotification(
+            NotificationUtils.scheduleNotification(
                     this,
                     med,
                     n.getDoseTime(),

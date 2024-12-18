@@ -1,4 +1,4 @@
-package projects.medicationtracker.Helpers;
+package projects.medicationtracker.Utils;
 
 import static android.content.Context.ALARM_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
@@ -18,11 +18,12 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Receivers.NotificationReceiver;
 import projects.medicationtracker.Models.Medication;
 
-public class NotificationHelper {
+public class NotificationUtils {
     private final static int SNOOZE_TIME_MINUTES = 15;
 
     public final static String GROUP_KEY = "medicationTrackerNotificationGroup";
@@ -192,10 +193,10 @@ public class NotificationHelper {
         long[] medIds = db.getMedicationTimeIds(medication);
 
         if (medIds.length == 0) {
-            NotificationHelper.deletePendingNotification(medication.getId(), context);
+            NotificationUtils.deletePendingNotification(medication.getId(), context);
         } else {
             for (long id : medIds) {
-                NotificationHelper.deletePendingNotification(id * -1, context);
+                NotificationUtils.deletePendingNotification(id * -1, context);
             }
         }
 

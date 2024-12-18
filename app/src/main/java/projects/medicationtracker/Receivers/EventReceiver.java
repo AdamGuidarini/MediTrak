@@ -1,11 +1,11 @@
 package projects.medicationtracker.Receivers;
 
-import static projects.medicationtracker.Helpers.NotificationHelper.DOSE_TIME;
-import static projects.medicationtracker.Helpers.NotificationHelper.MEDICATION_ID;
-import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION_ID;
-import static projects.medicationtracker.Helpers.NotificationHelper.clearPendingNotifications;
-import static projects.medicationtracker.Helpers.NotificationHelper.createNotifications;
-import static projects.medicationtracker.Helpers.NotificationHelper.scheduleIn15Minutes;
+import static projects.medicationtracker.Utils.NotificationUtils.DOSE_TIME;
+import static projects.medicationtracker.Utils.NotificationUtils.MEDICATION_ID;
+import static projects.medicationtracker.Utils.NotificationUtils.NOTIFICATION_ID;
+import static projects.medicationtracker.Utils.NotificationUtils.clearPendingNotifications;
+import static projects.medicationtracker.Utils.NotificationUtils.createNotifications;
+import static projects.medicationtracker.Utils.NotificationUtils.scheduleIn15Minutes;
 import static projects.medicationtracker.Workers.NotificationWorker.DISMISSED_ACTION;
 import static projects.medicationtracker.Workers.NotificationWorker.SNOOZE_ACTION;
 import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
@@ -25,8 +25,8 @@ import java.util.Arrays;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
-import projects.medicationtracker.Helpers.NotificationHelper;
-import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.Utils.NotificationUtils;
+import projects.medicationtracker.Utils.TimeFormatting;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Notification;
 import projects.medicationtracker.Workers.NotificationWorker;
@@ -91,7 +91,7 @@ public class EventReceiver extends BroadcastReceiver {
                     continue;
                 }
 
-                NotificationHelper.scheduleNotification(
+                NotificationUtils.scheduleNotification(
                         context, med, n.getDoseTime(), n.getNotificationId()
                 );
             }

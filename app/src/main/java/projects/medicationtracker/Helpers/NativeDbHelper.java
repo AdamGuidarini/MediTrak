@@ -23,6 +23,7 @@ import java.util.Locale;
 import projects.medicationtracker.Models.Dose;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Notification;
+import projects.medicationtracker.Utils.TimeFormatting;
 
 public class NativeDbHelper {
     static {
