@@ -4,6 +4,8 @@ import static projects.medicationtracker.Helpers.DBHelper.DARK;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
 import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FILE_NAME;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FREQUENCY;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_START;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
@@ -630,11 +632,13 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
                 return;
             }
         } else if (action == Action.DELETE) {
-            Toast.makeText(
-                    this,
-                    "Oops, this isn't implemented yet",
-                    Toast.LENGTH_SHORT
-            ).show();
+            preferences.putString(EXPORT_FILE_NAME, "");
+            preferences.putInt(EXPORT_FREQUENCY, -1);
+            preferences.putString(EXPORT_START, "");
+
+            nativeDb.updateSettings(preferences);
+
+            return;
         } else {
             exportPath = (String) data;
         }
