@@ -2,7 +2,7 @@
     <!-- Common -->
     <string name="yes">Ja</string>
     <string name="no">Nee</string>
-    <string name="close">Dichtbij</string>
+    <string name="close">Sluiten</string>
     <string name="cancel">Annuleren</string>
     <string name="app_name">MediTrak</string>
     <string name="edit">Bewerking</string>
@@ -93,7 +93,7 @@
     <string name="times_per">Tijden per</string>
     <string name="patientIsMe">Mij</string>
     <string name="patient">Geduldig</string>
-    <string name="other">Ander</string>
+    <string name="other">Anders</string>
     <string name="name">Naam</string>
     <string name="medication_name">Medicatie Naam</string>
     <string name="medication_dosage">Dosering</string>
@@ -114,8 +114,8 @@
     <string name="alias_for_notifications">Alias voor meldingen</string>
     <string name="how_often_is_the_medication_taken">Hoe vaak wordt de medicatie ingenomen?</string>
     <string name="start_date">Startdatum</string>
-    <string name="taken_at">Gemaakt op</string>
-    <string name="unit_of_time">Eenheid van tijd</string>
+    <string name="taken_at">Genomen op</string>
+    <string name="unit_of_time">Tijdseenheid</string>
     <string name="custom_frequency">Aangepaste frequentie</string>
     <string name="times_per_day">Aantal keer per dag</string>
     <string name="starting">Beginnend:</string>
