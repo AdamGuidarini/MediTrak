@@ -18,7 +18,7 @@ android {
 
         versionCode 34
         versionName "0.13.5"
-        resourceConfigurations += ['en', 'de', 'es', 'it', 'tr']
+        resourceConfigurations += ['en', 'de', 'es', 'it', 'tr', 'nl']
 
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
