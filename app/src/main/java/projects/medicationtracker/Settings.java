@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -43,8 +44,14 @@ import java.io.DataInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 import projects.medicationtracker.Dialogs.BackupDestinationPicker;
 import projects.medicationtracker.Fragments.ConfirmDeleteAllFragment;
@@ -61,6 +68,14 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
             }
     );
     private NativeDbHelper nativeDb;
+    private Pair<String, DateTimeFormatter>[] dateFormats = new Pair[]{
+            new Pair(DBHelper.DateFormats.MM_DD_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.MM_DD_YYYY, Locale.getDefault())),
+            new Pair(DBHelper.DateFormats.DD_MM_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.DD_MM_YYYY, Locale.getDefault())),
+            new Pair(DBHelper.DateFormats.MMM_DD_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.MMM_DD_YYYY, Locale.getDefault())),
+            new Pair(DBHelper.DateFormats.DD_MMM_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.DD_MMM_YYYY, Locale.getDefault())),
+            new Pair(DBHelper.DateFormats.YYYY_MM_DD, DateTimeFormatter.ofPattern(DBHelper.DateFormats.YYYY_MM_DD, Locale.getDefault())),
+            new Pair(DBHelper.DateFormats.MM__DD_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.MM__DD_YYYY, Locale.getDefault()))
+    };
 
     /**
      * Create Settings
@@ -333,32 +348,18 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
     private void setDateFormatMenu() {
         MaterialAutoCompleteTextView dateSelector = findViewById(R.id.date_format_selector);
         String dateFormat = preferences.getString(DATE_FORMAT, DBHelper.DateFormats.MM_DD_YYYY);
+        int index = IntStream.range(0, dateFormats.length).filter(
+                (i) -> dateFormat.equals(dateFormats[i].first)
+        ).findFirst().orElse(-1);
 
         dateSelector.setAdapter(createDateFormatMenuAdapter());
 
-        switch (dateFormat) {
-            case DBHelper.DateFormats.MM_DD_YYYY:
-                dateSelector.setText(dateSelector.getAdapter().getItem(0).toString(), false);
-                break;
-            case DBHelper.DateFormats.DD_MM_YYYY:
-                dateSelector.setText(dateSelector.getAdapter().getItem(1).toString(), false);
-                break;
-        }
+        dateSelector.setText(dateSelector.getAdapter().getItem(index).toString(), false);
 
         dateSelector.setOnItemClickListener((parent, view, position, id) -> {
             String timeFormat = preferences.getString(TIME_FORMAT, DBHelper.TimeFormats._12_HOUR);
 
-            switch (position) {
-                case 0:
-                    if (!dateFormat.equals(DBHelper.DateFormats.MM_DD_YYYY)) {
-                        db.setDateTimeFormat(DBHelper.DateFormats.MM_DD_YYYY, timeFormat);
-                    }
-                    break;
-                case 1:
-                    if (!dateFormat.equals(DBHelper.DateFormats.DD_MM_YYYY)) {
-                        db.setDateTimeFormat(DBHelper.DateFormats.DD_MM_YYYY, timeFormat);
-                    }
-            }
+            db.setDateTimeFormat(dateFormats[position].first, timeFormat);
 
             dateSelector.clearFocus();
             preferences = db.getPreferences();
@@ -408,8 +409,8 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
      */
     private void setLanguageMenu() {
         MaterialAutoCompleteTextView langSelector = findViewById(R.id.language_selector);
-        String[] langOpts = {"Deutsch", "English", "Español", "Italiano", "Türkçe"};
-        String[] langCodes = {"de", "en", "es", "it", "tr"};
+        String[] langOpts = {"Deutsch", "English", "Español", "Italiano", "Nederlands", "Türkçe"};
+        String[] langCodes = {"de", "en", "es", "it", "nl", "tr"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_dropdown_item_1line,
@@ -497,9 +498,11 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
      */
     private ArrayAdapter<String> createDateFormatMenuAdapter() {
         ArrayList<String> formats = new ArrayList<>();
+        LocalDate today = LocalDate.now();
 
-        formats.add(getString(R.string.date_format_mm_dd_yyyy));
-        formats.add(getString(R.string.date_format_dd_mm_yyyy));
+        for (Pair<String, DateTimeFormatter> formatter : dateFormats) {
+            formats.add(formatter.second.format(today));
+        }
 
         return new ArrayAdapter<>(
                 this, android.R.layout.simple_dropdown_item_1line, formats
