@@ -94,6 +94,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public static class DateFormats {
         public static final String MM_DD_YYYY = "MM/dd/yyyy";
         public static final String DD_MM_YYYY = "dd/MM/yyyy";
+        public static final String MMM_DD_YYYY = "MMM dd, yyyy";
+        public static final String DD_MMM_YYYY = "dd MMM yyyy";
+        public static final String YYYY_MM_DD = "yyyy-MM-dd";
+        public static final String MM__DD_YYYY = "MM.dd.yyyy";
         public static final String DB_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     }
 
