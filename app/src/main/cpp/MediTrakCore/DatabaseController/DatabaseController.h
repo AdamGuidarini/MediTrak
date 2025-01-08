@@ -24,6 +24,10 @@ namespace TimeFormats {
 namespace DateFormats {
     const string MM_DD_YYYY = "MM/dd/yyyy";
     const string DD_MM_YYYY = "dd/MM/yyyy";
+    const string MMM_DD_YYYY = "MMM dd, yyyy";
+    const string DD_MMM_YYYY = "dd MMM yyyy";
+    const string YYYY_MM_DD = "yyyy-MM-dd";
+    const string MM__DD__YYYY = "MM.dd.yyyy";
     const string DB_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 }
 
