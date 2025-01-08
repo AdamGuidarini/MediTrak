@@ -15,6 +15,7 @@ MediTrak is an Android application designed to make it easier for users to keep 
  - Spanish by [zaovb](https://github.com/zaovb)<sup>1,3</sup>
  - Italian<sup>4</sup>
  - Turkish by [mikropsoft](https://github.com/mikropsoft)<sup>1,2</sup>
+ - Dutch by [ruditimmermans](https://github.com/ruditimmermans)<sup>1,2</sup>
 
 <ol style="font-size: 0.8em;">
 <li> Translated by native speaker.</li>
