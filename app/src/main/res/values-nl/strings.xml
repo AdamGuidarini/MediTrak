@@ -9,7 +9,7 @@
     <string name="submit">Verzenden</string>
     <string name="save_changes">Wijzigingen opslaan</string>
     <string name="save">Opslaan</string>
-    <string name="you">Jij</string>
+    <string name="you">Ikzelf</string>
     <string name="your">Jouw</string>
     <string name="ok">Ok</string>
     <string name="delete">Verwijderen</string>
@@ -49,6 +49,7 @@
     <string name="time_format_hh_mm_aa">uuh:mm aa</string>
 
     <!-- Time -->
+    <string name="sunday">Zondag</string>
     <string name="monday">Maandag</string>
     <string name="tuesday">Dinsdag</string>
     <string name="wednesday">Woensdag</string>
