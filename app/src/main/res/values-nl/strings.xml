@@ -9,7 +9,7 @@
     <string name="submit">Verzenden</string>
     <string name="save_changes">Wijzigingen opslaan</string>
     <string name="save">Opslaan</string>
-    <string name="you">Jij</string>
+    <string name="you">Ikzelf</string>
     <string name="your">Jouw</string>
     <string name="ok">Ok</string>
     <string name="delete">Verwijderen</string>
@@ -49,6 +49,7 @@
     <string name="time_format_hh_mm_aa">uuh:mm aa</string>
 
     <!-- Time -->
+    <string name="sunday">Zondag</string>
     <string name="monday">Maandag</string>
     <string name="tuesday">Dinsdag</string>
     <string name="wednesday">Woensdag</string>
@@ -153,7 +154,7 @@
     <string name="options">Opties</string>
     <string name="license">Licentie</string>
     <string name="purpose">MediTrak is een gratis en open source applicatie ontworpen om je te helpen je medicatie bij te houden, zodat je gemakkelijker de vraag kunt beantwoorden \“heb ik mijn medicatie gisteren ingenomen?"\</string>
-    <string name="copyright">Auteursrecht © 2022 Adam Guidarini</string>
+    <string name="copyright">Auteursrecht © 2022-2025 Adam Guidarini</string>
     <string name="licenseInfo">MediTrak is vrije software en mag worden gedistribueerd en/of gewijzigd onder de voorwaarden van de GNU General Public License zoals gepubliceerd door de Free Software Foundation, versie 2 of (naar keuze) later.</string>
     <string name="warranty">
         Dit programma is vrije software; je mag het herdistribueren en/of
