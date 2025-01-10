@@ -92,7 +92,7 @@
     <string name="changed_dosage">Dosering gewijzigd van %1$s naar %2$s\n</string>
     <string name="frequency_changed">Frequentie gewijzigd van %1$s naar %2$s\n</string>
     <string name="times_per">Tijden per</string>
-    <string name="patientIsMe">Mij</string>
+    <string name="patientIsMe">Ikzelf</string>
     <string name="patient">Geduldig</string>
     <string name="other">Andere</string>
     <string name="name">Naam</string>
