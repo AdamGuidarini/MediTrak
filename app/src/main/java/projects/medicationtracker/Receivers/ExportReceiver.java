@@ -10,5 +10,7 @@ public class ExportReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle extras = intent.getExtras();
+
+        System.out.println("I got a message!");
     }
 }

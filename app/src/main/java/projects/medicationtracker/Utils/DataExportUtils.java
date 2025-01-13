@@ -55,8 +55,7 @@ public class DataExportUtils {
         }
 
         long diff = ChronoUnit.HOURS.between(start, now);
-        double count = (double) diff / frequency;
-        long cycles = (long) Math.floor(count) + 1;
+        long cycles = (diff / frequency) + 1;
 
         return start.plusHours(cycles * frequency);
     }

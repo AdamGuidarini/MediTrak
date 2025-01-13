@@ -24,6 +24,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Pair;
+import android.util.TimeUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -60,6 +61,8 @@ import projects.medicationtracker.Fragments.ConfirmDeleteAllFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
+import projects.medicationtracker.Utils.DataExportUtils;
+import projects.medicationtracker.Utils.TimeFormatting;
 
 public class Settings extends AppCompatActivity implements IDialogCloseListener {
     private final DBHelper db = new DBHelper(this);
@@ -630,6 +633,12 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
             preferences.putAll(dialogRes);
 
             nativeDb.updateSettings(preferences);
+
+            DataExportUtils.scheduleExport(
+                    this,
+                    TimeFormatting.stringToLocalDateTime(dialogRes.getString(EXPORT_START)),
+                    dialogRes.getInt(EXPORT_FREQUENCY)
+            );
 
             if (!createNow) {
                 return;
