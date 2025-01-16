@@ -74,21 +74,6 @@ private:
     const string ENTRY_TIME = "EntryTime";
     const string TIME_EDITED = "TimeEdited";
 
-    // Settings
-    const string TIME_BEFORE_DOSE = "TimeBeforeDose";
-    const string ENABLE_NOTIFICATIONS = "EnableNotifications";
-    const string SEEN_NOTIFICATION_REQUEST = "SeenNotificationRequest";
-    const string THEME = "Theme";
-    const string DEFAULT = "default";
-    const string LIGHT = "light";
-    const string DARK = "dark";
-    const string AGREED_TO_TERMS = "AgreedToTerms";
-    const string DATE_FORMAT = "DateFormat";
-    const string TIME_FORMAT = "TimeFormat";
-    const string EXPORT_FREQUENCY = "ExportFrequency";
-    const string EXPORT_START = "ExportStart";
-    const string EXPORT_FILE_NAME = "ExportFileName";
-
     // Activity Change
     const string CHANGE_EVENT_ID = "ChangeId";
     const string CHANGE_DATE = "ChangeDate";
@@ -112,6 +97,21 @@ private:
     Dose* setDose(Table* table);
 
 public:
+    // Settings
+    const string TIME_BEFORE_DOSE = "TimeBeforeDose";
+    const string ENABLE_NOTIFICATIONS = "EnableNotifications";
+    const string SEEN_NOTIFICATION_REQUEST = "SeenNotificationRequest";
+    const string THEME = "Theme";
+    const string DEFAULT = "default";
+    const string LIGHT = "light";
+    const string DARK = "dark";
+    const string AGREED_TO_TERMS = "AgreedToTerms";
+    const string DATE_FORMAT = "DateFormat";
+    const string TIME_FORMAT = "TimeFormat";
+    const string EXPORT_FREQUENCY = "ExportFrequency";
+    const string EXPORT_START = "ExportStart";
+    const string EXPORT_FILE_NAME = "ExportFileName";
+
     const string NOTES_TABLE = "Notes";
     const string SETTINGS_TABLE = "Settings";
     const string ACTIVITY_CHANGE_TABLE = "ActivityChanges";
@@ -155,6 +155,11 @@ public:
      * @param values Values to add to new row
      */
     void deleteRecord(string table, map<string, string> where);
+
+    /**
+     * Retrieves settings
+     */
+    Table* getSettings();
 
     /**
      * Updates Settings

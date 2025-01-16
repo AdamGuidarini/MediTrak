@@ -696,3 +696,72 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_deleteNotificationsByMedI
         __android_log_write(ANDROID_LOG_ERROR, "SETTINGS UPDATE", err.c_str());
     }
 }
+extern "C"
+JNIEXPORT jobject JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_getSettings(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+
+    DatabaseController controller(dbPath);
+    Table* settings = controller.getSettings();
+    jobject jSettings;
+    jclass jBundle = env->FindClass("android/os/Bundle");
+
+    jmethodID bundleConstructor = env->GetMethodID(
+        jBundle, "<init>", "()V"
+    );
+    jmethodID putString = env->GetMethodID(
+    jBundle, "putString", "(Ljava/lang/String;Ljava/lang/String;)V"
+    );
+    jmethodID putInt = env->GetMethodID(
+        jBundle, "putInt", "(Ljava/lang/String;I)V"
+    );
+    jmethodID putBool = env->GetMethodID(
+            jBundle, "putBoolean", "(Ljava/lang/String;Z)V"
+    );
+
+    jSettings = env->NewObject(jBundle, bundleConstructor);
+
+    const string stringKeys[] = {
+            controller.THEME,
+            controller.DATE_FORMAT,
+            controller.TIME_FORMAT,
+            controller.EXPORT_START,
+            controller.EXPORT_FILE_NAME
+    };
+
+    const string intKeys[] = {
+            controller.TIME_BEFORE_DOSE,
+            controller.EXPORT_FREQUENCY
+    };
+
+    const string boolKeys[] = {
+            controller.ENABLE_NOTIFICATIONS,
+            controller.SEEN_NOTIFICATION_REQUEST,
+            controller.AGREED_TO_TERMS,
+    };
+
+    for (const auto& sKey : stringKeys) {
+        env->CallVoidMethod(
+                jSettings,
+                putString,
+                env->NewStringUTF(sKey.c_str()),
+                env->NewStringUTF(settings->getItem(sKey).c_str())
+        );
+    }
+
+    for (const auto& iKey : intKeys) {
+
+    }
+
+    for (const auto& bKey : boolKeys) {
+
+    }
+
+    delete settings;
+
+    return jSettings;
+}

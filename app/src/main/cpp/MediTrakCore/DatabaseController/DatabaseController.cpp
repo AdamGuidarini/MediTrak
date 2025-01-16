@@ -304,6 +304,12 @@ void DatabaseController::deleteRecord(string table, map<string, string> where) {
     manager.deleteRecord(std::move(table), std::move(where));
 }
 
+Table* DatabaseController::getSettings() {
+    string query = "SELECT * FROM " + SETTINGS_TABLE;
+
+    return manager.execSqlWithReturn(query);
+}
+
 void DatabaseController::updateSettings(map<string, string> values) {
     manager.update(SETTINGS_TABLE, std::move(values), {});
 }
