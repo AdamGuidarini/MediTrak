@@ -754,11 +754,21 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getSettings(
     }
 
     for (const auto& iKey : intKeys) {
-
+        env->CallVoidMethod(
+                jSettings,
+                putInt,
+                env->NewStringUTF(iKey.c_str()),
+                stoi(settings->getItem(iKey))
+        );
     }
 
     for (const auto& bKey : boolKeys) {
-
+        env->CallVoidMethod(
+                jSettings,
+                putBool,
+                env->NewStringUTF(bKey.c_str()),
+                settings->getItem(bKey) == "1"
+        );
     }
 
     delete settings;

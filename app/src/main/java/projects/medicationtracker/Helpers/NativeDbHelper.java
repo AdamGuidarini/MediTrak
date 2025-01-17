@@ -194,7 +194,7 @@ public class NativeDbHelper {
     }
 
     public Bundle getSettings() {
-        return null;
+        return getSettings(dbPath);
     }
 
     /**

@@ -367,7 +367,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
             db.setDateTimeFormat(dateFormats[position].first, timeFormat);
 
             dateSelector.clearFocus();
-            preferences = db.getPreferences();
+            preferences = nativeDb.getSettings();
         });
     }
 
@@ -405,7 +405,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
             }
 
             timeSelector.clearFocus();
-            preferences = db.getPreferences();
+            preferences = nativeDb.getSettings();
         });
     }
 

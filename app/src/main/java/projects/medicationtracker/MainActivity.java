@@ -85,7 +85,8 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
 
         allMeds = db.getMedications();
 
-        preferences = db.getPreferences();
+//        preferences = db.getPreferences();
+        preferences = nativeDb.getSettings();
 
         String theme = preferences.getString(THEME);
 
