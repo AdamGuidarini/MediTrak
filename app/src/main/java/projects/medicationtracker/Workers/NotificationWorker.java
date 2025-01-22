@@ -2,7 +2,7 @@ package projects.medicationtracker.Workers;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.SystemClock.sleep;
-import static projects.medicationtracker.Utils.NotificationUtils.CHANNEL_ID;
+import static projects.medicationtracker.Utils.NotificationUtils.MED_REMINDER_CHANNEL_ID;
 import static projects.medicationtracker.Utils.NotificationUtils.DOSE_TIME;
 import static projects.medicationtracker.Utils.NotificationUtils.GROUP_KEY;
 import static projects.medicationtracker.Utils.NotificationUtils.MEDICATION_ID;
@@ -68,7 +68,7 @@ public class NotificationWorker extends Worker {
 
             if (Arrays.stream(openNotes).noneMatch(n -> n.getId() == SUMMARY_ID)) {
                 Notification notificationSummary
-                        = new NotificationCompat.Builder(context, CHANNEL_ID)
+                        = new NotificationCompat.Builder(context, MED_REMINDER_CHANNEL_ID)
                         .setContentTitle(context.getString(R.string.app_name))
                         .setSmallIcon(R.drawable.pill)
                         .setStyle(new NotificationCompat.InboxStyle())
@@ -211,7 +211,7 @@ public class NotificationWorker extends Worker {
                 );
 
         NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(context, CHANNEL_ID)
+                new NotificationCompat.Builder(context, MED_REMINDER_CHANNEL_ID)
                         .setContentTitle(context.getString(R.string.app_name))
                         .setContentText(message)
                         .setSmallIcon(R.drawable.pill)

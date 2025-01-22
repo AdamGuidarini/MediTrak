@@ -27,7 +27,8 @@ public class NotificationUtils {
     private final static int SNOOZE_TIME_MINUTES = 15;
 
     public final static String GROUP_KEY = "medicationTrackerNotificationGroup";
-    public final static String CHANNEL_ID = "med_reminder";
+    public final static String MED_REMINDER_CHANNEL_ID = "med_reminder";
+    public final static String EXPORT_ALERT_CHANNEL_ID = "export_alerts";
     public final static String MESSAGE = "message";
     public final static String DOSE_TIME = "doseTime";
     public final static String MEDICATION_ID = "medicationId";
@@ -150,18 +151,28 @@ public class NotificationUtils {
      *
      * @param context Application context
      */
-    public static void createNotificationChannel(Context context) {
-        CharSequence name = "Medication Reminder";
+    public static void createNotificationChannels(Context context) {
+        CharSequence reminderName = "Medication Reminder";
+        CharSequence exportName = "Export Alerts";
         int importance = NotificationManager.IMPORTANCE_HIGH;
-
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-        channel.enableLights(false);
-        channel.enableVibration(false);
-        channel.setShowBadge(true);
-
         NotificationManager notificationManager
                 = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.createNotificationChannel(channel);
+
+        NotificationChannel medChannel = new NotificationChannel(
+                MED_REMINDER_CHANNEL_ID, reminderName, importance
+        );
+
+        NotificationChannel exportChannel = new NotificationChannel(
+                EXPORT_ALERT_CHANNEL_ID, exportName, importance
+        );
+
+        for (NotificationChannel n : new NotificationChannel[]{medChannel, exportChannel}) {
+            n.enableLights(false);
+            n.enableVibration(false);
+            n.setShowBadge(true);
+
+            notificationManager.createNotificationChannel(n);
+        }
     }
 
     /**

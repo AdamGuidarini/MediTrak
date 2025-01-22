@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
 
         allMeds = db.getMedications();
 
-//        preferences = db.getPreferences();
         preferences = nativeDb.getSettings();
 
         String theme = preferences.getString(THEME);
@@ -106,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.med_schedule));
 
-        NotificationUtils.createNotificationChannel(this);
+        NotificationUtils.createNotificationChannels(this);
         prepareNotifications();
 
         if (!preferences.getBoolean(AGREED_TO_TERMS)) {
