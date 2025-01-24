@@ -714,10 +714,10 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getSettings(
         jBundle, "<init>", "()V"
     );
     jmethodID putString = env->GetMethodID(
-    jBundle, "putString", "(Ljava/lang/String;Ljava/lang/String;)V"
+            jBundle, "putString", "(Ljava/lang/String;Ljava/lang/String;)V"
     );
     jmethodID putInt = env->GetMethodID(
-        jBundle, "putInt", "(Ljava/lang/String;I)V"
+            jBundle, "putInt", "(Ljava/lang/String;I)V"
     );
     jmethodID putBool = env->GetMethodID(
             jBundle, "putBoolean", "(Ljava/lang/String;Z)V"
