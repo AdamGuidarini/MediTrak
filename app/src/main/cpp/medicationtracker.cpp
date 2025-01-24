@@ -676,6 +676,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_updateSettings(
         __android_log_write(ANDROID_LOG_ERROR, "SETTINGS UPDATE", err);
     }
 }
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_projects_medicationtracker_Helpers_NativeDbHelper_deleteNotificationsByMedId(
@@ -696,6 +697,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_deleteNotificationsByMedI
         __android_log_write(ANDROID_LOG_ERROR, "SETTINGS UPDATE", err.c_str());
     }
 }
+
 extern "C"
 JNIEXPORT jobject JNICALL
 Java_projects_medicationtracker_Helpers_NativeDbHelper_getSettings(

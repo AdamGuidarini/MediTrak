@@ -201,36 +201,21 @@ public class NativeDbHelper {
      * Native methods
      */
     private native void dbCreate(String dbPath);
-
     private native void dbUpgrade(String dbPath, int version);
-
     private native long insert(String dbPath, String table, Pair<String, String>[] values);
-
     private native boolean update(String dbPath, String table, Pair<String, String>[] values, Pair<String, String>[] where);
-
     private native long delete(String dbPath, String table, Pair<String, String>[] values);
-
     private native boolean dbExporter(String databaseName, String exportDirectory, String[] ignoredTables);
-
     private native boolean dbImporter(String dbPath, String fileContents, String[] ignoredTables);
-
     private native Medication getMedHistory(String dbPath, long medId, Class<Medication> medicationClass);
-
     private native boolean exportMedHistory(String dbPath, String exportPath, Pair<String, String[]>[] data);
-
     private native Dose findDose(String dbPath, long medicationId, String doseTime, Medication med);
-
     private native Dose getDoseById(String dbPath, long doseId, Medication med);
-
     private native boolean updateDose(String dbPath, Dose dose);
-
     private native long stashNotification(String dbPath, Notification notification);
-
     private native void deleteNotification(String dbPath, long notificationId);
     private native void deleteNotificationsByMedId(String dbPath, long medicationid);
-
     private native Notification[] getNotifications(String dbPath, Class<Notification> notificationClass);
-
     private native long addDose(String dbPath, long medId, String scheduledTime, String timeTaken, boolean taken);
     private native void updateSettings(String dbPath, Pair<String, String>[] settings);
     private native Bundle getSettings(String dbPath);
