@@ -194,7 +194,7 @@
     <string name="downloads">Downloaden</string>
     <string name="documents">Documenten</string>
     <string name="export_data">Gegevens exporteren</string>
-    <string name="successful_export">Gegevens succesvol geëxporteerd naar: %1$s?</string>  
+    <string name="successful_export">Gegevens succesvol geëxporteerd naar: %1$s</string>
     <string name="import_success">Gegevens succesvol geïmporteerd</string>
     <string name="failed_export">Gegevens konden niet worden geëxporteerd</string>
     <string name="failed_import">Gegevens importeren is mislukt</string>

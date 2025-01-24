@@ -196,7 +196,7 @@
     <string name="downloads">Scaricamenti</string>
     <string name="documents">Documenti</string>
     <string name="export_data">Dati sulle esportazioni</string>
-    <string name="successful_export">Dati esportati con successo: %1$s?</string>
+    <string name="successful_export">Dati esportati con successo: %1$s</string>
     <string name="import_success">Dati importati con successo</string>
     <string name="failed_export">Data could not be exported</string>
     <string name="failed_import">Non è stato possibile esportare i dati</string>
