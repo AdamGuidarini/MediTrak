@@ -73,7 +73,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
             }
     );
     private NativeDbHelper nativeDb;
-    private Pair<String, DateTimeFormatter>[] dateFormats = new Pair[]{
+    private final Pair<String, DateTimeFormatter>[] dateFormats = new Pair[]{
             new Pair(DBHelper.DateFormats.MM_DD_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.MM_DD_YYYY, Locale.getDefault())),
             new Pair(DBHelper.DateFormats.DD_MM_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.DD_MM_YYYY, Locale.getDefault())),
             new Pair(DBHelper.DateFormats.MMM_DD_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.MMM_DD_YYYY, Locale.getDefault())),
@@ -432,18 +432,22 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
             case "de":
                 langSelector.setText(langOpts[0], false);
                 break;
-            case "en":
-            default:
-                langSelector.setText(langOpts[1], false);
-                break;
             case "es":
                 langSelector.setText(langOpts[2], false);
                 break;
             case "it":
                 langSelector.setText(langOpts[3], false);
                 break;
-            case "tr":
+            case "nl":
                 langSelector.setText(langOpts[4], false);
+                break;
+            case "tr":
+                langSelector.setText(langOpts[5], false);
+                break;
+            case "en":
+            default:
+                langSelector.setText(langOpts[1], false);
+                break;
         }
 
         langSelector.setOnItemClickListener((parent, view, position, id) -> {
@@ -634,9 +638,12 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
 
             nativeDb.updateSettings(preferences);
 
+            String startText = Objects.requireNonNull(dialogRes.getString(EXPORT_START));
+            LocalDateTime start = TimeFormatting.stringToLocalDateTime(startText);
+
             DataExportUtils.scheduleExport(
                     this,
-                    TimeFormatting.stringToLocalDateTime(dialogRes.getString(EXPORT_START)),
+                    start,
                     dialogRes.getInt(EXPORT_FREQUENCY)
             );
 
@@ -649,6 +656,8 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
             preferences.putString(EXPORT_START, "");
 
             nativeDb.updateSettings(preferences);
+
+            // Cancel PendingIntent
 
             return;
         } else {

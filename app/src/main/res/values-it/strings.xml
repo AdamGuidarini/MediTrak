@@ -15,6 +15,8 @@
     <string name="delete">Eliminare</string>
     <string name="i_agree">Sono d\'accordo</string>
     <string name="select_all">Selezionare Tutto</string>
+    <string name="stop">Smettere</string>
+    <string name="every">Ogni</string>
 
     <!-- Filters -->
     <string name="clear">Pulire</string>
@@ -209,6 +211,12 @@
     <string name="hour_12">12 ore</string>
     <string name="hour_24">24 ore</string>
     <string name="language">Lingua</string>
+    <string name="schedule_export">Programmare l\'Esportazione</string>
+
+    <!-- Schedule Export Dialog -->
+    <string name="export_now">Esportare ora</string>
+    <string name="export_frequency">Frequenza di Esportazione</string>
+    <string name="date_must_be_future">La data deve essere in futuro</string>
 
     <!-- Dose Info dialog -->
     <string name="not_taken_yet">Ancora non si ha preso</string>

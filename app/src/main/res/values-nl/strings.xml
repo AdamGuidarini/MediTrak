@@ -15,6 +15,8 @@
     <string name="delete">Verwijderen</string>
     <string name="i_agree">Ik ga akkoord</string>
     <string name="select_all">Selecteer alles</string>
+    <string name="stop">Stoppen</string>
+    <string name="every">Elk</string>
 
     <!-- Filters -->
     <string name="clear">Duidelijk</string>
@@ -207,6 +209,12 @@
     <string name="hour_12">12 uur</string> 
     <string name="hour_24">24 uur</string>
     <string name="language">Taal</string>
+    <string name="schedule_export">Export Schema</string>
+    <string name="date_must_be_future">De datum moet in de toekomst zijn</string>
+
+    <!-- Schedule Export Dialog -->
+    <string name="export_now">Exporteren nu</string>
+    <string name="export_frequency">Frequentie Export</string>
 
     <!-- Dose Info dialog -->
     <string name="not_taken_yet">Nog niet genomen</string>

@@ -15,6 +15,8 @@
     <string name="delete">Delete</string>
     <string name="i_agree">I agree</string>
     <string name="select_all">Select All</string>
+    <string name="stop">Stop</string>
+    <string name="every">Every</string>
 
     <!-- Filters -->
     <string name="clear">Clear</string>
@@ -208,6 +210,12 @@
     <string name="hour_12">12 Hour</string>
     <string name="hour_24">24 Hour</string>
     <string name="language">Language</string>
+    <string name="schedule_export">Schedule Export</string>
+
+    <!-- Schedule Export Dialog -->
+    <string name="export_now">Export now</string>
+    <string name="export_frequency">Export Frequency</string>
+    <string name="date_must_be_future">Date must be in the future</string>
 
     <!-- Dose Info dialog -->
     <string name="not_taken_yet">Not yet taken</string>

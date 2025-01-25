@@ -101,7 +101,7 @@ public class BackupDestinationPicker extends DialogFragment {
         builder.setNegativeButton(R.string.cancel, ((dialogInterface, i) -> dismiss()));
 
         if (preferences.getInt(EXPORT_FREQUENCY, -1) != -1 && showPeriodic) {
-            builder.setNeutralButton("=STOP=", (dialogInterface, i) -> {
+            builder.setNeutralButton(getString(R.string.stop), (dialogInterface, i) -> {
                 onStopClick();
                 dismiss();
             });
@@ -265,7 +265,7 @@ public class BackupDestinationPicker extends DialogFragment {
                 startDateValid = startDate != null && !startDate.isBefore(LocalDate.now());
 
                 if (!startDateValid) {
-                    dateLayout.setError("=Date cannot be in past=");
+                    dateLayout.setError(getString(R.string.date_must_be_future));
 
                     timeEntry.setText(timeEntry.getText());
                 }
