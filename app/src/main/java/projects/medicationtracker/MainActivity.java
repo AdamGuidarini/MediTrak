@@ -6,6 +6,8 @@ import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DA
 import static projects.medicationtracker.Fragments.MedicationScheduleFragment.MEDICATIONS;
 import static projects.medicationtracker.Helpers.DBHelper.AGREED_TO_TERMS;
 import static projects.medicationtracker.Helpers.DBHelper.DARK;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FREQUENCY;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_START;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.SEEN_NOTIFICATION_REQUEST;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
@@ -50,6 +52,7 @@ import projects.medicationtracker.Dialogs.WelcomeDialog;
 import projects.medicationtracker.Fragments.MedicationScheduleFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
+import projects.medicationtracker.Utils.DataExportUtils;
 import projects.medicationtracker.Utils.NotificationUtils;
 import projects.medicationtracker.Utils.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
@@ -107,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
 
         NotificationUtils.createNotificationChannels(this);
         prepareNotifications();
+        prepareScheduledExport();
 
         if (!preferences.getBoolean(AGREED_TO_TERMS)) {
             WelcomeDialog welcomeDialog = new WelcomeDialog();
@@ -114,8 +118,10 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
             welcomeDialog.show(getSupportFragmentManager(), null);
         }
 
-        if (Build.VERSION.SDK_INT >= 33 && !preferences.getBoolean(SEEN_NOTIFICATION_REQUEST)
-                && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        if (
+                Build.VERSION.SDK_INT >= 33 && !preferences.getBoolean(SEEN_NOTIFICATION_REQUEST)
+                && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                        != PackageManager.PERMISSION_GRANTED
         ) {
             notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
         }
@@ -490,6 +496,17 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
                     n.getNotificationId()
             );
         }
+    }
+
+    /**
+     * Prepare export PendingIntent on app start
+     */
+    public void prepareScheduledExport() {
+        String expStart = Objects.requireNonNull(preferences.getString(EXPORT_START));
+        LocalDateTime exportStart = TimeFormatting.stringToLocalDateTime(expStart);
+        int frequency = preferences.getInt(EXPORT_FREQUENCY);
+
+        DataExportUtils.scheduleExport(this, exportStart, frequency);
     }
 
     /**

@@ -2,6 +2,8 @@ package projects.medicationtracker.Utils;
 
 import static android.os.Build.VERSION.SDK_INT;
 
+import static projects.medicationtracker.Receivers.ExportReceiver.EXPORT_ID;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -37,7 +39,7 @@ public class DataExportUtils {
                 PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
                 : PendingIntent.FLAG_UPDATE_CURRENT;
 
-        alarmIntent = PendingIntent.getBroadcast(context, (int) alarmTime, exportIntent, flags);
+        alarmIntent = PendingIntent.getBroadcast(context, EXPORT_ID, exportIntent, flags);
         alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent);
     }
 
@@ -58,5 +60,22 @@ public class DataExportUtils {
         long cycles = (diff / frequency) + 1;
 
         return start.plusHours(cycles * frequency);
+    }
+
+    /**
+     * Cancels PendingIntent for upcoming
+     * @param context Application context
+     */
+    public static void cancel(Context context) {
+        Intent intent = new Intent(context, ExportReceiver.class);
+
+        PendingIntent.getBroadcast(
+                context,
+                EXPORT_ID,
+                intent,
+                SDK_INT >= Build.VERSION_CODES.S ?
+                        PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+                        : PendingIntent.FLAG_UPDATE_CURRENT
+        );
     }
 }

@@ -144,12 +144,12 @@ public class NativeDbHelper {
         return getDoseById(dbPath, doseId, new Medication());
     }
 
-    public boolean updateDose(Dose dose) {
-        return updateDose(dbPath, dose);
+    public void updateDose(Dose dose) {
+        updateDose(dbPath, dose);
     }
 
-    public long stashNotification(Notification notification) {
-        return stashNotification(dbPath, notification);
+    public void stashNotification(Notification notification) {
+        stashNotification(dbPath, notification);
     }
 
     public void deleteNotification(long notificationId) {

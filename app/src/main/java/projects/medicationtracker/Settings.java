@@ -641,6 +641,8 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
             String startText = Objects.requireNonNull(dialogRes.getString(EXPORT_START));
             LocalDateTime start = TimeFormatting.stringToLocalDateTime(startText);
 
+            DataExportUtils.cancel(this);
+
             DataExportUtils.scheduleExport(
                     this,
                     start,
@@ -657,7 +659,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
 
             nativeDb.updateSettings(preferences);
 
-            // Cancel PendingIntent
+            DataExportUtils.cancel(this);
 
             return;
         } else {

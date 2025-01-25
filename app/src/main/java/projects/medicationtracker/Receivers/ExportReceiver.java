@@ -1,5 +1,6 @@
 package projects.medicationtracker.Receivers;
 
+import static projects.medicationtracker.Helpers.DBHelper.ENABLE_NOTIFICATIONS;
 import static projects.medicationtracker.Utils.NotificationUtils.EXPORT_ALERT_CHANNEL_ID;
 import static projects.medicationtracker.Utils.NotificationUtils.GROUP_KEY;
 
@@ -43,6 +44,14 @@ public class ExportReceiver extends BroadcastReceiver {
                 context.getString(R.string.successful_export, fileName)
                 : context.getString(R.string.failed_export);
 
+        LocalDateTime exportStart = TimeFormatting.stringToLocalDateTime(
+                prefs.getString(DBHelper.EXPORT_START)
+        );
+
+        DataExportUtils.scheduleExport(
+                context, exportStart, prefs.getInt(DBHelper.EXPORT_FREQUENCY)
+        );
+
         Notification note = new NotificationCompat.Builder(context, EXPORT_ALERT_CHANNEL_ID)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentTitle(context.getString(R.string.app_name))
@@ -55,14 +64,8 @@ public class ExportReceiver extends BroadcastReceiver {
                 .setSilent(success)
                 .build();
 
-        manager.notify(EXPORT_ID, note);
-
-        LocalDateTime exportStart = TimeFormatting.stringToLocalDateTime(
-                prefs.getString(DBHelper.EXPORT_START)
-        );
-
-        DataExportUtils.scheduleExport(
-                context, exportStart, prefs.getInt(DBHelper.EXPORT_FREQUENCY)
-        );
+        if (prefs.getBoolean(ENABLE_NOTIFICATIONS)) {
+            manager.notify(EXPORT_ID, note);
+        }
     }
 }

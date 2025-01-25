@@ -63,8 +63,12 @@ public class NotificationUtils {
      * @param scheduledTime  Time the notification will be set.
      * @param notificationId ID for the PendingIntent that stores data for the notification.
      */
-    public static void scheduleNotification(Context context, Medication medication,
-                                LocalDateTime scheduledTime, long notificationId) {
+    public static void scheduleNotification(
+            Context context,
+            Medication medication,
+            LocalDateTime scheduledTime,
+            long notificationId
+    ) {
         ZonedDateTime zdt = scheduledTime.atZone(ZoneId.systemDefault());
         long alarmTimeMillis = zdt.toInstant().toEpochMilli();
 
@@ -79,12 +83,20 @@ public class NotificationUtils {
      * @param time                Time the notification will be set.
      * @param notificationId      ID for the PendingIntent that stores data for the notification.
      */
-    public static void scheduleIn15Minutes(Context notificationContext, Medication medication,
-                                           LocalDateTime time, long notificationId) {
-        ZonedDateTime zdt = LocalDateTime.now().plusMinutes(SNOOZE_TIME_MINUTES).atZone(ZoneId.systemDefault());
+    public static void scheduleIn15Minutes(
+            Context notificationContext,
+            Medication medication,
+            LocalDateTime time,
+            long notificationId
+    ) {
+        ZonedDateTime zdt = LocalDateTime.now()
+                .plusMinutes(SNOOZE_TIME_MINUTES)
+                .atZone(ZoneId.systemDefault());
         long alarmTimeMillis = zdt.toInstant().toEpochMilli();
 
-        createNotificationAlarm(notificationContext, alarmTimeMillis, medication, time, notificationId);
+        createNotificationAlarm(
+                notificationContext, alarmTimeMillis, medication, time, notificationId
+        );
     }
 
     /**
@@ -96,14 +108,19 @@ public class NotificationUtils {
      * @param time                Time the notification will be set.
      * @param notificationId      ID for the PendingIntent that stores data for the notification.
      */
-    private static void createNotificationAlarm(Context notificationContext, long alarmTime, Medication medication,
-                                                LocalDateTime time, long notificationId) {
+    private static void createNotificationAlarm(
+            Context notificationContext,
+            long alarmTime, Medication medication,
+            LocalDateTime time,
+            long notificationId
+    ) {
         PendingIntent alarmIntent;
         AlarmManager alarmManager;
         Intent notificationIntent = new Intent(notificationContext, NotificationReceiver.class);
+        String message = createMedicationReminderMessage(medication, notificationContext);
 
         notificationIntent.putExtra(NOTIFICATION_ID, notificationId);
-        notificationIntent.putExtra(MESSAGE, createMedicationReminderMessage(medication, notificationContext));
+        notificationIntent.putExtra(MESSAGE,message);
         notificationIntent.putExtra(DOSE_TIME, time);
         notificationIntent.putExtra(MEDICATION_ID, medication.getId());
 
@@ -112,11 +129,12 @@ public class NotificationUtils {
                 (int) notificationId,
                 notificationIntent,
                 SDK_INT >= Build.VERSION_CODES.S ?
-                        PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
+                        PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+                        : PendingIntent.FLAG_UPDATE_CURRENT
         );
 
         alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent);
+        alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent);
     }
 
     /**
@@ -184,11 +202,13 @@ public class NotificationUtils {
     public static void deletePendingNotification(long notificationId, Context context) {
         Intent intent = new Intent(context, NotificationReceiver.class);
 
-        PendingIntent.getBroadcast(context,
+        PendingIntent.getBroadcast(
+                context,
                 (int) notificationId,
                 intent,
                 SDK_INT >= Build.VERSION_CODES.S ?
-                        PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
+                        PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+                        : PendingIntent.FLAG_UPDATE_CURRENT
         ).cancel();
     }
 
