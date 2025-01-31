@@ -134,7 +134,7 @@ public class NotificationUtils {
         );
 
         alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
-        alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent);
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent);
     }
 
     /**

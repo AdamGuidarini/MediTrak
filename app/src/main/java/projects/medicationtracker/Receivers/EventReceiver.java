@@ -79,10 +79,7 @@ public class EventReceiver extends BroadcastReceiver {
             final ArrayList<Notification> notifications = nativeDbHelper.getNotifications();
 
             prepareExport(context, nativeDbHelper.getSettings());
-
-            for (final Medication medication : medications) {
-                prepareNotification(context, medication);
-            }
+            medications.forEach(m -> prepareNotification(context, m));
 
             for (final Notification n : notifications) {
                 Medication med = medications.stream().filter(
@@ -125,6 +122,10 @@ public class EventReceiver extends BroadcastReceiver {
     }
 
     private void prepareExport(Context context, Bundle preferences) {
+        if (preferences.getString(EXPORT_START).isEmpty()) {
+            return;
+        }
+
         LocalDateTime exportStart = TimeFormatting.stringToLocalDateTime(
                 Objects.requireNonNull(preferences.getString(EXPORT_START))
         );

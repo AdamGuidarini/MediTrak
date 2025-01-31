@@ -11,6 +11,7 @@ import static projects.medicationtracker.Helpers.DBHelper.EXPORT_START;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.SEEN_NOTIFICATION_REQUEST;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
+import static projects.medicationtracker.Receivers.ExportReceiver.EXPORT_ID;
 
 import android.app.NotificationManager;
 import android.content.Context;
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
         );
         StatusBarNotification[] openNotifications = manager.getActiveNotifications();
 
-        if (openNotifications.length > 0) {
+        if (openNotifications.length > 0 && (openNotifications.length != 1 && openNotifications[0].getId() != EXPORT_ID)) {
             OpenNotificationsDialog notificationsDialog = new OpenNotificationsDialog(
                     openNotifications, allMeds
             );
@@ -467,18 +468,16 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
     private void prepareNotifications() {
         final ArrayList<Notification> notifications = nativeDb.getNotifications();
 
-        for (Medication medication : allMeds) {
-            NotificationUtils.clearPendingNotifications(medication, this);
-        }
-
-        for (Medication medication : allMeds) {
-            NotificationUtils.createNotifications(medication, this);
-        }
+        allMeds.forEach(m -> {
+            NotificationUtils.clearPendingNotifications(m, this);
+            NotificationUtils.createNotifications(m, this);
+        });
 
         for (final Notification n : notifications) {
-            Medication med = allMeds.stream().filter(
-                    m -> m.getId() == n.getMedId()
-            ).findFirst().orElse(null);
+            Medication med = allMeds.stream()
+                    .filter(m -> m.getId() == n.getMedId())
+                    .findFirst()
+                    .orElse(null);
 
             if (med == null) {
                 Log.e(
@@ -503,6 +502,11 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
      */
     public void prepareScheduledExport() {
         String expStart = Objects.requireNonNull(preferences.getString(EXPORT_START));
+
+        if (expStart.isEmpty()) {
+            return;
+        }
+
         LocalDateTime exportStart = TimeFormatting.stringToLocalDateTime(expStart);
         int frequency = preferences.getInt(EXPORT_FREQUENCY);
 

@@ -343,7 +343,8 @@ public class BackupDestinationPicker extends DialogFragment {
 
                     switch (selected) {
                         case 2:
-                            frequency *= 7 * 24;
+                            frequency *= 7;
+                            break;
                         case 1:
                             frequency *= 24;
                     }

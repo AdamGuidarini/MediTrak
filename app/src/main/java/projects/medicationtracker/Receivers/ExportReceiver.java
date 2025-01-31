@@ -57,7 +57,6 @@ public class ExportReceiver extends BroadcastReceiver {
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(message)
                 .setSmallIcon(R.drawable.pill)
-                .setGroup(GROUP_KEY)
                 .setAutoCancel(false)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setStyle(new NotificationCompat.BigTextStyle())
