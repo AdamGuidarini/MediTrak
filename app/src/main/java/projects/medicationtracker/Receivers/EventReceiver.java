@@ -4,6 +4,7 @@ import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FREQUENCY;
 import static projects.medicationtracker.Helpers.DBHelper.EXPORT_START;
 import static projects.medicationtracker.Utils.NotificationUtils.DOSE_TIME;
 import static projects.medicationtracker.Utils.NotificationUtils.MEDICATION_ID;
+import static projects.medicationtracker.Utils.NotificationUtils.MED_REMINDER_CHANNEL_ID;
 import static projects.medicationtracker.Utils.NotificationUtils.NOTIFICATION_ID;
 import static projects.medicationtracker.Utils.NotificationUtils.clearPendingNotifications;
 import static projects.medicationtracker.Utils.NotificationUtils.createNotifications;
@@ -101,7 +102,9 @@ public class EventReceiver extends BroadcastReceiver {
             }
         }
 
-        StatusBarNotification[] notifications = manager.getActiveNotifications();
+        StatusBarNotification[] notifications = Arrays.stream(manager.getActiveNotifications())
+                .filter(n -> n.getNotification().getChannelId().equals(MED_REMINDER_CHANNEL_ID))
+                .toArray(StatusBarNotification[]::new);
 
         if (notifications.length == 1 && notifications[0].getId() == SUMMARY_ID) {
             manager.cancel(SUMMARY_ID);

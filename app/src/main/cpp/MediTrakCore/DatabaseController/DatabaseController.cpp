@@ -100,7 +100,7 @@ void DatabaseController::create() {
             + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1, "
             + THEME + " TEXT DEFAULT '" + DEFAULT + "',"
             + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0,"
-            + DATE_FORMAT + " TEXT DEFAULT '" + DateFormats::MM_DD_YYYY + "',"
+            + DATE_FORMAT + " TEXT DEFAULT '" + DateFormats::MMM_DD_YYYY + "',"
             + TIME_FORMAT + " TEXT DEFAULT '" + TimeFormats::_12_HOUR + "',"
             + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0,"
             + EXPORT_FREQUENCY + " INTEGER DEFAULT -1,"

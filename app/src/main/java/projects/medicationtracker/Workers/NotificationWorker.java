@@ -110,7 +110,7 @@ public class NotificationWorker extends Worker {
             StatusBarNotification[] filteredNotifications = Arrays.stream(
                     notificationManager.getActiveNotifications()
             ).filter(
-                    n -> n.getId() != SUMMARY_ID
+                    n -> n.getId() != SUMMARY_ID && n.getNotification().getChannelId().equals(MED_REMINDER_CHANNEL_ID)
             ).toArray(StatusBarNotification[]::new);
 
             if (filteredNotifications.length == 1) {
@@ -231,7 +231,9 @@ public class NotificationWorker extends Worker {
                         )
                         .setDeleteIntent(deleteIntent);
 
-        StatusBarNotification[] open = notificationManager.getActiveNotifications();
+        StatusBarNotification[] open = Arrays.stream(notificationManager.getActiveNotifications())
+                .filter(n -> n.getNotification().getChannelId().equals(MED_REMINDER_CHANNEL_ID))
+                .toArray(StatusBarNotification[]::new);
 
         if (Arrays.stream(open).filter(n -> n.getId() != SUMMARY_ID).count() >= 1) {
             builder.addAction(
@@ -241,8 +243,7 @@ public class NotificationWorker extends Worker {
             );
         }
 
-        Intent resIntent =
-                new Intent(context, MainActivity.class);
+        Intent resIntent = new Intent(context, MainActivity.class);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addParentStack(MainActivity.class);
