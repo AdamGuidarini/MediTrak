@@ -2,7 +2,6 @@ package projects.medicationtracker.Receivers;
 
 import static projects.medicationtracker.Helpers.DBHelper.ENABLE_NOTIFICATIONS;
 import static projects.medicationtracker.Utils.NotificationUtils.EXPORT_ALERT_CHANNEL_ID;
-import static projects.medicationtracker.Utils.NotificationUtils.GROUP_KEY;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -32,13 +31,7 @@ public class ExportReceiver extends BroadcastReceiver {
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         String fileName = prefs.getString(DBHelper.EXPORT_FILE_NAME);
-        boolean success = true;
-
-        try {
-            db.dbExport(fileName);
-        } catch (Exception e) {
-            success = false;
-        }
+        boolean success = db.dbExport(fileName);
 
         String message = success ?
                 context.getString(R.string.successful_export, fileName)
