@@ -219,4 +219,5 @@ public class NativeDbHelper {
     private native long addDose(String dbPath, long medId, String scheduledTime, String timeTaken, boolean taken);
     private native void updateSettings(String dbPath, Pair<String, String>[] settings);
     private native Bundle getSettings(String dbPath);
+    public static native boolean canWriteFile(String testPath);
 }

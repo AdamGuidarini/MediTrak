@@ -37,6 +37,7 @@ import java.util.Locale;
 
 import projects.medicationtracker.Fragments.SelectDateFragment;
 import projects.medicationtracker.Fragments.TimePickerFragment;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Utils.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
@@ -154,6 +155,10 @@ public class BackupDestinationPicker extends DialogFragment {
 
                 if (exportFile.isEmpty()) {
                     fileNameInputLayout.setError(getString(R.string.err_missing_file_name));
+
+                    fileNameValid = false;
+                } else if (!NativeDbHelper.canWriteFile(exportDir + '/' + exportFile + "." + fileExtension)) {
+                    fileNameInputLayout.setError("=Access to this file was denied=");
 
                     fileNameValid = false;
                 } else {
