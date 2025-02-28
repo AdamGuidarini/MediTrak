@@ -74,12 +74,12 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
     );
     private NativeDbHelper nativeDb;
     private final Pair<String, DateTimeFormatter>[] dateFormats = new Pair[]{
-            new Pair(DBHelper.DateFormats.MM_DD_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.MM_DD_YYYY, Locale.getDefault())),
-            new Pair(DBHelper.DateFormats.DD_MM_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.DD_MM_YYYY, Locale.getDefault())),
-            new Pair(DBHelper.DateFormats.MMM_DD_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.MMM_DD_YYYY, Locale.getDefault())),
-            new Pair(DBHelper.DateFormats.DD_MMM_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.DD_MMM_YYYY, Locale.getDefault())),
-            new Pair(DBHelper.DateFormats.YYYY_MM_DD, DateTimeFormatter.ofPattern(DBHelper.DateFormats.YYYY_MM_DD, Locale.getDefault())),
-            new Pair(DBHelper.DateFormats.MM__DD_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.MM__DD_YYYY, Locale.getDefault()))
+            new Pair<>(DBHelper.DateFormats.MM_DD_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.MM_DD_YYYY, Locale.getDefault())),
+            new Pair<>(DBHelper.DateFormats.DD_MM_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.DD_MM_YYYY, Locale.getDefault())),
+            new Pair<>(DBHelper.DateFormats.MMM_DD_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.MMM_DD_YYYY, Locale.getDefault())),
+            new Pair<>(DBHelper.DateFormats.DD_MMM_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.DD_MMM_YYYY, Locale.getDefault())),
+            new Pair<>(DBHelper.DateFormats.YYYY_MM_DD, DateTimeFormatter.ofPattern(DBHelper.DateFormats.YYYY_MM_DD, Locale.getDefault())),
+            new Pair<>(DBHelper.DateFormats.MM__DD_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.MM__DD_YYYY, Locale.getDefault()))
     };
 
     /**

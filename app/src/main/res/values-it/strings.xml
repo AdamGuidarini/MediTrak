@@ -45,6 +45,7 @@
     <string name="err_missing_file_name">Manca il nome del file</string>
     <string name="err_file_must_be_json">Il file di esportazione deve avere l\'estensione .json</string>
     <string name="err_required">Obbligatorio</string>
+    <string name="err_file_access_denied">Accesso a questo file negato</string>
 
     <!-- Time formats -->
     <string name="date_format">Mmm dd, yyyy</string>

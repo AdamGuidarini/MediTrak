@@ -45,6 +45,7 @@
     <string name="err_missing_file_name">Dosya adı eksik</string>
     <string name="err_file_must_be_json">Dışa aktarma dosyası .json uzantılı olmalıdır</string>
     <string name="err_required">Gerekli</string>
+    <string name="err_file_access_denied">Bu dosyaya erişim reddedildi</string>
 
     <!-- Zaman formatları -->
     <string name="date_format">Aaa gg, yyyy</string>

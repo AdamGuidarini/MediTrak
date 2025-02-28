@@ -45,6 +45,7 @@
     <string name="err_missing_file_name">Ontbrekende bestandsnaam</string>
     <string name="err_file_must_be_json">Exportbestand moet de extensie .json hebben</string>
     <string name="err_required">Vereist</string>
+    <string name="err_file_access_denied">Toegang tot dit bestand is geweigerd</string>
 
     <!-- Time formats -->
     <string name="date_format">Mmm dd, jjjj</string>

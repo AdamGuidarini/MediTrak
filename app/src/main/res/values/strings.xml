@@ -45,6 +45,7 @@
     <string name="err_missing_file_name">Missing file name</string>
     <string name="err_file_must_be_json">Export file must have a .json extension</string>
     <string name="err_required">Required</string>
+    <string name="err_file_access_denied">Access to this file was denied</string>
 
     <!-- Time formats -->
     <string name="date_format">Mmm dd, yyyy</string>
