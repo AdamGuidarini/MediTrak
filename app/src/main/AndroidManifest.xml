@@ -53,6 +53,8 @@
         <receiver
             android:name=".Receivers.NotificationReceiver"
             android:process=":remote" />
+        <receiver android:name=".Receivers.ExportReceiver"
+            android:process=":remote" />
         <receiver
             android:name=".Receivers.EventReceiver"
             android:exported="true">

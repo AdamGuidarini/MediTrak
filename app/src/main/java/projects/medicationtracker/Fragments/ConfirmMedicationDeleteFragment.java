@@ -10,7 +10,7 @@ import androidx.fragment.app.DialogFragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import projects.medicationtracker.Helpers.DBHelper;
-import projects.medicationtracker.Helpers.NotificationHelper;
+import projects.medicationtracker.Utils.NotificationUtils;
 import projects.medicationtracker.MyMedications;
 import projects.medicationtracker.Models.Medication;
 
@@ -40,7 +40,7 @@ public class ConfirmMedicationDeleteFragment extends DialogFragment {
         {
             Intent intent = new Intent(getContext(), MyMedications.class);
             db.deleteMedication(medication);
-            NotificationHelper.deletePendingNotification(medication.getId(), getContext());
+            NotificationUtils.deletePendingNotification(medication.getId(), getContext());
             getActivity().finish();
             startActivity(intent);
         }));

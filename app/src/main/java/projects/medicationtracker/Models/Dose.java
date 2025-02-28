@@ -1,7 +1,5 @@
 package projects.medicationtracker.Models;
 
-import android.util.Log;
-
 import androidx.annotation.Nullable;
 
 import java.time.LocalDateTime;
@@ -9,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import projects.medicationtracker.Helpers.DBHelper;
-import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.Utils.TimeFormatting;
 
 /**
  * A simple class representing a Medication dose

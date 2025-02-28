@@ -26,7 +26,7 @@ import java.util.Objects;
 
 import projects.medicationtracker.Dialogs.AddNoteDialog;
 import projects.medicationtracker.Helpers.DBHelper;
-import projects.medicationtracker.Helpers.TextViewUtils;
+import projects.medicationtracker.Utils.TextViewUtils;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.Models.Note;
 import projects.medicationtracker.Views.StandardCardView;

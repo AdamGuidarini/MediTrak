@@ -15,6 +15,8 @@
     <string name="delete">Eliminar</string>
     <string name="i_agree">Estoy de acuerdo</string>
     <string name="select_all">Seleccionar Todo</string>
+    <string name="stop">Parar</string>
+    <string name="every">Cada</string>
 
     <!-- Filters -->
     <string name="clear">Limpiar</string>
@@ -43,6 +45,7 @@
     <string name="err_missing_file_name">Falta el nombre del archivo</string>
     <string name="err_file_must_be_json">El archivo de exportación debe tener una extensión .json</string>
     <string name="err_required">Obligatorio</string>
+    <string name="err_file_access_denied">Se ha denegado el acceso a este archivo</string>
 
     <!-- Time formats -->
     <string name="date_format">Mmm dd, yyyy</string>
@@ -195,7 +198,7 @@
     <string name="downloads">Descargas</string>
     <string name="documents">Documentos</string>
     <string name="export_data">Datos de exportación</string>
-    <string name="successful_export">Datos exportados con éxito a: %1$s?</string>
+    <string name="successful_export">Datos exportados con éxito a: %1$s</string>
     <string name="import_success">Datos importados con éxito</string>
     <string name="failed_export">No se han podido exportar los datos</string>
     <string name="failed_import">No se han podido importar los datos</string>
@@ -208,6 +211,12 @@
     <string name="hour_12">12 horas</string>
     <string name="hour_24">24 horas</string>
     <string name="language">Idioma</string>
+    <string name="schedule_export">Programar la Exportación</string>
+
+    <!-- Schedule Export Dialog -->
+    <string name="export_now">Exportar ahora</string>
+    <string name="export_frequency">Frequencia de Exportación</string>
+    <string name="date_must_be_future">La fecha tiene que estar en el futuro</string>
 
     <!-- Dose Info dialog -->
     <string name="not_taken_yet">Aún no se ha tomado</string>

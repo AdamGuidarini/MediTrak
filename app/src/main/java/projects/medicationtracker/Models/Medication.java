@@ -10,11 +10,9 @@ import androidx.annotation.NonNull;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.util.Arrays;
 import java.util.Locale;
 
-import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.Utils.TimeFormatting;
 import projects.medicationtracker.R;
 
 public class Medication implements Cloneable, Parcelable {

@@ -53,8 +53,8 @@ import projects.medicationtracker.Fragments.SelectDateFragment;
 import projects.medicationtracker.Fragments.TimePickerFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
-import projects.medicationtracker.Helpers.NotificationHelper;
-import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.Utils.NotificationUtils;
+import projects.medicationtracker.Utils.TimeFormatting;
 import projects.medicationtracker.InputFilters.DecimalPlacesFilter;
 import projects.medicationtracker.Models.Medication;
 
@@ -1258,10 +1258,10 @@ public class AddMedication extends AppCompatActivity {
                 db.addNote(changesNotes, medId);
             }
 
-            NotificationHelper.clearPendingNotifications(medication, this);
+            NotificationUtils.clearPendingNotifications(medication, this);
         }
 
-        NotificationHelper.createNotifications(medication, this);
+        NotificationUtils.createNotifications(medication, this);
         finish();
         startActivity(intent);
     }

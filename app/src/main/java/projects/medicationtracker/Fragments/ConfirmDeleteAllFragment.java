@@ -14,7 +14,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.ArrayList;
 
 import projects.medicationtracker.Helpers.DBHelper;
-import projects.medicationtracker.Helpers.NotificationHelper;
+import projects.medicationtracker.Utils.NotificationUtils;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Models.Medication;
 
@@ -57,12 +57,12 @@ public class ConfirmDeleteAllFragment extends DialogFragment {
     private void deletePendingNotifications() {
         for (Medication medication : medications) {
             if (medication.getFrequency() == 1440) {
-                NotificationHelper.deletePendingNotification(medication.getId(), getContext());
+                NotificationUtils.deletePendingNotification(medication.getId(), getContext());
             } else {
                 long[] timeIds = db.getMedicationTimeIds(medication);
 
                 for (long timeId : timeIds) {
-                    NotificationHelper.deletePendingNotification(timeId * -1, getContext());
+                    NotificationUtils.deletePendingNotification(timeId * -1, getContext());
                 }
             }
         }

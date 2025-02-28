@@ -1,9 +1,9 @@
 package projects.medicationtracker.Receivers;
 
-import static projects.medicationtracker.Helpers.NotificationHelper.DOSE_TIME;
-import static projects.medicationtracker.Helpers.NotificationHelper.MEDICATION_ID;
-import static projects.medicationtracker.Helpers.NotificationHelper.MESSAGE;
-import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION_ID;
+import static projects.medicationtracker.Utils.NotificationUtils.DOSE_TIME;
+import static projects.medicationtracker.Utils.NotificationUtils.MEDICATION_ID;
+import static projects.medicationtracker.Utils.NotificationUtils.MESSAGE;
+import static projects.medicationtracker.Utils.NotificationUtils.NOTIFICATION_ID;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
-import projects.medicationtracker.Helpers.NotificationHelper;
+import projects.medicationtracker.Utils.NotificationUtils;
 import projects.medicationtracker.Models.Dose;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Workers.NotificationWorker;
@@ -52,7 +52,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         }
 
         // Set new Intent for a new notification
-        NotificationHelper.scheduleNotificationInFuture(
+        NotificationUtils.scheduleNotificationInFuture(
                 context,
                 medication,
                 doseTime,
