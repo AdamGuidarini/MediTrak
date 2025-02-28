@@ -103,7 +103,7 @@
     <string name="medication_dosage">Dosering</string>
     <string name="medication_frequency">Frequentie</string>
     <string name="taken_every">Elke keer genomen</string>
-    <string name="units">Doseringseenheid</string>
+    <string name="units">Eenheden</string>
     <string name="taken">Genomen</string>
     <string name="frequency">Frequentie</string>
     <string name="multiple_times_per_day">Meerdere keren per dag</string>
@@ -214,7 +214,7 @@
     <string name="date_must_be_future">De datum moet in de toekomst zijn</string>
 
     <!-- Schedule Export Dialog -->
-    <string name="export_now">Exporteren nu</string>
+    <string name="export_now">Nu exporteren</string>
     <string name="export_frequency">Frequentie Export</string>
 
     <!-- Dose Info dialog -->
