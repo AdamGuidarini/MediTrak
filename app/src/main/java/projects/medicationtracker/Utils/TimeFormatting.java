@@ -1,4 +1,4 @@
-package projects.medicationtracker.Helpers;
+package projects.medicationtracker.Utils;
 
 import java.time.Clock;
 import java.time.DayOfWeek;

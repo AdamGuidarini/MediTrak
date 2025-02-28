@@ -6,9 +6,12 @@ import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DA
 import static projects.medicationtracker.Fragments.MedicationScheduleFragment.MEDICATIONS;
 import static projects.medicationtracker.Helpers.DBHelper.AGREED_TO_TERMS;
 import static projects.medicationtracker.Helpers.DBHelper.DARK;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FREQUENCY;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_START;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.SEEN_NOTIFICATION_REQUEST;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
+import static projects.medicationtracker.Receivers.ExportReceiver.EXPORT_ID;
 
 import android.app.NotificationManager;
 import android.content.Context;
@@ -50,8 +53,9 @@ import projects.medicationtracker.Dialogs.WelcomeDialog;
 import projects.medicationtracker.Fragments.MedicationScheduleFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
-import projects.medicationtracker.Helpers.NotificationHelper;
-import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.Utils.DataExportUtils;
+import projects.medicationtracker.Utils.NotificationUtils;
+import projects.medicationtracker.Utils.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Notification;
@@ -85,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
 
         allMeds = db.getMedications();
 
-        preferences = db.getPreferences();
+        preferences = nativeDb.getSettings();
 
         String theme = preferences.getString(THEME);
 
@@ -105,8 +109,9 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.med_schedule));
 
-        NotificationHelper.createNotificationChannel(this);
+        NotificationUtils.createNotificationChannels(this);
         prepareNotifications();
+        prepareScheduledExport();
 
         if (!preferences.getBoolean(AGREED_TO_TERMS)) {
             WelcomeDialog welcomeDialog = new WelcomeDialog();
@@ -114,8 +119,10 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
             welcomeDialog.show(getSupportFragmentManager(), null);
         }
 
-        if (Build.VERSION.SDK_INT >= 33 && !preferences.getBoolean(SEEN_NOTIFICATION_REQUEST)
-                && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        if (
+                Build.VERSION.SDK_INT >= 33 && !preferences.getBoolean(SEEN_NOTIFICATION_REQUEST)
+                && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
+                        != PackageManager.PERMISSION_GRANTED
         ) {
             notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
         }
@@ -137,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
         );
         StatusBarNotification[] openNotifications = manager.getActiveNotifications();
 
-        if (openNotifications.length > 0) {
+        if (openNotifications.length > 0 && (openNotifications.length != 1 && openNotifications[0].getId() != EXPORT_ID)) {
             OpenNotificationsDialog notificationsDialog = new OpenNotificationsDialog(
                     openNotifications, allMeds
             );
@@ -461,18 +468,16 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
     private void prepareNotifications() {
         final ArrayList<Notification> notifications = nativeDb.getNotifications();
 
-        for (Medication medication : allMeds) {
-            NotificationHelper.clearPendingNotifications(medication, this);
-        }
-
-        for (Medication medication : allMeds) {
-            NotificationHelper.createNotifications(medication, this);
-        }
+        allMeds.forEach(m -> {
+            NotificationUtils.clearPendingNotifications(m, this);
+            NotificationUtils.createNotifications(m, this);
+        });
 
         for (final Notification n : notifications) {
-            Medication med = allMeds.stream().filter(
-                    m -> m.getId() == n.getMedId()
-            ).findFirst().orElse(null);
+            Medication med = allMeds.stream()
+                    .filter(m -> m.getId() == n.getMedId())
+                    .findFirst()
+                    .orElse(null);
 
             if (med == null) {
                 Log.e(
@@ -483,13 +488,29 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
                 continue;
             }
 
-            NotificationHelper.scheduleNotification(
+            NotificationUtils.scheduleNotification(
                     this,
                     med,
                     n.getDoseTime(),
                     n.getNotificationId()
             );
         }
+    }
+
+    /**
+     * Prepare export PendingIntent on app start
+     */
+    public void prepareScheduledExport() {
+        String expStart = Objects.requireNonNull(preferences.getString(EXPORT_START));
+
+        if (expStart.isEmpty()) {
+            return;
+        }
+
+        LocalDateTime exportStart = TimeFormatting.stringToLocalDateTime(expStart);
+        int frequency = preferences.getInt(EXPORT_FREQUENCY);
+
+        DataExportUtils.scheduleExport(this, exportStart, frequency);
     }
 
     /**

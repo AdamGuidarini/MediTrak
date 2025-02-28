@@ -15,6 +15,8 @@
     <string name="delete">Verwijderen</string>
     <string name="i_agree">Ik ga akkoord</string>
     <string name="select_all">Selecteer alles</string>
+    <string name="stop">Stoppen</string>
+    <string name="every">Elk</string>
 
     <!-- Filters -->
     <string name="clear">Duidelijk</string>
@@ -43,6 +45,7 @@
     <string name="err_missing_file_name">Ontbrekende bestandsnaam</string>
     <string name="err_file_must_be_json">Exportbestand moet de extensie .json hebben</string>
     <string name="err_required">Vereist</string>
+    <string name="err_file_access_denied">Toegang tot dit bestand is geweigerd</string>
 
     <!-- Time formats -->
     <string name="date_format">Mmm dd, jjjj</string>
@@ -92,7 +95,7 @@
     <string name="changed_dosage">Dosering gewijzigd van %1$s naar %2$s\n</string>
     <string name="frequency_changed">Frequentie gewijzigd van %1$s naar %2$s\n</string>
     <string name="times_per">Tijden per</string>
-    <string name="patientIsMe">Mij</string>
+    <string name="patientIsMe">Ikzelf</string>
     <string name="patient">Geduldig</string>
     <string name="other">Andere</string>
     <string name="name">Naam</string>
@@ -194,7 +197,7 @@
     <string name="downloads">Downloaden</string>
     <string name="documents">Documenten</string>
     <string name="export_data">Gegevens exporteren</string>
-    <string name="successful_export">Gegevens succesvol geëxporteerd naar: %1$s?</string>  
+    <string name="successful_export">Gegevens succesvol geëxporteerd naar: %1$s</string>
     <string name="import_success">Gegevens succesvol geïmporteerd</string>
     <string name="failed_export">Gegevens konden niet worden geëxporteerd</string>
     <string name="failed_import">Gegevens importeren is mislukt</string>
@@ -207,6 +210,12 @@
     <string name="hour_12">12 uur</string> 
     <string name="hour_24">24 uur</string>
     <string name="language">Taal</string>
+    <string name="schedule_export">Export Schema</string>
+    <string name="date_must_be_future">De datum moet in de toekomst zijn</string>
+
+    <!-- Schedule Export Dialog -->
+    <string name="export_now">Exporteren nu</string>
+    <string name="export_frequency">Frequentie Export</string>
 
     <!-- Dose Info dialog -->
     <string name="not_taken_yet">Nog niet genomen</string>

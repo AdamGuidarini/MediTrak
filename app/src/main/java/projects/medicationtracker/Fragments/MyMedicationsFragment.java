@@ -6,7 +6,6 @@ import static projects.medicationtracker.MainActivity.preferences;
 import static projects.medicationtracker.MediTrak.formatter;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;

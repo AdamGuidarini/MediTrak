@@ -1,4 +1,4 @@
-package projects.medicationtracker.Helpers;
+package projects.medicationtracker.Utils;
 
 import static android.content.Context.ALARM_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
@@ -18,15 +18,17 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Receivers.NotificationReceiver;
 import projects.medicationtracker.Models.Medication;
 
-public class NotificationHelper {
+public class NotificationUtils {
     private final static int SNOOZE_TIME_MINUTES = 15;
 
     public final static String GROUP_KEY = "medicationTrackerNotificationGroup";
-    public final static String CHANNEL_ID = "med_reminder";
+    public final static String MED_REMINDER_CHANNEL_ID = "med_reminder";
+    public final static String EXPORT_ALERT_CHANNEL_ID = "export_alerts";
     public final static String MESSAGE = "message";
     public final static String DOSE_TIME = "doseTime";
     public final static String MEDICATION_ID = "medicationId";
@@ -61,8 +63,12 @@ public class NotificationHelper {
      * @param scheduledTime  Time the notification will be set.
      * @param notificationId ID for the PendingIntent that stores data for the notification.
      */
-    public static void scheduleNotification(Context context, Medication medication,
-                                LocalDateTime scheduledTime, long notificationId) {
+    public static void scheduleNotification(
+            Context context,
+            Medication medication,
+            LocalDateTime scheduledTime,
+            long notificationId
+    ) {
         ZonedDateTime zdt = scheduledTime.atZone(ZoneId.systemDefault());
         long alarmTimeMillis = zdt.toInstant().toEpochMilli();
 
@@ -77,12 +83,20 @@ public class NotificationHelper {
      * @param time                Time the notification will be set.
      * @param notificationId      ID for the PendingIntent that stores data for the notification.
      */
-    public static void scheduleIn15Minutes(Context notificationContext, Medication medication,
-                                           LocalDateTime time, long notificationId) {
-        ZonedDateTime zdt = LocalDateTime.now().plusMinutes(SNOOZE_TIME_MINUTES).atZone(ZoneId.systemDefault());
+    public static void scheduleIn15Minutes(
+            Context notificationContext,
+            Medication medication,
+            LocalDateTime time,
+            long notificationId
+    ) {
+        ZonedDateTime zdt = LocalDateTime.now()
+                .plusMinutes(SNOOZE_TIME_MINUTES)
+                .atZone(ZoneId.systemDefault());
         long alarmTimeMillis = zdt.toInstant().toEpochMilli();
 
-        createNotificationAlarm(notificationContext, alarmTimeMillis, medication, time, notificationId);
+        createNotificationAlarm(
+                notificationContext, alarmTimeMillis, medication, time, notificationId
+        );
     }
 
     /**
@@ -94,14 +108,19 @@ public class NotificationHelper {
      * @param time                Time the notification will be set.
      * @param notificationId      ID for the PendingIntent that stores data for the notification.
      */
-    private static void createNotificationAlarm(Context notificationContext, long alarmTime, Medication medication,
-                                                LocalDateTime time, long notificationId) {
+    private static void createNotificationAlarm(
+            Context notificationContext,
+            long alarmTime, Medication medication,
+            LocalDateTime time,
+            long notificationId
+    ) {
         PendingIntent alarmIntent;
         AlarmManager alarmManager;
         Intent notificationIntent = new Intent(notificationContext, NotificationReceiver.class);
+        String message = createMedicationReminderMessage(medication, notificationContext);
 
         notificationIntent.putExtra(NOTIFICATION_ID, notificationId);
-        notificationIntent.putExtra(MESSAGE, createMedicationReminderMessage(medication, notificationContext));
+        notificationIntent.putExtra(MESSAGE,message);
         notificationIntent.putExtra(DOSE_TIME, time);
         notificationIntent.putExtra(MEDICATION_ID, medication.getId());
 
@@ -110,7 +129,8 @@ public class NotificationHelper {
                 (int) notificationId,
                 notificationIntent,
                 SDK_INT >= Build.VERSION_CODES.S ?
-                        PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
+                        PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+                        : PendingIntent.FLAG_UPDATE_CURRENT
         );
 
         alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
@@ -149,18 +169,28 @@ public class NotificationHelper {
      *
      * @param context Application context
      */
-    public static void createNotificationChannel(Context context) {
-        CharSequence name = "Medication Reminder";
+    public static void createNotificationChannels(Context context) {
+        CharSequence reminderName = "Medication Reminder";
+        CharSequence exportName = "Export Alerts";
         int importance = NotificationManager.IMPORTANCE_HIGH;
-
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-        channel.enableLights(false);
-        channel.enableVibration(false);
-        channel.setShowBadge(true);
-
         NotificationManager notificationManager
                 = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.createNotificationChannel(channel);
+
+        NotificationChannel medChannel = new NotificationChannel(
+                MED_REMINDER_CHANNEL_ID, reminderName, importance
+        );
+
+        NotificationChannel exportChannel = new NotificationChannel(
+                EXPORT_ALERT_CHANNEL_ID, exportName, importance
+        );
+
+        for (NotificationChannel n : new NotificationChannel[]{medChannel, exportChannel}) {
+            n.enableLights(false);
+            n.enableVibration(false);
+            n.setShowBadge(true);
+
+            notificationManager.createNotificationChannel(n);
+        }
     }
 
     /**
@@ -172,11 +202,13 @@ public class NotificationHelper {
     public static void deletePendingNotification(long notificationId, Context context) {
         Intent intent = new Intent(context, NotificationReceiver.class);
 
-        PendingIntent.getBroadcast(context,
+        PendingIntent.getBroadcast(
+                context,
                 (int) notificationId,
                 intent,
                 SDK_INT >= Build.VERSION_CODES.S ?
-                        PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : PendingIntent.FLAG_UPDATE_CURRENT
+                        PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+                        : PendingIntent.FLAG_UPDATE_CURRENT
         ).cancel();
     }
 
@@ -192,10 +224,10 @@ public class NotificationHelper {
         long[] medIds = db.getMedicationTimeIds(medication);
 
         if (medIds.length == 0) {
-            NotificationHelper.deletePendingNotification(medication.getId(), context);
+            NotificationUtils.deletePendingNotification(medication.getId(), context);
         } else {
             for (long id : medIds) {
-                NotificationHelper.deletePendingNotification(id * -1, context);
+                NotificationUtils.deletePendingNotification(id * -1, context);
             }
         }
 

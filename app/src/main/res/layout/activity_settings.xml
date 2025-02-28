@@ -290,9 +290,8 @@
                         android:layout_marginEnd="15dp"
                         android:layout_marginBottom="10dp"
                         android:onClick="onScheduleExportClick"
-                        android:text="=SCHEDULE EXPORT="
-                        app:cornerRadius="30dp"
-                        android:visibility="gone"/>
+                        android:text="@string/schedule_export"
+                        app:cornerRadius="30dp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

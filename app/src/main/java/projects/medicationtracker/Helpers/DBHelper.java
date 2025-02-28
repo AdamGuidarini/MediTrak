@@ -22,6 +22,7 @@ import java.util.Collections;
 
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Note;
+import projects.medicationtracker.Utils.TimeFormatting;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Medications.db";
@@ -63,7 +64,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static final String SETTINGS_TABLE = "Settings";
     private static final String TIME_BEFORE_DOSE = "TimeBeforeDose";
-    private static final String ENABLE_NOTIFICATIONS = "EnableNotifications";
+    public static final String ENABLE_NOTIFICATIONS = "EnableNotifications";
     public static final String SEEN_NOTIFICATION_REQUEST = "SeenNotificationRequest";
     public static final String AGREED_TO_TERMS = "AgreedToTerms";
     public static final String EXPORT_FREQUENCY = "ExportFrequency";
@@ -1005,48 +1006,6 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return enabled;
-    }
-
-    /**
-     * Retrieves preferences saved by user.
-     *
-     * @return User's preferred theme & terms of service agreement status.
-     */
-    public Bundle getPreferences() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT "
-                + THEME + ","
-                + AGREED_TO_TERMS + ","
-                + SEEN_NOTIFICATION_REQUEST + ","
-                + DATE_FORMAT + ","
-                + TIME_FORMAT + ","
-                + EXPORT_FREQUENCY + ","
-                + EXPORT_START + ","
-                + EXPORT_FILE_NAME
-                + " FROM " + SETTINGS_TABLE;
-        Bundle retVal = new Bundle();
-
-        Cursor cursor = db.rawQuery(query, null);
-        cursor.moveToFirst();
-
-        retVal.putString(THEME, cursor.getString(cursor.getColumnIndexOrThrow(THEME)));
-        retVal.putBoolean(
-                AGREED_TO_TERMS,
-                Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(AGREED_TO_TERMS))) == 1
-        );
-        retVal.putBoolean(
-                SEEN_NOTIFICATION_REQUEST,
-                Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(SEEN_NOTIFICATION_REQUEST))) == 1
-        );
-        retVal.putString(DATE_FORMAT, cursor.getString(cursor.getColumnIndexOrThrow(DATE_FORMAT)));
-        retVal.putString(TIME_FORMAT, cursor.getString(cursor.getColumnIndexOrThrow(TIME_FORMAT)));
-        retVal.putInt(EXPORT_FREQUENCY, Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(EXPORT_FREQUENCY))));
-        retVal.putString(EXPORT_START, cursor.getString(cursor.getColumnIndexOrThrow(EXPORT_START)));
-        retVal.putString(EXPORT_FILE_NAME, cursor.getString(cursor.getColumnIndexOrThrow(EXPORT_FILE_NAME)));
-
-        cursor.close();
-
-        return retVal;
     }
 
     /**

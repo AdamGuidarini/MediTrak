@@ -100,7 +100,7 @@ void DatabaseController::create() {
             + ENABLE_NOTIFICATIONS + " BOOLEAN DEFAULT 1, "
             + THEME + " TEXT DEFAULT '" + DEFAULT + "',"
             + AGREED_TO_TERMS + " BOOLEAN DEFAULT 0,"
-            + DATE_FORMAT + " TEXT DEFAULT '" + DateFormats::MM_DD_YYYY + "',"
+            + DATE_FORMAT + " TEXT DEFAULT '" + DateFormats::MMM_DD_YYYY + "',"
             + TIME_FORMAT + " TEXT DEFAULT '" + TimeFormats::_12_HOUR + "',"
             + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0,"
             + EXPORT_FREQUENCY + " INTEGER DEFAULT -1,"
@@ -302,6 +302,12 @@ DatabaseController::update(string table, map<string, string> values, map<string,
 
 void DatabaseController::deleteRecord(string table, map<string, string> where) {
     manager.deleteRecord(std::move(table), std::move(where));
+}
+
+Table* DatabaseController::getSettings() {
+    string query = "SELECT * FROM " + SETTINGS_TABLE;
+
+    return manager.execSqlWithReturn(query);
 }
 
 void DatabaseController::updateSettings(map<string, string> values) {

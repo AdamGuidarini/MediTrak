@@ -15,6 +15,8 @@
     <string name="delete">Sil</string>
     <string name="i_agree">Kabul ediyorum</string>
     <string name="select_all">Tümünü seç</string>
+    <string name="stop">Durdurmak</string>
+    <string name="every">Her</string>
 
     <!-- Filtreler -->
     <string name="clear">Temizle</string>
@@ -43,6 +45,7 @@
     <string name="err_missing_file_name">Dosya adı eksik</string>
     <string name="err_file_must_be_json">Dışa aktarma dosyası .json uzantılı olmalıdır</string>
     <string name="err_required">Gerekli</string>
+    <string name="err_file_access_denied">Bu dosyaya erişim reddedildi</string>
 
     <!-- Zaman formatları -->
     <string name="date_format">Aaa gg, yyyy</string>
@@ -208,6 +211,12 @@
     <string name="hour_12">12 Saat</string>
     <string name="hour_24">24 Saat</string>
     <string name="language">Dil</string>
+    <string name="schedule_export">Ihracat programı</string>
+
+    <!-- Schedule Export Dialog -->
+    <string name="export_now">Şimdi ihracat yapın</string>
+    <string name="export_frequency">İhracat Frekansı</string>
+    <string name="date_must_be_future">Tarih gelecekte olmalı</string>
 
     <!-- Doz Bilgi iletişim kutusu -->
     <string name="not_taken_yet">Henüz alınmadı</string>

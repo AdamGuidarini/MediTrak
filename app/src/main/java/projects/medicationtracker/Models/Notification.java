@@ -5,7 +5,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import projects.medicationtracker.Helpers.DBHelper;
-import projects.medicationtracker.Helpers.TimeFormatting;
 
 public class Notification {
     private final long id;
