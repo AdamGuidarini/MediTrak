@@ -14,8 +14,8 @@
     <string name="ok">Tamam</string>
     <string name="delete">Sil</string>
     <string name="i_agree">Kabul ediyorum</string>
-    <string name="select_all">Tümünü seç</string>
-    <string name="stop">Durdurmak</string>
+    <string name="select_all">Hepsini Seç</string>
+    <string name="stop">Dur</string>
     <string name="every">Her</string>
 
     <!-- Filtreler -->
@@ -27,29 +27,29 @@
 
     <!-- Hatalar -->
     <string name="invalid_value">Geçersiz değer girildi</string>
-    <string name="must_be_positive_int">Değer pozitif bir tam sayı olmalıdır</string>
+    <string name="must_be_positive_int">Değer pozitif bir tam sayı olmalı</string>
     <string name="val_too_big">Girilen değer çok büyük</string>
-    <string name="cannot_exceed_50">Girilen değer 50\'yi aşamaz</string>
-    <string name="must_be_greater_than_0">Girilen değer 0\'dan büyük olmalıdır</string>
+    <string name="cannot_exceed_50">Girilen değer 50’yi aşamaz</string>
+    <string name="must_be_greater_than_0">Girilen değer 0’dan büyük olmalı</string>
     <string name="provided_name_invalid">Girilen isim geçersiz</string>
     <string name="err_provide_name">Lütfen bir isim girin</string>
     <string name="err_enter_dosage">Lütfen bir doz girin</string>
-    <string name="err_units_for_med">Lütfen bu ilaç için birimleri girin</string>
+    <string name="err_units_for_med">Lütfen bu ilaç için bir birim girin</string>
     <string name="err_select_frequency">Lütfen bir sıklık türü seçin</string>
     <string name="err_select_time">Lütfen bir zaman seçin</string>
     <string name="err_select_start_date">Lütfen bir başlangıç tarihi seçin.</string>
     <string name="err_enter_num_timers_per_day">Lütfen bu ilacın günde kaç kez alındığını girin</string>
-    <string name="err_enter_med_freq">Lütfen ilacın ne sıklıkta alındığını girin.</string>
+    <string name="err_enter_med_freq">Lütfen ilacın ne sıklıkla alındığını girin.</string>
     <string name="err_enter_time_unit">Lütfen bir zaman birimi seçin.</string>
     <string name="err_name_for_med">Lütfen bu ilaç için bir isim girin</string>
     <string name="err_missing_file_name">Dosya adı eksik</string>
-    <string name="err_file_must_be_json">Dışa aktarma dosyası .json uzantılı olmalıdır</string>
+    <string name="err_file_must_be_json">Dışa aktarma dosyası .json uzantısına sahip olmalı</string>
     <string name="err_required">Gerekli</string>
     <string name="err_file_access_denied">Bu dosyaya erişim reddedildi</string>
 
     <!-- Zaman formatları -->
     <string name="date_format">Aaa gg, yyyy</string>
-    <string name="time_format_hh_mm_aa">ss:dd aa</string>
+    <string name="time_format_hh_mm_aa">ss:dd öö/ös</string>
 
     <!-- Zaman -->
     <string name="sunday">Pazar</string>
@@ -66,36 +66,31 @@
 
     <!-- Ana Etkinlik -->
     <string name="no_medications_found">İlaç bulunamadı</string>
-    <string name="med_schedule">İlaç Programı</string>
+    <string name="med_schedule">İlaç Takvimi</string>
     <string name="no_meds_for_day">%1$s için ilaç yok</string>
     <string name="cannot_take_more_than_hours">İlaçlar %1$d saatten fazla önceden alınamaz</string>
-    <string name="as_needed_dose">Gerektiğinde Alınacak Doz</string>
-    <string name="welcome">MediTrak\'a Hoş Geldiniz!</string>
+    <string name="as_needed_dose">İhtiyaç Halinde Doz</string>
+    <string name="welcome">MediTrak’a Hoş Geldiniz!</string>
     <string name="warranty_info">
-        Bu uygulama, ilaçlarınızı takip etmenize yardımcı olmak için tasarlanmıştır. Tıbbi tavsiye vermek
-        amacıyla tasarlanmamıştır ve bu uygulama tarafından sağlanan hiçbir bilgi bu şekilde yanlış
-        yorumlanmamalıdır. Bu uygulamanın yaratıcıları, herhangi bir nedenle ilaçlarınızın kaçırılan
-        dozlarından sorumlu değildir. Tıbbi yardıma ihtiyacınız varsa, lütfen bir sağlık uzmanına başvurun.
-        Bu uygulamayı kullanarak, yukarıda belirtilen şartları ve yayınlandığı GPL sürüm 2.0 lisansının
-        şartlarını kabul etmiş olursunuz. \n\n
+        Bu uygulama, ilaçlarınızı takip etmenize yardımcı olmak için tasarlanmıştır. Tıbbi tavsiye sağlamak amacıyla tasarlanmamıştır ve bu uygulamadan sağlanan hiçbir bilgi bu şekilde yorumlanmamalıdır. Bu uygulamanın yaratıcıları, herhangi bir nedenle ilaç dozlarının kaçırılmasından sorumlu değildir. Tıbbi yardıma ihtiyacınız varsa, lütfen bir sağlık uzmanına başvurun. Bu uygulamayı kullanarak, yukarıda belirtilen şartları ve GPL sürüm 2.0 lisansı altında yayınlanan şartları kabul etmiş olursunuz. \n\n
 
-        Bu uygulama GNU Genel Kamu Lisansı Sürüm 2 altında yayınlanmıştır, daha fazla ayrıntı için aşağıya bakın:
+        Bu uygulama GNU Genel Kamu Lisansı Sürüm 2 altında yayınlanmıştır, daha fazla detay için aşağıya bakın:
     </string>
 
-    <!-- İlaç Ekle/Düzenle -->
+    <!-- Add/EditMedication -->
     <string name="add_medication">İlaç Ekle</string>
     <string name="edit_medication">İlaç Düzenle</string>
     <string name="delete_medication">İlaç Sil</string>
     <string name="note_timestamp">Tarih: %1$s saat: %2$s</string>
     <string name="note_edit_timestamp">Düzenlendi: %1$s saat: %2$s</string>
-    <string name="patient_changed">Hasta %1$s\'den %2$s\'ye değiştirildi\n</string>
-    <string name="name_changed">İsim %1$s\'den %2$s\'ye değiştirildi\n</string>
+    <string name="patient_changed">Hasta %1$s’den %2$s’ye değiştirildi\n</string>
+    <string name="name_changed">İsim %1$s’den %2$s’ye değiştirildi\n</string>
     <string name="removed_alias">Takma ad %1$s kaldırıldı\n</string>
     <string name="added_alias">Takma ad %1$s eklendi\n</string>
-    <string name="changed_alias">Takma ad %1$s\'den %2$s\'ye değiştirildi\n</string>
-    <string name="changed_dosage">Doz %1$s\'den %2$s\'ye değiştirildi\n</string>
-    <string name="frequency_changed">Sıklık %1$s\'den %2$s\'ye değiştirildi\n</string>
-    <string name="times_per">Kez per</string>
+    <string name="changed_alias">Takma ad %1$s’den %2$s’ye değiştirildi\n</string>
+    <string name="changed_dosage">Doz %1$s’den %2$s’ye değiştirildi\n</string>
+    <string name="frequency_changed">Sıklık %1$s’den %2$s’ye değiştirildi\n</string>
+    <string name="times_per">Kez başına</string>
     <string name="patientIsMe">Ben</string>
     <string name="patient">Hasta</string>
     <string name="other">Diğer</string>
@@ -103,23 +98,23 @@
     <string name="medication_name">İlaç Adı</string>
     <string name="medication_dosage">Doz</string>
     <string name="medication_frequency">Sıklık</string>
-    <string name="taken_every">Her</string>
+    <string name="taken_every">Her Alınan</string>
     <string name="units">Doz Birimi</string>
     <string name="taken">Alındı</string>
     <string name="frequency">Sıklık</string>
     <string name="multiple_times_per_day">Günde Birden Fazla Kez</string>
-    <string name="as_needed">Gerektiğinde</string>
+    <string name="as_needed">İhtiyaç Halinde</string>
     <string name="daily">Günlük</string>
     <string name="weekly">Haftalık</string>
     <string name="monthly">Aylık</string>
-    <string name="medication_name_amp_dosage"><![CDATA[İlaç Adı & Dozu]]></string>
-    <string name="who_takes_this_medication">Bu ilacı kim kullanıyor?</string>
+    <string name="medication_name_amp_dosage"><![CDATA[İlaç Adı ve Doz]]></string>
+    <string name="who_takes_this_medication">Bu ilacı kim alıyor?</string>
     <string name="someone_else">Başka biri</string>
-    <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[İlacın adı nedir ve ne kadar alınıyor?]]></string>
+    <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[İlacın adı nedir ve ne kadar alınır?]]></string>
     <string name="alias_for_notifications">Bildirimler için takma ad</string>
-    <string name="how_often_is_the_medication_taken">İlaç ne sıklıkta alınıyor?</string>
+    <string name="how_often_is_the_medication_taken">İlaç ne sıklıkla alınır?</string>
     <string name="start_date">Başlangıç Tarihi</string>
-    <string name="taken_at">Alındığı saat</string>
+    <string name="taken_at">Alınma zamanı</string>
     <string name="unit_of_time">Zaman Birimi</string>
     <string name="custom_frequency">Özel Sıklık</string>
     <string name="times_per_day">Günde kaç kez</string>
@@ -127,69 +122,62 @@
     <string name="alias_for_medication">İlaç için takma ad</string>
     <string name="yourMedications">İlaçlarınız:</string>
     <string name="no_notes_for_this_medication">Bu ilaç için not yok</string>
-    <string name="unitExample">Örn. mg, g, damla</string>
+    <string name="unitExample">Ör. mg, g, damla</string>
     <string name="patient_name">Hasta Adı:</string>
     <string name="no_alias">Takma ad yok</string>
     <string name="at">saat</string>
     <string name="apply_retroactive">Değişiklikleri Geriye Dönük Uygula</string>
-    <string name="retroactive_warning">Uyarı: Sıklıktaki değişiklikler, önceden alınan dozların programda artık görünmemesine neden olabilir.</string>
-    <string name="would_like_apply_retroactively">Doz ve sıklık değişiklikleri önceki değişiklikten itibaren geriye dönük olarak uygulanabilir. Bu değişiklikleri geriye dönük olarak uygulamak ister misiniz?</string>
+    <string name="retroactive_warning">Uyarı: Sıklık değişiklikleri, daha önce alınmış dozların takvimde görünmemesine neden olabilir.</string>
+    <string name="would_like_apply_retroactively">Doz ve sıklık değişiklikleri, önceki değişikliğe kadar geriye dönük olarak uygulanabilir. Bu değişiklikleri geriye dönük olarak uygulamak ister misiniz?</string>
     <string name="instructions">Talimatlar</string>
-    <string name="instructions_optional">Talimatlar (İsteğe bağlı)</string>
-    <string name="instructions_added">Talimatlar eklendi: %1$s</string>
+    <string name="instructions_optional">Talimatlar (İsteğe Bağlı)</string>
+    <string name="instructions_added">Eklenen talimatlar: %1$s</string>
 
-    <!-- İlaçlarım -->
+    <!-- MyMedications -->
     <string name="my_medications">İlaçlarım</string>
     <string name="med_name">İlaç adı: %1$s</string>
     <string name="dosage">Doz: %1$s %2$s</string>
-    <string name="taken_daily_at">Günlük alım saati: </string>
-    <string name="taken_every_lbl">Her </string>
+    <string name="taken_daily_at">Günlük olarak şu saatte alınır </string>
+    <string name="taken_every_lbl">Her alındığında </string>
     <string name="alias_lbl">Takma ad</string>
-    <string name="taken_since">Alınmaya başlandığı tarih: %1$s</string>
-    <string name="taken_as_needed">Gerektiğinde alınır.</string>
+    <string name="taken_since">Şu tarihten beri alınıyor: %1$s</string>
+    <string name="taken_as_needed">İhtiyaç halinde alınır.</string>
 
     <!-- Notlar -->
     <string name="notes">Notlar</string>
     <string name="add_note">Not Ekle</string>
-    <string name="edit_note">Not Düzenle</string>
+    <string name="edit_note">Notu Düzenle</string>
 
-    <!-- Ayarlar Etkinliği -->
+    <!-- Ayarlar Aktivitesi -->
     <string name="settings">Ayarlar</string>
     <string name="options">Seçenekler</string>
     <string name="license">Lisans</string>
-    <string name="purpose">MediTrak, ilaçlarınızı takip etmenize yardımcı olmak için tasarlanmış ücretsiz ve açık kaynaklı bir uygulamadır, böylece "dün ilacımı aldım mı?" sorusunu daha kolay cevaplayabilirsiniz.</string>
+    <string name="purpose">MediTrak, ilaçlarınızı takip etmenize yardımcı olmak için tasarlanmış ücretsiz ve açık kaynaklı bir uygulamadır, böylece "Dün ilacımı aldım mı?" sorusunu daha kolay yanıtlayabilirsiniz.</string>
     <string name="copyright">Telif Hakkı © 2022 Adam Guidarini</string>
-    <string name="licenseInfo">MediTrak ücretsiz bir yazılımdır ve Özgür Yazılım Vakfı tarafından yayınlanan GNU Genel Kamu Lisansı\'nın 2. sürümü veya (tercihinize bağlı olarak) daha sonraki bir sürümü altında yeniden dağıtılabilir ve/veya değiştirilebilir.</string>
+    <string name="licenseInfo">MediTrak ücretsiz bir yazılımdır ve Free Software Foundation tarafından yayınlanan GNU Genel Kamu Lisansı şartları altında, sürüm 2 veya (isteğinize bağlı olarak) daha sonraki bir sürümle yeniden dağıtılabilir ve/veya değiştirilebilir.</string>
     <string name="warranty">
-        Bu program ücretsiz bir yazılımdır; Özgür Yazılım Vakfı tarafından yayınlanan
-        GNU Genel Kamu Lisansı şartları altında yeniden dağıtabilir ve/veya
-        değiştirebilirsiniz; ya Lisansın 2. sürümünü, ya da
-        (tercihinize bağlı olarak) daha sonraki herhangi bir sürümünü.
+        Bu program ücretsiz bir yazılımdır; Free Software Foundation tarafından yayınlanan GNU Genel Kamu Lisansı şartları altında, sürüm 2 veya (isteğinize bağlı olarak) daha sonraki bir sürümle yeniden dağıtabilir ve/veya değiştirebilirsiniz.
 
-        Bu program, faydalı olacağı umuduyla dağıtılmaktadır,
-        ancak HİÇBİR GARANTİ OLMAKSIZIN; hatta ZIMNİ TİCARİ GARANTİ veya
-        BELİRLİ BİR AMACA UYGUNLUK garantisi bile vermeden. Daha fazla ayrıntı için
-        GNU Genel Kamu Lisansı\'na bakın.
+        Bu program, faydalı olacağı umuduyla dağıtılmıştır, ancak HİÇBİR GARANTİ olmadan; hatta SATILABİLİRLİK veya BELİRLİ BİR AMACA UYGUNLUK gibi zımni garantiler bile verilmez. Daha fazla ayrıntı için GNU Genel Kamu Lisansı’na bakın.
     </string>
     <string name="copyOfGPL2">
-        Bu programla birlikte GNU Genel Kamu Lisansı\'nın bir kopyasını almış olmalısınız;
-        eğer almadıysanız, https://www.gnu.org/licenses/ adresine bakın.
+        Bu programla birlikte GNU Genel Kamu Lisansı’nın bir kopyasını almış olmalısınız; eğer almadıysanız, https://www.gnu.org/licenses/ adresine bakın.
     </string>
-    <string name="cannot_take_medication_more_than">İlaç şu saatten daha fazla önceden alınamaz:</string>
-    <string name="hours_in_advance">saat öncesinden</string>
+    <string name="cannot_take_medication_more_than">İlaç şu süreden fazla alınamaz</string>
+    <string name="hours_in_advance">saat önceden</string>
     <string name="title_activity_settings">Ayarlar</string>
-    <string name="delete_all">Tümünü Sil</string>
-    <string name="pause_medication">İlacı Duraklat</string>
+    <string name="delete_all">Hepsini Sil</string>
+    <string name="pause_medication">İlacı Durdur</string>
     <string name="resume_medication">İlacı Devam Ettir</string>
-    <string name="pause_message">%1$s ilacını duraklatmak istediğinizden emin misiniz? Artık programınızda görünmeyecek, ancak istediğiniz zaman yeniden başlatabilirsiniz.</string>
-    <string name="resume_message">%1$s ilacını yeniden başlatmak, onu programınıza geri ekleyecektir. Devam etmek istediğinizden emin misiniz?</string>
+    <string name="pause_message">%1$s ilacını durdurmak istediğinizden emin misiniz? Artık takviminizde görünmeyecek, ancak istediğiniz zaman devam ettirilebilir.</string>
+    <string name="resume_message">%1$s ilacını devam ettirmek, onu takviminize geri yükleyecektir. Devam etmek istediğinizden emin misiniz?</string>
     <string name="enable_notifications">Bildirimleri Etkinleştir</string>
-    <string name="disable_time_before_dose_requirement">Doz öncesi zaman sınırını devre dışı bırak</string>
+    <string name="disable_time_before_dose_requirement">Önceden alma süresi sınırını devre dışı bırak</string>
     <string name="theme">Tema</string>
     <string name="light_mode">Açık mod</string>
     <string name="dark_mode">Koyu mod</string>
     <string name="match_system_theme">Sistem varsayılanı</string>
-    <string name="number_of_hours_before_dose_can_be_taken">İlacın alınamayacağı süre sınırı:</string>
+    <string name="number_of_hours_before_dose_can_be_taken">İlacın alınamayacağı önceki süre sınırı:</string>
     <string name="export">Dışa Aktar</string>
     <string name="importData">İçe Aktar</string>
     <string name="data">Veri</string>
@@ -198,56 +186,56 @@
     <string name="downloads">İndirilenler</string>
     <string name="documents">Belgeler</string>
     <string name="export_data">Veriyi Dışa Aktar</string>
-    <string name="successful_export">Veri başarıyla şuraya aktarıldı: %1$s</string>
-    <string name="import_success">Veri başarıyla içe aktarıldı</string>
-    <string name="failed_export">Veri dışa aktarılamadı</string>
-    <string name="failed_import">Veri içe aktarılamadı</string>
+    <string name="successful_export">Veriler başarıyla şuraya dışa aktarıldı: %1$s</string>
+    <string name="import_success">Veriler başarıyla içe aktarıldı</string>
+    <string name="failed_export">Veriler dışa aktarılamadı</string>
+    <string name="failed_import">Veriler içe aktarılamadı</string>
     <string name="could_not_retrieve_file">İçe aktarma dosyası alınamadı</string>
     <string name="notifications_already_enabled">Bildirimler zaten etkin</string>
     <string name="date_format_title">Tarih Formatı</string>
     <string name="date_format_mm_dd_yyyy">AA/GG/YYYY</string>
     <string name="date_format_dd_mm_yyyy">GG/AA/YYYY</string>
-    <string name="time_format">Zaman Formatı</string>
+    <string name="time_format">Saat Formatı</string>
     <string name="hour_12">12 Saat</string>
     <string name="hour_24">24 Saat</string>
     <string name="language">Dil</string>
-    <string name="schedule_export">Ihracat programı</string>
+    <string name="schedule_export">Takvim Dışa Aktar</string>
 
-    <!-- Schedule Export Dialog -->
-    <string name="export_now">Şimdi ihracat yapın</string>
-    <string name="export_frequency">İhracat Frekansı</string>
+    <!-- Takvim Dışa Aktarma Diyalogu -->
+    <string name="export_now">Şimdi Dışa Aktar</string>
+    <string name="export_frequency">Dışa Aktarma Sıklığı</string>
     <string name="date_must_be_future">Tarih gelecekte olmalı</string>
 
-    <!-- Doz Bilgi iletişim kutusu -->
+    <!-- Doz Bilgi Diyalogu -->
     <string name="not_taken_yet">Henüz alınmadı</string>
     <string name="not_taken">Alınmadı</string>
-    <string name="marked_taken_at">Alındı olarak işaretlendi:</string>
+    <string name="marked_taken_at">Şu saatte alındı olarak işaretlendi</string>
     <string name="dose_information">Doz bilgisi</string>
-    <string name="time_taken">Alınma Zamanı</string>
+    <string name="time_taken">Alınma Saati</string>
     <string name="date_taken">Alınma Tarihi</string>
     <string name="this_dose">Bu Doz</string>
 
-    <!-- Tümünü Sil -->
-    <string name="delete_all_data">Tüm Kayıtlı Verileri Sil</string>
-    <string name="delete_all_data_cannot_be_undone">Tüm kayıtlı verileri silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.</string>
+    <!-- Her Şeyi Sil -->
+    <string name="delete_all_data">Tüm Kaydedilen Verileri Sil</string>
+    <string name="delete_all_data_cannot_be_undone">Tüm kaydedilen veriler silinsin mi? Bu işlem geri alınamaz.</string>
     <string name="all_data_deleted">Tüm veriler silindi</string>
 
     <!-- Bildirimler -->
     <string name="mark_as_taken">Alındı</string>
     <string name="snooze_message">Ertele</string>
-    <string name="its_time_your_med">%2$s ilacınızın %1$s dozunu alma zamanı</string>
-    <string name="time_for_other_med">%1$s\'nin %3$s ilacının %2$s dozunu alma zamanı</string>
+    <string name="its_time_your_med">%1$s %2$s ilacınızı alma zamanı</string>
+    <string name="time_for_other_med">%1$s için %2$s %3$s ilacı zamanı</string>
     <string name="add_dose">Doz Ekle</string>
-    <string name="open_notifications">Açık Bildirimler</string>
-    <string name="skip_unselected">Seçilmemişleri atla</string>
+    <string name="open_notifications">Bildirimleri Aç</string>
+    <string name="skip_unselected">Seçilmeyenleri Atla</string>
     <string name="take_all">Hepsini Al</string>
-    <string name="take_selected">Seçilenleri al</string>
+    <string name="take_selected">Seçilenleri Al</string>
 
     <!-- İlaç Geçmişi -->
     <string name="history">Geçmiş</string>
     <string name="scheduled">Planlanmış</string>
     <string name="dosage_hist">Doz</string>
     <string name="filter">Filtre</string>
-    <string name="export_csv">CSV Olarak Dışa Aktar</string>
+    <string name="export_csv">CSV’ye Aktar</string>
     <string name="no_records">Kayıt Yok</string>
 </resources>
