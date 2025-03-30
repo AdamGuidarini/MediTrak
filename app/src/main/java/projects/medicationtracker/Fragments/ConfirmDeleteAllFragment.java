@@ -62,7 +62,7 @@ public class ConfirmDeleteAllFragment extends DialogFragment {
                 long[] timeIds = db.getMedicationTimeIds(medication);
 
                 for (long timeId : timeIds) {
-                    NotificationUtils.deletePendingNotification(timeId * -1, getContext());
+                    NotificationUtils.deletePendingNotification(timeId, getContext());
                 }
             }
         }

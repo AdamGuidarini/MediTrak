@@ -1246,8 +1246,8 @@ public class AddMedication extends AppCompatActivity {
 
                 if (ids.length > 1) {
                     for (long id : ids) {
-                        nativeDb.deleteNotification(id * -1);
-                        manager.cancel((int) (id * -1));
+                        nativeDb.deleteNotification(id);
+                        manager.cancel((int) id);
                     }
                 } else {
                     nativeDb.deleteNotification(parentMed.getId());
