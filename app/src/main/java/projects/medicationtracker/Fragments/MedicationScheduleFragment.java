@@ -298,7 +298,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
             StatusBarNotification[] notifications = manager.getActiveNotifications();
 
             List<StatusBarNotification> validNotifications = Arrays.stream(notifications).filter(
-                    n -> n.getId() == medId || Arrays.stream(timeIds).anyMatch(t -> (t * -1) == n.getId())
+                    n -> Arrays.stream(timeIds).anyMatch(t -> t == n.getId())
             ).collect(Collectors.toList());
 
             if (!validNotifications.isEmpty()) {

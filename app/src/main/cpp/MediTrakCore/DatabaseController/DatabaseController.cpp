@@ -288,6 +288,20 @@ void DatabaseController::upgrade(int currentVersion) {
         );
     }
 
+    if (currentVersion < 18) {
+        manager.execSql(
+            "UPDATE " + NOTIFICATIONS
+            + " SET " + DOSE_ID + " = CASE "
+            + "WHEN " + DOSE_ID + " > 0 THEN ("
+            + "SELECT " + TIME_ID
+            + " FROM " + MEDICATION_TIMES
+            + " WHERE " + MEDICATION_TIMES + "." + MED_ID + " = " + NOTIFICATIONS + "." + DOSE_ID
+            + " LIMIT 1)"
+            + " ELSE " + DOSE_ID + "* -1"
+            + " END;"
+        );
+    }
+
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
 }
 
