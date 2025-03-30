@@ -42,8 +42,12 @@ public class NotificationUtils {
      * @param time                Time the notification will be set.
      * @param notificationId      ID for the PendingIntent that stores data for the notification.
      */
-    public static void scheduleNotificationInFuture(Context notificationContext, Medication medication,
-                                                    LocalDateTime time, long notificationId) {
+    public static void scheduleNotificationInFuture(
+            Context notificationContext,
+            Medication medication,
+            LocalDateTime time,
+            long notificationId
+    ) {
         // Loops to increase time, prevents notification bombardment when editing time.
         while (time.isBefore(LocalDateTime.now())) {
             time = time.plusMinutes(medication.getFrequency());
@@ -134,7 +138,7 @@ public class NotificationUtils {
         );
 
         alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent);
+        alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent);
     }
 
     /**
@@ -223,12 +227,8 @@ public class NotificationUtils {
 
         long[] medIds = db.getMedicationTimeIds(medication);
 
-        if (medIds.length == 0) {
-            NotificationUtils.deletePendingNotification(medication.getId(), context);
-        } else {
-            for (long id : medIds) {
-                NotificationUtils.deletePendingNotification(id * -1, context);
-            }
+        for (long id : medIds) {
+            NotificationUtils.deletePendingNotification(id, context);
         }
 
         db.close();
@@ -249,28 +249,16 @@ public class NotificationUtils {
             return;
         }
 
-        if (medicationTimeIds.length == 1) {
+        for (int i = 0; i < medicationTimeIds.length; i++) {
             scheduleNotificationInFuture(
                     context,
                     medication,
                     LocalDateTime.of(
                             medication.getStartDate().toLocalDate(),
-                            medTimes[0]
+                            medTimes[i]
                     ),
-                    medication.getId()
+                    medicationTimeIds[i]
             );
-        } else {
-            for (int i = 0; i < medicationTimeIds.length; i++) {
-                scheduleNotificationInFuture(
-                        context,
-                        medication,
-                        LocalDateTime.of(
-                                medication.getStartDate().toLocalDate(),
-                                medTimes[i]
-                        ),
-                        medicationTimeIds[i] * -1
-                );
-            }
         }
 
         db.close();
