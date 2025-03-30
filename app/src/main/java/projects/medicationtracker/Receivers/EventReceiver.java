@@ -49,31 +49,31 @@ public class EventReceiver extends BroadcastReceiver {
         String action = Objects.requireNonNull(intent.getAction());
 
         if (action.contains(NotificationWorker.MARK_AS_TAKEN_ACTION)) {
-            String medId = "_" + intent.getAction().split("_")[1];
+            String embeddedId = "_" + intent.getAction().split("_")[1];
 
             markDoseTaken(
                     context,
-                    intent.getLongExtra(NOTIFICATION_ID + medId, 0),
-                    intent.getLongExtra(MEDICATION_ID + medId, 0),
-                    intent.getStringExtra(DOSE_TIME + medId),
+                    intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0),
+                    intent.getLongExtra(MEDICATION_ID + embeddedId, 0),
+                    intent.getStringExtra(DOSE_TIME + embeddedId),
                     db
             );
 
-            nativeDbHelper.deleteNotification(intent.getLongExtra(NOTIFICATION_ID + medId, 0));
+            nativeDbHelper.deleteNotification(intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0));
         } else if (intent.getAction().contains(SNOOZE_ACTION)) {
-            String medId = "_" + intent.getAction().split("_")[1];
+            String embeddedId = "_" + intent.getAction().split("_")[1];
 
             snoozeFor15(
                     context,
-                    intent.getLongExtra(NOTIFICATION_ID + medId, 0),
-                    intent.getLongExtra(MEDICATION_ID + medId, 0),
-                    intent.getStringExtra(DOSE_TIME + medId),
+                    intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0),
+                    intent.getLongExtra(MEDICATION_ID + embeddedId, 0),
+                    intent.getStringExtra(DOSE_TIME + embeddedId),
                     db
             );
         } else if (intent.getAction().contains(DISMISSED_ACTION)) {
-            String medId = "_" + intent.getAction().split("_")[1];
+            String embeddedId = "_" + intent.getAction().split("_")[1];
 
-            nativeDbHelper.deleteNotification(intent.getLongExtra(MEDICATION_ID + medId, 0));
+            nativeDbHelper.deleteNotification(intent.getLongExtra(MEDICATION_ID + embeddedId, 0));
         } else if (intent.getAction().contains(TAKE_ALL_ACTION)) {
             takeAll(manager, nativeDbHelper);
         } else {
