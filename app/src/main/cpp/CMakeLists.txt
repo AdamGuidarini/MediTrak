@@ -10,10 +10,39 @@ cmake_minimum_required(VERSION 3.22.1)
 
 project("medicationtracker")
 set(CMAKE_CXX_STANDARD 17)
-set(SQLITE3_PATH $ENV{SQLITE3_LIB_PATH})
 
-if (NOT SQLITE3_PATH)
-    message(SEND_ERROR "Missing environment variable: \"SQLITE3_LIB_PATH\".")
+set(SQLITE3_ROOT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/sqlite3")
+
+file(READ "../../../../sqliteconfig.json" CONFIG)
+
+string(JSON ZIP_URL GET ${CONFIG} "sqlite3_zip")
+string(JSON TARGET_CHECKSUM GET ${CONFIG} "sqlite3_sha256")
+string(REGEX REPLACE ".*/(.*)\\.zip" "\\1" AMALGA "${ZIP_URL}")
+
+set(SQLITE3_PATH "${SQLITE3_ROOT_PATH}/${AMALGA}")
+
+if (NOT EXISTS "${SQLITE3_ROOT_PATH}/sqlite3.zip")
+    if (NOT EXISTS ${SQLITE3_ROOT_PATH})
+        file(MAKE_DIRECTORY ${SQLITE3_ROOT_PATH})
+    endif ()
+
+    file(DOWNLOAD ${ZIP_URL} "${SQLITE3_ROOT_PATH}/sqlite3.zip" TIMEOUT 5000)
+
+    file(SHA256 "${SQLITE3_ROOT_PATH}/sqlite3.zip" REAL_CHECKSUM)
+
+    if (NOT ${REAL_CHECKSUM} MATCHES ${TARGET_CHECKSUM})
+        message(SEND_ERROR "Received SQLITE Lib does not match expected result")
+    endif ()
+
+    file(
+            ARCHIVE_EXTRACT
+            INPUT "${SQLITE3_ROOT_PATH}/sqlite3.zip"
+            DESTINATION ${SQLITE3_ROOT_PATH}
+    )
+
+    if (NOT EXISTS "${SQLITE3_PATH}/sqlite3.h")
+        message(SEND_ERROR "Could not find extracted file")
+    endif ()
 endif ()
 
 include_directories(${SQLITE3_PATH} MediTrakCore Sqlite3Database)
@@ -26,19 +55,9 @@ add_subdirectory(MediTrakCore)
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
 
-add_library( # Sets the name of the library.
-        medicationtracker
+add_library(medicationtracker SHARED medicationtracker.cpp)
 
-        # Sets the library as a shared library.
-        SHARED
-
-        # Provides a relative path to your source file(s).
-        medicationtracker.cpp
-)
-
-add_library(
-        sqlite3 SHARED ${SQLITE3_PATH}/sqlite3.h ${SQLITE3_PATH}/sqlite3.c
-)
+add_library(sqlite3 SHARED ${SQLITE3_PATH}/sqlite3.c)
 
 add_definitions( -DSQLITE_ENABLE_JSON1 )
 
@@ -72,4 +91,3 @@ target_link_libraries( # Specifies the target library.
         # included in the NDK.
         ${log-lib}
 )
-
