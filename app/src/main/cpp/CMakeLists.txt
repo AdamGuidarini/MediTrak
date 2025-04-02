@@ -13,19 +13,19 @@ set(SQLITE3_ROOT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/sqlite3")
 file(READ "../../../../sqliteconfig.json" CONFIG)
 
 string(JSON ZIP_URL GET ${CONFIG} "sqlite3_zip")
-string(JSON TARGET_CHECKSUM GET ${CONFIG} "sqlite3_sha256")
+string(JSON TARGET_CHECKSUM GET ${CONFIG} "sqlite3_sha3_256")
 string(REGEX REPLACE ".*/(.*)\\.zip" "\\1" AMALGA "${ZIP_URL}")
 
 set(SQLITE3_PATH "${SQLITE3_ROOT_PATH}/${AMALGA}")
 
-if (NOT EXISTS "${SQLITE3_ROOT_PATH}/sqlite3.zip")
+if (NOT EXISTS ${SQLITE3_PATH})
     if (NOT EXISTS ${SQLITE3_ROOT_PATH})
         file(MAKE_DIRECTORY ${SQLITE3_ROOT_PATH})
     endif ()
 
     file(DOWNLOAD ${ZIP_URL} "${SQLITE3_ROOT_PATH}/sqlite3.zip" TIMEOUT 5000)
 
-    file(SHA256 "${SQLITE3_ROOT_PATH}/sqlite3.zip" REAL_CHECKSUM)
+    file(SHA3_256 "${SQLITE3_ROOT_PATH}/sqlite3.zip" REAL_CHECKSUM)
 
     if (NOT ${REAL_CHECKSUM} MATCHES ${TARGET_CHECKSUM})
         message(SEND_ERROR "Received SQLITE Lib does not match expected result")
