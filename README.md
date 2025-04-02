@@ -24,37 +24,6 @@ MediTrak is an Android application designed to make it easier for users to keep 
 <li> Translated by a non-native speaker.</li>
 </ol>
 
-## Building the App
-
-It is strongly recommended to use [Android Studio](https://developer.android.com/studio) to build and test this application.
-
-### Additional Dependencies
-#### C/C++ SQLite3 Library
-
-This project uses the ````sqlite3.c```` and ````sqlite3.h```` files in its NDK portion. These can be found [here](https://www.sqlite.org/download.html) in the zip file under "Source Code". In order for CMake to find them, and enviroment variable called ````SQLITE3_LIB_PATH```` has to be set to their path.
-
-##### Setting the Envrioment Variable
-
-- Linux (Native)
-  ````
-  export SQLITE3_LIB_PATH=/path/to/dir/
-  ````
-
-  It is strongly recommended to add this to the ````.bashrc```` file in your home directory so they will persist across sessions.
-
-- Linux (Flatpak)
-
-  ````
-  flatpak override --user --env=SQLITE3_LIB_PATH=/path/to/dir/ com.google.AndroidStudio
-  ````
-
-- Windows
-  ````
-  [Environment]::SetEnvironmentVariable('SQLITE3_LIB_PATH', 'C:\path\to\dir', 'Machine')
-  ````
-
-  This will create an environment variable that will persist across sessions.
-
 ## Installation
 
 [<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="90" alt="Get it on GitHub"/>](https://github.com/AdamGuidarini/MediTrak/releases)
