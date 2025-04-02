@@ -16,8 +16,8 @@ android {
         targetSdkVersion 34
         compileSdk 35
 
-        versionCode 40
-        versionName "0.14.3"
+        versionCode 41
+        versionName "0.14.4"
         resourceConfigurations += ['en', 'de', 'es', 'it', 'tr', 'nl']
 
         ndk {
@@ -40,8 +40,13 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+        java {
+            toolchain {
+                languageVersion.set(JavaLanguageVersion.of(21))
+            }
+        }
     }
     namespace 'projects.medicationtracker'
     externalNativeBuild {
