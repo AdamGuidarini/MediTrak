@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
@@ -52,6 +51,8 @@
 
         <receiver
             android:name=".Receivers.NotificationReceiver"
+            android:process=":remote" />
+        <receiver android:name=".Receivers.ExportReceiver"
             android:process=":remote" />
         <receiver
             android:name=".Receivers.EventReceiver"

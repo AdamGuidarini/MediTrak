@@ -2,12 +2,12 @@ package projects.medicationtracker.Workers;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.SystemClock.sleep;
-import static projects.medicationtracker.Helpers.NotificationHelper.CHANNEL_ID;
-import static projects.medicationtracker.Helpers.NotificationHelper.DOSE_TIME;
-import static projects.medicationtracker.Helpers.NotificationHelper.GROUP_KEY;
-import static projects.medicationtracker.Helpers.NotificationHelper.MEDICATION_ID;
-import static projects.medicationtracker.Helpers.NotificationHelper.MESSAGE;
-import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION_ID;
+import static projects.medicationtracker.Utils.NotificationUtils.MED_REMINDER_CHANNEL_ID;
+import static projects.medicationtracker.Utils.NotificationUtils.DOSE_TIME;
+import static projects.medicationtracker.Utils.NotificationUtils.GROUP_KEY;
+import static projects.medicationtracker.Utils.NotificationUtils.MEDICATION_ID;
+import static projects.medicationtracker.Utils.NotificationUtils.MESSAGE;
+import static projects.medicationtracker.Utils.NotificationUtils.NOTIFICATION_ID;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -68,7 +68,7 @@ public class NotificationWorker extends Worker {
 
             if (Arrays.stream(openNotes).noneMatch(n -> n.getId() == SUMMARY_ID)) {
                 Notification notificationSummary
-                        = new NotificationCompat.Builder(context, CHANNEL_ID)
+                        = new NotificationCompat.Builder(context, MED_REMINDER_CHANNEL_ID)
                         .setContentTitle(context.getString(R.string.app_name))
                         .setSmallIcon(R.drawable.pill)
                         .setStyle(new NotificationCompat.InboxStyle())
@@ -110,7 +110,9 @@ public class NotificationWorker extends Worker {
             StatusBarNotification[] filteredNotifications = Arrays.stream(
                     notificationManager.getActiveNotifications()
             ).filter(
-                    n -> n.getId() != SUMMARY_ID
+                    n ->
+                        n.getId() != SUMMARY_ID
+                        && n.getNotification().getChannelId().equals(MED_REMINDER_CHANNEL_ID)
             ).toArray(StatusBarNotification[]::new);
 
             if (filteredNotifications.length == 1) {
@@ -160,25 +162,25 @@ public class NotificationWorker extends Worker {
         Intent markTakenIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
         Intent snoozeIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
         Intent deletedIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
-        String embeddedMedId = "_" + medId;
+        String embeddedNoteId = "_" + notificationId;
 
         markTakenIntent.removeExtra(DOSE_TIME);
         markTakenIntent.removeExtra(DOSE_TIME);
 
-        markTakenIntent.setAction(MARK_AS_TAKEN_ACTION + embeddedMedId);
-        markTakenIntent.putExtra(MEDICATION_ID + embeddedMedId, medId);
-        markTakenIntent.putExtra(NOTIFICATION_ID + embeddedMedId, notificationId);
-        markTakenIntent.putExtra(DOSE_TIME + embeddedMedId, doseTime);
+        markTakenIntent.setAction(MARK_AS_TAKEN_ACTION + embeddedNoteId);
+        markTakenIntent.putExtra(MEDICATION_ID + embeddedNoteId, medId);
+        markTakenIntent.putExtra(NOTIFICATION_ID + embeddedNoteId, notificationId);
+        markTakenIntent.putExtra(DOSE_TIME + embeddedNoteId, doseTime);
 
-        snoozeIntent.setAction(SNOOZE_ACTION + embeddedMedId);
-        snoozeIntent.putExtra(MEDICATION_ID + embeddedMedId, medId);
-        snoozeIntent.putExtra(NOTIFICATION_ID + embeddedMedId, notificationId);
-        snoozeIntent.putExtra(DOSE_TIME + embeddedMedId, doseTime);
+        snoozeIntent.setAction(SNOOZE_ACTION + embeddedNoteId);
+        snoozeIntent.putExtra(MEDICATION_ID + embeddedNoteId, medId);
+        snoozeIntent.putExtra(NOTIFICATION_ID + embeddedNoteId, notificationId);
+        snoozeIntent.putExtra(DOSE_TIME + embeddedNoteId, doseTime);
 
-        deletedIntent.setAction(DISMISSED_ACTION + embeddedMedId);
-        deletedIntent.putExtra(MEDICATION_ID + embeddedMedId, medId);
-        deletedIntent.putExtra(NOTIFICATION_ID + embeddedMedId, notificationId);
-        deletedIntent.putExtra(DOSE_TIME + embeddedMedId, doseTime);
+        deletedIntent.setAction(DISMISSED_ACTION + embeddedNoteId);
+        deletedIntent.putExtra(MEDICATION_ID + embeddedNoteId, medId);
+        deletedIntent.putExtra(NOTIFICATION_ID + embeddedNoteId, notificationId);
+        deletedIntent.putExtra(DOSE_TIME + embeddedNoteId, doseTime);
 
         PendingIntent markAsTakenPendingIntent =
                 PendingIntent.getBroadcast(
@@ -211,7 +213,7 @@ public class NotificationWorker extends Worker {
                 );
 
         NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(context, CHANNEL_ID)
+                new NotificationCompat.Builder(context, MED_REMINDER_CHANNEL_ID)
                         .setContentTitle(context.getString(R.string.app_name))
                         .setContentText(message)
                         .setSmallIcon(R.drawable.pill)
@@ -231,7 +233,9 @@ public class NotificationWorker extends Worker {
                         )
                         .setDeleteIntent(deleteIntent);
 
-        StatusBarNotification[] open = notificationManager.getActiveNotifications();
+        StatusBarNotification[] open = Arrays.stream(notificationManager.getActiveNotifications())
+                .filter(n -> n.getNotification().getChannelId().equals(MED_REMINDER_CHANNEL_ID))
+                .toArray(StatusBarNotification[]::new);
 
         if (Arrays.stream(open).filter(n -> n.getId() != SUMMARY_ID).count() >= 1) {
             builder.addAction(
@@ -241,8 +245,7 @@ public class NotificationWorker extends Worker {
             );
         }
 
-        Intent resIntent =
-                new Intent(context, MainActivity.class);
+        Intent resIntent = new Intent(context, MainActivity.class);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addParentStack(MainActivity.class);

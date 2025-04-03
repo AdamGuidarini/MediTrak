@@ -3,8 +3,11 @@
 
 #include <jni.h>
 #include <android/log.h>
+#include <android/file_descriptor_jni.h>
 #include <string>
 #include <map>
+#include <sys/stat.h>
+#include <unistd.h>
 
 std::map<std::string, std::string> getValues(jobjectArray arr, JNIEnv *env) {
     const jclass pair = env->FindClass("android/util/Pair");
@@ -29,7 +32,7 @@ std::map<std::string, std::string> getValues(jobjectArray arr, JNIEnv *env) {
     return vals;
 }
 
-jobject doseToJavaConverter(const Dose& dose, JNIEnv *env, jobject &jMedication) {
+jobject doseToJavaConverter(const Dose &dose, JNIEnv *env, jobject &jMedication) {
     jfieldID medDoses = env->GetFieldID(env->GetObjectClass(jMedication), "doses",
                                         "[Lprojects/medicationtracker/Models/Dose;");
     auto jDoses = static_cast<jobjectArray>(env->GetObjectField(jMedication, medDoses));
@@ -236,10 +239,10 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbExporter(
     } catch (exception &e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
 
-        return false;
+        return JNI_FALSE;
     }
 
-    return true;
+    return JNI_TRUE;
 }
 
 extern "C"
@@ -255,7 +258,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(
     std::string fileContents = env->GetStringUTFChars(file_contents, new jboolean(true));
     std::vector<std::string> ignoredTbls;
     int len = env->GetArrayLength(ignored_tables);
-    bool success = true;
+    auto success = JNI_TRUE;
 
     for (int i = 0; i < len; i++) {
         auto str = (jstring) (env->GetObjectArrayElement(ignored_tables, i));
@@ -272,7 +275,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(
     } catch (exception &e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
 
-        success = false;
+        success = JNI_FALSE;
     }
 
     return success;
@@ -280,8 +283,11 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_projects_medicationtracker_Helpers_NativeDbHelper_dbCreate(JNIEnv *env, jobject thiz,
-                                                                jstring db_path) {
+Java_projects_medicationtracker_Helpers_NativeDbHelper_dbCreate(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path
+) {
     std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
 
     try {
@@ -293,8 +299,12 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbCreate(JNIEnv *env, job
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_projects_medicationtracker_Helpers_NativeDbHelper_dbUpgrade(JNIEnv *env, jobject thiz,
-                                                                 jstring db_path, jint version) {
+Java_projects_medicationtracker_Helpers_NativeDbHelper_dbUpgrade(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jint version
+) {
     std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
 
     try {
@@ -332,10 +342,10 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_update(
     } catch (exception &e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
 
-        return false;
+        return JNI_FALSE;
     }
 
-    return true;
+    return JNI_TRUE;
 }
 
 extern "C"
@@ -450,10 +460,10 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_exportMedHistory(
     } catch (exception &e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
 
-        return false;
+        return JNI_FALSE;
     }
 
-    return true;
+    return JNI_TRUE;
 }
 
 extern "C"
@@ -521,7 +531,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_updateDose(
 
     Dose nDose = javaDoseToNativeDoseConverter(dose, env);
 
-    return controller.updateDose(nDose);
+    return controller.updateDose(nDose) ? JNI_TRUE : JNI_FALSE;
 }
 
 extern "C"
@@ -539,11 +549,11 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_stashNotification(
                                                                                   env);
 
     try {
-        return controller.stashNotification(notificationToStash);
+        return controller.stashNotification(notificationToStash) ? JNI_TRUE : JNI_FALSE;
     } catch (exception &e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
 
-        return false;
+        return JNI_FALSE;
     }
 }
 
@@ -646,4 +656,152 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_addDose(
     }
 
     return rowId;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_updateSettings(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jobjectArray settings
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::map<std::string, std::string> opts = getValues(settings, env);
+
+    DatabaseController controller(dbPath);
+
+    try {
+        controller.updateSettings(opts);
+    } catch (exception& e) {
+        auto err = "Unable to update settings";
+
+        __android_log_write(ANDROID_LOG_ERROR, "SETTINGS UPDATE", err);
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_deleteNotificationsByMedId(
+    JNIEnv *env,
+    jobject thiz,
+    jstring db_path,
+    jlong medicationid
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+
+    DatabaseController controller(dbPath);
+
+    try {
+        controller.deleteNotificationsByMedicationId(medicationid);
+    } catch (exception& e) {
+        auto err = "Unable to delete notifications for medication: " + to_string(medicationid);
+
+        __android_log_write(ANDROID_LOG_ERROR, "SETTINGS UPDATE", err.c_str());
+    }
+}
+
+extern "C"
+JNIEXPORT jobject JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_getSettings(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path
+) {
+    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+
+    DatabaseController controller(dbPath);
+    Table* settings = controller.getSettings();
+    jobject jSettings;
+    jclass jBundle = env->FindClass("android/os/Bundle");
+
+    jmethodID bundleConstructor = env->GetMethodID(
+        jBundle, "<init>", "()V"
+    );
+    jmethodID putString = env->GetMethodID(
+            jBundle, "putString", "(Ljava/lang/String;Ljava/lang/String;)V"
+    );
+    jmethodID putInt = env->GetMethodID(
+            jBundle, "putInt", "(Ljava/lang/String;I)V"
+    );
+    jmethodID putBool = env->GetMethodID(
+            jBundle, "putBoolean", "(Ljava/lang/String;Z)V"
+    );
+
+    jSettings = env->NewObject(jBundle, bundleConstructor);
+
+    const std::string stringKeys[] = {
+            controller.THEME,
+            controller.DATE_FORMAT,
+            controller.TIME_FORMAT,
+            controller.EXPORT_START,
+            controller.EXPORT_FILE_NAME
+    };
+
+    const std::string intKeys[] = {
+            controller.TIME_BEFORE_DOSE,
+            controller.EXPORT_FREQUENCY
+    };
+
+    const std::string boolKeys[] = {
+            controller.ENABLE_NOTIFICATIONS,
+            controller.SEEN_NOTIFICATION_REQUEST,
+            controller.AGREED_TO_TERMS,
+    };
+
+    for (const auto& sKey : stringKeys) {
+        env->CallVoidMethod(
+                jSettings,
+                putString,
+                env->NewStringUTF(sKey.c_str()),
+                env->NewStringUTF(settings->getItem(sKey).c_str())
+        );
+    }
+
+    for (const auto& iKey : intKeys) {
+        env->CallVoidMethod(
+                jSettings,
+                putInt,
+                env->NewStringUTF(iKey.c_str()),
+                stoi(settings->getItem(iKey))
+        );
+    }
+
+    for (const auto& bKey : boolKeys) {
+        env->CallVoidMethod(
+                jSettings,
+                putBool,
+                env->NewStringUTF(bKey.c_str()),
+                settings->getItem(bKey) == "1"
+        );
+    }
+
+    delete settings;
+
+    return jSettings;
+}
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_canWriteFile(
+        JNIEnv *env,
+        jobject thiz,
+        jstring test_path
+) {
+    struct stat fileStat;
+    const char* pathChars = env->GetStringUTFChars(test_path, nullptr);
+
+    if (pathChars == nullptr) {
+        return JNI_FALSE;
+    }
+
+    std::string path(pathChars);
+
+    env->ReleaseStringUTFChars(test_path, pathChars);
+
+    if (stat(path.c_str(), &fileStat) != 0) {
+        return errno == ENOENT ? JNI_TRUE : JNI_FALSE;
+    }
+
+    return access(path.c_str(), W_OK) == 0 ? JNI_TRUE : JNI_FALSE;
 }

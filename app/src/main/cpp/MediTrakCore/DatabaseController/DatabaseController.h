@@ -24,12 +24,16 @@ namespace TimeFormats {
 namespace DateFormats {
     const string MM_DD_YYYY = "MM/dd/yyyy";
     const string DD_MM_YYYY = "dd/MM/yyyy";
+    const string MMM_DD_YYYY = "MMM dd, yyyy";
+    const string DD_MMM_YYYY = "dd MMM yyyy";
+    const string YYYY_MM_DD = "yyyy-MM-dd";
+    const string MM__DD__YYYY = "MM.dd.yyyy";
     const string DB_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 }
 
 class DatabaseController {
 private:
-    const int DB_VERSION = 17;
+    const int DB_VERSION = 19;
     const string DATABASE_NAME = "Medications.db";
     vector<string> tablesToIgnore;
     DbManager manager;
@@ -72,18 +76,6 @@ private:
     const string ENTRY_TIME = "EntryTime";
     const string TIME_EDITED = "TimeEdited";
 
-    // Settings
-    const string TIME_BEFORE_DOSE = "TimeBeforeDose";
-    const string ENABLE_NOTIFICATIONS = "EnableNotifications";
-    const string SEEN_NOTIFICATION_REQUEST = "SeenNotificationRequest";
-    const string THEME = "Theme";
-    const string DEFAULT = "default";
-    const string LIGHT = "light";
-    const string DARK = "dark";
-    const string AGREED_TO_TERMS = "AgreedToTerms";
-    const string DATE_FORMAT = "DateFormat";
-    const string TIME_FORMAT = "TimeFormat";
-
     // Activity Change
     const string CHANGE_EVENT_ID = "ChangeId";
     const string CHANGE_DATE = "ChangeDate";
@@ -107,6 +99,21 @@ private:
     Dose* setDose(Table* table);
 
 public:
+    // Settings
+    const string TIME_BEFORE_DOSE = "TimeBeforeDose";
+    const string ENABLE_NOTIFICATIONS = "EnableNotifications";
+    const string SEEN_NOTIFICATION_REQUEST = "SeenNotificationRequest";
+    const string THEME = "Theme";
+    const string DEFAULT = "default";
+    const string LIGHT = "light";
+    const string DARK = "dark";
+    const string AGREED_TO_TERMS = "AgreedToTerms";
+    const string DATE_FORMAT = "DateFormat";
+    const string TIME_FORMAT = "TimeFormat";
+    const string EXPORT_FREQUENCY = "ExportFrequency";
+    const string EXPORT_START = "ExportStart";
+    const string EXPORT_FILE_NAME = "ExportFileName";
+
     const string NOTES_TABLE = "Notes";
     const string SETTINGS_TABLE = "Settings";
     const string ACTIVITY_CHANGE_TABLE = "ActivityChanges";
@@ -150,6 +157,11 @@ public:
      * @param values Values to add to new row
      */
     void deleteRecord(string table, map<string, string> where);
+
+    /**
+     * Retrieves settings
+     */
+    Table* getSettings();
 
     /**
      * Updates Settings
@@ -251,6 +263,12 @@ public:
      * @param id ID of notification to delete
      */
      void deleteNotification(long id);
+
+     /**
+      * Deleted all notifications with the given medication ID
+      * @param medicationId
+      */
+     void deleteNotificationsByMedicationId(long medicationId);
 
     /**
     * Resolves issues in caused by imports where the last character of the last record was removed

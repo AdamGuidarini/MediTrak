@@ -40,8 +40,8 @@ import projects.medicationtracker.Dialogs.AddAsNeededDoseDialog;
 import projects.medicationtracker.Dialogs.DoseInfoDialog;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
-import projects.medicationtracker.Helpers.TextViewUtils;
-import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.Utils.TextViewUtils;
+import projects.medicationtracker.Utils.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Models.Dose;
@@ -298,7 +298,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
             StatusBarNotification[] notifications = manager.getActiveNotifications();
 
             List<StatusBarNotification> validNotifications = Arrays.stream(notifications).filter(
-                    n -> n.getId() == medId || Arrays.stream(timeIds).anyMatch(t -> (t * -1) == n.getId())
+                    n -> Arrays.stream(timeIds).anyMatch(t -> t == n.getId())
             ).collect(Collectors.toList());
 
             if (!validNotifications.isEmpty()) {

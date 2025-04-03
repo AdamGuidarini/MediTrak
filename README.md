@@ -7,13 +7,14 @@ MediTrak is an Android application designed to make it easier for users to keep 
 
 ## Requirements
 
-- Android 9+
+- Android 10+
 
 ## Languages
- - English
+ - **English** (Default)
+ - Dutch by [ruditimmermans](https://github.com/ruditimmermans)<sup>1,2</sup>
  - German by [uDEV2019](https://github.com/uDEV2019)<sup>1,2</sup>
- - Spanish by [zaovb](https://github.com/zaovb)<sup>1,3</sup>
  - Italian<sup>4</sup>
+ - Spanish by [zaovb](https://github.com/zaovb)<sup>1,3</sup>
  - Turkish by [mikropsoft](https://github.com/mikropsoft)<sup>1,2</sup>
 
 <ol style="font-size: 0.8em;">
@@ -22,37 +23,6 @@ MediTrak is an Android application designed to make it easier for users to keep 
 <li> Additional translations provided by non-native speaker.</li>
 <li> Translated by a non-native speaker.</li>
 </ol>
-
-## Building the App
-
-It is strongly recommended to use [Android Studio](https://developer.android.com/studio) to build and test this application.
-
-### Additional Dependencies
-#### C/C++ SQLite3 Library
-
-This project uses the ````sqlite3.c```` and ````sqlite3.h```` files in its NDK portion. These can be found [here](https://www.sqlite.org/download.html) in the zip file under "Source Code". In order for CMake to find them, and enviroment variable called ````SQLITE3_LIB_PATH```` has to be set to their path.
-
-##### Setting the Envrioment Variable
-
-- Linux (Native)
-  ````
-  export SQLITE3_LIB_PATH=/path/to/dir/
-  ````
-
-  It is strongly recommended to add this to the ````.bashrc```` file in your home directory so they will persist across sessions.
-
-- Linux (Flatpak)
-
-  ````
-  flatpak override --user --env=SQLITE3_LIB_PATH=/path/to/dir/ com.google.AndroidStudio
-  ````
-
-- Windows
-  ````
-  [Environment]::SetEnvironmentVariable('SQLITE3_LIB_PATH', 'C:\path\to\dir', 'Machine')
-  ````
-
-  This will create an environment variable that will persist across sessions.
 
 ## Installation
 

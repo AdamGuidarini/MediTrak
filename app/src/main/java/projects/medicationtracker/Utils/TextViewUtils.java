@@ -1,4 +1,4 @@
-package projects.medicationtracker.Helpers;
+package projects.medicationtracker.Utils;
 
 import android.view.ViewGroup;
 import android.widget.TextView;

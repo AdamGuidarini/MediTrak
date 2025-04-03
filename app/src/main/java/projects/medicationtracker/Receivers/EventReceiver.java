@@ -1,38 +1,42 @@
 package projects.medicationtracker.Receivers;
 
-import static projects.medicationtracker.Helpers.NotificationHelper.DOSE_TIME;
-import static projects.medicationtracker.Helpers.NotificationHelper.MEDICATION_ID;
-import static projects.medicationtracker.Helpers.NotificationHelper.NOTIFICATION_ID;
-import static projects.medicationtracker.Helpers.NotificationHelper.clearPendingNotifications;
-import static projects.medicationtracker.Helpers.NotificationHelper.createNotifications;
-import static projects.medicationtracker.Helpers.NotificationHelper.scheduleIn15Minutes;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FREQUENCY;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_START;
+import static projects.medicationtracker.Utils.NotificationUtils.DOSE_TIME;
+import static projects.medicationtracker.Utils.NotificationUtils.MEDICATION_ID;
+import static projects.medicationtracker.Utils.NotificationUtils.MED_REMINDER_CHANNEL_ID;
+import static projects.medicationtracker.Utils.NotificationUtils.NOTIFICATION_ID;
+import static projects.medicationtracker.Utils.NotificationUtils.clearPendingNotifications;
+import static projects.medicationtracker.Utils.NotificationUtils.createNotifications;
+import static projects.medicationtracker.Utils.NotificationUtils.scheduleIn15Minutes;
 import static projects.medicationtracker.Workers.NotificationWorker.DISMISSED_ACTION;
 import static projects.medicationtracker.Workers.NotificationWorker.SNOOZE_ACTION;
 import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
 import static projects.medicationtracker.Workers.NotificationWorker.TAKE_ALL_ACTION;
 
-import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
-import projects.medicationtracker.Helpers.NotificationHelper;
-import projects.medicationtracker.Helpers.TimeFormatting;
+import projects.medicationtracker.Utils.DataExportUtils;
+import projects.medicationtracker.Utils.NotificationUtils;
+import projects.medicationtracker.Utils.TimeFormatting;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Notification;
 import projects.medicationtracker.Workers.NotificationWorker;
 
 public class EventReceiver extends BroadcastReceiver {
-    @SuppressLint("RestrictedApi")
     @Override
     public void onReceive(Context context, Intent intent) {
         final DBHelper db = new DBHelper(context);
@@ -42,40 +46,41 @@ public class EventReceiver extends BroadcastReceiver {
 
         ArrayList<Medication> medications = db.getMedications();
 
-        if (intent.getAction().contains(NotificationWorker.MARK_AS_TAKEN_ACTION)) {
-            String medId = "_" + intent.getAction().split("_")[1];
+        String action = Objects.requireNonNull(intent.getAction());
+
+        if (action.contains(NotificationWorker.MARK_AS_TAKEN_ACTION)) {
+            String embeddedId = "_" + intent.getAction().split("_")[1];
 
             markDoseTaken(
                     context,
-                    intent.getLongExtra(NOTIFICATION_ID + medId, 0),
-                    intent.getLongExtra(MEDICATION_ID + medId, 0),
-                    intent.getStringExtra(DOSE_TIME + medId),
+                    intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0),
+                    intent.getLongExtra(MEDICATION_ID + embeddedId, 0),
+                    intent.getStringExtra(DOSE_TIME + embeddedId),
                     db
             );
 
-            nativeDbHelper.deleteNotification(intent.getLongExtra(NOTIFICATION_ID + medId, 0));
+            nativeDbHelper.deleteNotification(intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0));
         } else if (intent.getAction().contains(SNOOZE_ACTION)) {
-            String medId = "_" + intent.getAction().split("_")[1];
+            String embeddedId = "_" + intent.getAction().split("_")[1];
 
             snoozeFor15(
                     context,
-                    intent.getLongExtra(NOTIFICATION_ID + medId, 0),
-                    intent.getLongExtra(MEDICATION_ID + medId, 0),
-                    intent.getStringExtra(DOSE_TIME + medId),
+                    intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0),
+                    intent.getLongExtra(MEDICATION_ID + embeddedId, 0),
+                    intent.getStringExtra(DOSE_TIME + embeddedId),
                     db
             );
         } else if (intent.getAction().contains(DISMISSED_ACTION)) {
-            String medId = "_" + intent.getAction().split("_")[1];
+            String embeddedId = "_" + intent.getAction().split("_")[1];
 
-            nativeDbHelper.deleteNotification(intent.getLongExtra(MEDICATION_ID + medId, 0));
+            nativeDbHelper.deleteNotification(intent.getLongExtra(MEDICATION_ID + embeddedId, 0));
         } else if (intent.getAction().contains(TAKE_ALL_ACTION)) {
             takeAll(manager, nativeDbHelper);
         } else {
             final ArrayList<Notification> notifications = nativeDbHelper.getNotifications();
 
-            for (final Medication medication : medications) {
-                prepareNotification(context, medication);
-            }
+            prepareExport(context, nativeDbHelper.getSettings());
+            medications.forEach(m -> prepareNotification(context, m));
 
             for (final Notification n : notifications) {
                 Medication med = medications.stream().filter(
@@ -91,16 +96,15 @@ public class EventReceiver extends BroadcastReceiver {
                     continue;
                 }
 
-                NotificationHelper.scheduleNotification(
+                NotificationUtils.scheduleNotification(
                         context, med, n.getDoseTime(), n.getNotificationId()
                 );
             }
         }
 
-        StatusBarNotification[] notifications = manager.getActiveNotifications();
-        StatusBarNotification[] notTheSummary = Arrays.stream(notifications).filter(
-                _n -> _n.getId() != SUMMARY_ID
-        ).toArray(StatusBarNotification[]::new);
+        StatusBarNotification[] notifications = Arrays.stream(manager.getActiveNotifications())
+                .filter(n -> n.getNotification().getChannelId().equals(MED_REMINDER_CHANNEL_ID))
+                .toArray(StatusBarNotification[]::new);
 
         if (notifications.length == 1 && notifications[0].getId() == SUMMARY_ID) {
             manager.cancel(SUMMARY_ID);
@@ -118,6 +122,19 @@ public class EventReceiver extends BroadcastReceiver {
     private void prepareNotification(Context context, Medication medication) {
         clearPendingNotifications(medication, context);
         createNotifications(medication, context);
+    }
+
+    private void prepareExport(Context context, Bundle preferences) {
+        if (preferences.getString(EXPORT_START).isEmpty()) {
+            return;
+        }
+
+        LocalDateTime exportStart = TimeFormatting.stringToLocalDateTime(
+                Objects.requireNonNull(preferences.getString(EXPORT_START))
+        );
+        int frequency = preferences.getInt(EXPORT_FREQUENCY);
+
+        DataExportUtils.scheduleExport(context, exportStart, frequency);
     }
 
     /**

@@ -3,6 +3,9 @@ package projects.medicationtracker;
 import static projects.medicationtracker.Helpers.DBHelper.DARK;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FILE_NAME;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FREQUENCY;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_START;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
@@ -20,6 +23,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Pair;
+import android.util.TimeUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -42,14 +47,22 @@ import java.io.DataInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 import projects.medicationtracker.Dialogs.BackupDestinationPicker;
 import projects.medicationtracker.Fragments.ConfirmDeleteAllFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
+import projects.medicationtracker.Utils.DataExportUtils;
+import projects.medicationtracker.Utils.TimeFormatting;
 
 public class Settings extends AppCompatActivity implements IDialogCloseListener {
     private final DBHelper db = new DBHelper(this);
@@ -60,6 +73,14 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
             }
     );
     private NativeDbHelper nativeDb;
+    private final Pair<String, DateTimeFormatter>[] dateFormats = new Pair[]{
+            new Pair<>(DBHelper.DateFormats.MM_DD_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.MM_DD_YYYY, Locale.getDefault())),
+            new Pair<>(DBHelper.DateFormats.DD_MM_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.DD_MM_YYYY, Locale.getDefault())),
+            new Pair<>(DBHelper.DateFormats.MMM_DD_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.MMM_DD_YYYY, Locale.getDefault())),
+            new Pair<>(DBHelper.DateFormats.DD_MMM_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.DD_MMM_YYYY, Locale.getDefault())),
+            new Pair<>(DBHelper.DateFormats.YYYY_MM_DD, DateTimeFormatter.ofPattern(DBHelper.DateFormats.YYYY_MM_DD, Locale.getDefault())),
+            new Pair<>(DBHelper.DateFormats.MM__DD_YYYY, DateTimeFormatter.ofPattern(DBHelper.DateFormats.MM__DD_YYYY, Locale.getDefault()))
+    };
 
     /**
      * Create Settings
@@ -332,35 +353,21 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
     private void setDateFormatMenu() {
         MaterialAutoCompleteTextView dateSelector = findViewById(R.id.date_format_selector);
         String dateFormat = preferences.getString(DATE_FORMAT, DBHelper.DateFormats.MM_DD_YYYY);
+        int index = IntStream.range(0, dateFormats.length).filter(
+                (i) -> dateFormat.equals(dateFormats[i].first)
+        ).findFirst().orElse(-1);
 
         dateSelector.setAdapter(createDateFormatMenuAdapter());
 
-        switch (dateFormat) {
-            case DBHelper.DateFormats.MM_DD_YYYY:
-                dateSelector.setText(dateSelector.getAdapter().getItem(0).toString(), false);
-                break;
-            case DBHelper.DateFormats.DD_MM_YYYY:
-                dateSelector.setText(dateSelector.getAdapter().getItem(1).toString(), false);
-                break;
-        }
+        dateSelector.setText(dateSelector.getAdapter().getItem(index).toString(), false);
 
         dateSelector.setOnItemClickListener((parent, view, position, id) -> {
             String timeFormat = preferences.getString(TIME_FORMAT, DBHelper.TimeFormats._12_HOUR);
 
-            switch (position) {
-                case 0:
-                    if (!dateFormat.equals(DBHelper.DateFormats.MM_DD_YYYY)) {
-                        db.setDateTimeFormat(DBHelper.DateFormats.MM_DD_YYYY, timeFormat);
-                    }
-                    break;
-                case 1:
-                    if (!dateFormat.equals(DBHelper.DateFormats.DD_MM_YYYY)) {
-                        db.setDateTimeFormat(DBHelper.DateFormats.DD_MM_YYYY, timeFormat);
-                    }
-            }
+            db.setDateTimeFormat(dateFormats[position].first, timeFormat);
 
             dateSelector.clearFocus();
-            preferences = db.getPreferences();
+            preferences = nativeDb.getSettings();
         });
     }
 
@@ -398,7 +405,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
             }
 
             timeSelector.clearFocus();
-            preferences = db.getPreferences();
+            preferences = nativeDb.getSettings();
         });
     }
 
@@ -407,8 +414,8 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
      */
     private void setLanguageMenu() {
         MaterialAutoCompleteTextView langSelector = findViewById(R.id.language_selector);
-        String[] langOpts = {"Deutsch", "English", "Español", "Italiano", "Türkçe"};
-        String[] langCodes = {"de", "en", "es", "it", "tr"};
+        String[] langOpts = {"Deutsch", "English", "Español", "Italiano", "Nederlands", "Türkçe"};
+        String[] langCodes = {"de", "en", "es", "it", "nl", "tr"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_dropdown_item_1line,
@@ -425,18 +432,22 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
             case "de":
                 langSelector.setText(langOpts[0], false);
                 break;
-            case "en":
-            default:
-                langSelector.setText(langOpts[1], false);
-                break;
             case "es":
                 langSelector.setText(langOpts[2], false);
                 break;
             case "it":
                 langSelector.setText(langOpts[3], false);
                 break;
-            case "tr":
+            case "nl":
                 langSelector.setText(langOpts[4], false);
+                break;
+            case "tr":
+                langSelector.setText(langOpts[5], false);
+                break;
+            case "en":
+            default:
+                langSelector.setText(langOpts[1], false);
+                break;
         }
 
         langSelector.setOnItemClickListener((parent, view, position, id) -> {
@@ -496,9 +507,11 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
      */
     private ArrayAdapter<String> createDateFormatMenuAdapter() {
         ArrayList<String> formats = new ArrayList<>();
+        LocalDate today = LocalDate.now();
 
-        formats.add(getString(R.string.date_format_mm_dd_yyyy));
-        formats.add(getString(R.string.date_format_dd_mm_yyyy));
+        for (Pair<String, DateTimeFormatter> formatter : dateFormats) {
+            formats.add(formatter.second.format(today));
+        }
 
         return new ArrayAdapter<>(
                 this, android.R.layout.simple_dropdown_item_1line, formats
@@ -585,6 +598,17 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
         }
     }
 
+    public void onScheduleExportClick(View view) {
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED
+        ) {
+            permissionRequester.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+        BackupDestinationPicker picker = new BackupDestinationPicker("json", true);
+        picker.show(getSupportFragmentManager(), null);
+    }
+
     /**
      * Enable notifications for application
      */
@@ -599,16 +623,52 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
 
     @Override
     public void handleDialogClose(Action action, Object data) {
-        final String[] dialogRes = (String[]) data;
-
-        String exportDir = dialogRes[0];
-        String exportFile = dialogRes[1];
-        String fileExtension = dialogRes[2];
-
+        String exportPath = "";
+        boolean res;
         String resMessage;
-        boolean res = nativeDb.dbExport(exportDir + '/' + exportFile + "." + fileExtension);
 
-        resMessage = res ? getString(R.string.successful_export, exportDir + '/' + exportFile)
+        if (action == Action.ADD) {
+            Bundle dialogRes = (Bundle) data;
+            boolean createNow = dialogRes.getBoolean("CREATE_NOW");
+            dialogRes.remove("CREATE_NOW");
+
+            exportPath = dialogRes.getString(EXPORT_FILE_NAME);
+
+            preferences.putAll(dialogRes);
+
+            nativeDb.updateSettings(preferences);
+
+            String startText = Objects.requireNonNull(dialogRes.getString(EXPORT_START));
+            LocalDateTime start = TimeFormatting.stringToLocalDateTime(startText);
+
+            DataExportUtils.cancel(this);
+
+            DataExportUtils.scheduleExport(
+                    this,
+                    start,
+                    dialogRes.getInt(EXPORT_FREQUENCY)
+            );
+
+            if (!createNow) {
+                return;
+            }
+        } else if (action == Action.DELETE) {
+            preferences.putString(EXPORT_FILE_NAME, "");
+            preferences.putInt(EXPORT_FREQUENCY, -1);
+            preferences.putString(EXPORT_START, "");
+
+            nativeDb.updateSettings(preferences);
+
+            DataExportUtils.cancel(this);
+
+            return;
+        } else {
+            exportPath = (String) data;
+        }
+
+        res = nativeDb.dbExport(exportPath);
+
+        resMessage = res ? getString(R.string.successful_export, exportPath)
                 : getString(R.string.failed_export);
 
         Toast.makeText(this, resMessage, Toast.LENGTH_SHORT).show();

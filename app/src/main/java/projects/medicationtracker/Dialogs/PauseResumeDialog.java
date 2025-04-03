@@ -10,7 +10,7 @@ import androidx.fragment.app.DialogFragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import projects.medicationtracker.Helpers.DBHelper;
-import projects.medicationtracker.Helpers.NotificationHelper;
+import projects.medicationtracker.Utils.NotificationUtils;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Models.Medication;
 
@@ -53,12 +53,12 @@ public class PauseResumeDialog extends DialogFragment {
                 resumeButton.setVisible(true);
                 pauseButton.setVisible(false);
 
-                NotificationHelper.clearPendingNotifications(medication, getActivity());
+                NotificationUtils.clearPendingNotifications(medication, getActivity());
             } else {
                 resumeButton.setVisible(false);
                 pauseButton.setVisible(true);
 
-                NotificationHelper.createNotifications(medication, getActivity());
+                NotificationUtils.createNotifications(medication, getActivity());
             }
 
             dismiss();

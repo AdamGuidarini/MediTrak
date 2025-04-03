@@ -22,6 +22,7 @@ import java.util.Collections;
 
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Note;
+import projects.medicationtracker.Utils.TimeFormatting;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Medications.db";
@@ -63,13 +64,16 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static final String SETTINGS_TABLE = "Settings";
     private static final String TIME_BEFORE_DOSE = "TimeBeforeDose";
-    private static final String ENABLE_NOTIFICATIONS = "EnableNotifications";
+    public static final String ENABLE_NOTIFICATIONS = "EnableNotifications";
     public static final String SEEN_NOTIFICATION_REQUEST = "SeenNotificationRequest";
+    public static final String AGREED_TO_TERMS = "AgreedToTerms";
+    public static final String EXPORT_FREQUENCY = "ExportFrequency";
+    public static final String EXPORT_START = "ExportStart";
+    public static final String EXPORT_FILE_NAME = "ExportFileName";
     public static final String THEME = "Theme";
     public static final String DEFAULT = "default";
     public static final String LIGHT = "light";
     public static final String DARK = "dark";
-    public static final String AGREED_TO_TERMS = "AgreedToTerms";
     public static String DATE_FORMAT = "DateFormat";
     public static String TIME_FORMAT = "TimeFormat";
 
@@ -90,6 +94,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public static class DateFormats {
         public static final String MM_DD_YYYY = "MM/dd/yyyy";
         public static final String DD_MM_YYYY = "dd/MM/yyyy";
+        public static final String MMM_DD_YYYY = "MMM dd, yyyy";
+        public static final String DD_MMM_YYYY = "dd MMM yyyy";
+        public static final String YYYY_MM_DD = "yyyy-MM-dd";
+        public static final String MM__DD_YYYY = "MM.dd.yyyy";
         public static final String DB_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     }
 
@@ -434,6 +442,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         medication = new Medication(
                 medName, patient, units, times, startDate, medId, frequency, dosage, alias
+        );
+
+        medication.setActiveStatus(
+                cursor.getString(cursor.getColumnIndexOrThrow(ACTIVE)).equals("1")
         );
 
         medication.setInstructions(instructions);
@@ -994,42 +1006,6 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return enabled;
-    }
-
-    /**
-     * Retrieves preferences saved by user.
-     *
-     * @return User's preferred theme & terms of service agreement status.
-     */
-    public Bundle getPreferences() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT "
-                + THEME + ","
-                + AGREED_TO_TERMS + ","
-                + SEEN_NOTIFICATION_REQUEST + ","
-                + DATE_FORMAT + ","
-                + TIME_FORMAT
-                + " FROM " + SETTINGS_TABLE;
-        Bundle retVal = new Bundle();
-
-        Cursor cursor = db.rawQuery(query, null);
-        cursor.moveToFirst();
-
-        retVal.putString(THEME, cursor.getString(cursor.getColumnIndexOrThrow(THEME)));
-        retVal.putBoolean(
-                AGREED_TO_TERMS,
-                Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(AGREED_TO_TERMS))) == 1
-        );
-        retVal.putBoolean(
-                SEEN_NOTIFICATION_REQUEST,
-                Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(SEEN_NOTIFICATION_REQUEST))) == 1
-        );
-        retVal.putString(DATE_FORMAT, cursor.getString(cursor.getColumnIndexOrThrow(DATE_FORMAT)));
-        retVal.putString(TIME_FORMAT, cursor.getString(cursor.getColumnIndexOrThrow(TIME_FORMAT)));
-
-        cursor.close();
-
-        return retVal;
     }
 
     /**

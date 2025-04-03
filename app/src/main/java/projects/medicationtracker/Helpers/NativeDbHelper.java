@@ -1,8 +1,17 @@
 package projects.medicationtracker.Helpers;
 
+import static projects.medicationtracker.Helpers.DBHelper.AGREED_TO_TERMS;
 import static projects.medicationtracker.Helpers.DBHelper.DATABASE_NAME;
+import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FILE_NAME;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FREQUENCY;
+import static projects.medicationtracker.Helpers.DBHelper.EXPORT_START;
+import static projects.medicationtracker.Helpers.DBHelper.SEEN_NOTIFICATION_REQUEST;
+import static projects.medicationtracker.Helpers.DBHelper.THEME;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Pair;
 
 import java.time.LocalDateTime;
@@ -14,6 +23,7 @@ import java.util.Locale;
 import projects.medicationtracker.Models.Dose;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Notification;
+import projects.medicationtracker.Utils.TimeFormatting;
 
 public class NativeDbHelper {
     static {
@@ -134,16 +144,20 @@ public class NativeDbHelper {
         return getDoseById(dbPath, doseId, new Medication());
     }
 
-    public boolean updateDose(Dose dose) {
-        return updateDose(dbPath, dose);
+    public void updateDose(Dose dose) {
+        updateDose(dbPath, dose);
     }
 
-    public long stashNotification(Notification notification) {
-        return stashNotification(dbPath, notification);
+    public void stashNotification(Notification notification) {
+        stashNotification(dbPath, notification);
     }
 
     public void deleteNotification(long notificationId) {
         deleteNotification(dbPath, notificationId);
+    }
+
+    public void deleteNotificationByMedicationId(long medicationId) {
+        deleteNotificationsByMedId(dbPath, medicationId);
     }
 
     public ArrayList<Notification> getNotifications() {
@@ -164,38 +178,46 @@ public class NativeDbHelper {
         );
     }
 
+    public void updateSettings(Bundle preferences) {
+        Pair<String, String>[] settings = new Pair[]{
+                new Pair<>(THEME, preferences.getString(THEME)),
+                new Pair<>(AGREED_TO_TERMS, preferences.getBoolean(AGREED_TO_TERMS) ? "1" : "0"),
+                new Pair<>(SEEN_NOTIFICATION_REQUEST, preferences.getBoolean(SEEN_NOTIFICATION_REQUEST) ? "1" : "0"),
+                new Pair<>(DATE_FORMAT, preferences.getString(DATE_FORMAT)),
+                new Pair<>(TIME_FORMAT, preferences.getString(TIME_FORMAT)),
+                new Pair<>(EXPORT_FREQUENCY, String.valueOf(preferences.getInt(EXPORT_FREQUENCY))),
+                new Pair<>(EXPORT_START, preferences.getString(EXPORT_START)),
+                new Pair<>(EXPORT_FILE_NAME, preferences.getString(EXPORT_FILE_NAME))
+        };
+
+        updateSettings(dbPath, settings);
+    }
+
+    public Bundle getSettings() {
+        return getSettings(dbPath);
+    }
+
     /**
      * Native methods
      */
     private native void dbCreate(String dbPath);
-
     private native void dbUpgrade(String dbPath, int version);
-
     private native long insert(String dbPath, String table, Pair<String, String>[] values);
-
     private native boolean update(String dbPath, String table, Pair<String, String>[] values, Pair<String, String>[] where);
-
     private native long delete(String dbPath, String table, Pair<String, String>[] values);
-
     private native boolean dbExporter(String databaseName, String exportDirectory, String[] ignoredTables);
-
     private native boolean dbImporter(String dbPath, String fileContents, String[] ignoredTables);
-
     private native Medication getMedHistory(String dbPath, long medId, Class<Medication> medicationClass);
-
     private native boolean exportMedHistory(String dbPath, String exportPath, Pair<String, String[]>[] data);
-
     private native Dose findDose(String dbPath, long medicationId, String doseTime, Medication med);
-
     private native Dose getDoseById(String dbPath, long doseId, Medication med);
-
     private native boolean updateDose(String dbPath, Dose dose);
-
     private native long stashNotification(String dbPath, Notification notification);
-
     private native void deleteNotification(String dbPath, long notificationId);
-
+    private native void deleteNotificationsByMedId(String dbPath, long medicationid);
     private native Notification[] getNotifications(String dbPath, Class<Notification> notificationClass);
-
     private native long addDose(String dbPath, long medId, String scheduledTime, String timeTaken, boolean taken);
+    private native void updateSettings(String dbPath, Pair<String, String>[] settings);
+    private native Bundle getSettings(String dbPath);
+    public static native boolean canWriteFile(String testPath);
 }
