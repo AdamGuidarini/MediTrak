@@ -703,12 +703,30 @@ public class AddMedication extends AppCompatActivity {
 
                         if (!isLimitValid && !s.toString().isEmpty()) {
                             amountLimitLayout.setError("=value too large=");
+                        } else {
+                            medication.setDoseLimit(Integer.parseInt(s.toString()));
                         }
 
                         validateForm();
                     }
                 }
         );
+
+        if (medication.getId() != -1) {
+            if (medication.getDoseLimit() > 0) {
+                amountLimitButton.setChecked(true);
+                amountLimitInput.setText(medication.getDoseLimit());
+            } else if (medication.getEndDate() != null) {
+                dateLimitButton.setChecked(true);
+                dateInputSelector.setText(
+                        DateTimeFormatter.ofPattern(
+                                preferences.getString(DATE_FORMAT),
+                                Locale.getDefault()
+                        ).format(medication.getEndDate())
+                );
+                dateInputSelector.setTag(medication.getEndDate());
+            }
+        }
     }
 
     /**
@@ -1298,7 +1316,9 @@ public class AddMedication extends AppCompatActivity {
                     TimeFormatting.localDateTimeToDbString(medication.getStartDate()),
                     medication.getFrequency(),
                     medication.getAlias(),
-                    medication.getInstructions()
+                    medication.getInstructions(),
+                    medication.getDoseLimit(),
+                    TimeFormatting.localDateTimeToDbString(medication.getEndDate())
             );
 
             medication.setId(id);

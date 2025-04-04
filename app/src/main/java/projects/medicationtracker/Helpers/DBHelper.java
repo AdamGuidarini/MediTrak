@@ -43,6 +43,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String INSTRUCTIONS = "Instructions";
     private static final String MED_FREQUENCY = "DrugFrequency";
     private static final String MEDICATION_TIMES = "MedicationTimes";
+    private static final String END_DATE = "EndDate";
+    private static final String DOSE_LIMIT = "DoseLimit";
 
     private static final String MEDICATION_TRACKER_TABLE = "MedicationTracker";
     private static final String DOSE_TIME = "DoseTime";
@@ -159,8 +161,18 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param alias       Alias for Medication, appears in notifications
      * @return rowid on success, -1 on failure
      */
-    public long addMedication(String medName, String patientName, String dosage, String units,
-                              String startDate, int frequency, String alias, String instructions) {
+    public long addMedication(
+            String medName,
+            String patientName,
+            String dosage,
+            String units,
+            String startDate,
+            int frequency,
+            String alias,
+            String instructions,
+            int limit,
+            String endDate
+    ) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues medTableValues = new ContentValues();
         long row;
@@ -173,6 +185,8 @@ public class DBHelper extends SQLiteOpenHelper {
         medTableValues.put(MED_FREQUENCY, frequency);
         medTableValues.put(ALIAS, alias);
         medTableValues.put(INSTRUCTIONS, instructions);
+        medTableValues.put(DOSE_LIMIT, limit);
+        medTableValues.put(END_DATE, endDate);
 
         row = db.insert(MEDICATION_TABLE, null, medTableValues);
 
@@ -249,11 +263,15 @@ public class DBHelper extends SQLiteOpenHelper {
             long parentId = cursor.getLong(cursor.getColumnIndexOrThrow(PARENT_ID));
             long childId = cursor.getLong(cursor.getColumnIndexOrThrow(CHILD_ID));
             String instructions = cursor.getString(cursor.getColumnIndexOrThrow(INSTRUCTIONS));
+            int limit = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(DOSE_LIMIT)));
+            String endDateSt = cursor.getString(cursor.getColumnIndexOrThrow(END_DATE));
 
             LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(startDateStr);
+            LocalDateTime endDate;
 
-            if (alias == null)
+            if (alias == null) {
                 alias = "";
+            }
 
             LocalDateTime[] times;
 
@@ -288,9 +306,15 @@ public class DBHelper extends SQLiteOpenHelper {
                 times[0] = LocalDateTime.MIN;
             }
 
-            medToAdd = new Medication(medName, patient, units, times,
-                    startDate, medId, freq, dosage, alias);
+            medToAdd = new Medication(
+                    medName, patient, units, times, startDate, medId, freq, dosage, alias
+            );
             medToAdd.setInstructions(instructions);
+            medToAdd.setDoseLimit(limit);
+
+            if (endDateSt != null ) {
+                medToAdd.setEndDate(TimeFormatting.stringToLocalDateTime(endDateSt));
+            }
 
             if (parentId > 0) medToAdd.setParent(getMedication(parentId));
             if (childId > 0) medToAdd.setChild(getMedication(childId));
@@ -350,8 +374,11 @@ public class DBHelper extends SQLiteOpenHelper {
             boolean active = Integer.parseInt(meds.getString(meds.getColumnIndexOrThrow(ACTIVE))) == 1;
             long parentId = meds.getLong(meds.getColumnIndexOrThrow(PARENT_ID));
             long childId = meds.getLong(meds.getColumnIndexOrThrow(CHILD_ID));
+            int limit = Integer.parseInt(meds.getString(meds.getColumnIndexOrThrow(DOSE_LIMIT)));
+            String endDateSt = meds.getString(meds.getColumnIndexOrThrow(END_DATE));
 
             LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(date1);
+            LocalDateTime endDate;
 
             if (alias == null)
                 alias = "";
@@ -390,9 +417,16 @@ public class DBHelper extends SQLiteOpenHelper {
 
             cursor.close();
 
-            Medication medication = new Medication(medName, patient, units, times,
-                    startDate, medId, frequency, dosage, alias);
+            Medication medication = new Medication(
+                    medName, patient, units, times, startDate, medId, frequency, dosage, alias
+            );
+
             medication.setActiveStatus(active);
+            medication.setDoseLimit(limit);
+
+            if (endDateSt != null ) {
+                medication.setEndDate(TimeFormatting.stringToLocalDateTime(endDateSt));
+            }
 
             if (parentId > 0) {
                 medication.setParent(getMedication(parentId));
@@ -437,8 +471,11 @@ public class DBHelper extends SQLiteOpenHelper {
         float dosage = cursor.getFloat(cursor.getColumnIndexOrThrow(MED_DOSAGE));
         String alias = cursor.getString(cursor.getColumnIndexOrThrow(ALIAS));
         String instructions = cursor.getString(cursor.getColumnIndexOrThrow(INSTRUCTIONS));
+        int limit = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(DOSE_LIMIT)));
+        String endDateSt = cursor.getString(cursor.getColumnIndexOrThrow(END_DATE));
 
         LocalDateTime[] times = new LocalDateTime[0];
+        LocalDateTime endDate;
 
         medication = new Medication(
                 medName, patient, units, times, startDate, medId, frequency, dosage, alias
@@ -449,6 +486,11 @@ public class DBHelper extends SQLiteOpenHelper {
         );
 
         medication.setInstructions(instructions);
+        medication.setDoseLimit(limit);
+
+        if (endDateSt != null ) {
+            medication.setEndDate(TimeFormatting.stringToLocalDateTime(endDateSt));
+        }
 
         cursor.close();
 
@@ -514,6 +556,8 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(PATIENT_NAME, medication.getPatientName());
         cv.put(ALIAS, medication.getAlias());
         cv.put(INSTRUCTIONS, medication.getInstructions());
+        cv.put(DOSE_LIMIT, medication.getDoseLimit());
+        cv.put(END_DATE, TimeFormatting.localDateTimeToDbString(medication.getEndDate()));
 
         if (medication.getChild() != null) {
             cv.put(CHILD_ID, medication.getChild().getId());
@@ -605,7 +649,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 TimeFormatting.localDateTimeToDbString(medication.getStartDate()),
                 medication.getFrequency(),
                 medication.getAlias(),
-                medication.getInstructions()
+                medication.getInstructions(),
+                medication.getDoseLimit(),
+                TimeFormatting.localDateTimeToDbString(medication.getEndDate())
         );
 
         updateChildMedContent.put(PARENT_ID, medication.getParent().getId());

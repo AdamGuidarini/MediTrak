@@ -30,6 +30,10 @@ tasks.register('clean', Delete) {
     }
 
     if (cxx.exists()) {
+        file(cxx).list().each {
+            f -> delete "${cxx}/${f}"
+        }
+
         delete cxx
     }
 }
