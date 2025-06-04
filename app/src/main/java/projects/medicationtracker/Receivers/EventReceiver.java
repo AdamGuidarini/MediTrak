@@ -218,7 +218,8 @@ public class EventReceiver extends BroadcastReceiver {
             );
 
             nativeDbHelper.deleteNotification(thisNotification.getId());
-            manager.cancel(n.getId());
         }
+
+        manager.cancelAll();
     }
 }
