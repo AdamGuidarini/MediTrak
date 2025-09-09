@@ -424,7 +424,7 @@ public class DBHelper extends SQLiteOpenHelper {
             medication.setActiveStatus(active);
             medication.setDoseLimit(limit);
 
-            if (endDateSt != null ) {
+            if (!endDateSt.isEmpty()) {
                 medication.setEndDate(TimeFormatting.stringToLocalDateTime(endDateSt));
             }
 

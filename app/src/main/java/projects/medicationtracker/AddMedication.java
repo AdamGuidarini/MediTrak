@@ -1308,6 +1308,9 @@ public class AddMedication extends AppCompatActivity {
         if (medId == -1) {
             intent = new Intent(this, MainActivity.class);
 
+            String endDate = Objects.isNull(medication.getEndDate()) ?
+                    "" : TimeFormatting.localDateTimeToDbString(medication.getEndDate());
+
             long id = db.addMedication(
                     medication.getName(),
                     medication.getPatientName(),
@@ -1318,7 +1321,7 @@ public class AddMedication extends AppCompatActivity {
                     medication.getAlias(),
                     medication.getInstructions(),
                     medication.getDoseLimit(),
-                    TimeFormatting.localDateTimeToDbString(medication.getEndDate())
+                    endDate
             );
 
             medication.setId(id);
