@@ -312,7 +312,7 @@ public class DBHelper extends SQLiteOpenHelper {
             medToAdd.setInstructions(instructions);
             medToAdd.setDoseLimit(limit);
 
-            if (endDateSt != null ) {
+            if (!endDateSt.isEmpty()) {
                 medToAdd.setEndDate(TimeFormatting.stringToLocalDateTime(endDateSt));
             }
 
@@ -488,7 +488,7 @@ public class DBHelper extends SQLiteOpenHelper {
         medication.setInstructions(instructions);
         medication.setDoseLimit(limit);
 
-        if (endDateSt != null ) {
+        if (!endDateSt.isEmpty()) {
             medication.setEndDate(TimeFormatting.stringToLocalDateTime(endDateSt));
         }
 

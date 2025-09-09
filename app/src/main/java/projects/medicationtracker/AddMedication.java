@@ -703,7 +703,7 @@ public class AddMedication extends AppCompatActivity {
 
                         if (!isLimitValid && !s.toString().isEmpty()) {
                             amountLimitLayout.setError("=value too large=");
-                        } else {
+                        } else if (!s.toString().isEmpty()) {
                             medication.setDoseLimit(Integer.parseInt(s.toString()));
                         }
 
@@ -715,7 +715,9 @@ public class AddMedication extends AppCompatActivity {
         if (medication.getId() != -1) {
             if (medication.getDoseLimit() > 0) {
                 amountLimitButton.setChecked(true);
-                amountLimitInput.setText(medication.getDoseLimit());
+                amountLimitInput.setText(
+                        String.valueOf(medication.getDoseLimit())
+                );
             } else if (medication.getEndDate() != null) {
                 dateLimitButton.setChecked(true);
                 dateInputSelector.setText(
