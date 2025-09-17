@@ -108,8 +108,8 @@ public class AddMedication extends AppCompatActivity {
     private MaterialRadioButton amountLimitButton;
     private TextInputLayout dateInputLayout;
     private TextInputEditText dateInputSelector;
-    private TextInputLayout amountLimitLayout;
-    private TextInputEditText amountLimitInput;
+    private TextInputLayout quantityLayout;
+    private TextInputEditText quantityInput;
 
     /*
      * Validators
@@ -342,6 +342,8 @@ public class AddMedication extends AppCompatActivity {
         dosageUnitsInputLayout = this.findViewById(R.id.dosageUnitsInputLayout);
         dosageUnitsInput = this.findViewById(R.id.dosageUnits);
         instructions = this.findViewById(R.id.enter_instructions);
+        quantityLayout = findViewById(R.id.limit_amount_input_layout);
+        quantityInput = findViewById(R.id.limit_amount_text);
 
         aliasSwitch.setChecked(medId != -1 && !medication.getAlias().isEmpty());
 
@@ -448,6 +450,33 @@ public class AddMedication extends AppCompatActivity {
                 validateForm();
             }
         });
+
+        quantityInput.addTextChangedListener(
+                new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        quantityLayout.setErrorEnabled(false);
+
+                        isLimitValid = intIsParsable(s.toString());
+
+                        if (!isLimitValid && !s.toString().isEmpty()) {
+                            quantityLayout.setError("=value too large=");
+                        } else {
+                            medication.setDoseLimit(Integer.parseInt(s.toString()));
+                        }
+
+                        validateForm();
+                    }
+                }
+        );
 
         instructions.addTextChangedListener(new TextWatcher() {
             @Override
@@ -626,24 +655,24 @@ public class AddMedication extends AppCompatActivity {
 
         dateInputLayout = findViewById(R.id.limit_date_input_layout);
         dateInputSelector = findViewById(R.id.limit_date_selector);
-        amountLimitLayout = findViewById(R.id.limit_amount_input_layout);
-        amountLimitInput = findViewById(R.id.limit_amount_text);
+        quantityLayout = findViewById(R.id.limit_amount_input_layout);
+        quantityInput = findViewById(R.id.limit_amount_text);
 
         limitRadioGroup.setOnCheckedChangeListener(
                 (group, checkedId) -> {
                     if (dateLimitButton.isChecked()) {
                         dateInputLayout.setVisibility(View.VISIBLE);
-                        amountLimitLayout.setVisibility(View.GONE);
+//                        quantityLayout.setVisibility(View.GONE);
 
                         isLimitValid = isDateLimitValid();
                     } else if (amountLimitButton.isChecked()) {
                         dateInputLayout.setVisibility(View.GONE);
-                        amountLimitLayout.setVisibility(View.VISIBLE);
+//                        quantityLayout.setVisibility(View.VISIBLE);
 
                         isLimitValid = isAmountLimitValid();
                     } else {
                         dateInputLayout.setVisibility(View.GONE);
-                        amountLimitLayout.setVisibility(View.GONE);
+//                        quantityLayout.setVisibility(View.GONE);
 
                         isLimitValid = true;
                     }
@@ -685,7 +714,7 @@ public class AddMedication extends AppCompatActivity {
                 }
         );
 
-        amountLimitInput.addTextChangedListener(
+        quantityInput.addTextChangedListener(
                 new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -697,13 +726,13 @@ public class AddMedication extends AppCompatActivity {
 
                     @Override
                     public void afterTextChanged(Editable s) {
-                        amountLimitLayout.setErrorEnabled(false);
+                        quantityLayout.setErrorEnabled(false);
 
                         isLimitValid = intIsParsable(s.toString());
 
                         if (!isLimitValid && !s.toString().isEmpty()) {
-                            amountLimitLayout.setError("=value too large=");
-                        } else if (!s.toString().isEmpty()) {
+                            quantityLayout.setError("=value too large=");
+                        } else {
                             medication.setDoseLimit(Integer.parseInt(s.toString()));
                         }
 
@@ -715,9 +744,7 @@ public class AddMedication extends AppCompatActivity {
         if (medication.getId() != -1) {
             if (medication.getDoseLimit() > 0) {
                 amountLimitButton.setChecked(true);
-                amountLimitInput.setText(
-                        String.valueOf(medication.getDoseLimit())
-                );
+                quantityInput.setText(medication.getDoseLimit());
             } else if (medication.getEndDate() != null) {
                 dateLimitButton.setChecked(true);
                 dateInputSelector.setText(
@@ -1308,6 +1335,8 @@ public class AddMedication extends AppCompatActivity {
         }
 
         if (medId == -1) {
+            final String endDate = Objects.isNull(medication.getEndDate()) ?
+                    "" : TimeFormatting.localDateTimeToDbString(medication.getEndDate());
             intent = new Intent(this, MainActivity.class);
 
             String endDate = Objects.isNull(medication.getEndDate()) ?
@@ -1649,7 +1678,7 @@ public class AddMedication extends AppCompatActivity {
     }
 
     private boolean isAmountLimitValid() {
-        return intIsParsable(amountLimitInput.getText().toString());
+        return intIsParsable(Objects.requireNonNull(quantityInput.getText()).toString());
     }
 
     /**
