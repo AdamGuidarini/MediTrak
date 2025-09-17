@@ -1339,9 +1339,6 @@ public class AddMedication extends AppCompatActivity {
                     "" : TimeFormatting.localDateTimeToDbString(medication.getEndDate());
             intent = new Intent(this, MainActivity.class);
 
-            String endDate = Objects.isNull(medication.getEndDate()) ?
-                    "" : TimeFormatting.localDateTimeToDbString(medication.getEndDate());
-
             long id = db.addMedication(
                     medication.getName(),
                     medication.getPatientName(),
