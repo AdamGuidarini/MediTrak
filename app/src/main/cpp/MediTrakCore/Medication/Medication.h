@@ -24,7 +24,7 @@ struct Medication {
         float dosage;
         int frequency;
         bool active;
-        int doseLimit;
+        int quantity;
         string endDate;
         shared_ptr<Medication> parent = nullptr;
         shared_ptr<Medication> child = nullptr;
@@ -58,7 +58,7 @@ struct Medication {
             int frequency,
             bool active,
             string alias = "",
-            int doseLimit = -1,
+            int quantity = -1,
             string endDate = ""
         );
 };

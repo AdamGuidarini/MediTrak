@@ -57,7 +57,7 @@ void DatabaseController::create() {
                     + CHILD_ID + " INTEGER,"
                     + INSTRUCTIONS + " TEXT,"
                     + END_DATE + " DATETIME,"
-                    + DOSE_LIMIT + " INTEGER DEFAULT -1,"
+                    + QUANTITY + " INTEGER DEFAULT -1,"
                     + "FOREIGN KEY (" + PARENT_ID + ") REFERENCES "
                     + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE,"
                     + "FOREIGN KEY (" + CHILD_ID + ") REFERENCES "
@@ -309,7 +309,7 @@ void DatabaseController::upgrade(int currentVersion) {
             "ALTER TABLE " + MEDICATION_TRACKER_TABLE
             + " ADD COLUMN " + END_DATE + " DATETIME;"
             + "ALTER TABLE " + MEDICATION_TRACKER_TABLE
-            + " ADD COLUMN " + DOSE_LIMIT + ";"
+            + " ADD COLUMN " + QUANTITY + ";"
         );
     }
 
@@ -545,13 +545,25 @@ Dose *DatabaseController::getDoseById(long doseId) {
     return dose;
 }
 
-long DatabaseController::addDose(long medId, string scheduledTime, string timeTaken, bool isTaken) {
+long DatabaseController::addDose(long medId, const string& scheduledTime, string timeTaken, bool isTaken) {
     map<string, string> vals = {
             pair(MED_ID, to_string(medId)),
             pair(DOSE_TIME, scheduledTime),
             pair(TIME_TAKEN, timeTaken),
             pair(TAKEN, isTaken ? "1" : "0")
     };
+
+    Medication med = getMedication(medId);
+
+    if (med.quantity > 0) {
+        med.quantity--;
+
+        update(
+            MEDICATION_TABLE,
+            { pair<string, string>({ QUANTITY, to_string(med.quantity) }) },
+            { pair<string, string>({  MED_ID, to_string(med.id) }) }
+        );
+    }
 
     return manager.insert(MEDICATION_TRACKER_TABLE, vals);
 }
@@ -756,6 +768,6 @@ void DatabaseController::repairImportErrors() {
 
     delete doses;
     delete meds;
-    delete times;;
+    delete times;
     delete notes;
 }

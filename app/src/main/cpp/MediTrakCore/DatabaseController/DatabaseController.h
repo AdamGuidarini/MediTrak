@@ -53,7 +53,7 @@ private:
     const string MED_FREQUENCY = "DrugFrequency";
     const string INSTRUCTIONS = "Instructions";
     const string END_DATE = "EndDate";
-    const string DOSE_LIMIT = "DoseLimit";
+    const string QUANTITY = "DoseLimit";
 
     const string MEDICATION_TRACKER_TABLE = "MedicationTracker";
     const string DOSE_TIME = "DoseTime";
@@ -237,7 +237,7 @@ public:
      * @param isTaken Whether or no the dose is taken
      * @return ID of new dose or -1
      */
-    long addDose(long medId, string scheduledTime, string timeTaken, bool isTaken);
+    long addDose(long medId, const string& scheduledTime, string timeTaken, bool isTaken);
 
     /**
      * Updates a dose record

@@ -28,7 +28,7 @@ Medication::Medication(
         int frequency,
         bool active,
         string alias,
-        int doseLimit,
+        int quantity,
         string endDate
 ) {
     this->medicationName = medicationName;
@@ -41,6 +41,6 @@ Medication::Medication(
     this->frequency = frequency;
     this->active = active;
     this->alias = alias;
-    this->doseLimit = doseLimit;
+    this->quantity = quantity;
     this->endDate = endDate;
 }
