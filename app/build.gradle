@@ -31,6 +31,12 @@ android {
                 cppFlags '-frtti -fexceptions'
             }
         }
+
+        packagingOptions {
+            jniLibs {
+                useLegacyPackaging = true
+            }
+        }
     }
 
     buildTypes {

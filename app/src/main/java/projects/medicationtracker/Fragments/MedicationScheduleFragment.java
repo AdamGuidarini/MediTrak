@@ -277,16 +277,18 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
             String now = TimeFormatting.localDateTimeToDbString(LocalDateTime.now().withSecond(0));
 
             if (doseId != -1) {
-                db.updateDoseStatus(doseId, now, ((CheckBox) thisMedication).isChecked());
-            } else {
-                long id = db.addToMedicationTracker(
-                        tvTag.getFirst(),
-                        tvTag.getThird()
-                );
+                dose.setTaken(((CheckBox) thisMedication).isChecked());
+                dose.setTimeTaken(now);
 
-                db.updateDoseStatus(
-                        id,
-                        TimeFormatting.localDateTimeToDbString(LocalDateTime.now().withSecond(0)),
+                nativeDb.updateDose(dose);
+            } else {
+                final Medication med = tvTag.getFirst();
+                final LocalDateTime timeTaken = tvTag.getThird();
+
+                nativeDb.addDose(
+                        med.getId(),
+                        time,
+                        timeTaken,
                         true
                 );
             }

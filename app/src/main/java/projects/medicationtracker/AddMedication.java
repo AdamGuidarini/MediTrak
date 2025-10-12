@@ -311,6 +311,13 @@ public class AddMedication extends AppCompatActivity {
                 }
 
                 isPatientNameValid = true;
+
+
+
+
+
+
+
             } else {
                 patientNameInputLayout.setVisibility(View.VISIBLE);
                 isPatientNameValid = false;
@@ -468,7 +475,7 @@ public class AddMedication extends AppCompatActivity {
                         isLimitValid = intIsParsable(s.toString());
 
                         if (!isLimitValid && !s.toString().isEmpty()) {
-                            quantityLayout.setError("=value too large=");
+                            quantityLayout.setError(getString(R.string.err_value_too_large));
                         } else {
                             medication.setDoseLimit(Integer.parseInt(s.toString()));
                         }
@@ -662,17 +669,16 @@ public class AddMedication extends AppCompatActivity {
                 (group, checkedId) -> {
                     if (dateLimitButton.isChecked()) {
                         dateInputLayout.setVisibility(View.VISIBLE);
-//                        quantityLayout.setVisibility(View.GONE);
 
                         isLimitValid = isDateLimitValid();
                     } else if (amountLimitButton.isChecked()) {
                         dateInputLayout.setVisibility(View.GONE);
-//                        quantityLayout.setVisibility(View.VISIBLE);
+                        medication.setEndDate(LocalDateTime.of(9999, 12, 31, 23, 59));
 
                         isLimitValid = isAmountLimitValid();
                     } else {
                         dateInputLayout.setVisibility(View.GONE);
-//                        quantityLayout.setVisibility(View.GONE);
+                        medication.setEndDate(null);
 
                         isLimitValid = true;
                     }
@@ -706,7 +712,7 @@ public class AddMedication extends AppCompatActivity {
                         isLimitValid = isDateLimitValid();
 
                         if (!isLimitValid) {
-                            dateInputLayout.setError("=Date must be in the future=");
+                            dateInputLayout.setError(getString(R.string.date_must_be_future));
                         }
 
                         validateForm();
@@ -731,7 +737,7 @@ public class AddMedication extends AppCompatActivity {
                         isLimitValid = intIsParsable(s.toString());
 
                         if (!isLimitValid && !s.toString().isEmpty()) {
-                            quantityLayout.setError("=value too large=");
+                            quantityLayout.setError(getString(R.string.err_value_too_large));
                         } else {
                             medication.setDoseLimit(Integer.parseInt(s.toString()));
                         }
@@ -743,8 +749,10 @@ public class AddMedication extends AppCompatActivity {
 
         if (medication.getId() != -1) {
             if (medication.getDoseLimit() > 0) {
-                amountLimitButton.setChecked(true);
-                quantityInput.setText(medication.getDoseLimit());
+                if (medication.getEndDate() != null) {
+                    amountLimitButton.setChecked(true);
+                }
+                quantityInput.setText(String.valueOf(medication.getDoseLimit()));
             } else if (medication.getEndDate() != null) {
                 dateLimitButton.setChecked(true);
                 dateInputSelector.setText(
@@ -1199,7 +1207,7 @@ public class AddMedication extends AppCompatActivity {
 
         if (medId != -1 && selectedFrequencyTypeIndex == 2) {
             long freq = medication.getFrequency();
-            long displayedFreq = 0;
+            long displayedFreq;
             int index = 0;
             String startDate = DateTimeFormatter.ofPattern(
                     preferences.getString(DATE_FORMAT),

@@ -97,6 +97,7 @@ private:
      * @return Dose contained in table or nullptr
      */
     Dose* setDose(Table* table);
+    void adjustRemainingDoses(long medId, bool increment);
 
 public:
     // Settings
@@ -237,7 +238,7 @@ public:
      * @param isTaken Whether or no the dose is taken
      * @return ID of new dose or -1
      */
-    long addDose(long medId, const string& scheduledTime, string timeTaken, bool isTaken);
+    long addDose(long medId, const string& scheduledTime, const string& timeTaken, bool isTaken);
 
     /**
      * Updates a dose record

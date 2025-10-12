@@ -416,7 +416,9 @@ Medication DatabaseController::getMedication(long medicationId) {
             stof(table->getItem(MED_DOSAGE)),
             stoi(table->getItem(MED_FREQUENCY)),
             table->getItem(ACTIVE) == "1",
-            table->getItem(ALIAS)
+            table->getItem(ALIAS),
+            stoi(table->getItem(QUANTITY)),
+            table->getItem(END_DATE)
     );
 
     if (!table->getItem(PARENT_ID).empty()) {
@@ -545,7 +547,7 @@ Dose *DatabaseController::getDoseById(long doseId) {
     return dose;
 }
 
-long DatabaseController::addDose(long medId, const string& scheduledTime, string timeTaken, bool isTaken) {
+long DatabaseController::addDose(long medId, const string& scheduledTime, const string& timeTaken, bool isTaken) {
     map<string, string> vals = {
             pair(MED_ID, to_string(medId)),
             pair(DOSE_TIME, scheduledTime),
@@ -553,17 +555,7 @@ long DatabaseController::addDose(long medId, const string& scheduledTime, string
             pair(TAKEN, isTaken ? "1" : "0")
     };
 
-    Medication med = getMedication(medId);
-
-    if (med.quantity > 0) {
-        med.quantity--;
-
-        update(
-            MEDICATION_TABLE,
-            { pair<string, string>({ QUANTITY, to_string(med.quantity) }) },
-            { pair<string, string>({  MED_ID, to_string(med.id) }) }
-        );
-    }
+    adjustRemainingDoses(medId, !isTaken);
 
     return manager.insert(MEDICATION_TRACKER_TABLE, vals);
 }
@@ -584,6 +576,7 @@ bool DatabaseController::updateDose(const Dose &dose) {
         values.insert(pair<string, string>(OVERRIDE_DOSE_UNIT, dose.overrideDoseUnit));
     }
 
+
     try {
         manager.update(
                 MEDICATION_TRACKER_TABLE,
@@ -591,11 +584,27 @@ bool DatabaseController::updateDose(const Dose &dose) {
                 {pair<string, string>(DOSE_ID, to_string(dose.id))}
         );
 
+        adjustRemainingDoses(dose.medicationId, !dose.taken);
+
         return true;
     } catch (exception &e) {
         cerr << "Failed to update dose " << dose.id << endl;
 
         return false;
+    }
+}
+
+void DatabaseController::adjustRemainingDoses(long medId, bool increment) {
+    Medication med = getMedication(medId);
+
+    if (med.quantity > 0) {
+        increment ? med.quantity++ : med.quantity--;
+
+        update(
+                MEDICATION_TABLE,
+                { pair<string, string>({ QUANTITY, to_string(med.quantity) }) },
+                { pair<string, string>({  MED_ID, to_string(med.id) }) }
+        );
     }
 }
 
