@@ -576,7 +576,6 @@ bool DatabaseController::updateDose(const Dose &dose) {
         values.insert(pair<string, string>(OVERRIDE_DOSE_UNIT, dose.overrideDoseUnit));
     }
 
-
     try {
         manager.update(
                 MEDICATION_TRACKER_TABLE,

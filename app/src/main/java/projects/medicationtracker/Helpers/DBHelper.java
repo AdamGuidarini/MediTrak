@@ -267,7 +267,6 @@ public class DBHelper extends SQLiteOpenHelper {
             String endDateSt = cursor.getString(cursor.getColumnIndexOrThrow(END_DATE));
 
             LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(startDateStr);
-            LocalDateTime endDate;
 
             if (alias == null) {
                 alias = "";
@@ -312,8 +311,9 @@ public class DBHelper extends SQLiteOpenHelper {
             medToAdd.setInstructions(instructions);
             medToAdd.setDoseLimit(limit);
 
-            if (!endDateSt.isEmpty()) {
-                medToAdd.setEndDate(TimeFormatting.stringToLocalDateTime(endDateSt));
+            if (endDateSt != null && !endDateSt.isEmpty()) {
+                LocalDateTime endDate = TimeFormatting.stringToLocalDateTime(endDateSt);
+                medToAdd.setEndDate(endDate);
             }
 
             if (parentId > 0) medToAdd.setParent(getMedication(parentId));
@@ -378,10 +378,10 @@ public class DBHelper extends SQLiteOpenHelper {
             String endDateSt = meds.getString(meds.getColumnIndexOrThrow(END_DATE));
 
             LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(date1);
-            LocalDateTime endDate;
 
-            if (alias == null)
+            if (alias == null) {
                 alias = "";
+            }
 
             LocalDateTime[] times;
 
@@ -424,8 +424,9 @@ public class DBHelper extends SQLiteOpenHelper {
             medication.setActiveStatus(active);
             medication.setDoseLimit(limit);
 
-            if (!endDateSt.isEmpty()) {
-                medication.setEndDate(TimeFormatting.stringToLocalDateTime(endDateSt));
+            if (endDateSt != null && !endDateSt.isEmpty()) {
+                LocalDateTime endDate = TimeFormatting.stringToLocalDateTime(endDateSt);
+                medication.setEndDate(endDate);
             }
 
             if (parentId > 0) {

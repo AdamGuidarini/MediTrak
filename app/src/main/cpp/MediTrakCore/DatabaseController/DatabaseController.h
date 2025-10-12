@@ -97,6 +97,12 @@ private:
      * @return Dose contained in table or nullptr
      */
     Dose* setDose(Table* table);
+
+    /**
+     * Sets a medication from a table
+     * @param medId ID of medication whose dose is to be adjusted
+     * @param increment Whether or not to increment the medication's remaining doses
+     */
     void adjustRemainingDoses(long medId, bool increment);
 
 public:

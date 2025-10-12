@@ -103,7 +103,6 @@ public class AddMedication extends AppCompatActivity {
     private boolean createClone = false;
     private LocalDateTime[] startingTimes;
     private TextInputEditText instructions;
-    private RadioGroup limitRadioGroup;
     private MaterialRadioButton dateLimitButton;
     private MaterialRadioButton amountLimitButton;
     private TextInputLayout dateInputLayout;
@@ -234,7 +233,6 @@ public class AddMedication extends AppCompatActivity {
         confirmMedicationDeleteFragment.show(getSupportFragmentManager(), null);
     }
 
-
     /**
      * Builds all views in activity
      */
@@ -311,13 +309,6 @@ public class AddMedication extends AppCompatActivity {
                 }
 
                 isPatientNameValid = true;
-
-
-
-
-
-
-
             } else {
                 patientNameInputLayout.setVisibility(View.VISIBLE);
                 isPatientNameValid = false;
@@ -656,7 +647,7 @@ public class AddMedication extends AppCompatActivity {
      * Prepares UI for limits
      */
     private void setLimitCard() {
-        limitRadioGroup = findViewById(R.id.limit_radio_group);
+        RadioGroup limitRadioGroup = findViewById(R.id.limit_radio_group);
         dateLimitButton = findViewById(R.id.limit_date_button);
         amountLimitButton = findViewById(R.id.limit_amount_button);
 
@@ -713,6 +704,13 @@ public class AddMedication extends AppCompatActivity {
 
                         if (!isLimitValid) {
                             dateInputLayout.setError(getString(R.string.date_must_be_future));
+                        } else {
+                            LocalDate end = (LocalDate) dateInputSelector.getTag();
+
+                            medication.setEndDate(LocalDateTime.of(
+                                    end,
+                                    LocalTime.of(23, 59)
+                            ));
                         }
 
                         validateForm();
@@ -1785,6 +1783,16 @@ public class AddMedication extends AppCompatActivity {
 
         if (medication.getInstructions() != null && !medication.getInstructions().isEmpty()) {
             note += getString(R.string.instructions_added, medication.getInstructions());
+        }
+
+        if (medication.getDoseLimit() != parent.getDoseLimit()) {
+            note += getString(R.string.dose_limit_added, String.valueOf(medication.getDoseLimit()));
+        }
+
+        if (medication.getEndDate() != parent.getEndDate()) {
+            note += getString(
+                    R.string.end_date_added, TimeFormatting.localDateTimeToDbString(medication.getEndDate())
+            );
         }
 
         return note;
