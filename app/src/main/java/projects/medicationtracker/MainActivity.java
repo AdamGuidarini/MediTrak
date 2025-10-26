@@ -44,6 +44,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -353,9 +354,24 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
             validTimes.removeIf(
                     (time) ->
                     {
+                        if (med.getDoseLimit() > -1 && med.getEndDate() != null && med.getEndDate().toLocalDate().isEqual(LocalDate.of(9999, 12, 31))) {
+                            int remainingMinutesOfDoses;
+
+                            if (med.getFrequency() != 1440 || med.getTimes().length == 1) {
+                                remainingMinutesOfDoses = med.getFrequency() * med.getDoseLimit();
+                            } else {
+                                remainingMinutesOfDoses = ((med.getDoseLimit() / med.getTimes().length) * med.getFrequency());
+                            }
+
+                            final LocalDateTime end = LocalDateTime.now().plusMinutes(remainingMinutesOfDoses);
+
+                            return time.toLocalDate().isAfter(end.toLocalDate());
+                        }
+
                         if (med.getEndDate() != null && time.toLocalDate().isAfter(med.getEndDate().toLocalDate())) {
                             return true;
                         }
+
                         for (Pair<LocalDateTime, LocalDateTime> pausedInterval : pausedIntervals) {
                             if (pausedInterval.first == null) {
                                 return time.isBefore(pausedInterval.second);
