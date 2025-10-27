@@ -359,16 +359,16 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
                             LocalDateTime calculatedEndDate;
                             if (med.getFrequency() == 1440) {
                                 int dosesPerDay = med.getTimes().length;
-                                if (dosesPerDay == 0) return false;
+
+                                if (dosesPerDay == 0) {
+                                    return false;
+                                }
 
                                 int doseLimit = med.getDoseLimit();
-
                                 int daysToAdd = (doseLimit - 1) / dosesPerDay;
-
                                 int finalDoseIndex = (doseLimit - 1) % dosesPerDay;
 
                                 LocalDate finalDate = med.getStartDate().toLocalDate().plusDays(daysToAdd);
-
                                 LocalTime finalTime = med.getTimes()[finalDoseIndex].toLocalTime();
 
                                 calculatedEndDate = LocalDateTime.of(finalDate, finalTime);
