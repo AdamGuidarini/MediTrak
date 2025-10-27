@@ -47,6 +47,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
 
 import projects.medicationtracker.Dialogs.OpenNotificationsDialog;
@@ -354,19 +355,32 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
             validTimes.removeIf(
                     (time) ->
                     {
-                        if (med.getDoseLimit() > -1 && med.getEndDate() != null && med.getEndDate().toLocalDate().isEqual(LocalDate.of(9999, 12, 31))) {
-                            int remainingMinutesOfDoses;
+                        if (med.getDoseLimit() > 0 && med.getEndDate() != null && med.getEndDate().toLocalDate().isEqual(LocalDate.of(9999, 12, 31))) {
+                            LocalDateTime calculatedEndDate;
+                            if (med.getFrequency() == 1440) {
+                                int dosesPerDay = med.getTimes().length;
+                                if (dosesPerDay == 0) return false;
 
-                            if (med.getFrequency() != 1440 || med.getTimes().length == 1) {
-                                remainingMinutesOfDoses = med.getFrequency() * med.getDoseLimit();
+                                int doseLimit = med.getDoseLimit();
+
+                                int daysToAdd = (doseLimit - 1) / dosesPerDay;
+
+                                int finalDoseIndex = (doseLimit - 1) % dosesPerDay;
+
+                                LocalDate finalDate = med.getStartDate().toLocalDate().plusDays(daysToAdd);
+
+                                LocalTime finalTime = med.getTimes()[finalDoseIndex].toLocalTime();
+
+                                calculatedEndDate = LocalDateTime.of(finalDate, finalTime);
                             } else {
-                                remainingMinutesOfDoses = ((med.getDoseLimit() / med.getTimes().length) * med.getFrequency());
+                                long frequencyInMinutes = med.getFrequency();
+                                long totalDurationInMinutes = frequencyInMinutes * (med.getDoseLimit() - 1);
+                                calculatedEndDate = med.getStartDate().plusMinutes(totalDurationInMinutes);
                             }
 
-                            final LocalDateTime end = LocalDateTime.now().plusMinutes(remainingMinutesOfDoses);
-
-                            return time.toLocalDate().isAfter(end.toLocalDate());
+                            return time.isAfter(calculatedEndDate);
                         }
+
 
                         if (med.getEndDate() != null && time.toLocalDate().isAfter(med.getEndDate().toLocalDate())) {
                             return true;
