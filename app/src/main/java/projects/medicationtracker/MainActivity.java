@@ -44,10 +44,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Objects;
 
 import projects.medicationtracker.Dialogs.OpenNotificationsDialog;
