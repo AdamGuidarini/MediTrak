@@ -171,8 +171,6 @@ public class BackupDestinationPicker extends DialogFragment {
 
         fileName.setText(exportFile);
 
-
-
         if (showPeriodic) {
             buildScheduledExportViews(dialog);
         }

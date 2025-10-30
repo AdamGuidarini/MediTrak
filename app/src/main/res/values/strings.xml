@@ -139,6 +139,7 @@
     <string name="instructions_added">Added instructions: %1$s</string>
     <string name="dose_limit_added">Added dose limit: %1$s</string>
     <string name="end_date_added">Added end date: %1$s</string>
+    <string name="new_quantity">New quantity: %1$d</string>
 
     <!-- MyMedications -->
     <string name="my_medications">My Medications</string>

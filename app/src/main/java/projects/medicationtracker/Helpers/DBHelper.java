@@ -476,7 +476,6 @@ public class DBHelper extends SQLiteOpenHelper {
         String endDateSt = cursor.getString(cursor.getColumnIndexOrThrow(END_DATE));
 
         LocalDateTime[] times = new LocalDateTime[0];
-        LocalDateTime endDate;
 
         medication = new Medication(
                 medName, patient, units, times, startDate, medId, frequency, dosage, alias
@@ -489,7 +488,7 @@ public class DBHelper extends SQLiteOpenHelper {
         medication.setInstructions(instructions);
         medication.setDoseLimit(limit);
 
-        if (!endDateSt.isEmpty()) {
+        if (endDateSt != null && !endDateSt.isEmpty()) {
             medication.setEndDate(TimeFormatting.stringToLocalDateTime(endDateSt));
         }
 
@@ -558,7 +557,12 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(ALIAS, medication.getAlias());
         cv.put(INSTRUCTIONS, medication.getInstructions());
         cv.put(DOSE_LIMIT, medication.getDoseLimit());
-        cv.put(END_DATE, TimeFormatting.localDateTimeToDbString(medication.getEndDate()));
+
+        if (medication.getEndDate() != null) {
+            cv.put(END_DATE, TimeFormatting.localDateTimeToDbString(medication.getEndDate()));
+        } else {
+            cv.put(END_DATE, "");
+        }
 
         if (medication.getChild() != null) {
             cv.put(CHILD_ID, medication.getChild().getId());
@@ -642,6 +646,9 @@ public class DBHelper extends SQLiteOpenHelper {
         db.update(MEDICATION_TABLE, updateActivityStatusCv, where, new String[]{String.valueOf(medication.getId())});
         db.insert(ACTIVITY_CHANGE_TABLE, null, pauseOldMedContent);
 
+        String endString = medication.getEndDate() != null ?
+                TimeFormatting.localDateTimeToDbString(medication.getEndDate()) : null;
+
         row = addMedication(
                 medication.getName(),
                 medication.getPatientName(),
@@ -652,7 +659,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 medication.getAlias(),
                 medication.getInstructions(),
                 medication.getDoseLimit(),
-                TimeFormatting.localDateTimeToDbString(medication.getEndDate())
+                endString
         );
 
         updateChildMedContent.put(PARENT_ID, medication.getParent().getId());
