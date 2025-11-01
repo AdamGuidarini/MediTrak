@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -256,7 +257,11 @@ public class NotificationUtils {
         long[] medicationTimeIds = db.getMedicationTimeIds(medication);
         LocalTime[] medTimes = db.getMedicationTimes(medication.getId());
 
-        if (!db.isMedicationActive(medication) && medication.getId() != -1) {
+        if (
+                !db.isMedicationActive(medication)
+                && isMedicationDone(medication)
+                && medication.getId() != -1
+        ) {
             return;
         }
 
@@ -273,5 +278,23 @@ public class NotificationUtils {
         }
 
         db.close();
+    }
+
+    /**
+     * Determines if a medication is no longer to be taken
+     * @param med Medication to be checked
+     * @return whether or not a medication should still be taken
+     */
+    private static boolean isMedicationDone(Medication med) {
+        if (med.getDoseAmount() != -1 && med.getEndDate() != null) {
+            return med.getDoseAmount() == 0 &&
+                    med.getEndDate().toLocalDate().equals(LocalDate.of(9999, 12,31));
+        } else if (med.getEndDate() != null) {
+            LocalDateTime now = LocalDateTime.now();
+
+            return med.getEndDate().isBefore(now);
+        }
+
+        return false;
     }
 }

@@ -66,7 +66,10 @@ public class NotificationWorker extends Worker {
                     message, doseTime, notificationId, medId
             );
 
-            if (Arrays.stream(openNotes).noneMatch(n -> n.getId() == SUMMARY_ID)) {
+            if (
+                    Arrays.stream(openNotes).noneMatch(n -> n.getId() == SUMMARY_ID)
+                            && openNotes.length > 0
+            ) {
                 Notification notificationSummary
                         = new NotificationCompat.Builder(context, MED_REMINDER_CHANNEL_ID)
                         .setContentTitle(context.getString(R.string.app_name))
@@ -84,7 +87,7 @@ public class NotificationWorker extends Worker {
                 sleep(500);
             }
 
-            // Only fire notification if not other active notification has the same ID
+            // Only fire notification if no other active notification has the same ID
             if (Arrays.stream(openNotes).noneMatch(n -> n.getId() == notificationId)) {
                 NativeDbHelper nativeDb = new NativeDbHelper(context);
                 String doseTimeDb = doseTime.replace("T", " ") + ":00";
