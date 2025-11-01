@@ -132,6 +132,17 @@
     <string name="instructions">Talimatlar</string>
     <string name="instructions_optional">Talimatlar (İsteğe Bağlı)</string>
     <string name="instructions_added">Eklenen talimatlar: %1$s</string>
+    <string name="dose_limit_added">Doz limiti eklendi: %1$s</string>
+    <string name="end_date_added">Bitiş tarihi eklendi: %1$s</string>
+    <string name="new_quantity">Yeni miktar: %1$d</string>
+    <string name="remaining_doses">Kalan Dozlar</string>
+    <string name="end_date">Bitiş Tarihi</string>
+    <string name="set_limit_by">Limit belirleme ölçütü</string>
+    <string name="out_of_doses">Dozlar bitti</string>
+    <string name="none">Limit yok</string>
+    <string name="quantity_optional">Miktar (İsteğe bağlı)</string>
+    <string name="change_amount">Miktarı değiştir</string>
+    <string name="adjust_quantity">Miktarı değiştir</string>
 
     <!-- MyMedications -->
     <string name="my_medications">İlaçlarım</string>

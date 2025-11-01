@@ -139,6 +139,17 @@
     <string name="instructions">Anweisungen</string>
     <string name="instructions_optional">Anweisungen (Optional)</string>
     <string name="instructions_added">Zusätzliche Anweisungen: %1$s</string>
+    <string name="dose_limit_added">Dosislimit hinzugefügt: %1$s</string>
+    <string name="end_date_added">Enddatum hinzugefügt: %1$s</string>
+    <string name="new_quantity">Neue Anzahl: %1$d</string>
+    <string name="remaining_doses">Verbleibende Dosen</string>
+    <string name="end_date">Enddatum</string>
+    <string name="set_limit_by">Limit festlegen durch</string>
+    <string name="out_of_doses">Dosen aufgebraucht</string>
+    <string name="none">Kein Limit</string>
+    <string name="quantity_optional">Anzahl (Optional)</string>
+    <string name="change_amount">Anzahl ändern</string>
+    <string name="adjust_quantity">Anzahl ändern</string>
 
     <!-- MyMedications -->
     <string name="my_medications">Meine Medikamente</string>
