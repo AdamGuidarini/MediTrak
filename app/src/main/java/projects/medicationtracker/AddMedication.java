@@ -468,7 +468,7 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
                         isLimitValid = isAmountLimitValid();
 
                         if (!isLimitValid && !s.toString().isEmpty()) {
-                            quantityLayout.setError(getString(R.string.err_value_too_large));
+                            quantityLayout.setError(getString(R.string.val_too_big));
                         } else if (!s.toString().isEmpty()) {
                             medication.setDoseLimit(Integer.parseInt(s.toString()));
                         } else {

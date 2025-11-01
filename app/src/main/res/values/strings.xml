@@ -29,7 +29,6 @@
     <string name="invalid_value">Invalid value entered</string>
     <string name="must_be_positive_int">Value must be a positive integer</string>
     <string name="val_too_big">Provided value is too big</string>
-    <string name="err_value_too_large">Value too large</string>
     <string name="cannot_exceed_50">Provided value cannot exceed 50</string>
     <string name="must_be_greater_than_0">Provided value must be greater than 0</string>
     <string name="provided_name_invalid">Provided name is invalid</string>
@@ -140,6 +139,14 @@
     <string name="dose_limit_added">Added dose limit: %1$s</string>
     <string name="end_date_added">Added end date: %1$s</string>
     <string name="new_quantity">New quantity: %1$d</string>
+    <string name="remaining_doses">Remaining Doses</string>
+    <string name="end_date">End Date</string>
+    <string name="set_limit_by">Set limit by</string>
+    <string name="out_of_doses">Out of Doses</string>
+    <string name="none">None</string>
+    <string name="quantity_optional">Quantity (Optional)</string>
+    <string name="change_amount">Change Quantity</string>
+    <string name="adjust_quantity">Adjust Quantity</string>
 
     <!-- MyMedications -->
     <string name="my_medications">My Medications</string>

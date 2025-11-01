@@ -13,7 +13,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="4dp"
-        android:hint="=Change Amount=">
+        android:hint="@string/change_amount">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/amount"

@@ -21,8 +21,7 @@ import projects.medicationtracker.R;
 
 public class AdjustRemainingDosesDialog extends DialogFragment {
     private Integer amountAdjustment = 0;
-    private int currentAmount;
-
+    private final int currentAmount;
     public AdjustRemainingDosesDialog(int amount) {
         currentAmount = amount;
     }
@@ -42,7 +41,7 @@ public class AdjustRemainingDosesDialog extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
         builder.setView(inflater.inflate(R.layout.dialog_adjust_remaining_doses, null));
-        builder.setTitle("=Adjust Quantity=");
+        builder.setTitle(R.string.adjust_quantity);
 
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> adjustDose());
         builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> dismiss());
@@ -76,7 +75,7 @@ public class AdjustRemainingDosesDialog extends DialogFragment {
                 if (intIsParsable(editable.toString())) {
                     amountAdjustment = Integer.parseInt(editable.toString());
                 } else {
-                    amountLayout.setError(getString(R.string.err_value_too_large));
+                    amountLayout.setError(getString(R.string.val_too_big));
                     dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
 
                     return;
