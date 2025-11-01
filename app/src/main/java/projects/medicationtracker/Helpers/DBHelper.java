@@ -44,6 +44,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String MEDICATION_TIMES = "MedicationTimes";
     private static final String END_DATE = "EndDate";
     private static final String DOSE_LIMIT = "DoseLimit";
+    private static final String NOTIFY_WHEN_REMAINING = "NotifyWhenRemaining";
 
     private static final String MEDICATION_TRACKER_TABLE = "MedicationTracker";
     private static final String DOSE_TIME = "DoseTime";
@@ -556,6 +557,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(ALIAS, medication.getAlias());
         cv.put(INSTRUCTIONS, medication.getInstructions());
         cv.put(DOSE_LIMIT, medication.getDoseAmount());
+        cv.put(NOTIFY_WHEN_REMAINING, medication.getNotifyWhenRemaining());
 
         if (medication.getEndDate() != null) {
             cv.put(END_DATE, TimeFormatting.localDateTimeToDbString(medication.getEndDate()));
@@ -642,7 +644,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
         updateActivityStatusCv.put(ACTIVE, 0);
 
-        db.update(MEDICATION_TABLE, updateActivityStatusCv, where, new String[]{String.valueOf(medication.getId())});
+        db.update(
+                MEDICATION_TABLE,
+                updateActivityStatusCv,
+                where,
+                new String[]{String.valueOf(medication.getId())}
+        );
         db.insert(ACTIVITY_CHANGE_TABLE, null, pauseOldMedContent);
 
         String endString = medication.getEndDate() != null ?
@@ -662,6 +669,15 @@ public class DBHelper extends SQLiteOpenHelper {
         );
 
         updateChildMedContent.put(PARENT_ID, medication.getParent().getId());
+        updateChildMedContent.put(NOTIFY_WHEN_REMAINING, medication.getNotifyWhenRemaining());
+        updateChildMedContent.put(DOSE_LIMIT, medication.getDoseAmount());
+
+        if (medication.getEndDate() != null) {
+            updateChildMedContent.put(
+                    END_DATE,
+                    TimeFormatting.localDateTimeToDbString(medication.getEndDate())
+            );
+        }
 
         db.update(MEDICATION_TABLE, updateChildMedContent, MED_ID + " = " + row, null);
 

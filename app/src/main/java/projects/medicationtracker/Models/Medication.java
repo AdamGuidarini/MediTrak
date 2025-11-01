@@ -434,7 +434,7 @@ public class Medication implements Cloneable, Parcelable {
      * Gets the notification for the remaining amount of medication
      * @return Remaining amount of does when a notification should fire
      */
-    public int getRemainingAmountNotification() {
+    public int getNotifyWhenRemaining() {
         return remainingAmountNotification;
     }
 
