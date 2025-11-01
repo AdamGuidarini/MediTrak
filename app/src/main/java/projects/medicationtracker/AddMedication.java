@@ -111,6 +111,7 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
     private TextInputEditText dateInputSelector;
     private TextInputLayout quantityLayout;
     private TextInputEditText quantityInput;
+    private TextInputEditText notifyWhenRemainingInput;
 
     /*
      * Validators
@@ -332,6 +333,8 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
      * Prepares input for medication dosage & name card
      */
     private void setMedNameAndDosageCard() {
+        TextInputLayout notifyWhenRemainLayout = findViewById(R.id.notify_amount_layout);
+
         medicationNameInputLayout = this.findViewById(R.id.medicationNameInputLayout);
         medNameInput = this.findViewById(R.id.medicationName);
         aliasSwitch = this.findViewById(R.id.aliasSwitch);
@@ -344,6 +347,7 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
         instructions = this.findViewById(R.id.enter_instructions);
         quantityLayout = findViewById(R.id.limit_amount_input_layout);
         quantityInput = findViewById(R.id.limit_amount_text);
+        notifyWhenRemainingInput = findViewById(R.id.remaining_amount_notification);
 
         aliasSwitch.setChecked(medId != -1 && !medication.getAlias().isEmpty());
 
@@ -471,14 +475,39 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
                             quantityLayout.setError(getString(R.string.val_too_big));
                         } else if (!s.toString().isEmpty()) {
                             medication.setDoseAmount(Integer.parseInt(s.toString()));
+
+                            notifyWhenRemainLayout.setEnabled(true);
                         } else {
                             medication.setDoseAmount(-1);
+
+                            notifyWhenRemainLayout.setEnabled(false);
                         }
 
                         validateForm();
                     }
                 }
         );
+
+        notifyWhenRemainingInput.addTextChangedListener(new TextWatcher(){
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                notifyWhenRemainLayout.setErrorEnabled(false);
+
+                if (intIsParsable(Objects.requireNonNull(notifyWhenRemainingInput.getText()).toString())) {
+                    medication.setNotifyWhenRemaining(
+                            Integer.parseInt(notifyWhenRemainingInput.getText().toString())
+                    );
+                }
+
+                validateForm();
+            }
+        });
 
         instructions.addTextChangedListener(new TextWatcher() {
             @Override
@@ -502,11 +531,15 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
             }
 
             dosageAmountInput.setText(formatter.format(medication.getDosage()));
-
             dosageUnitsInput.setText(medication.getDosageUnits());
 
             if (medication.getInstructions() != null && !medication.getInstructions().isEmpty()) {
                 instructions.setText(medication.getInstructions());
+            }
+
+            if (medication.getNotifyWhenRemaining() != -1) {
+                notifyWhenRemainingInput.setText(String.valueOf(medication.getNotifyWhenRemaining()));
+                notifyWhenRemainingInput.setEnabled(true);
             }
         }
     }
@@ -1336,10 +1369,18 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
             return;
         }
 
+        if (medication.getDoseAmount() == -1) {
+          medication.setNotifyWhenRemaining(-1);
+        }
+
         if (medId == -1) {
             final String endDate = Objects.isNull(medication.getEndDate()) ?
                     "" : TimeFormatting.localDateTimeToDbString(medication.getEndDate());
             intent = new Intent(this, MainActivity.class);
+
+            if (medication.getDoseAmount() == -1) {
+                medication.setNotifyWhenRemaining(-1);
+            }
 
             long id = db.addMedication(
                     medication.getName(),
@@ -1351,7 +1392,8 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
                     medication.getAlias(),
                     medication.getInstructions(),
                     medication.getDoseAmount(),
-                    endDate
+                    endDate,
+                    medication.getNotifyWhenRemaining()
             );
 
             medication.setId(id);
@@ -1796,6 +1838,13 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
             }
 
             note += getString(R.string.end_date_added, endString);
+        }
+
+        if (medication.getNotifyWhenRemaining() != parent.getNotifyWhenRemaining()) {
+            String text = medication.getNotifyWhenRemaining() == -1 ? "N/A"
+                    : String.valueOf(medication.getNotifyWhenRemaining());
+
+            note += getString(R.string.notify_when_remaining_added, text);
         }
 
         return note;

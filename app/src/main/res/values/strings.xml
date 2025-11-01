@@ -148,6 +148,7 @@
     <string name="change_amount">Change Quantity</string>
     <string name="adjust_quantity">Adjust Quantity</string>
     <string name="notify_when_remaining">Notify when remaining</string>
+    <string name="notify_when_remaining_added">Notify when remaining set to: %1$s</string>
 
     <!-- MyMedications -->
     <string name="my_medications">My Medications</string>

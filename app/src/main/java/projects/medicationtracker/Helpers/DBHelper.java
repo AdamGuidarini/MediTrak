@@ -171,7 +171,8 @@ public class DBHelper extends SQLiteOpenHelper {
             String alias,
             String instructions,
             int limit,
-            String endDate
+            String endDate,
+            int notifyWhenRemaining
     ) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues medTableValues = new ContentValues();
@@ -187,6 +188,7 @@ public class DBHelper extends SQLiteOpenHelper {
         medTableValues.put(INSTRUCTIONS, instructions);
         medTableValues.put(DOSE_LIMIT, limit);
         medTableValues.put(END_DATE, endDate);
+        medTableValues.put(NOTIFY_WHEN_REMAINING, notifyWhenRemaining);
 
         row = db.insert(MEDICATION_TABLE, null, medTableValues);
 
@@ -265,6 +267,7 @@ public class DBHelper extends SQLiteOpenHelper {
             String instructions = cursor.getString(cursor.getColumnIndexOrThrow(INSTRUCTIONS));
             int limit = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(DOSE_LIMIT)));
             String endDateSt = cursor.getString(cursor.getColumnIndexOrThrow(END_DATE));
+            int notifyWhenRemaining = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(NOTIFY_WHEN_REMAINING)));
 
             LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(startDateStr);
 
@@ -310,6 +313,7 @@ public class DBHelper extends SQLiteOpenHelper {
             );
             medToAdd.setInstructions(instructions);
             medToAdd.setDoseAmount(limit);
+            medToAdd.setNotifyWhenRemaining(notifyWhenRemaining);
 
             if (endDateSt != null && !endDateSt.isEmpty()) {
                 LocalDateTime endDate = TimeFormatting.stringToLocalDateTime(endDateSt);
@@ -376,6 +380,7 @@ public class DBHelper extends SQLiteOpenHelper {
             long childId = meds.getLong(meds.getColumnIndexOrThrow(CHILD_ID));
             int limit = Integer.parseInt(meds.getString(meds.getColumnIndexOrThrow(DOSE_LIMIT)));
             String endDateSt = meds.getString(meds.getColumnIndexOrThrow(END_DATE));
+            int notifyWhenRemaining = Integer.parseInt(meds.getString(meds.getColumnIndexOrThrow(NOTIFY_WHEN_REMAINING)));
 
             LocalDateTime startDate = TimeFormatting.stringToLocalDateTime(date1);
 
@@ -423,6 +428,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             medication.setActiveStatus(active);
             medication.setDoseAmount(limit);
+            medication.setNotifyWhenRemaining(notifyWhenRemaining);
 
             if (endDateSt != null && !endDateSt.isEmpty()) {
                 LocalDateTime endDate = TimeFormatting.stringToLocalDateTime(endDateSt);
@@ -474,6 +480,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String instructions = cursor.getString(cursor.getColumnIndexOrThrow(INSTRUCTIONS));
         int limit = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(DOSE_LIMIT)));
         String endDateSt = cursor.getString(cursor.getColumnIndexOrThrow(END_DATE));
+        int notifyWhenRemaining = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(NOTIFY_WHEN_REMAINING)));
 
         LocalDateTime[] times = new LocalDateTime[0];
 
@@ -487,6 +494,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         medication.setInstructions(instructions);
         medication.setDoseAmount(limit);
+        medication.setNotifyWhenRemaining(notifyWhenRemaining);
 
         if (endDateSt != null && !endDateSt.isEmpty()) {
             medication.setEndDate(TimeFormatting.stringToLocalDateTime(endDateSt));
@@ -665,7 +673,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 medication.getAlias(),
                 medication.getInstructions(),
                 medication.getDoseAmount(),
-                endString
+                endString,
+                medication.getNotifyWhenRemaining()
         );
 
         updateChildMedContent.put(PARENT_ID, medication.getParent().getId());
