@@ -7,7 +7,6 @@ import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
 
@@ -309,7 +308,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     medName, patient, units, times, startDate, medId, freq, dosage, alias
             );
             medToAdd.setInstructions(instructions);
-            medToAdd.setDoseLimit(limit);
+            medToAdd.setDoseAmount(limit);
 
             if (endDateSt != null && !endDateSt.isEmpty()) {
                 LocalDateTime endDate = TimeFormatting.stringToLocalDateTime(endDateSt);
@@ -422,7 +421,7 @@ public class DBHelper extends SQLiteOpenHelper {
             );
 
             medication.setActiveStatus(active);
-            medication.setDoseLimit(limit);
+            medication.setDoseAmount(limit);
 
             if (endDateSt != null && !endDateSt.isEmpty()) {
                 LocalDateTime endDate = TimeFormatting.stringToLocalDateTime(endDateSt);
@@ -486,7 +485,7 @@ public class DBHelper extends SQLiteOpenHelper {
         );
 
         medication.setInstructions(instructions);
-        medication.setDoseLimit(limit);
+        medication.setDoseAmount(limit);
 
         if (endDateSt != null && !endDateSt.isEmpty()) {
             medication.setEndDate(TimeFormatting.stringToLocalDateTime(endDateSt));
@@ -556,7 +555,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(PATIENT_NAME, medication.getPatientName());
         cv.put(ALIAS, medication.getAlias());
         cv.put(INSTRUCTIONS, medication.getInstructions());
-        cv.put(DOSE_LIMIT, medication.getDoseLimit());
+        cv.put(DOSE_LIMIT, medication.getDoseAmount());
 
         if (medication.getEndDate() != null) {
             cv.put(END_DATE, TimeFormatting.localDateTimeToDbString(medication.getEndDate()));
@@ -658,7 +657,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 medication.getFrequency(),
                 medication.getAlias(),
                 medication.getInstructions(),
-                medication.getDoseLimit(),
+                medication.getDoseAmount(),
                 endString
         );
 

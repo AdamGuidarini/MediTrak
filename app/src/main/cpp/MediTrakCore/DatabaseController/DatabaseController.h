@@ -54,6 +54,7 @@ private:
     const string INSTRUCTIONS = "Instructions";
     const string END_DATE = "EndDate";
     const string QUANTITY = "DoseLimit";
+    const string NOTIFY_WHEN_REMAINING = "NotifyWhenRemaining";
 
     const string MEDICATION_TRACKER_TABLE = "MedicationTracker";
     const string DOSE_TIME = "DoseTime";

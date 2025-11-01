@@ -470,9 +470,9 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
                         if (!isLimitValid && !s.toString().isEmpty()) {
                             quantityLayout.setError(getString(R.string.val_too_big));
                         } else if (!s.toString().isEmpty()) {
-                            medication.setDoseLimit(Integer.parseInt(s.toString()));
+                            medication.setDoseAmount(Integer.parseInt(s.toString()));
                         } else {
-                            medication.setDoseLimit(-1);
+                            medication.setDoseAmount(-1);
                         }
 
                         validateForm();
@@ -673,7 +673,7 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
                         isLimitValid = isAmountLimitValid();
                     } else {
                         dateInputLayout.setVisibility(View.GONE);
-                        medication.setEndDate(null);
+                        medication.setEndDate((LocalDateTime) null);
 
                         isLimitValid = true;
                     }
@@ -724,18 +724,18 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
         );
 
         if (medication.getId() != -1) {
-            if (medication.getDoseLimit() >= 0) {
+            if (medication.getDoseAmount() >= 0) {
                 if (medication.getEndDate() != null) {
                     amountLimitButton.setChecked(true);
                 }
-                quantityInput.setText(String.valueOf(medication.getDoseLimit()));
+                quantityInput.setText(String.valueOf(medication.getDoseAmount()));
 
                 quantityInput.setInputType(InputType.TYPE_NULL);
 
                 quantityInput.setShowSoftInputOnFocus(false);
                 quantityInput.setOnFocusChangeListener((view, b) -> {
                     if (b) {
-                        DialogFragment doseAdjuster = new AdjustRemainingDosesDialog(medication.getDoseLimit());
+                        DialogFragment doseAdjuster = new AdjustRemainingDosesDialog(medication.getDoseAmount());
                         doseAdjuster.show(getSupportFragmentManager(), null);
                         quantityInput.clearFocus();
                     }
@@ -1350,7 +1350,7 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
                     medication.getFrequency(),
                     medication.getAlias(),
                     medication.getInstructions(),
-                    medication.getDoseLimit(),
+                    medication.getDoseAmount(),
                     endDate
             );
 
@@ -1782,8 +1782,8 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
             note += getString(R.string.instructions_added, medication.getInstructions());
         }
 
-        if (medication.getDoseLimit() != parent.getDoseLimit()) {
-            note += getString(R.string.dose_limit_added, String.valueOf(medication.getDoseLimit()));
+        if (medication.getDoseAmount() != parent.getDoseAmount()) {
+            note += getString(R.string.dose_limit_added, String.valueOf(medication.getDoseAmount()));
         }
 
         if (medication.getEndDate() != parent.getEndDate()) {

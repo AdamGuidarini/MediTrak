@@ -86,9 +86,7 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
 
         nativeDb = new NativeDbHelper(getApplicationContext());
         nativeDb.create();
-
         allMeds = db.getMedications();
-
         preferences = nativeDb.getSettings();
 
         String theme = preferences.getString(THEME);
@@ -353,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
             validTimes.removeIf(
                     (time) ->
                     {
-                        if (med.getDoseLimit() > 0 && med.getEndDate() != null && med.getEndDate().toLocalDate().isEqual(LocalDate.of(9999, 12, 31))) {
+                        if (med.getDoseAmount() > 0 && med.getEndDate() != null && med.getEndDate().toLocalDate().isEqual(LocalDate.of(9999, 12, 31))) {
                             LocalDateTime calculatedEndDate;
                             if (med.getFrequency() == 1440) {
                                 int dosesPerDay = med.getTimes().length;
@@ -362,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
                                     return false;
                                 }
 
-                                int doseLimit = med.getDoseLimit();
+                                int doseLimit = med.getDoseAmount();
                                 int daysToAdd = (doseLimit - 1) / dosesPerDay;
                                 int finalDoseIndex = (doseLimit - 1) % dosesPerDay;
 
@@ -372,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
                                 calculatedEndDate = LocalDateTime.of(finalDate, finalTime);
                             } else {
                                 long frequencyInMinutes = med.getFrequency();
-                                long totalDurationInMinutes = frequencyInMinutes * (med.getDoseLimit() - 1);
+                                long totalDurationInMinutes = frequencyInMinutes * (med.getDoseAmount() - 1);
                                 calculatedEndDate = med.getStartDate().plusMinutes(totalDurationInMinutes);
                             }
 

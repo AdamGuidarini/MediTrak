@@ -147,6 +147,7 @@
     <string name="quantity_optional">Quantity (Optional)</string>
     <string name="change_amount">Change Quantity</string>
     <string name="adjust_quantity">Adjust Quantity</string>
+    <string name="notify_when_remaining">Notify when remaining</string>
 
     <!-- MyMedications -->
     <string name="my_medications">My Medications</string>

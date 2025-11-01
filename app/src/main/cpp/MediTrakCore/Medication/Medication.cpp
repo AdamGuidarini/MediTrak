@@ -15,6 +15,9 @@ Medication::Medication() {
     dosage = 0;
     frequency = 0;
     active = false;
+    quantity = -1;
+    endDate = "";
+    notifyWhenRemainingAmount = -1;
 }
 
 Medication::Medication(
@@ -29,7 +32,8 @@ Medication::Medication(
         bool active,
         string alias,
         int quantity,
-        string endDate
+        string endDate,
+        int notifyWhenRemainingAmount
 ) {
     this->medicationName = medicationName;
     this->patientName = patientName;
@@ -43,4 +47,5 @@ Medication::Medication(
     this->alias = alias;
     this->quantity = quantity;
     this->endDate = endDate;
+    this->notifyWhenRemainingAmount = notifyWhenRemainingAmount;
 }

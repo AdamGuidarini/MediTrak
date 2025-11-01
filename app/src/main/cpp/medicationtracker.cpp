@@ -145,8 +145,18 @@ jobject medicationToJavaConverter(Medication med, JNIEnv *env, jclass jMedicatio
                                            "(Lprojects/medicationtracker/Models/Medication;)V");
     jmethodID setDoses = env->GetMethodID(jMedication, "setDoses",
                                           "([Lprojects/medicationtracker/Models/Dose;)V");
+    jmethodID setDoseAmount = env->GetMethodID(jMedication, "setDoseAmount", "(I)V");
+    jmethodID setEndDate = env->GetMethodID(jMedication, "setEndDate", "(Ljava/lang/String;)V");
+    jmethodID setNotifyWhenRemaining = env->GetMethodID(
+            jMedication,
+            "setNotifyWhenRemaining",
+            "(I)V"
+    );
 
     env->CallVoidMethod(jMedicationInstance, setActiveStatus, med.active);
+    env->CallVoidMethod(jMedicationInstance, setDoseAmount, med.quantity);
+    env->CallVoidMethod(jMedicationInstance, setEndDate, env->NewStringUTF(med.endDate.c_str()));
+    env->CallVoidMethod(jMedicationInstance, setNotifyWhenRemaining, med.notifyWhenRemainingAmount);
 
     if (med.parent != nullptr) {
         jmethodID setChild = env->GetMethodID(jMedication, "setChild",

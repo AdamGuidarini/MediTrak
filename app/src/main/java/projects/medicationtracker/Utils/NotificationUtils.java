@@ -29,6 +29,7 @@ public class NotificationUtils {
     public final static String GROUP_KEY = "medicationTrackerNotificationGroup";
     public final static String MED_REMINDER_CHANNEL_ID = "med_reminder";
     public final static String EXPORT_ALERT_CHANNEL_ID = "export_alerts";
+    public final static String LOW_DOSES_CHANNEL_ID = "low_doses";
     public final static String MESSAGE = "message";
     public final static String DOSE_TIME = "doseTime";
     public final static String MEDICATION_ID = "medicationId";
@@ -181,6 +182,7 @@ public class NotificationUtils {
     public static void createNotificationChannels(Context context) {
         CharSequence reminderName = "Medication Reminder";
         CharSequence exportName = "Export Alerts";
+        CharSequence lowDosesName = "Low Doses";
         int importance = NotificationManager.IMPORTANCE_HIGH;
         NotificationManager notificationManager
                 = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -193,7 +195,11 @@ public class NotificationUtils {
                 EXPORT_ALERT_CHANNEL_ID, exportName, importance
         );
 
-        for (NotificationChannel n : new NotificationChannel[]{medChannel, exportChannel}) {
+        NotificationChannel lowDosesChannel = new NotificationChannel(
+                LOW_DOSES_CHANNEL_ID, lowDosesName, importance
+        );
+
+        for (NotificationChannel n : new NotificationChannel[]{medChannel, exportChannel, lowDosesChannel}) {
             n.enableLights(false);
             n.enableVibration(false);
             n.setShowBadge(true);

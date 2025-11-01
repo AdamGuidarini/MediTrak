@@ -58,6 +58,7 @@ void DatabaseController::create() {
                     + INSTRUCTIONS + " TEXT,"
                     + END_DATE + " DATETIME,"
                     + QUANTITY + " INTEGER DEFAULT -1,"
+                    + NOTIFY_WHEN_REMAINING + " INTEGER DEFAULT -1,"
                     + "FOREIGN KEY (" + PARENT_ID + ") REFERENCES "
                     + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE,"
                     + "FOREIGN KEY (" + CHILD_ID + ") REFERENCES "
@@ -309,7 +310,9 @@ void DatabaseController::upgrade(int currentVersion) {
             "ALTER TABLE " + MEDICATION_TRACKER_TABLE
             + " ADD COLUMN " + END_DATE + " DATETIME;"
             + "ALTER TABLE " + MEDICATION_TRACKER_TABLE
-            + " ADD COLUMN " + QUANTITY + ";"
+            + " ADD COLUMN " + QUANTITY + " INTEGER DEFAULT -1" + ";"
+            + "ALTER TABLE " + MEDICATION_TABLE +
+            + " ADD COLUMN " + NOTIFY_WHEN_REMAINING + " INTEGER DEFAULT -1;"
         );
     }
 
@@ -418,7 +421,8 @@ Medication DatabaseController::getMedication(long medicationId) {
             table->getItem(ACTIVE) == "1",
             table->getItem(ALIAS),
             stoi(table->getItem(QUANTITY)),
-            table->getItem(END_DATE)
+            table->getItem(END_DATE),
+            stoi(table->getItem(NOTIFY_WHEN_REMAINING))
     );
 
     if (!table->getItem(PARENT_ID).empty()) {

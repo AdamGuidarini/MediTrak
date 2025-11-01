@@ -120,8 +120,8 @@ public class MyMedicationsFragment extends Fragment {
 
         frequency.setText(label);
 
-        String doseLimit = medication.getDoseLimit() > -1  ?
-                String.valueOf(medication.getDoseLimit()) : "N/A";
+        String doseLimit = medication.getDoseAmount() > -1  ?
+                String.valueOf(medication.getDoseAmount()) : "N/A";
 
         remainingDose.setText(doseLimit);
 
