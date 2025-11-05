@@ -757,18 +757,18 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
         );
 
         if (medication.getId() != -1) {
-            if (medication.getDoseAmount() >= 0) {
+            if (medication.getRemainingDosesCount() >= 0) {
                 if (medication.getEndDate() != null) {
                     amountLimitButton.setChecked(true);
                 }
-                quantityInput.setText(String.valueOf(medication.getDoseAmount()));
+                quantityInput.setText(String.valueOf(medication.getRemainingDosesCount()));
 
                 quantityInput.setInputType(InputType.TYPE_NULL);
 
                 quantityInput.setShowSoftInputOnFocus(false);
                 quantityInput.setOnFocusChangeListener((view, b) -> {
                     if (b) {
-                        DialogFragment doseAdjuster = new AdjustRemainingDosesDialog(medication.getDoseAmount());
+                        DialogFragment doseAdjuster = new AdjustRemainingDosesDialog(medication.getRemainingDosesCount());
                         doseAdjuster.show(getSupportFragmentManager(), null);
                         quantityInput.clearFocus();
                     }
@@ -1369,7 +1369,7 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
             return;
         }
 
-        if (medication.getDoseAmount() == -1) {
+        if (medication.getRemainingDosesCount() == -1) {
           medication.setNotifyWhenRemaining(-1);
         }
 
@@ -1378,7 +1378,7 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
                     "" : TimeFormatting.localDateTimeToDbString(medication.getEndDate());
             intent = new Intent(this, MainActivity.class);
 
-            if (medication.getDoseAmount() == -1) {
+            if (medication.getRemainingDosesCount() == -1) {
                 medication.setNotifyWhenRemaining(-1);
             }
 
@@ -1391,7 +1391,7 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
                     medication.getFrequency(),
                     medication.getAlias(),
                     medication.getInstructions(),
-                    medication.getDoseAmount(),
+                    medication.getRemainingDosesCount(),
                     endDate,
                     medication.getNotifyWhenRemaining()
             );
@@ -1824,8 +1824,8 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
             note += getString(R.string.instructions_added, medication.getInstructions());
         }
 
-        if (medication.getDoseAmount() != parent.getDoseAmount()) {
-            note += getString(R.string.dose_limit_added, String.valueOf(medication.getDoseAmount()));
+        if (medication.getRemainingDosesCount() != parent.getRemainingDosesCount()) {
+            note += getString(R.string.dose_limit_added, String.valueOf(medication.getRemainingDosesCount()));
         }
 
         if (medication.getEndDate() != parent.getEndDate()) {

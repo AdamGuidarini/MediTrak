@@ -564,7 +564,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(PATIENT_NAME, medication.getPatientName());
         cv.put(ALIAS, medication.getAlias());
         cv.put(INSTRUCTIONS, medication.getInstructions());
-        cv.put(DOSE_LIMIT, medication.getDoseAmount());
+        cv.put(DOSE_LIMIT, medication.getRemainingDosesCount());
         cv.put(NOTIFY_WHEN_REMAINING, medication.getNotifyWhenRemaining());
 
         if (medication.getEndDate() != null) {
@@ -672,14 +672,14 @@ public class DBHelper extends SQLiteOpenHelper {
                 medication.getFrequency(),
                 medication.getAlias(),
                 medication.getInstructions(),
-                medication.getDoseAmount(),
+                medication.getRemainingDosesCount(),
                 endString,
                 medication.getNotifyWhenRemaining()
         );
 
         updateChildMedContent.put(PARENT_ID, medication.getParent().getId());
         updateChildMedContent.put(NOTIFY_WHEN_REMAINING, medication.getNotifyWhenRemaining());
-        updateChildMedContent.put(DOSE_LIMIT, medication.getDoseAmount());
+        updateChildMedContent.put(DOSE_LIMIT, medication.getRemainingDosesCount());
 
         if (medication.getEndDate() != null) {
             updateChildMedContent.put(

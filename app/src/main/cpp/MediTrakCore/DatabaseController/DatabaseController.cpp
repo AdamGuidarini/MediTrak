@@ -449,6 +449,12 @@ Medication DatabaseController::getMedication(long medicationId) {
         medication.parent->child = make_shared<Medication>(medication);
     }
 
+    return medication;
+}
+
+Medication DatabaseController::getMedicationHistory(long medicationId) {
+    Medication medication = getMedication(medicationId);
+
     medication.doses = getTakenDoses(medication.id);
 
     return medication;

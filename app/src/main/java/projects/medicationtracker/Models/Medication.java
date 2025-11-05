@@ -395,7 +395,7 @@ public class Medication implements Cloneable, Parcelable {
      * Gets the limit of doses
      * @return amount of doses
      */
-    public int getDoseAmount() {
+    public int getRemainingDosesCount() {
         return doseAmount;
     }
 

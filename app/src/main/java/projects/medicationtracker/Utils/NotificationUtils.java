@@ -13,6 +13,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
+import androidx.core.app.NotificationCompat;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -141,11 +143,7 @@ public class NotificationUtils {
 
         alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
 
-        if (SDK_INT >= Build.VERSION_CODES.S && alarmManager.canScheduleExactAlarms()) {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent);
-        } else {
-            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent);
-        }
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent);
     }
 
     /**
@@ -280,14 +278,37 @@ public class NotificationUtils {
         db.close();
     }
 
+    public static void notifyLowQuantity(Medication medication, Context context) {
+        String message = context.getString(
+                R.string.low_doses_warning, medication.getName(),medication.getRemainingDosesCount()
+        );
+        NotificationManager manager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        android.app.Notification notification
+                = new NotificationCompat.Builder(context, LOW_DOSES_CHANNEL_ID)
+                .setContentTitle(context.getString(R.string.app_name))
+                .setContentText(message)
+                .setSmallIcon(R.drawable.pill)
+                .setAutoCancel(false)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setStyle(new NotificationCompat.BigTextStyle())
+                .build();
+
+        manager.notify(
+                medication.getRemainingDosesCount() * medication.getNotifyWhenRemaining(),
+                notification
+        );
+    }
+
     /**
      * Determines if a medication is no longer to be taken
      * @param med Medication to be checked
      * @return whether or not a medication should still be taken
      */
     private static boolean isMedicationDone(Medication med) {
-        if (med.getDoseAmount() != -1 && med.getEndDate() != null) {
-            return med.getDoseAmount() == 0 &&
+        if (med.getRemainingDosesCount() != -1 && med.getEndDate() != null) {
+            return med.getRemainingDosesCount() == 0 &&
                     med.getEndDate().toLocalDate().equals(LocalDate.of(9999, 12,31));
         } else if (med.getEndDate() != null) {
             LocalDateTime now = LocalDateTime.now();

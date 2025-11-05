@@ -211,9 +211,16 @@ public:
     /**
      * Retrieves a Medication from the database
      * @param medicationId ID of medication sought
-     * @return Medication including data on its doses and potential parents/children
+     * @return Medication with matching ID and its times and lineage
      */
     Medication getMedication(long medicationId);
+
+    /**
+     * Retrieves a Medication from the database
+     * @param medicationId ID of medication sought
+     * @return Medication including data on its doses and potential parents/children
+     */
+    Medication getMedicationHistory(long medicationId);
 
     /**
      * Retrieves all does for medication whose ID matches medId
