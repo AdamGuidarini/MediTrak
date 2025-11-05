@@ -307,10 +307,10 @@ void DatabaseController::upgrade(int currentVersion) {
 
     if (currentVersion < 19) {
         manager.execSql(
-            "ALTER TABLE " + MEDICATION_TRACKER_TABLE
+            "ALTER TABLE " + MEDICATION_TABLE
             + " ADD COLUMN " + END_DATE + " DATETIME;"
-            + "ALTER TABLE " + MEDICATION_TRACKER_TABLE
-            + " ADD COLUMN " + QUANTITY + " INTEGER DEFAULT -1" + ";"
+            + "ALTER TABLE " + MEDICATION_TABLE
+            + " ADD COLUMN " + QUANTITY + " INTEGER DEFAULT -1;"
             + "ALTER TABLE " + MEDICATION_TABLE +
             + " ADD COLUMN " + NOTIFY_WHEN_REMAINING + " INTEGER DEFAULT -1;"
         );
