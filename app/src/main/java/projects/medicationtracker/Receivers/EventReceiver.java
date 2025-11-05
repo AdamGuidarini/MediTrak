@@ -164,7 +164,7 @@ public class EventReceiver extends BroadcastReceiver {
 
         med = db.getMedicationById(medId);
 
-        if (med.getRemainingDosesCount() != -1 && med.getRemainingDosesCount() <= med.getNotifyWhenRemaining()) {
+        if (med.getNotifyWhenRemaining() != -1 && med.getRemainingDosesCount() <= med.getNotifyWhenRemaining()) {
             NotificationUtils.notifyLowQuantity(med, context);
         }
 
@@ -224,7 +224,7 @@ public class EventReceiver extends BroadcastReceiver {
 
             Medication medication = nativeDbHelper.getMedicationById(thisNotification.getMedId());
 
-            if (medication.getRemainingDosesCount() != -1 && medication.getNotifyWhenRemaining() <= medication.getRemainingDosesCount()) {
+            if (medication.getNotifyWhenRemaining() != -1 && medication.getNotifyWhenRemaining() <= medication.getRemainingDosesCount()) {
                 NotificationUtils.notifyLowQuantity(medication, context);
             }
         }
