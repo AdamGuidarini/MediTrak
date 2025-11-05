@@ -149,6 +149,10 @@
     <string name="quantity_optional">Quantità (opzionale)</string>
     <string name="change_amount">Cambiare quantità</string>
     <string name="adjust_quantity">Aggiustare quantità</string>
+    <string name="notify_when_remaining">Notifica a (dosi rimanenti)</string>
+    <string name="notify_when_remaining_added">Soglia di notifica impostata a: %1$s</string>
+    <string name="low_doses_warning">Scorta di %1$s in esaurimento. %2$d dosi rimanenti.</string>
+
 
     <!-- MyMedications -->
     <string name="my_medications">I miei farmaci</string>

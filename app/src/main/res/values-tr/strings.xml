@@ -143,6 +143,9 @@
     <string name="quantity_optional">Miktar (İsteğe bağlı)</string>
     <string name="change_amount">Miktarı değiştir</string>
     <string name="adjust_quantity">Miktarı değiştir</string>
+    <string name="notify_when_remaining">Kalan doz sayısı uyarısı</string>
+    <string name="notify_when_remaining_added">Düşük doz uyarısı şuna ayarlandı: %1$s</string>
+    <string name="low_doses_warning">%1$s ilacınız azalıyor. Kalan doz: %2$d.</string>
 
     <!-- MyMedications -->
     <string name="my_medications">İlaçlarım</string>

@@ -150,6 +150,9 @@
     <string name="quantity_optional">Anzahl (Optional)</string>
     <string name="change_amount">Anzahl ändern</string>
     <string name="adjust_quantity">Anzahl ändern</string>
+    <string name="notify_when_remaining">Benachrichtigen bei Restmenge</string>
+    <string name="notify_when_remaining_added">Benachrichtigungsschwelle festgelegt auf: %1$s</string>
+    <string name="low_doses_warning">Vorrat von %1$s ist niedrig. %2$d Dosen verbleibend.</string>
 
     <!-- MyMedications -->
     <string name="my_medications">Meine Medikamente</string>

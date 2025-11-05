@@ -148,6 +148,10 @@
     <string name="quantity_optional">Cantidad (opcional)</string>
     <string name="change_amount">Cambiar la cantidad</string>
     <string name="adjust_quantity">Ajustar la cantidad</string>
+    <string name="notify_when_remaining">Notificar cuando queden</string>
+    <string name="notify_when_remaining_added">Notificación de existencias bajas establecida en: %1$s</string>
+    <string name="low_doses_warning">Las existencias de %1$s están bajas. Quedan %2$d dosis.</string>
+
 
     <!-- MyMedications -->
     <string name="my_medications">Mis medicamentos</string>

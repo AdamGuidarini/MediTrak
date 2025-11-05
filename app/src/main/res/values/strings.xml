@@ -149,7 +149,7 @@
     <string name="adjust_quantity">Adjust Quantity</string>
     <string name="notify_when_remaining">Notify when remaining</string>
     <string name="notify_when_remaining_added">Notify when remaining set to: %1$s</string>
-    <string name="low_doses_warning">Inventory of %1$s is low. %2$d doses remaining.</string>
+    <string name="low_doses_warning">Supply of %1$s is low. %2$d doses remaining.</string>
 
     <!-- MyMedications -->
     <string name="my_medications">My Medications</string>

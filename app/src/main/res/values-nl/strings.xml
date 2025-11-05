@@ -147,7 +147,9 @@
     <string name="quantity_optional">Aantal (optioneel)</string>
     <string name="change_amount">Aantal wijzigen</string>
     <string name="adjust_quantity">Aantal wijzigen</string>
-
+    <string name="notify_when_remaining">Melding bij resterende voorraad</string>
+    <string name="notify_when_remaining_added">Meldingsdrempel ingesteld op: %1$s</string>
+    <string name="low_doses_warning">Voorraad van %1$s is laag. Nog %2$d doses over.</string>
 
     <!-- MyMedications -->
     <string name="my_medications">Mijn Medicijnen</string>
