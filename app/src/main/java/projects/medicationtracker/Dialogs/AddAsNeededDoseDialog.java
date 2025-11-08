@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import projects.medicationtracker.Fragments.TimePickerFragment;
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Utils.NotificationUtils;
 import projects.medicationtracker.Utils.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
@@ -160,6 +161,12 @@ public class AddAsNeededDoseDialog extends DialogFragment {
         long doseId = db.addToMedicationTracker(med, dateTimeTaken);
 
         db.updateDoseStatus(doseId, TimeFormatting.localDateTimeToDbString(dateTimeTaken.withSecond(0)), true);
+
+        Medication medication = db.getMedication(med.getId());
+
+        if (medication.getNotifyWhenRemaining() != -1 && medication.getNotifyWhenRemaining() >= medication.getRemainingDosesCount()) {
+            NotificationUtils.notifyLowQuantity(medication, getContext());
+        }
 
         Dose dose = new Dose(doseId, med.getId(), true, dateTimeTaken, null);
 

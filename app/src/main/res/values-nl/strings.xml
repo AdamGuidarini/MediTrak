@@ -89,9 +89,9 @@
     <string name="note_edit_timestamp">Bewerkt: %1$s op: %2$s</string>
     <string name="patient_changed">Patiënt gewijzigd van %1$s naar %2$s\n</string>
     <string name="name_changed">Naam gewijzigd van %1$s naar %2$s\n</string>
-    <string name="removed_alias">Alias ​​%1$s verwijderd\n</string>
-    <string name="added_alias">Alias ​​%1$s toegevoegd\n</string>
-    <string name="changed_alias">Alias ​​gewijzigd van %1$s naar %2$s\n</string>
+    <string name="removed_alias">Alias %1$s verwijderd\n</string>
+    <string name="added_alias">Alias %1$s toegevoegd\n</string>
+    <string name="changed_alias">Alias gewijzigd van %1$s naar %2$s\n</string>
     <string name="changed_dosage">Dosering gewijzigd van %1$s naar %2$s\n</string>
     <string name="frequency_changed">Frequentie gewijzigd van %1$s naar %2$s\n</string>
     <string name="times_per">Tijden per</string>
@@ -110,7 +110,7 @@
     <string name="as_needed">Zoals nodig</string>
     <string name="daily">Dagelijks</string>
     <string name="weekly">Wekelijks</string>
-<string name="monthly">Maandelijks</string>
+    <string name="monthly">Maandelijks</string>
     <string name="medication_name_amp_dosage"><![CDATA[Medicijnnaam & dosering]]></string>
     <string name="who_takes_this_medication">Wie gebruikt deze medicatie?</string>
     <string name="someone_else">Iemand anders</string>
@@ -136,6 +136,20 @@
     <string name="instructions">Instructies</string>
     <string name="instructions_optional">Instructies (optioneel)</string>
     <string name="instructions_added">Instructies toegevoegd: %1$s</string>
+    <string name="dose_limit_added">Dosislimiet toegevoegd: %1$s</string>
+    <string name="end_date_added">Einddatum toegevoegd: %1$s</string>
+    <string name="new_quantity">Nieuw aantal: %1$d</string>
+    <string name="remaining_doses">Doses over</string>
+    <string name="end_date">Einddatum</string>
+    <string name="set_limit_by">Limiet instellen op basis van</string>
+    <string name="out_of_doses">Doses zijn op</string>
+    <string name="none">Geen limiet</string>
+    <string name="quantity_optional">Aantal (optioneel)</string>
+    <string name="change_amount">Aantal wijzigen</string>
+    <string name="adjust_quantity">Aantal wijzigen</string>
+    <string name="notify_when_remaining">Melding bij resterende voorraad</string>
+    <string name="notify_when_remaining_added">Meldingsdrempel ingesteld op: %1$s</string>
+    <string name="low_doses_warning">Voorraad van %1$s is laag. Nog %2$d doses over.</string>
 
     <!-- MyMedications -->
     <string name="my_medications">Mijn Medicijnen</string>

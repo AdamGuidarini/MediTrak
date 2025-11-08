@@ -39,6 +39,7 @@ import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Notification;
 import projects.medicationtracker.R;
+import projects.medicationtracker.Utils.NotificationUtils;
 
 public class OpenNotificationsDialog extends DialogFragment {
     private NativeDbHelper nativeDbHelper;
@@ -247,6 +248,12 @@ public class OpenNotificationsDialog extends DialogFragment {
                         true
                 );
                 nativeDbHelper.deleteNotification(notification.getId());
+
+                Medication refreshedMed = nativeDbHelper.getMedicationById(med.getId());
+
+                if (refreshedMed.getNotifyWhenRemaining() != -1 && refreshedMed.getNotifyWhenRemaining() >= refreshedMed.getRemainingDosesCount()) {
+                    NotificationUtils.notifyLowQuantity(refreshedMed, getContext());
+                }
             } else if (dismissUnselected.isChecked()) {
                 manager.cancel((int) notification.getNotificationId());
                 nativeDbHelper.deleteNotification(notification.getId());

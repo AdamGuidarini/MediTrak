@@ -33,6 +33,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.radiobutton.MaterialRadioButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
@@ -47,18 +48,20 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
 
+import projects.medicationtracker.Dialogs.AdjustRemainingDosesDialog;
 import projects.medicationtracker.Dialogs.PauseResumeDialog;
 import projects.medicationtracker.Fragments.ConfirmMedicationDeleteFragment;
 import projects.medicationtracker.Fragments.SelectDateFragment;
 import projects.medicationtracker.Fragments.TimePickerFragment;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
+import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.Utils.NotificationUtils;
 import projects.medicationtracker.Utils.TimeFormatting;
 import projects.medicationtracker.InputFilters.DecimalPlacesFilter;
 import projects.medicationtracker.Models.Medication;
 
-public class AddMedication extends AppCompatActivity {
+public class AddMedication extends AppCompatActivity implements IDialogCloseListener {
     final public static String MED_ID = "medId";
     final public static int MINUTES_IN_DAY = 1440;
     private final DBHelper db = new DBHelper(this);
@@ -102,6 +105,13 @@ public class AddMedication extends AppCompatActivity {
     private boolean createClone = false;
     private LocalDateTime[] startingTimes;
     private TextInputEditText instructions;
+    private MaterialRadioButton dateLimitButton;
+    private MaterialRadioButton amountLimitButton;
+    private TextInputLayout dateInputLayout;
+    private TextInputEditText dateInputSelector;
+    private TextInputLayout quantityLayout;
+    private TextInputEditText quantityInput;
+    private TextInputEditText notifyWhenRemainingInput;
 
     /*
      * Validators
@@ -111,6 +121,7 @@ public class AddMedication extends AppCompatActivity {
     private boolean isMedDosageValid = false;
     private boolean isMedDoseUnitValid = false;
     private boolean isMedFrequencyValid = false;
+    private boolean isLimitValid = false;
 
     /**
      * Builds AddMedication Activity
@@ -225,7 +236,6 @@ public class AddMedication extends AppCompatActivity {
         confirmMedicationDeleteFragment.show(getSupportFragmentManager(), null);
     }
 
-
     /**
      * Builds all views in activity
      */
@@ -236,6 +246,7 @@ public class AddMedication extends AppCompatActivity {
         setPatientCard();
         setMedNameAndDosageCard();
         setFrequencyCard();
+        setLimitCard();
 
         if (medId != -1) {
             saveButton.setEnabled(false);
@@ -322,6 +333,8 @@ public class AddMedication extends AppCompatActivity {
      * Prepares input for medication dosage & name card
      */
     private void setMedNameAndDosageCard() {
+        TextInputLayout notifyWhenRemainLayout = findViewById(R.id.notify_amount_layout);
+
         medicationNameInputLayout = this.findViewById(R.id.medicationNameInputLayout);
         medNameInput = this.findViewById(R.id.medicationName);
         aliasSwitch = this.findViewById(R.id.aliasSwitch);
@@ -332,11 +345,13 @@ public class AddMedication extends AppCompatActivity {
         dosageUnitsInputLayout = this.findViewById(R.id.dosageUnitsInputLayout);
         dosageUnitsInput = this.findViewById(R.id.dosageUnits);
         instructions = this.findViewById(R.id.enter_instructions);
+        quantityLayout = findViewById(R.id.limit_amount_input_layout);
+        quantityInput = findViewById(R.id.limit_amount_text);
+        notifyWhenRemainingInput = findViewById(R.id.remaining_amount_notification);
 
         aliasSwitch.setChecked(medId != -1 && !medication.getAlias().isEmpty());
 
-        aliasSwitch.setOnCheckedChangeListener((compoundButton, b) ->
-        {
+        aliasSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
             if (aliasInputLayout.getVisibility() == View.GONE) {
                 aliasInputLayout.setVisibility(View.VISIBLE);
             } else {
@@ -440,6 +455,60 @@ public class AddMedication extends AppCompatActivity {
             }
         });
 
+        quantityInput.addTextChangedListener(
+                new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        quantityLayout.setErrorEnabled(false);
+
+                        isLimitValid = isAmountLimitValid();
+
+                        if (!isLimitValid && !s.toString().isEmpty()) {
+                            quantityLayout.setError(getString(R.string.val_too_big));
+                        } else if (!s.toString().isEmpty()) {
+                            medication.setDoseAmount(Integer.parseInt(s.toString()));
+
+                            notifyWhenRemainLayout.setEnabled(true);
+                        } else {
+                            medication.setDoseAmount(-1);
+
+                            notifyWhenRemainLayout.setEnabled(false);
+                        }
+
+                        validateForm();
+                    }
+                }
+        );
+
+        notifyWhenRemainingInput.addTextChangedListener(new TextWatcher(){
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                notifyWhenRemainLayout.setErrorEnabled(false);
+
+                if (intIsParsable(Objects.requireNonNull(notifyWhenRemainingInput.getText()).toString())) {
+                    medication.setNotifyWhenRemaining(
+                            Integer.parseInt(notifyWhenRemainingInput.getText().toString())
+                    );
+                }
+
+                validateForm();
+            }
+        });
+
         instructions.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -462,11 +531,15 @@ public class AddMedication extends AppCompatActivity {
             }
 
             dosageAmountInput.setText(formatter.format(medication.getDosage()));
-
             dosageUnitsInput.setText(medication.getDosageUnits());
 
             if (medication.getInstructions() != null && !medication.getInstructions().isEmpty()) {
                 instructions.setText(medication.getInstructions());
+            }
+
+            if (medication.getNotifyWhenRemaining() != -1) {
+                notifyWhenRemainingInput.setText(String.valueOf(medication.getNotifyWhenRemaining()));
+                notifyWhenRemainingInput.setEnabled(true);
             }
         }
     }
@@ -608,6 +681,112 @@ public class AddMedication extends AppCompatActivity {
     }
 
     /**
+     * Prepares UI for limits
+     */
+    private void setLimitCard() {
+        RadioGroup limitRadioGroup = findViewById(R.id.limit_radio_group);
+        dateLimitButton = findViewById(R.id.limit_date_button);
+        amountLimitButton = findViewById(R.id.limit_amount_button);
+
+        dateInputLayout = findViewById(R.id.limit_date_input_layout);
+        dateInputSelector = findViewById(R.id.limit_date_selector);
+        quantityLayout = findViewById(R.id.limit_amount_input_layout);
+        quantityInput = findViewById(R.id.limit_amount_text);
+
+        limitRadioGroup.setOnCheckedChangeListener(
+                (group, checkedId) -> {
+                    if (dateLimitButton.isChecked()) {
+                        dateInputLayout.setVisibility(View.VISIBLE);
+
+                        isLimitValid = isDateLimitValid();
+                    } else if (amountLimitButton.isChecked()) {
+                        dateInputLayout.setVisibility(View.GONE);
+                        medication.setEndDate(LocalDateTime.of(9999, 12, 31, 23, 59));
+
+                        isLimitValid = isAmountLimitValid();
+                    } else {
+                        dateInputLayout.setVisibility(View.GONE);
+                        medication.setEndDate((LocalDateTime) null);
+
+                        isLimitValid = true;
+                    }
+
+                    validateForm();
+                }
+        );
+
+        dateInputSelector.setShowSoftInputOnFocus(false);
+        dateInputSelector.setOnFocusChangeListener((view, b) -> {
+            if (b) {
+                DialogFragment datePicker = new SelectDateFragment(dateInputSelector);
+                datePicker.show(getSupportFragmentManager(), null);
+                dateInputSelector.clearFocus();
+            }
+        });
+
+        dateInputSelector.addTextChangedListener(
+                new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        dateInputLayout.setErrorEnabled(false);
+
+                        isLimitValid = isDateLimitValid();
+
+                        if (!isLimitValid) {
+                            dateInputLayout.setError(getString(R.string.date_must_be_future));
+                        } else {
+                            LocalDate end = (LocalDate) dateInputSelector.getTag();
+
+                            medication.setEndDate(LocalDateTime.of(
+                                    end,
+                                    LocalTime.of(23, 59)
+                            ));
+                        }
+
+                        validateForm();
+                    }
+                }
+        );
+
+        if (medication.getId() != -1) {
+            if (medication.getRemainingDosesCount() >= 0) {
+                if (medication.getEndDate() != null) {
+                    amountLimitButton.setChecked(true);
+                }
+                quantityInput.setText(String.valueOf(medication.getRemainingDosesCount()));
+
+                quantityInput.setInputType(InputType.TYPE_NULL);
+
+                quantityInput.setShowSoftInputOnFocus(false);
+                quantityInput.setOnFocusChangeListener((view, b) -> {
+                    if (b) {
+                        DialogFragment doseAdjuster = new AdjustRemainingDosesDialog(medication.getRemainingDosesCount());
+                        doseAdjuster.show(getSupportFragmentManager(), null);
+                        quantityInput.clearFocus();
+                    }
+                });
+            } else if (medication.getEndDate() != null) {
+                dateLimitButton.setChecked(true);
+                dateInputSelector.setText(
+                        DateTimeFormatter.ofPattern(
+                                preferences.getString(DATE_FORMAT),
+                                Locale.getDefault()
+                        ).format(medication.getEndDate())
+                );
+                dateInputSelector.setTag(medication.getEndDate());
+            }
+        }
+    }
+
+    /**
      * Sets UI for multiple per day input
      */
     private void setMultiplePerDayFrequencyViews() {
@@ -618,11 +797,11 @@ public class AddMedication extends AppCompatActivity {
 
 
         startDateMultiplePerDay.setShowSoftInputOnFocus(false);
-        startDateMultiplePerDay.setOnFocusChangeListener((view, b) ->
-        {
+        startDateMultiplePerDay.setOnFocusChangeListener((view, b) -> {
             if (b) {
                 DialogFragment datePicker = new SelectDateFragment(startDateMultiplePerDay);
                 datePicker.show(getSupportFragmentManager(), null);
+                startDateMultiplePerDay.clearFocus();
             }
         });
 
@@ -733,6 +912,7 @@ public class AddMedication extends AppCompatActivity {
                         if (b) {
                             DialogFragment dialogFragment = new TimePickerFragment(timeEntry);
                             dialogFragment.show(getSupportFragmentManager(), null);
+                            timeEntry.clearFocus();
                         }
                     });
 
@@ -829,6 +1009,7 @@ public class AddMedication extends AppCompatActivity {
             if (b) {
                 DialogFragment dialogFragment = new TimePickerFragment(dailyMedTime);
                 dialogFragment.show(getSupportFragmentManager(), null);
+                dailyMedTime.clearFocus();
             }
         });
 
@@ -836,6 +1017,7 @@ public class AddMedication extends AppCompatActivity {
             if (b) {
                 DialogFragment df = new SelectDateFragment(dailyMedStartDate);
                 df.show(getSupportFragmentManager(), null);
+                dailyMedStartDate.clearFocus();
             }
         });
 
@@ -926,6 +1108,7 @@ public class AddMedication extends AppCompatActivity {
             if (b) {
                 DialogFragment dialogFragment = new TimePickerFragment(customFreqMedTime);
                 dialogFragment.show(getSupportFragmentManager(), null);
+                customFreqMedTime.clearFocus();
             }
         });
 
@@ -934,6 +1117,7 @@ public class AddMedication extends AppCompatActivity {
             if (b) {
                 DialogFragment df = new SelectDateFragment(customFreqStartDate);
                 df.show(getSupportFragmentManager(), null);
+                customFreqStartDate.clearFocus();
             }
         });
 
@@ -1049,7 +1233,7 @@ public class AddMedication extends AppCompatActivity {
 
         if (medId != -1 && selectedFrequencyTypeIndex == 2) {
             long freq = medication.getFrequency();
-            long displayedFreq = 0;
+            long displayedFreq;
             int index = 0;
             String startDate = DateTimeFormatter.ofPattern(
                     preferences.getString(DATE_FORMAT),
@@ -1122,6 +1306,7 @@ public class AddMedication extends AppCompatActivity {
             if (b) {
                 DialogFragment datePicker = new SelectDateFragment(asNeededStartInput);
                 datePicker.show(getSupportFragmentManager(), null);
+                asNeededStartInput.clearFocus();
             }
         });
 
@@ -1184,8 +1369,18 @@ public class AddMedication extends AppCompatActivity {
             return;
         }
 
+        if (medication.getRemainingDosesCount() == -1) {
+          medication.setNotifyWhenRemaining(-1);
+        }
+
         if (medId == -1) {
+            final String endDate = Objects.isNull(medication.getEndDate()) ?
+                    "" : TimeFormatting.localDateTimeToDbString(medication.getEndDate());
             intent = new Intent(this, MainActivity.class);
+
+            if (medication.getRemainingDosesCount() == -1) {
+                medication.setNotifyWhenRemaining(-1);
+            }
 
             long id = db.addMedication(
                     medication.getName(),
@@ -1195,7 +1390,10 @@ public class AddMedication extends AppCompatActivity {
                     TimeFormatting.localDateTimeToDbString(medication.getStartDate()),
                     medication.getFrequency(),
                     medication.getAlias(),
-                    medication.getInstructions()
+                    medication.getInstructions(),
+                    medication.getRemainingDosesCount(),
+                    endDate,
+                    medication.getNotifyWhenRemaining()
             );
 
             medication.setId(id);
@@ -1511,6 +1709,21 @@ public class AddMedication extends AppCompatActivity {
     }
 
     /**
+     * Determines if limit date is valid
+     * @return true if valid, false if invalid
+     */
+    private boolean isDateLimitValid() {
+        LocalDate date = (LocalDate) dateInputSelector.getTag();
+
+        return date != null && !date.isBefore(LocalDate.now());
+    }
+
+    private boolean isAmountLimitValid() {
+        return intIsParsable(Objects.requireNonNull(quantityInput.getText()).toString())
+                || (quantityInput.getText().toString().isEmpty() && !amountLimitButton.isChecked());
+    }
+
+    /**
      * Determines if a string can be parsed to int
      *
      * @param intToParse String to try to convert
@@ -1611,6 +1824,29 @@ public class AddMedication extends AppCompatActivity {
             note += getString(R.string.instructions_added, medication.getInstructions());
         }
 
+        if (medication.getRemainingDosesCount() != parent.getRemainingDosesCount()) {
+            note += getString(R.string.dose_limit_added, String.valueOf(medication.getRemainingDosesCount()));
+        }
+
+        if (medication.getEndDate() != parent.getEndDate()) {
+            String endString;
+
+            if (medication.getEndDate() == null) {
+                endString = "N/A";
+            } else {
+                endString = TimeFormatting.localDateTimeToDbString(medication.getEndDate());
+            }
+
+            note += getString(R.string.end_date_added, endString);
+        }
+
+        if (medication.getNotifyWhenRemaining() != parent.getNotifyWhenRemaining()) {
+            String text = medication.getNotifyWhenRemaining() == -1 ? "N/A"
+                    : String.valueOf(medication.getNotifyWhenRemaining());
+
+            note += getString(R.string.notify_when_remaining_added, text);
+        }
+
         return note;
     }
 
@@ -1618,12 +1854,34 @@ public class AddMedication extends AppCompatActivity {
      * Enables the save button if all fields are valid
      */
     private void validateForm() {
+        boolean limitButtonsUncheck = false;
+
+        if (amountLimitButton != null && dateLimitButton != null) {
+            limitButtonsUncheck = !amountLimitButton.isChecked() && !dateLimitButton.isChecked();
+        }
+
         boolean allValid = isPatientNameValid
                 && isMedNameValid
                 && isMedDosageValid
                 && isMedDoseUnitValid
-                && isMedFrequencyValid;
+                && isMedFrequencyValid
+                && (isLimitValid || limitButtonsUncheck);
 
         saveButton.setEnabled(allValid);
+    }
+
+    @Override
+    public void handleDialogClose(Action action, Object data) {
+        if (action == Action.EDIT && data == null) {
+            quantityInput.setText(null);
+        } else if (action == Action.EDIT && data instanceof Integer) {
+            int currentAmount = Integer.parseInt(
+                    quantityInput.getText().toString()
+            );
+
+            quantityInput.setText(
+                    String.valueOf(currentAmount + (Integer) data)
+            );
+        }
     }
 }

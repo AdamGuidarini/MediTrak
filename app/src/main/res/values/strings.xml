@@ -77,8 +77,7 @@
         as such. The creators of this application are not responsible for any missed
         doses of your medications for any reason. If you require medical assistance, please contact a medical professional.
         By using this application, you are agreeing to the aforementioned terms as well as those of the GPL version 2.0 license under
-        which it is released. \n\n
-
+        which it is released. \n\n\n\n
         This application is released under the GNU Public License Version 2, see below for more details:
     </string>
 
@@ -137,6 +136,20 @@
     <string name="instructions">Instructions</string>
     <string name="instructions_optional">Instructions (Optional)</string>
     <string name="instructions_added">Added instructions: %1$s</string>
+    <string name="dose_limit_added">Added dose limit: %1$s</string>
+    <string name="end_date_added">Added end date: %1$s</string>
+    <string name="new_quantity">New quantity: %1$d</string>
+    <string name="remaining_doses">Remaining Doses</string>
+    <string name="end_date">End Date</string>
+    <string name="set_limit_by">Set limit by</string>
+    <string name="out_of_doses">Out of Doses</string>
+    <string name="none">None</string>
+    <string name="quantity_optional">Quantity (Optional)</string>
+    <string name="change_amount">Change Quantity</string>
+    <string name="adjust_quantity">Adjust Quantity</string>
+    <string name="notify_when_remaining">Notify when remaining</string>
+    <string name="notify_when_remaining_added">Notify when remaining set to: %1$s</string>
+    <string name="low_doses_warning">Supply of %1$s is low. %2$d doses remaining.</string>
 
     <!-- MyMedications -->
     <string name="my_medications">My Medications</string>

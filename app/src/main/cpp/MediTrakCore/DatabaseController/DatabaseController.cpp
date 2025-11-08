@@ -56,6 +56,9 @@ void DatabaseController::create() {
                     + PARENT_ID + " INTEGER,"
                     + CHILD_ID + " INTEGER,"
                     + INSTRUCTIONS + " TEXT,"
+                    + END_DATE + " DATETIME,"
+                    + QUANTITY + " INTEGER DEFAULT -1,"
+                    + NOTIFY_WHEN_REMAINING + " INTEGER DEFAULT -1,"
                     + "FOREIGN KEY (" + PARENT_ID + ") REFERENCES "
                     + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE,"
                     + "FOREIGN KEY (" + CHILD_ID + ") REFERENCES "
@@ -302,6 +305,17 @@ void DatabaseController::upgrade(int currentVersion) {
         );
     }
 
+    if (currentVersion < 19) {
+        manager.execSql(
+            "ALTER TABLE " + MEDICATION_TABLE
+            + " ADD COLUMN " + END_DATE + " DATETIME;"
+            + "ALTER TABLE " + MEDICATION_TABLE
+            + " ADD COLUMN " + QUANTITY + " INTEGER DEFAULT -1;"
+            + "ALTER TABLE " + MEDICATION_TABLE +
+            + " ADD COLUMN " + NOTIFY_WHEN_REMAINING + " INTEGER DEFAULT -1;"
+        );
+    }
+
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
 }
 
@@ -405,7 +419,10 @@ Medication DatabaseController::getMedication(long medicationId) {
             stof(table->getItem(MED_DOSAGE)),
             stoi(table->getItem(MED_FREQUENCY)),
             table->getItem(ACTIVE) == "1",
-            table->getItem(ALIAS)
+            table->getItem(ALIAS),
+            stoi(table->getItem(QUANTITY)),
+            table->getItem(END_DATE),
+            stoi(table->getItem(NOTIFY_WHEN_REMAINING))
     );
 
     if (!table->getItem(PARENT_ID).empty()) {
@@ -431,6 +448,12 @@ Medication DatabaseController::getMedication(long medicationId) {
         medication.parent = make_shared<Medication>(parent);
         medication.parent->child = make_shared<Medication>(medication);
     }
+
+    return medication;
+}
+
+Medication DatabaseController::getMedicationHistory(long medicationId) {
+    Medication medication = getMedication(medicationId);
 
     medication.doses = getTakenDoses(medication.id);
 
@@ -534,13 +557,15 @@ Dose *DatabaseController::getDoseById(long doseId) {
     return dose;
 }
 
-long DatabaseController::addDose(long medId, string scheduledTime, string timeTaken, bool isTaken) {
+long DatabaseController::addDose(long medId, const string& scheduledTime, const string& timeTaken, bool isTaken) {
     map<string, string> vals = {
             pair(MED_ID, to_string(medId)),
             pair(DOSE_TIME, scheduledTime),
             pair(TIME_TAKEN, timeTaken),
             pair(TAKEN, isTaken ? "1" : "0")
     };
+
+    adjustRemainingDoses(medId, !isTaken);
 
     return manager.insert(MEDICATION_TRACKER_TABLE, vals);
 }
@@ -568,11 +593,27 @@ bool DatabaseController::updateDose(const Dose &dose) {
                 {pair<string, string>(DOSE_ID, to_string(dose.id))}
         );
 
+        adjustRemainingDoses(dose.medicationId, !dose.taken);
+
         return true;
     } catch (exception &e) {
         cerr << "Failed to update dose " << dose.id << endl;
 
         return false;
+    }
+}
+
+void DatabaseController::adjustRemainingDoses(long medId, bool increment) {
+    Medication med = getMedication(medId);
+
+    if (med.quantity > 0) {
+        increment ? med.quantity++ : med.quantity--;
+
+        update(
+                MEDICATION_TABLE,
+                { pair<string, string>({ QUANTITY, to_string(med.quantity) }) },
+                { pair<string, string>({  MED_ID, to_string(med.id) }) }
+        );
     }
 }
 
@@ -745,6 +786,6 @@ void DatabaseController::repairImportErrors() {
 
     delete doses;
     delete meds;
-    delete times;;
+    delete times;
     delete notes;
 }

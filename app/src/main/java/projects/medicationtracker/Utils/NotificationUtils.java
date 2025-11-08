@@ -13,6 +13,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
+import androidx.core.app.NotificationCompat;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -29,6 +32,7 @@ public class NotificationUtils {
     public final static String GROUP_KEY = "medicationTrackerNotificationGroup";
     public final static String MED_REMINDER_CHANNEL_ID = "med_reminder";
     public final static String EXPORT_ALERT_CHANNEL_ID = "export_alerts";
+    public final static String LOW_DOSES_CHANNEL_ID = "low_doses";
     public final static String MESSAGE = "message";
     public final static String DOSE_TIME = "doseTime";
     public final static String MEDICATION_ID = "medicationId";
@@ -139,11 +143,7 @@ public class NotificationUtils {
 
         alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
 
-        if (SDK_INT >= Build.VERSION_CODES.S && alarmManager.canScheduleExactAlarms()) {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent);
-        } else {
-            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent);
-        }
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent);
     }
 
     /**
@@ -181,6 +181,7 @@ public class NotificationUtils {
     public static void createNotificationChannels(Context context) {
         CharSequence reminderName = "Medication Reminder";
         CharSequence exportName = "Export Alerts";
+        CharSequence lowDosesName = "Low Doses";
         int importance = NotificationManager.IMPORTANCE_HIGH;
         NotificationManager notificationManager
                 = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -193,7 +194,11 @@ public class NotificationUtils {
                 EXPORT_ALERT_CHANNEL_ID, exportName, importance
         );
 
-        for (NotificationChannel n : new NotificationChannel[]{medChannel, exportChannel}) {
+        NotificationChannel lowDosesChannel = new NotificationChannel(
+                LOW_DOSES_CHANNEL_ID, lowDosesName, importance
+        );
+
+        for (NotificationChannel n : new NotificationChannel[]{medChannel, exportChannel, lowDosesChannel}) {
             n.enableLights(false);
             n.enableVibration(false);
             n.setShowBadge(true);
@@ -250,7 +255,11 @@ public class NotificationUtils {
         long[] medicationTimeIds = db.getMedicationTimeIds(medication);
         LocalTime[] medTimes = db.getMedicationTimes(medication.getId());
 
-        if (!db.isMedicationActive(medication) && medication.getId() != -1) {
+        if (
+                !db.isMedicationActive(medication)
+                && isMedicationDone(medication)
+                && medication.getId() != -1
+        ) {
             return;
         }
 
@@ -267,5 +276,46 @@ public class NotificationUtils {
         }
 
         db.close();
+    }
+
+    public static void notifyLowQuantity(Medication medication, Context context) {
+        String message = context.getString(
+                R.string.low_doses_warning, medication.getName(),medication.getRemainingDosesCount()
+        );
+        NotificationManager manager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        android.app.Notification notification
+                = new NotificationCompat.Builder(context, LOW_DOSES_CHANNEL_ID)
+                .setContentTitle(context.getString(R.string.app_name))
+                .setContentText(message)
+                .setSmallIcon(R.drawable.pill)
+                .setAutoCancel(false)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setStyle(new NotificationCompat.BigTextStyle())
+                .build();
+
+        manager.notify(
+                medication.getRemainingDosesCount() * medication.getNotifyWhenRemaining(),
+                notification
+        );
+    }
+
+    /**
+     * Determines if a medication is no longer to be taken
+     * @param med Medication to be checked
+     * @return whether or not a medication should still be taken
+     */
+    private static boolean isMedicationDone(Medication med) {
+        if (med.getRemainingDosesCount() != -1 && med.getEndDate() != null) {
+            return med.getRemainingDosesCount() == 0 &&
+                    med.getEndDate().toLocalDate().equals(LocalDate.of(9999, 12,31));
+        } else if (med.getEndDate() != null) {
+            LocalDateTime now = LocalDateTime.now();
+
+            return med.getEndDate().isBefore(now);
+        }
+
+        return false;
     }
 }

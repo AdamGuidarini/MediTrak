@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -39,7 +40,9 @@ public class MyMedicationsFragment extends Fragment {
     TextView doseUnit;
     TextView alias;
     TextView frequency;
+    TextView remainingDose;
     TextView takenSince;
+    TextView endDate;
     TextView instructions;
     Button notesButton;
     Button editButton;
@@ -83,13 +86,17 @@ public class MyMedicationsFragment extends Fragment {
         LinearLayout barrier1 = v.findViewById(R.id.barrier1);
         LinearLayout barrier2 = v.findViewById(R.id.barrier2);
         LinearLayout barrier3 = v.findViewById(R.id.barrier3);
+        LinearLayout barrier4 = v.findViewById(R.id.barrier4);
+
 
         name = v.findViewById(R.id.myMedCardMedicationName);
         dosage = v.findViewById(R.id.dosage_amount);
         doseUnit = v.findViewById(R.id.dosage_unit);
         alias = v.findViewById(R.id.myMedCardAlias);
         frequency = v.findViewById(R.id.myMedCardFrequency);
+        remainingDose = v.findViewById(R.id.remainingDoses);
         takenSince = v.findViewById(R.id.myMedCardTakenSince);
+        endDate = v.findViewById(R.id.endDate);
         instructions = v.findViewById(R.id.instructions);
         notesButton = v.findViewById(R.id.myMedsNotes);
         editButton = v.findViewById(R.id.myMedsEdit);
@@ -113,6 +120,11 @@ public class MyMedicationsFragment extends Fragment {
 
         frequency.setText(label);
 
+        String doseLimit = medication.getRemainingDosesCount() > -1  ?
+                String.valueOf(medication.getRemainingDosesCount()) : "N/A";
+
+        remainingDose.setText(doseLimit);
+
         alias.setText(medication.getAlias().isEmpty() ? "N/A" : medication.getAlias());
 
         LocalDateTime start = medication.getParent() == null ? medication.getStartDate() : medication.getParent().getStartDate();
@@ -123,6 +135,19 @@ public class MyMedicationsFragment extends Fragment {
         ).format(start);
 
         takenSince.setText(beginning);
+
+        LocalDateTime end = medication.getEndDate();
+
+        if (end == null || (end != null && end.toLocalDate().isEqual(LocalDate.of(9999, 12,31)))) {
+            endDate.setText("N/A");
+        } else {
+            String endSt = DateTimeFormatter.ofPattern(
+                    preferences.getString(DATE_FORMAT),
+                    Locale.getDefault()
+            ).format(end);
+
+            endDate.setText(endSt);
+        }
 
         if (medication.getInstructions() == null) {
             instructions.setText("N/A");
@@ -160,5 +185,6 @@ public class MyMedicationsFragment extends Fragment {
         barrier1.setBackgroundColor(name.getCurrentTextColor());
         barrier2.setBackgroundColor(name.getCurrentTextColor());
         barrier3.setBackgroundColor(name.getCurrentTextColor());
+        barrier4.setBackgroundColor(name.getCurrentTextColor());
     }
 }

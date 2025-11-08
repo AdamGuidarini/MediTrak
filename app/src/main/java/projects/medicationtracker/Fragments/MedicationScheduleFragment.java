@@ -40,6 +40,7 @@ import projects.medicationtracker.Dialogs.AddAsNeededDoseDialog;
 import projects.medicationtracker.Dialogs.DoseInfoDialog;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
+import projects.medicationtracker.Utils.NotificationUtils;
 import projects.medicationtracker.Utils.TextViewUtils;
 import projects.medicationtracker.Utils.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
@@ -277,16 +278,18 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
             String now = TimeFormatting.localDateTimeToDbString(LocalDateTime.now().withSecond(0));
 
             if (doseId != -1) {
-                db.updateDoseStatus(doseId, now, ((CheckBox) thisMedication).isChecked());
-            } else {
-                long id = db.addToMedicationTracker(
-                        tvTag.getFirst(),
-                        tvTag.getThird()
-                );
+                dose.setTaken(((CheckBox) thisMedication).isChecked());
+                dose.setTimeTaken(now);
 
-                db.updateDoseStatus(
-                        id,
-                        TimeFormatting.localDateTimeToDbString(LocalDateTime.now().withSecond(0)),
+                nativeDb.updateDose(dose);
+            } else {
+                final Medication med = tvTag.getFirst();
+                final LocalDateTime timeTaken = tvTag.getThird();
+
+                nativeDb.addDose(
+                        med.getId(),
+                        time,
+                        timeTaken,
                         true
                 );
             }
@@ -310,6 +313,12 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
                 if (manager.getActiveNotifications().length == 1 && manager.getActiveNotifications()[0].getId() == SUMMARY_ID) {
                     manager.cancel(SUMMARY_ID);
                 }
+            }
+
+            Medication refreshedMed = nativeDb.getMedicationById(medId);
+
+            if (refreshedMed.getNotifyWhenRemaining() != -1 && refreshedMed.getNotifyWhenRemaining() >= refreshedMed.getRemainingDosesCount()) {
+                NotificationUtils.notifyLowQuantity(refreshedMed, rootView.getContext());
             }
         });
 

@@ -14,7 +14,7 @@
     <string name="ok">OK</string>
     <string name="delete">Eliminare</string>
     <string name="i_agree">Sono d\'accordo</string>
-    <string name="select_all">Selezionare Tutto</string>
+    <string name="select_all">Selezionare tutto</string>
     <string name="stop">Smettere</string>
     <string name="every">Ogni</string>
 
@@ -130,7 +130,7 @@
     <string name="no_notes_for_this_medication">Nessun appunto per questo farmaco</string>
     <string name="unitExample">Es. mg, g, drops</string>
     <string name="patient_name">Nome del paziente:</string>
-    <string name="no_alias">Nessun alias</string>
+    <string name="no_alias">Senza alias</string>
     <string name="at">alle</string>
     <string name="apply_retroactive">Applicare le modifiche con effetto retroattivo</string>
     <string name="retroactive_warning">Avviso: Le modifiche alla frequenza possono rendere le dosi precedentemente prese non sono più visibili nel programma.</string>
@@ -138,6 +138,21 @@
     <string name="instructions">Istruzioni</string>
     <string name="instructions_optional">Istruzioni (Opzionali)</string>
     <string name="instructions_added">Istruzioni aggiunte: %1$s</string>
+    <string name="dose_limit_added">Limite di dosaggio aggiunto: %1$s</string>
+    <string name="end_date_added">Data finale aggiunta: %1$s</string>
+    <string name="new_quantity">Quantità nuova: %1$d</string>
+    <string name="remaining_doses">Dosaggi restanti</string>
+    <string name="end_date">Data finale</string>
+    <string name="set_limit_by">Mettere limite di dosaggio</string>
+    <string name="out_of_doses">Quantità consumata</string>
+    <string name="none">Senza limite</string>
+    <string name="quantity_optional">Quantità (opzionale)</string>
+    <string name="change_amount">Cambiare quantità</string>
+    <string name="adjust_quantity">Aggiustare quantità</string>
+    <string name="notify_when_remaining">Notifica a (dosi rimanenti)</string>
+    <string name="notify_when_remaining_added">Soglia di notifica impostata a: %1$s</string>
+    <string name="low_doses_warning">Scorta di %1$s in esaurimento. %2$d dosi rimanenti.</string>
+
 
     <!-- MyMedications -->
     <string name="my_medications">I miei farmaci</string>
@@ -184,7 +199,7 @@
     <string name="resume_medication">Riprendere farmaco</string>
     <string name="pause_message">Sei sicuro di voler mettere in pausa %1$s? Non apparirà più nel tuo programma, ma puoi riprenderlo in qualsiasi momento.</string>
     <string name="resume_message">Riprendere %1$s lo ristabilirà al tuo programma. Sei sicuro di voler procedere?</string>
-    <string name="enable_notifications">Abilitare le Notifiche</string>
+    <string name="enable_notifications">Abilitare le notifiche</string>
     <string name="disable_time_before_dose_requirement">Disattivare limite di tempo in anticipo</string>
     <string name="theme">Tema</string>
     <string name="light_mode">Modalità luce</string>
@@ -212,7 +227,7 @@
     <string name="hour_12">12 ore</string>
     <string name="hour_24">24 ore</string>
     <string name="language">Lingua</string>
-    <string name="schedule_export">Programmare l\'Esportazione</string>
+    <string name="schedule_export">Programmare l\'esportazione</string>
 
     <!-- Schedule Export Dialog -->
     <string name="export_now">Esportare ora</string>
@@ -239,10 +254,10 @@
     <string name="its_time_your_med">È ora di prendere il tuo %1$s di %2$s</string>
     <string name="time_for_other_med">È il momento dei %2$s di %3$s  di %1$s</string>
     <string name="add_dose">Aggiungere dose</string>
-    <string name="open_notifications">Notifiche Aperte</string>
+    <string name="open_notifications">Notifiche aperte</string>
     <string name="skip_unselected">Saltare non selezionate</string>
-    <string name="take_all">Prendere Tutto</string>
-    <string name="take_selected">Prendere Selezionati</string>
+    <string name="take_all">Prendere tutto</string>
+    <string name="take_selected">Prendere selezionati</string>
 
     <!-- Med History -->
     <string name="history">Storia</string>

@@ -145,8 +145,18 @@ jobject medicationToJavaConverter(Medication med, JNIEnv *env, jclass jMedicatio
                                            "(Lprojects/medicationtracker/Models/Medication;)V");
     jmethodID setDoses = env->GetMethodID(jMedication, "setDoses",
                                           "([Lprojects/medicationtracker/Models/Dose;)V");
+    jmethodID setDoseAmount = env->GetMethodID(jMedication, "setDoseAmount", "(I)V");
+    jmethodID setEndDate = env->GetMethodID(jMedication, "setEndDate", "(Ljava/lang/String;)V");
+    jmethodID setNotifyWhenRemaining = env->GetMethodID(
+            jMedication,
+            "setNotifyWhenRemaining",
+            "(I)V"
+    );
 
     env->CallVoidMethod(jMedicationInstance, setActiveStatus, med.active);
+    env->CallVoidMethod(jMedicationInstance, setDoseAmount, med.quantity);
+    env->CallVoidMethod(jMedicationInstance, setEndDate, env->NewStringUTF(med.endDate.c_str()));
+    env->CallVoidMethod(jMedicationInstance, setNotifyWhenRemaining, med.notifyWhenRemainingAmount);
 
     if (med.parent != nullptr) {
         jmethodID setChild = env->GetMethodID(jMedication, "setChild",
@@ -157,20 +167,22 @@ jobject medicationToJavaConverter(Medication med, JNIEnv *env, jclass jMedicatio
         env->CallVoidMethod(jMedicationInstance, setParent, medParent);
     }
 
-    jfieldID medDoses = env->GetFieldID(env->GetObjectClass(jMedicationInstance), "doses",
-                                        "[Lprojects/medicationtracker/Models/Dose;");
-    jobjectArray jDoses = static_cast<jobjectArray>(env->GetObjectField(jMedicationInstance,
-                                                                        medDoses));
-    jclass jDose = env->GetObjectClass(env->GetObjectArrayElement(jDoses, 0));
+    if (med.doses.size() > 0) {
+        jfieldID medDoses = env->GetFieldID(env->GetObjectClass(jMedicationInstance), "doses",
+                                            "[Lprojects/medicationtracker/Models/Dose;");
+        jobjectArray jDoses = static_cast<jobjectArray>(env->GetObjectField(jMedicationInstance,
+                                                                            medDoses));
+        jclass jDose = env->GetObjectClass(env->GetObjectArrayElement(jDoses, 0));
 
-    jDoses = env->NewObjectArray(med.doses.size(), jDose, NULL);
+        jDoses = env->NewObjectArray(med.doses.size(), jDose, NULL);
 
-    for (int i = 0; i < med.doses.size(); i++) {
-        env->SetObjectArrayElement(jDoses, i,
-                                   doseToJavaConverter(med.doses.at(i), env, jMedicationInstance));
+        for (int i = 0; i < med.doses.size(); i++) {
+            env->SetObjectArrayElement(jDoses, i,
+                                       doseToJavaConverter(med.doses.at(i), env, jMedicationInstance));
+        }
+
+        env->CallVoidMethod(jMedicationInstance, setDoses, jDoses);
     }
-
-    env->CallVoidMethod(jMedicationInstance, setDoses, jDoses);
 
     return jMedicationInstance;
 }
@@ -408,11 +420,33 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getMedHistory(
     DatabaseController dbController(path);
 
     try {
-        return medicationToJavaConverter(dbController.getMedication(med_id), env, medClass);
+        return medicationToJavaConverter(dbController.getMedicationHistory(med_id), env, medClass);
     } catch (exception e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, "Error retrieving history");
 
         return nullptr;
+    }
+}
+
+extern "C"
+JNIEXPORT jobject JNICALL
+        Java_projects_medicationtracker_Helpers_NativeDbHelper_getMedicationById(
+        JNIEnv *env,
+        jobject thiz,
+jstring db_path,
+        jlong med_id,
+jclass medClass
+) {
+    std::string path = env->GetStringUTFChars(db_path, new jboolean(true));
+
+    DatabaseController dbController(path);
+
+    try {
+    return medicationToJavaConverter(dbController.getMedication(med_id), env, medClass);
+    } catch (exception e) {
+    __android_log_write(ANDROID_LOG_ERROR, nullptr, "Error retrieving history");
+
+    return nullptr;
     }
 }
 

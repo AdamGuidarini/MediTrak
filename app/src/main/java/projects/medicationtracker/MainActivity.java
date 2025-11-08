@@ -86,9 +86,7 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
 
         nativeDb = new NativeDbHelper(getApplicationContext());
         nativeDb.create();
-
         allMeds = db.getMedications();
-
         preferences = nativeDb.getSettings();
 
         String theme = preferences.getString(THEME);
@@ -278,42 +276,43 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
         LocalDate thisSunday = TimeFormatting.whenIsSunday(aDayThisWeek);
 
         // Look at each medication
-        for (int i = 0; i < medications.size(); i++) {
+        for (final Medication med : medications) {
             LocalDateTime[] timeArr;
             ArrayList<Pair<LocalDateTime, LocalDateTime>> pausedIntervals =
-                    db.getPauseResumePeriods(medications.get(i));
+                    db.getPauseResumePeriods(med);
+
 
             // Skip as needed meds
-            if (medications.get(i).getFrequency() == 0) {
-                medications.get(i).setTimes(db.getMedicationDoses(medications.get(i)));
+            if (med.getFrequency() == 0) {
+                med.setTimes(db.getMedicationDoses(med));
 
                 continue;
             }
 
             // If a medication is taken once per day
-            if (medications.get(i).getTimes().length == 1
-                    && medications.get(i).getFrequency() == 1440
+            if (med.getTimes().length == 1
+                    && med.getFrequency() == 1440
             ) {
                 // if the Medication is taken once per day just add the start of each date to
                 timeArr = new LocalDateTime[7];
-                LocalTime localtime = medications.get(i).getTimes()[0].toLocalTime();
+                LocalTime localtime = med.getTimes()[0].toLocalTime();
 
                 for (int j = 0; j < 7; j++)
                     timeArr[j] =
                             LocalDateTime.of(LocalDate.from(thisSunday.plusDays(j)), localtime);
             }
             // If a medication is taken multiple times per day
-            else if (medications.get(i).getTimes().length > 1
-                    && medications.get(i).getFrequency() == 1440
+            else if (med.getTimes().length > 1
+                    && med.getFrequency() == 1440
             ) {
-                int numberOfTimes = medications.get(i).getTimes().length;
+                int numberOfTimes = med.getTimes().length;
                 int index = 0;
 
                 timeArr = new LocalDateTime[numberOfTimes * 7];
                 LocalTime[] drugTimes = new LocalTime[numberOfTimes];
 
                 for (int j = 0; j < numberOfTimes; j++)
-                    drugTimes[j] = medications.get(i).getTimes()[j].toLocalTime();
+                    drugTimes[j] = med.getTimes()[j].toLocalTime();
 
                 for (int j = 0; j < 7; j++) {
                     for (int y = 0; y < numberOfTimes; y++) {
@@ -328,9 +327,9 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
             // If a medication has a custom frequency, take its start date and calculate times for
             // for this week
             else {
-                LocalDateTime timeToCheck = medications.get(i).getStartDate();
+                LocalDateTime timeToCheck = med.getStartDate();
                 ArrayList<LocalDateTime> times = new ArrayList<>();
-                long frequency = medications.get(i).getFrequency();
+                long frequency = med.getFrequency();
 
                 while (timeToCheck.toLocalDate().isBefore(thisSunday))
                     timeToCheck = timeToCheck.plusMinutes(frequency);
@@ -352,15 +351,41 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
             validTimes.removeIf(
                     (time) ->
                     {
+                        if (med.getRemainingDosesCount() > 0 && med.getEndDate() != null && med.getEndDate().toLocalDate().isEqual(LocalDate.of(9999, 12, 31))) {
+                            LocalDateTime calculatedEndDate;
+                            if (med.getFrequency() == 1440) {
+                                int dosesPerDay = med.getTimes().length;
+
+                                if (dosesPerDay == 0) {
+                                    return false;
+                                }
+
+                                int doseLimit = med.getRemainingDosesCount();
+                                int daysToAdd = (doseLimit - 1) / dosesPerDay;
+                                int finalDoseIndex = (doseLimit - 1) % dosesPerDay;
+
+                                LocalDate finalDate = med.getStartDate().toLocalDate().plusDays(daysToAdd);
+                                LocalTime finalTime = med.getTimes()[finalDoseIndex].toLocalTime();
+
+                                calculatedEndDate = LocalDateTime.of(finalDate, finalTime);
+                            } else {
+                                long frequencyInMinutes = med.getFrequency();
+                                long totalDurationInMinutes = frequencyInMinutes * (med.getRemainingDosesCount() - 1);
+                                calculatedEndDate = med.getStartDate().plusMinutes(totalDurationInMinutes);
+                            }
+
+                            return time.isAfter(calculatedEndDate);
+                        }
+
+
+                        if (med.getEndDate() != null && time.toLocalDate().isAfter(med.getEndDate().toLocalDate())) {
+                            return true;
+                        }
+
                         for (Pair<LocalDateTime, LocalDateTime> pausedInterval : pausedIntervals) {
                             if (pausedInterval.first == null) {
-                                if (time.isBefore(pausedInterval.second)) {
-                                    return true;
-                                }
-                            } else if (
-                                    time.isAfter(pausedInterval.first)
-                                            && pausedInterval.second == null
-                            ) {
+                                return time.isBefore(pausedInterval.second);
+                            } else if (time.isAfter(pausedInterval.first) && pausedInterval.second == null) {
                                 return true;
                             } else if (
                                     time.isAfter(pausedInterval.first)
@@ -377,7 +402,7 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
             timeArr = new LocalDateTime[validTimes.size()];
             timeArr = validTimes.toArray(timeArr);
 
-            medications.get(i).setTimes(timeArr);
+            med.setTimes(timeArr);
         }
 
         return medications;
@@ -393,9 +418,9 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
     public void createMedicationSchedule(ArrayList<Medication> medications, String name) {
         ArrayList<Medication> medicationsForThisPatient = new ArrayList<>();
 
-        for (int i = 0; i < medications.size(); i++) {
-            if (medications.get(i).getPatientName().equals(name))
-                medicationsForThisPatient.add(medications.get(i));
+        for (final Medication med : medications) {
+            if (med.getPatientName().equals(name))
+                medicationsForThisPatient.add(med);
         }
 
         String[] days = {
@@ -408,10 +433,10 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
                 getString(R.string.saturday)
         };
 
-        for (int ii = 0; ii < 7; ii++) {
+        for (int i = 0; i < 7; i++) {
             createDayOfWeekCards(
-                    days[ii],
-                    ii,
+                    days[i],
+                    i,
                     medicationsForThisPatient,
                     scheduleLayout
             );

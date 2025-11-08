@@ -31,6 +31,9 @@ public class Medication implements Cloneable, Parcelable {
     private Medication parent = null;
     private Medication child = null;
     private String instructions;
+    private int doseAmount = -1;
+    private LocalDateTime endDate;
+    private int remainingAmountNotification = -1;
 
     /**
      * Creates a new object of type Medication
@@ -59,6 +62,20 @@ public class Medication implements Cloneable, Parcelable {
         doses = new Dose[]{ new Dose() };
     }
 
+    /**
+     * Creates a new object of type Medication, using String array for times instead,
+     * intended for the native side of the app
+     *
+     * @param thisMed medication name
+     * @param patient patient name
+     * @param units dose units
+     * @param times times to take medication
+     * @param firstDate start date
+     * @param id med id
+     * @param frequency frequency in minutes
+     * @param dosage dosage amount
+     * @param medAlias med alias for notifications
+     */
     public Medication(String thisMed, String patient, String units, String[] times,
                       String firstDate, long id, int frequency, float dosage, String medAlias) {
         final String dateFormat = "yyyy-MM-dd HH:mm:ss";
@@ -81,6 +98,9 @@ public class Medication implements Cloneable, Parcelable {
         doses = new Dose[]{ new Dose() };
     }
 
+    /**
+     * Constructor defaulting all values
+     */
     public Medication() {
         medName = "";
         patientName = "";
@@ -92,6 +112,11 @@ public class Medication implements Cloneable, Parcelable {
         medDosage = 0;
         alias = "";
         doses = new Dose[]{ new Dose() };
+        active = true;
+        remainingAmountNotification = -1;
+        doseAmount = -1;
+        endDate = null;
+        instructions = "";
     }
 
     protected Medication(Parcel in) {
@@ -342,12 +367,75 @@ public class Medication implements Cloneable, Parcelable {
      */
     public void setDoses(Dose[] doses) { this.doses = doses; }
 
+    /**
+     * Retrieves instructions
+     * @return instructions
+     */
     public String getInstructions() {
         return instructions;
     }
 
+    /**
+     * Sets instructions
+     * @param instructions medication instructions
+     */
     public void setInstructions(String instructions) {
         this.instructions = instructions;
+    }
+
+    /**
+     * Sets the limit of doses
+     * @param limit amount of doses
+     */
+    public void setDoseAmount(int limit) {
+        doseAmount = limit;
+    }
+
+    /**
+     * Gets the limit of doses
+     * @return amount of doses
+     */
+    public int getRemainingDosesCount() {
+        return doseAmount;
+    }
+
+    /**
+     * Sets the end date of the medication
+     * @param endDate end date of medication
+     */
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        final String dateFormat = "yyyy-MM-dd HH:mm:ss";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat, Locale.getDefault());
+
+        this.endDate = endDate != null && !endDate.isEmpty() ? LocalDateTime.parse(endDate, formatter) : null;
+    }
+
+    /**
+     * Gets the end date of the medication
+     * @return end date of medication
+     */
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
+    /**
+     * Sets the notification for the remaining amount of medication
+     * @param remainingAmountNotification Remaining amount of does when a notification should fire
+     */
+    public void setNotifyWhenRemaining(int remainingAmountNotification) {
+        this.remainingAmountNotification = remainingAmountNotification;
+    }
+
+    /**
+     * Gets the notification for the remaining amount of medication
+     * @return Remaining amount of does when a notification should fire
+     */
+    public int getNotifyWhenRemaining() {
+        return remainingAmountNotification;
     }
 
     /**
@@ -418,5 +506,7 @@ public class Medication implements Cloneable, Parcelable {
         parcel.writeLong(medId);
         parcel.writeLong(medFrequency);
         parcel.writeFloat(medDosage);
+        parcel.writeInt(doseAmount);
+        parcel.writeInt(remainingAmountNotification);
     }
 }

@@ -14,7 +14,7 @@
     <string name="ok">OK</string>
     <string name="delete">Eliminar</string>
     <string name="i_agree">Estoy de acuerdo</string>
-    <string name="select_all">Seleccionar Todo</string>
+    <string name="select_all">Seleccionar todo</string>
     <string name="stop">Parar</string>
     <string name="every">Cada</string>
 
@@ -135,8 +135,23 @@
     <string name="retroactive_warning">Atención: Los cambios en la frecuencia pueden hacer que las dosis tomadas anteriormente ya no sean visibles en el horario.</string>
     <string name="would_like_apply_retroactively">Los cambios de dosis y frecuencia pueden aplicarse retroactivamente a partir del cambio anterior. ¿Desea aplicar estos cambios retroactivamente?</string>
     <string name="instructions">Instrucciones</string>
-    <string name="instructions_optional">Instrucciones (Opcional)</string>
+    <string name="instructions_optional">Instrucciones (opcionales)</string>
     <string name="instructions_added">Instrucciones añadidas: %1$s</string>
+    <string name="dose_limit_added">Límite de dosis añadido: %1$s</string>
+    <string name="end_date_added">Fecha límite añadida: %1$s</string>
+    <string name="new_quantity">Cantidad nueva: %1$d</string>
+    <string name="remaining_doses">Dosises restantes</string>
+    <string name="end_date">Fecha límite</string>
+    <string name="set_limit_by">Establecer límite por</string>
+    <string name="out_of_doses">Cantidad agotada</string>
+    <string name="none">Sin límite</string>
+    <string name="quantity_optional">Cantidad (opcional)</string>
+    <string name="change_amount">Cambiar la cantidad</string>
+    <string name="adjust_quantity">Ajustar la cantidad</string>
+    <string name="notify_when_remaining">Notificar cuando queden</string>
+    <string name="notify_when_remaining_added">Notificación de existencias bajas establecida en: %1$s</string>
+    <string name="low_doses_warning">Las existencias de %1$s están bajas. Quedan %2$d dosis.</string>
+
 
     <!-- MyMedications -->
     <string name="my_medications">Mis medicamentos</string>
@@ -211,7 +226,7 @@
     <string name="hour_12">12 horas</string>
     <string name="hour_24">24 horas</string>
     <string name="language">Idioma</string>
-    <string name="schedule_export">Programar la Exportación</string>
+    <string name="schedule_export">Programar la exportación</string>
 
     <!-- Schedule Export Dialog -->
     <string name="export_now">Exportar ahora</string>
@@ -238,10 +253,10 @@
     <string name="its_time_your_med">Es hora de tomar tu %1$s de %2$s</string>
     <string name="time_for_other_med">Es la hora de los %2$s de %3$s de %1$s</string>
     <string name="add_dose">Añadir dosis</string>
-    <string name="open_notifications">Notificaciones Abiertas</string>
+    <string name="open_notifications">Notificaciones abiertas</string>
     <string name="skip_unselected">Saltar deseleccionadas</string>
-    <string name="take_all">Tomar Todo</string>
-    <string name="take_selected">Tomar Seleccionados</string>
+    <string name="take_all">Tomar todo</string>
+    <string name="take_selected">Tomar seleccionados</string>
 
     <!-- Med History -->
     <string name="history">Historia</string>

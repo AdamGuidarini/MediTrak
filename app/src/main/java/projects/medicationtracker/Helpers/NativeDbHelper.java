@@ -131,6 +131,10 @@ public class NativeDbHelper {
         return exportMedHistory(dbPath, filePath, data);
     }
 
+    public Medication getMedicationById(long medId) {
+        return getMedicationById(dbPath, medId, Medication.class);
+    }
+
     public Dose findDose(long medicationId, LocalDateTime doseTime) {
         return findDose(
                 dbPath,
@@ -208,6 +212,7 @@ public class NativeDbHelper {
     private native boolean dbExporter(String databaseName, String exportDirectory, String[] ignoredTables);
     private native boolean dbImporter(String dbPath, String fileContents, String[] ignoredTables);
     private native Medication getMedHistory(String dbPath, long medId, Class<Medication> medicationClass);
+    private native Medication getMedicationById(String dbPath, long medId, Class<Medication> medicationClass);
     private native boolean exportMedHistory(String dbPath, String exportPath, Pair<String, String[]>[] data);
     private native Dose findDose(String dbPath, long medicationId, String doseTime, Medication med);
     private native Dose getDoseById(String dbPath, long doseId, Medication med);

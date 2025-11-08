@@ -24,6 +24,9 @@ struct Medication {
         float dosage;
         int frequency;
         bool active;
+        int quantity;
+        string endDate;
+        int notifyWhenRemainingAmount;
         shared_ptr<Medication> parent = nullptr;
         shared_ptr<Medication> child = nullptr;
 
@@ -44,6 +47,9 @@ struct Medication {
          * @param frequency
          * @param active
          * @param alias
+         * @param quantity
+         * @param endDate
+         * @param notifyWhenRemainingAmount
          */
         Medication(
             string medicationName,
@@ -55,7 +61,10 @@ struct Medication {
             float dosage,
             int frequency,
             bool active,
-            string alias = ""
+            string alias = "",
+            int quantity = -1,
+            string endDate = "",
+            int notifyWhenRemainingAmount = -1
         );
 };
 

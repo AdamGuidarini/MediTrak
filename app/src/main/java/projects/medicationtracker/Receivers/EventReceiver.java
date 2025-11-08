@@ -40,6 +40,8 @@ public class EventReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         final DBHelper db = new DBHelper(context);
+        final NativeDbHelper nativedb = new NativeDbHelper(context);
+
         final NativeDbHelper nativeDbHelper = new NativeDbHelper(context);
         final NotificationManager manager
                 = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -56,7 +58,7 @@ public class EventReceiver extends BroadcastReceiver {
                     intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0),
                     intent.getLongExtra(MEDICATION_ID + embeddedId, 0),
                     intent.getStringExtra(DOSE_TIME + embeddedId),
-                    db
+                    nativedb
             );
 
             nativeDbHelper.deleteNotification(intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0));
@@ -75,7 +77,7 @@ public class EventReceiver extends BroadcastReceiver {
 
             nativeDbHelper.deleteNotification(intent.getLongExtra(MEDICATION_ID + embeddedId, 0));
         } else if (intent.getAction().contains(TAKE_ALL_ACTION)) {
-            takeAll(manager, nativeDbHelper);
+            takeAll(manager, nativeDbHelper, context);
         } else {
             final ArrayList<Notification> notifications = nativeDbHelper.getNotifications();
 
@@ -146,24 +148,25 @@ public class EventReceiver extends BroadcastReceiver {
      * @param doseTimeString Dose time for DB.
      */
     private void markDoseTaken(
-            Context context, long notificationId, long medId, String doseTimeString, DBHelper db
+            Context context, long notificationId, long medId, String doseTimeString, NativeDbHelper db
     ) {
         Medication med;
         LocalDateTime doseTime = LocalDateTime.parse(doseTimeString);
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        med = db.getMedication(medId);
-
-        long doseId = db.isInMedicationTracker(med, doseTime) ?
-                db.getDoseId(med.getId(), TimeFormatting.localDateTimeToDbString(doseTime)) :
-                db.addToMedicationTracker(med, doseTime);
-
-        db.updateDoseStatus(
-                doseId,
-                TimeFormatting.localDateTimeToDbString(LocalDateTime.now().withSecond(0)),
+        db.addDose(
+                medId,
+                doseTime,
+                LocalDateTime.now().withSecond(0).withNano(0),
                 true
         );
+
+        med = db.getMedicationById(medId);
+
+        if (med.getNotifyWhenRemaining() != -1 && med.getRemainingDosesCount() <= med.getNotifyWhenRemaining()) {
+            NotificationUtils.notifyLowQuantity(med, context);
+        }
 
         notificationManager.cancel((int) notificationId);
     }
@@ -188,7 +191,7 @@ public class EventReceiver extends BroadcastReceiver {
         notificationManager.cancel((int) notificationId);
     }
 
-    private void takeAll(NotificationManager manager, NativeDbHelper nativeDbHelper) {
+    private void takeAll(NotificationManager manager, NativeDbHelper nativeDbHelper, Context context) {
         StatusBarNotification[] activeNotifications
                 = Arrays.stream(manager.getActiveNotifications()).filter(
                 n -> n.getId() != SUMMARY_ID
@@ -218,6 +221,12 @@ public class EventReceiver extends BroadcastReceiver {
             );
 
             nativeDbHelper.deleteNotification(thisNotification.getId());
+
+            Medication medication = nativeDbHelper.getMedicationById(thisNotification.getMedId());
+
+            if (medication.getNotifyWhenRemaining() != -1 && medication.getNotifyWhenRemaining() <= medication.getRemainingDosesCount()) {
+                NotificationUtils.notifyLowQuantity(medication, context);
+            }
         }
 
         manager.cancelAll();

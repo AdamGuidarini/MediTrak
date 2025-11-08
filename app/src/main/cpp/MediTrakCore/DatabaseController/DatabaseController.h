@@ -33,7 +33,7 @@ namespace DateFormats {
 
 class DatabaseController {
 private:
-    const int DB_VERSION = 18;
+    const int DB_VERSION = 19;
     const string DATABASE_NAME = "Medications.db";
     vector<string> tablesToIgnore;
     DbManager manager;
@@ -52,6 +52,9 @@ private:
     const string CHILD_ID = "ChildId";
     const string MED_FREQUENCY = "DrugFrequency";
     const string INSTRUCTIONS = "Instructions";
+    const string END_DATE = "EndDate";
+    const string QUANTITY = "DoseLimit";
+    const string NOTIFY_WHEN_REMAINING = "NotifyWhenRemaining";
 
     const string MEDICATION_TRACKER_TABLE = "MedicationTracker";
     const string DOSE_TIME = "DoseTime";
@@ -95,6 +98,13 @@ private:
      * @return Dose contained in table or nullptr
      */
     Dose* setDose(Table* table);
+
+    /**
+     * Sets a medication from a table
+     * @param medId ID of medication whose dose is to be adjusted
+     * @param increment Whether or not to increment the medication's remaining doses
+     */
+    void adjustRemainingDoses(long medId, bool increment);
 
 public:
     // Settings
@@ -201,9 +211,16 @@ public:
     /**
      * Retrieves a Medication from the database
      * @param medicationId ID of medication sought
-     * @return Medication including data on its doses and potential parents/children
+     * @return Medication with matching ID and its times and lineage
      */
     Medication getMedication(long medicationId);
+
+    /**
+     * Retrieves a Medication from the database
+     * @param medicationId ID of medication sought
+     * @return Medication including data on its doses and potential parents/children
+     */
+    Medication getMedicationHistory(long medicationId);
 
     /**
      * Retrieves all does for medication whose ID matches medId
@@ -235,7 +252,7 @@ public:
      * @param isTaken Whether or no the dose is taken
      * @return ID of new dose or -1
      */
-    long addDose(long medId, string scheduledTime, string timeTaken, bool isTaken);
+    long addDose(long medId, const string& scheduledTime, const string& timeTaken, bool isTaken);
 
     /**
      * Updates a dose record

@@ -47,6 +47,10 @@ Thanks to [IzzySoft](https://github.com/IzzySoft), this app is available in the 
 - Copy the following URL: https://apt.izzysoft.de/fdroid/repo?fingerprint=3BF0D6ABFEAE2F401707B6D966BE743BF0EEE49C2561B9BA39073711F628937A
 - After that, you should be able to find it by searching for "MediTrak"
 
+#### Droid-ify
+
+Alternatively, the app Droid-ify includes the base repository for F-Droid as well as the IzzyOnDroid repository by default and can be downloaded here: https://github.com/Droid-ify/client/releases
+
 ## Screenshots
 
 <div style="display: flex;" align="center">
