@@ -31,7 +31,7 @@ import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.Models.Note;
 import projects.medicationtracker.Views.StandardCardView;
 
-public class MedicationNotes extends AppCompatActivity implements IDialogCloseListener {
+public class MedicationNotes extends BaseActivity implements IDialogCloseListener {
     private final DBHelper db = new DBHelper(this);
     private LinearLayout notesLayout;
 

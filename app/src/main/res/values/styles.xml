@@ -6,4 +6,20 @@
         <item name="android:paddingTop">16dp</item>
         <item name="android:paddingBottom">12dp</item>
     </style>
+        <!-- Base application theme. -->
+        <style name="Theme.MediTrak" parent="Theme.Material3.DayNight">
+            <!-- Primary brand color. -->
+            <item name="colorPrimary">#3F51B5</item>
+            <item name="colorPrimaryVariant">#4A5BB6</item>
+            <item name="colorOnPrimary">@color/white</item>
+            <!-- Secondary brand color. -->
+            <item name="colorSecondary">#343BB5</item>
+            <item name="colorOnSecondary">@color/black</item>
+
+            <!-- Edge-to-edge setup -->
+            <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+            <!-- Make status and nav bars transparent to see content behind them -->
+<!--            <item name="android:statusBarColor">?attr/colorPrimary</item>-->
+<!--            <item name="android:navigationBarColor">@android:color/transparent</item>-->
+        </style>
 </resources>

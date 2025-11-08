@@ -34,7 +34,6 @@ import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentContainerView;
 
@@ -61,7 +60,7 @@ import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Notification;
 import projects.medicationtracker.Views.StandardCardView;
 
-public class MainActivity extends AppCompatActivity implements IDialogCloseListener {
+public class MainActivity extends projects.medicationtracker.BaseActivity implements IDialogCloseListener {
     public static Bundle preferences;
     private final DBHelper db = new DBHelper(this);
     private LinearLayout scheduleLayout;

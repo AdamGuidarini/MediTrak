@@ -36,7 +36,7 @@ import projects.medicationtracker.Models.Dose;
 import projects.medicationtracker.Models.FilterField;
 import projects.medicationtracker.Models.Medication;
 
-public class MedicationHistory extends AppCompatActivity implements IDialogCloseListener {
+public class MedicationHistory extends BaseActivity implements IDialogCloseListener {
     private long medId;
     private NativeDbHelper db;
     private Medication medication;

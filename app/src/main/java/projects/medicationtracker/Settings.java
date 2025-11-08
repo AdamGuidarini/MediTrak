@@ -64,7 +64,7 @@ import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.Utils.DataExportUtils;
 import projects.medicationtracker.Utils.TimeFormatting;
 
-public class Settings extends AppCompatActivity implements IDialogCloseListener {
+public class Settings extends BaseActivity implements IDialogCloseListener {
     private final DBHelper db = new DBHelper(this);
     private ActivityResultLauncher<Intent> chooseFileLauncher;
     private final ActivityResultLauncher<String> permissionRequester = registerForActivityResult(

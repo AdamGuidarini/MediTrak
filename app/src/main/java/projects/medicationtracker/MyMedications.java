@@ -29,7 +29,7 @@ import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Views.StandardCardView;
 
-public class MyMedications extends AppCompatActivity {
+public class MyMedications extends BaseActivity {
     DBHelper db = new DBHelper(this);
 
     /**

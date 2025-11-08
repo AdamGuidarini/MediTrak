@@ -61,7 +61,7 @@ import projects.medicationtracker.Utils.TimeFormatting;
 import projects.medicationtracker.InputFilters.DecimalPlacesFilter;
 import projects.medicationtracker.Models.Medication;
 
-public class AddMedication extends AppCompatActivity implements IDialogCloseListener {
+public class AddMedication extends BaseActivity implements IDialogCloseListener {
     final public static String MED_ID = "medId";
     final public static int MINUTES_IN_DAY = 1440;
     private final DBHelper db = new DBHelper(this);
