@@ -14,10 +14,10 @@ android {
         applicationId "projects.medicationtracker"
         minSdkVersion 29
         targetSdkVersion 34
-        compileSdk 35
+        compileSdkVersion 35
 
         versionCode 42
-        versionName "0.14.5"
+        versionName "0.15.0"
         resourceConfigurations += ['en', 'de', 'es', 'it', 'tr', 'nl']
 
         ndk {
@@ -27,7 +27,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
-                arguments'-DANDROID_TOOLCHAIN=clang', '-DANDROID_ARM_NEON=TRUE', '-DCMAKE_SHARED_LINKER_FLAGS=-Wl,--build-id=none'
+                arguments '-DANDROID_TOOLCHAIN=clang',
+                        '-DANDROID_ARM_NEON=TRUE',
+                        '-DCMAKE_SHARED_LINKER_FLAGS=-Wl,--build-id=none -Wl,-z,max-page-size=16384' // <-- ADD THE FLAG HERE
                 cppFlags '-frtti -fexceptions'
             }
         }
