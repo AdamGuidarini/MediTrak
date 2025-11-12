@@ -23,7 +23,7 @@
         android:localeConfig="@xml/locales_config"
         android:theme="@style/Theme.MedicationTracker">
         <activity
-            android:name=".Workers.BaseActivity"
+            android:name=".BaseActivity"
             android:exported="false" />
         <activity
             android:name=".MedicationHistory"
