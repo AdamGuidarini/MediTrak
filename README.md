@@ -24,6 +24,13 @@ MediTrak is an Android application designed to make it easier for users to keep 
 <li> Translated by a non-native speaker.</li>
 </ol>
 
+### Contributing Translations
+
+If you'd like to crontribute to a translation or see at translation error:
+
+- You can add a or profread a translation on the Crowdin page: https://crowdin.com/project/meditrak
+- Submit a pull request with a new translation XML file, other formats may also work but would require more work.
+
 ## Installation
 
 [<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="90" alt="Get it on GitHub"/>](https://github.com/AdamGuidarini/MediTrak/releases)
