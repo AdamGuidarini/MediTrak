@@ -1,4 +1,4 @@
-# MediTrak
+# ![MediTrak icon](docs/images/MediTrak_icon_32x32.webp) MediTrak
 An Android app that helps you keep track of your medications.
 
 ## About
