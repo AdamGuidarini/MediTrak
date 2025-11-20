@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Common -->
+    <string name="yes">Ja</string>
+    <string name="no">Nee</string>
+    <string name="close">Sluiten</string>
+    <string name="cancel">Annuleren</string>
+    <string name="app_name">MediTrak</string>
+    <string name="edit">Bewerking</string>
+    <string name="submit">Verzenden</string>
+    <string name="save_changes">Wijzigingen opslaan</string>
+    <string name="save">Opslaan</string>
+    <string name="you">Ikzelf</string>
+    <string name="your">Jouw</string>
+    <string name="ok">Ok</string>
+    <string name="delete">Verwijderen</string>
+    <string name="i_agree">Ik ga akkoord</string>
+    <string name="select_all">Selecteer alles</string>
+    <string name="stop">Stoppen</string>
+    <string name="every">Elk</string>
+    <!-- Filters -->
+    <string name="clear">Duidelijk</string>
+    <string name="apply">Toepassen</string>
+    <string name="before">Voor</string>
+    <string name="after">Na</string>
+    <string name="on">Aan</string>
+    <!-- Errors -->
+    <string name="invalid_value">Ongeldige waarde ingevoerd</string>
+    <string name="must_be_positive_int">Waarde moet een positief geheel getal zijn</string>
+    <string name="val_too_big">De opgegeven waarde is te groot</string>
+    <string name="cannot_exceed_50">De opgegeven waarde mag niet groter zijn dan 50</string>
+    <string name="must_be_greater_than_0">De opgegeven waarde moet groter zijn dan 0</string>
+    <string name="provided_name_invalid">De opgegeven naam is ongeldig</string>
+    <string name="err_provide_name">Geef een naam op</string>
+    <string name="err_enter_dosage">Voer een dosering in</string>
+    <string name="err_units_for_med">Voer de eenheden voor dit medicijn in</string>
+    <string name="err_select_frequency">Selecteer een frequentietype</string>
+    <string name="err_select_time">Selecteer een tijd</string>
+    <string name="err_select_start_date">Selecteer een startdatum.</string>
+    <string name="err_enter_num_timers_per_day">Voer het aantal keren in dat u dit medicijn per dag inneemt</string>
+    <string name="err_enter_med_freq">Vul in hoe vaak u het medicijn inneemt.</string>
+    <string name="err_enter_time_unit">Selecteer een tijdseenheid.</string>
+    <string name="err_name_for_med">Voer een naam in voor dit medicijn</string>
+    <string name="err_missing_file_name">Ontbrekende bestandsnaam</string>
+    <string name="err_file_must_be_json">Exportbestand moet de extensie .json hebben</string>
+    <string name="err_required">Vereist</string>
+    <string name="err_file_access_denied">Toegang tot dit bestand is geweigerd</string>
+    <!-- Time formats -->
+    <string name="date_format">Mmm dd, jjjj</string>
+    <string name="time_format_hh_mm_aa">uuh:mm aa</string>
+    <!-- Time -->
+    <string name="sunday">Zondag</string>
+    <string name="monday">Maandag</string>
+    <string name="tuesday">Dinsdag</string>
+    <string name="wednesday">Woensdag</string>
+    <string name="thursday">Donderdag</string>
+    <string name="friday">Vrijdag</string>
+    <string name="saturday">Zaterdag</string>
+    <string name="minutes">Notulen</string>
+    <string name="hours">Uren</string>
+    <string name="days">Dagen</string>
+    <string name="weeks">Weken</string>
+    <!-- MainActivity -->
+    <string name="no_medications_found">Geen medicijnen gevonden</string>
+    <string name="med_schedule">Medicatie schema</string>
+    <string name="no_meds_for_day">Geen medicijnen voor %1$s</string>
+    <string name="cannot_take_more_than_hours">Medicijnen mogen niet meer dan %1$d uur van tevoren worden  ingenomen</string>
+    <string name="as_needed_dose">Dosis naar behoefte</string>
+    <string name="welcome">Welkom bij MediTrak!</string>
+    <string name="warranty_info">        Deze applicatie is bedoeld als hulp bij het bijhouden van je medicijnen. Het is niet bedoeld
+        om medisch advies te geven en geen enkele informatie die door deze applicatie wordt verstrekt mag verkeerd worden opgevat als zodanig. De makers van deze applicatie zijn niet verantwoordelijk voor gemiste
+        doses van uw medicijnen om welke reden dan ook. Als je medische hulp nodig hebt, neem dan contact op met een medische professional.
+        Door deze applicatie te gebruiken ga je akkoord met de bovenstaande voorwaarden en die van de GPL versie 2.0 licentie waaronder het is vrijgegeven.
+        waaronder het is vrijgegeven. \n\n
+
+        Deze applicatie is vrijgegeven onder de GNU Public License Version 2, zie hieronder voor meer details:
+    </string>
+    <!-- Add/EditMedication -->
+    <string name="add_medication">Medicatie toevoegen</string>
+    <string name="edit_medication">Bewerken Medicatie</string>
+    <string name="delete_medication">Medicatie verwijderen</string>
+    <string name="note_timestamp">Datum: %1$s om: %2$s</string>
+    <string name="note_edit_timestamp">Bewerkt: %1$s op: %2$s</string>
+    <string name="patient_changed">Patiënt gewijzigd van %1$s naar %2$s\n</string>
+    <string name="name_changed">Naam gewijzigd van %1$s naar %2$s\n</string>
+    <string name="removed_alias">Schuilnaam %1$s verwijderd\n</string>
+    <string name="added_alias">Schuilnaam %1$s toegevoegd\n</string>
+    <string name="changed_alias">Schuilnaam gewijzigd van %1$s naar %2$s\n</string>
+    <string name="changed_dosage">Dosering gewijzigd van %1$s naar %2$s\n</string>
+    <string name="frequency_changed">Frequentie gewijzigd van %1$s naar %2$s\n</string>
+    <string name="times_per">Tijden per</string>
+    <string name="patientIsMe">Ikzelf</string>
+    <string name="patient">Geduldig</string>
+    <string name="other">Andere</string>
+    <string name="name">Naam</string>
+    <string name="medication_name">Medicatie Naam</string>
+    <string name="medication_dosage">Dosering</string>
+    <string name="medication_frequency">Frequentie</string>
+    <string name="taken_every">Elke keer genomen</string>
+    <string name="units">Eenheden</string>
+    <string name="taken">Genomen</string>
+    <string name="frequency">Frequentie</string>
+    <string name="multiple_times_per_day">Meerdere keren per dag</string>
+    <string name="as_needed">Zoals nodig</string>
+    <string name="daily">Dagelijks</string>
+    <string name="weekly">Wekelijks</string>
+    <string name="monthly">Maandelijks</string>
+    <string name="medication_name_amp_dosage"><![CDATA[Medicijnnaam & dosering]]></string>
+    <string name="who_takes_this_medication">Wie gebruikt deze medicatie?</string>
+    <string name="someone_else">Iemand anders</string>
+    <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[Wat is de naam van het medicijn en hoeveel wordt er ingenomen?]]></string>
+    <string name="alias_for_notifications">Schuilnaam voor meldingen</string>
+    <string name="how_often_is_the_medication_taken">Hoe vaak wordt de medicatie ingenomen?</string>
+    <string name="start_date">Startdatum</string>
+    <string name="taken_at">Genomen op</string>
+    <string name="unit_of_time">Tijdseenheid</string>
+    <string name="custom_frequency">Aangepaste frequentie</string>
+    <string name="times_per_day">Aantal keer per dag</string>
+    <string name="starting">Beginnend:</string>
+    <string name="alias_for_medication">Schuilnaam ​​voor medicatie</string>
+    <string name="yourMedications">Uw medicijnen:</string>
+    <string name="no_notes_for_this_medication">Geen notities voor dit medicijn</string>
+    <string name="unitExample">Bijv. mg, g, druppels</string>
+    <string name="patient_name">Naam patiënt:</string>
+    <string name="no_alias">Geen schuilnaam</string>
+    <string name="at">bij</string>
+    <string name="apply_retroactive">Wijzigingen met terugwerkende kracht toepassen</string>
+    <string name="retroactive_warning">Waarschuwing: Wijzigingen in de frequentie kunnen ertoe leiden dat eerder ingenomen doses niet meer zichtbaar zijn in het schema.</string>
+    <string name="would_like_apply_retroactively">Wijzigingen in dosering en frequentie kunnen met terugwerkende kracht worden toegepast vanaf de vorige wijziging. Wilt u deze wijzigingen met terugwerkende kracht toepassen?</string>
+    <string name="instructions">Instructies</string>
+    <string name="instructions_optional">Instructies (optioneel)</string>
+    <string name="instructions_added">Instructies toegevoegd: %1$s</string>
+    <string name="dose_limit_added">Dosislimiet toegevoegd: %1$s</string>
+    <string name="end_date_added">Einddatum toegevoegd: %1$s</string>
+    <string name="new_quantity">Nieuw aantal: %1$d</string>
+    <string name="remaining_doses">Doses over</string>
+    <string name="end_date">Einddatum</string>
+    <string name="set_limit_by">Limiet instellen op basis van</string>
+    <string name="out_of_doses">Doses zijn op</string>
+    <string name="none">Geen limiet</string>
+    <string name="quantity_optional">Aantal (optioneel)</string>
+    <string name="change_amount">Aantal wijzigen</string>
+    <string name="adjust_quantity">Aantal wijzigen</string>
+    <string name="notify_when_remaining">Melding bij resterende voorraad</string>
+    <string name="notify_when_remaining_added">Meldingsdrempel ingesteld op: %1$s</string>
+    <string name="low_doses_warning">Voorraad van %1$s is laag. Nog %2$d doses over.</string>
+    <!-- MyMedications -->
+    <string name="my_medications">Mijn Medicijnen</string>
+    <string name="med_name">Medicijnnaam: %1$s</string>
+    <string name="dosage">Dosering: %1$s %2$s</string>
+    <string name="taken_daily_at">Dagelijks ingenomen bij</string>
+    <string name="taken_every_lbl">Elke keer genomen</string>
+    <string name="alias_lbl">Schuilnaam</string>
+    <string name="taken_since">Gemaakt sinds: %1$s</string>
+    <string name="taken_as_needed">Indien nodig innemen.</string>
+    <!-- Notes -->
+    <string name="notes">Notities</string>
+    <string name="add_note">Notitie toevoegen</string>
+    <string name="edit_note">Notitie bewerken</string>
+    <!-- Settings Activity -->
+    <string name="settings">Instellingen</string>
+    <string name="options">Opties</string>
+    <string name="license">Licentie</string>
+    <string name="purpose">MediTrak is een gratis en open source applicatie ontworpen om je te helpen je medicatie bij te houden, zodat je gemakkelijker de vraag kunt beantwoorden \“heb ik mijn medicatie gisteren ingenomen?\"\</string>
+    <string name="copyright">Auteursrecht © 2022-2025 Adam Guidarini</string>
+    <string name="licenseInfo">MediTrak is vrije software en mag worden gedistribueerd en/of gewijzigd onder de voorwaarden van de GNU General Public License zoals gepubliceerd door de Free Software Foundation, versie 2 of (naar keuze) later.</string>
+    <string name="warranty">        Dit programma is vrije software; je mag het herdistribueren en/of
+        wijzigen onder de voorwaarden van de GNU General Public License
+        zoals gepubliceerd door de Free Software Foundation; versie 2
+        van de Licentie, of (naar keuze) een latere versie.
+
+        Dit programma wordt verspreid in de hoop dat het nuttig zal zijn,
+        maar ZONDER ENIGE GARANTIE; zelfs zonder de impliciete garantie van
+        VERKOOPBAARHEID of GESCHIKTHEID VOOR EEN BEPAALD DOEL.  Zie de
+        GNU General Public License voor meer details.
+    </string>
+    <string name="copyOfGPL2">        Je zou een kopie van de GNU General Public License moeten hebben ontvangen
+        samen met dit programma ontvangen; zo niet, zie https://www.gnu.org/licenses/.
+    </string>
+    <string name="cannot_take_medication_more_than">Kan geen medicatie meer innemen dan</string>
+    <string name="hours_in_advance">uren van tevoren</string>
+    <string name="title_activity_settings">Instellingen</string>
+    <string name="delete_all">Alles verwijderen</string>
+    <string name="pause_medication">Medicatie pauzeren</string>
+    <string name="resume_medication">Medicatie hervatten</string>
+    <string name="pause_message">Weet u zeker dat u %1$s wilt pauzeren? Het zal niet langer in uw schema verschijnen, maar kan op elk gewenst moment worden hervat.</string>
+    <string name="resume_message">%1$s hervatten zal het terugzetten naar uw schema. Weet u zeker dat u wilt doorgaan?</string>
+    <string name="enable_notifications">Meldingen inschakelen</string>
+    <string name="disable_time_before_dose_requirement">Schakel de tijdlimiet van tevoren uit</string>
+    <string name="theme">Thema</string>
+    <string name="light_mode">Lichtmodus</string>
+    <string name="dark_mode">Donkere modus</string>
+    <string name="match_system_theme">Systeemstandaard</string>
+    <string name="number_of_hours_before_dose_can_be_taken">Limiet waarna medicatie niet meer ingenomen kan worden:</string>
+    <string name="export">Exporteren</string>
+    <string name="importData">Importeren</string>
+    <string name="data">Gegevens</string>
+    <string name="export_directory">Exporteer directory</string>
+    <string name="export_file_name">Exportbestandsnaam</string>
+    <string name="downloads">Downloaden</string>
+    <string name="documents">Documenten</string>
+    <string name="export_data">Gegevens exporteren</string>
+    <string name="successful_export">Gegevens succesvol geëxporteerd naar: %1$s</string>
+    <string name="import_success">Gegevens succesvol geïmporteerd</string>
+    <string name="failed_export">Gegevens konden niet worden geëxporteerd</string>
+    <string name="failed_import">Gegevens importeren is mislukt</string>
+    <string name="could_not_retrieve_file">Het importbestand kon niet worden opgehaald</string>
+    <string name="notifications_already_enabled">Meldingen zijn al ingeschakeld</string>
+    <string name="date_format_title">Datumnotatie</string>
+    <string name="date_format_mm_dd_yyyy">MM/DD/JJJJ</string>
+    <string name="date_format_dd_mm_yyyy">DD/MM/JJJJ</string>
+    <string name="time_format">Tijdformaat</string>
+    <string name="hour_12">12 uur</string>
+    <string name="hour_24">24 uur</string>
+    <string name="language">Taal</string>
+    <string name="schedule_export">Export Schema</string>
+    <!-- Schedule Export Dialog -->
+    <string name="export_now">Nu exporteren</string>
+    <string name="export_frequency">Frequentie Export</string>
+    <string name="date_must_be_future">De datum moet in de toekomst zijn</string>
+    <!-- Dose Info dialog -->
+    <string name="not_taken_yet">Nog niet genomen</string>
+    <string name="not_taken">Niet genomen</string>
+    <string name="marked_taken_at">Gemarkeerd genomen op</string>
+    <string name="dose_information">Dosisinformatie</string>
+    <string name="time_taken">Tijdsduur</string>
+    <string name="date_taken">Datum genomen</string>
+    <string name="this_dose">Deze dosis</string>
+    <!-- Delete Everything -->
+    <string name="delete_all_data">Alle opgeslagen gegevens verwijderen</string>
+    <string name="delete_all_data_cannot_be_undone">Alle opgeslagen gegevens verwijderen? Deze actie kan niet ongedaan worden gemaakt.</string>
+    <string name="all_data_deleted">Alle gegevens zijn verwijderd</string>
+    <!-- Notifications -->
+    <string name="mark_as_taken">Genomen</string>
+    <string name="snooze_message">Sluimeren</string>
+    <string name="its_time_your_med">Het is tijd om je %1$s van %2$s te pakken</string>
+    <string name="time_for_other_med">Het is tijd voor %1$s\"s %2$s van %3$s</string>
+    <string name="add_dose">Dosis toevoegen</string>
+    <string name="open_notifications">Open meldingen</string>
+    <string name="skip_unselected">Overslaan Niet geselecteerd</string>
+    <string name="take_all">Neem alles</string>
+    <string name="take_selected">Neem geselecteerde</string>
+    <!-- Med History -->
+    <string name="history">Geschiedenis</string>
+    <string name="scheduled">Gepland</string>
+    <string name="dosage_hist">Dosering</string>
+    <string name="filter">Filter</string>
+    <string name="export_csv">CSV exporteren</string>
+    <string name="no_records">Geen gegevens</string>
+</resources>
