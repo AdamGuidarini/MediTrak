@@ -46,8 +46,8 @@
     <string name="err_required">Obbligatorio</string>
     <string name="err_file_access_denied">Accesso a questo file negato</string>
     <!-- Time formats -->
-    <string name="date_format">Mmm gg, aaaa</string>
-    <string name="time_format_hh_mm_aa">oo:mm aa</string>
+    <string name="date_format">Mmm dd, yyyy</string>
+    <string name="time_format_hh_mm_aa">hh:mm aa</string>
     <!-- Time -->
     <string name="sunday">Domenica</string>
     <string name="monday">Lunedì</string>
