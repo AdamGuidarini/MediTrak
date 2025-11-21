@@ -1,4 +1,4 @@
-# MediTrak
+# ![MediTrak icon](docs/images/MediTrak_icon_32x32.webp) MediTrak
 An Android app that helps you keep track of your medications.
 
 ## About
@@ -23,6 +23,13 @@ MediTrak is an Android application designed to make it easier for users to keep 
 <li> Additional translations provided by non-native speaker.</li>
 <li> Translated by a non-native speaker.</li>
 </ol>
+
+### Contributing Translations
+
+If you'd like to crontribute to a translation or see at translation error:
+
+- You can add a or profread a translation on the Crowdin page: https://crowdin.com/project/meditrak
+- Submit a pull request with a new translation XML file, other formats may also work but would require more work.
 
 ## Installation
 
