@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Genel -->
+    <!-- Common -->
     <string name="yes">Evet</string>
     <string name="no">Hayır</string>
     <string name="close">Kapat</string>
@@ -17,15 +18,13 @@
     <string name="select_all">Hepsini Seç</string>
     <string name="stop">Dur</string>
     <string name="every">Her</string>
-
-    <!-- Filtreler -->
+    <!-- Filters -->
     <string name="clear">Temizle</string>
     <string name="apply">Uygula</string>
     <string name="before">Önce</string>
     <string name="after">Sonra</string>
     <string name="on">Açık</string>
-
-    <!-- Hatalar -->
+    <!-- Errors -->
     <string name="invalid_value">Geçersiz değer girildi</string>
     <string name="must_be_positive_int">Değer pozitif bir tam sayı olmalı</string>
     <string name="val_too_big">Girilen değer çok büyük</string>
@@ -46,12 +45,10 @@
     <string name="err_file_must_be_json">Dışa aktarma dosyası .json uzantısına sahip olmalı</string>
     <string name="err_required">Gerekli</string>
     <string name="err_file_access_denied">Bu dosyaya erişim reddedildi</string>
-
-    <!-- Zaman formatları -->
+    <!-- Time formats -->
     <string name="date_format">Aaa gg, yyyy</string>
     <string name="time_format_hh_mm_aa">ss:dd öö/ös</string>
-
-    <!-- Zaman -->
+    <!-- Time -->
     <string name="sunday">Pazar</string>
     <string name="monday">Pazartesi</string>
     <string name="tuesday">Salı</string>
@@ -63,20 +60,17 @@
     <string name="hours">Saat</string>
     <string name="days">Gün</string>
     <string name="weeks">Hafta</string>
-
-    <!-- Ana Etkinlik -->
+    <!-- MainActivity -->
     <string name="no_medications_found">İlaç bulunamadı</string>
     <string name="med_schedule">İlaç Takvimi</string>
     <string name="no_meds_for_day">%1$s için ilaç yok</string>
     <string name="cannot_take_more_than_hours">İlaçlar %1$d saatten fazla önceden alınamaz</string>
     <string name="as_needed_dose">İhtiyaç Halinde Doz</string>
     <string name="welcome">MediTrak’a Hoş Geldiniz!</string>
-    <string name="warranty_info">
-        Bu uygulama, ilaçlarınızı takip etmenize yardımcı olmak için tasarlanmıştır. Tıbbi tavsiye sağlamak amacıyla tasarlanmamıştır ve bu uygulamadan sağlanan hiçbir bilgi bu şekilde yorumlanmamalıdır. Bu uygulamanın yaratıcıları, herhangi bir nedenle ilaç dozlarının kaçırılmasından sorumlu değildir. Tıbbi yardıma ihtiyacınız varsa, lütfen bir sağlık uzmanına başvurun. Bu uygulamayı kullanarak, yukarıda belirtilen şartları ve GPL sürüm 2.0 lisansı altında yayınlanan şartları kabul etmiş olursunuz. \n\n
+    <string name="warranty_info">        Bu uygulama, ilaçlarınızı takip etmenize yardımcı olmak için tasarlanmıştır. Tıbbi tavsiye sağlamak amacıyla tasarlanmamıştır ve bu uygulamadan sağlanan hiçbir bilgi bu şekilde yorumlanmamalıdır. Bu uygulamanın yaratıcıları, herhangi bir nedenle ilaç dozlarının kaçırılmasından sorumlu değildir. Tıbbi yardıma ihtiyacınız varsa, lütfen bir sağlık uzmanına başvurun. Bu uygulamayı kullanarak, yukarıda belirtilen şartları ve GPL sürüm 2.0 lisansı altında yayınlanan şartları kabul etmiş olursunuz. \n\n
 
         Bu uygulama GNU Genel Kamu Lisansı Sürüm 2 altında yayınlanmıştır, daha fazla detay için aşağıya bakın:
     </string>
-
     <!-- Add/EditMedication -->
     <string name="add_medication">İlaç Ekle</string>
     <string name="edit_medication">İlaç Düzenle</string>
@@ -146,7 +140,6 @@
     <string name="notify_when_remaining">Kalan doz sayısı uyarısı</string>
     <string name="notify_when_remaining_added">Düşük doz uyarısı şuna ayarlandı: %1$s</string>
     <string name="low_doses_warning">%1$s ilacınız azalıyor. Kalan doz: %2$d.</string>
-
     <!-- MyMedications -->
     <string name="my_medications">İlaçlarım</string>
     <string name="med_name">İlaç adı: %1$s</string>
@@ -156,26 +149,22 @@
     <string name="alias_lbl">Takma ad</string>
     <string name="taken_since">Şu tarihten beri alınıyor: %1$s</string>
     <string name="taken_as_needed">İhtiyaç halinde alınır.</string>
-
-    <!-- Notlar -->
+    <!-- Notes -->
     <string name="notes">Notlar</string>
     <string name="add_note">Not Ekle</string>
     <string name="edit_note">Notu Düzenle</string>
-
-    <!-- Ayarlar Aktivitesi -->
+    <!-- Settings Activity -->
     <string name="settings">Ayarlar</string>
     <string name="options">Seçenekler</string>
     <string name="license">Lisans</string>
-    <string name="purpose">MediTrak, ilaçlarınızı takip etmenize yardımcı olmak için tasarlanmış ücretsiz ve açık kaynaklı bir uygulamadır, böylece "Dün ilacımı aldım mı?" sorusunu daha kolay yanıtlayabilirsiniz.</string>
+    <string name="purpose">MediTrak, ilaçlarınızı takip etmenize yardımcı olmak için tasarlanmış ücretsiz ve açık kaynaklı bir uygulamadır, böylece \"Dün ilacımı aldım mı?\" sorusunu daha kolay yanıtlayabilirsiniz.</string>
     <string name="copyright">Telif Hakkı © 2022 Adam Guidarini</string>
     <string name="licenseInfo">MediTrak ücretsiz bir yazılımdır ve Free Software Foundation tarafından yayınlanan GNU Genel Kamu Lisansı şartları altında, sürüm 2 veya (isteğinize bağlı olarak) daha sonraki bir sürümle yeniden dağıtılabilir ve/veya değiştirilebilir.</string>
-    <string name="warranty">
-        Bu program ücretsiz bir yazılımdır; Free Software Foundation tarafından yayınlanan GNU Genel Kamu Lisansı şartları altında, sürüm 2 veya (isteğinize bağlı olarak) daha sonraki bir sürümle yeniden dağıtabilir ve/veya değiştirebilirsiniz.
+    <string name="warranty">        Bu program ücretsiz bir yazılımdır; Free Software Foundation tarafından yayınlanan GNU Genel Kamu Lisansı şartları altında, sürüm 2 veya (isteğinize bağlı olarak) daha sonraki bir sürümle yeniden dağıtabilir ve/veya değiştirebilirsiniz.
 
         Bu program, faydalı olacağı umuduyla dağıtılmıştır, ancak HİÇBİR GARANTİ olmadan; hatta SATILABİLİRLİK veya BELİRLİ BİR AMACA UYGUNLUK gibi zımni garantiler bile verilmez. Daha fazla ayrıntı için GNU Genel Kamu Lisansı’na bakın.
     </string>
-    <string name="copyOfGPL2">
-        Bu programla birlikte GNU Genel Kamu Lisansı’nın bir kopyasını almış olmalısınız; eğer almadıysanız, https://www.gnu.org/licenses/ adresine bakın.
+    <string name="copyOfGPL2">        Bu programla birlikte GNU Genel Kamu Lisansı’nın bir kopyasını almış olmalısınız; eğer almadıysanız, https://www.gnu.org/licenses/ adresine bakın.
     </string>
     <string name="cannot_take_medication_more_than">İlaç şu süreden fazla alınamaz</string>
     <string name="hours_in_advance">saat önceden</string>
@@ -214,13 +203,11 @@
     <string name="hour_24">24 Saat</string>
     <string name="language">Dil</string>
     <string name="schedule_export">Takvim Dışa Aktar</string>
-
-    <!-- Takvim Dışa Aktarma Diyalogu -->
+    <!-- Schedule Export Dialog -->
     <string name="export_now">Şimdi Dışa Aktar</string>
     <string name="export_frequency">Dışa Aktarma Sıklığı</string>
     <string name="date_must_be_future">Tarih gelecekte olmalı</string>
-
-    <!-- Doz Bilgi Diyalogu -->
+    <!-- Dose Info dialog -->
     <string name="not_taken_yet">Henüz alınmadı</string>
     <string name="not_taken">Alınmadı</string>
     <string name="marked_taken_at">Şu saatte alındı olarak işaretlendi</string>
@@ -228,13 +215,11 @@
     <string name="time_taken">Alınma Saati</string>
     <string name="date_taken">Alınma Tarihi</string>
     <string name="this_dose">Bu Doz</string>
-
-    <!-- Her Şeyi Sil -->
+    <!-- Delete Everything -->
     <string name="delete_all_data">Tüm Kaydedilen Verileri Sil</string>
     <string name="delete_all_data_cannot_be_undone">Tüm kaydedilen veriler silinsin mi? Bu işlem geri alınamaz.</string>
     <string name="all_data_deleted">Tüm veriler silindi</string>
-
-    <!-- Bildirimler -->
+    <!-- Notifications -->
     <string name="mark_as_taken">Alındı</string>
     <string name="snooze_message">Ertele</string>
     <string name="its_time_your_med">%1$s %2$s ilacınızı alma zamanı</string>
@@ -244,8 +229,7 @@
     <string name="skip_unselected">Seçilmeyenleri Atla</string>
     <string name="take_all">Hepsini Al</string>
     <string name="take_selected">Seçilenleri Al</string>
-
-    <!-- İlaç Geçmişi -->
+    <!-- Med History -->
     <string name="history">Geçmiş</string>
     <string name="scheduled">Planlanmış</string>
     <string name="dosage_hist">Doz</string>

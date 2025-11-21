@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Common -->
     <string name="yes">Ja</string>
@@ -17,14 +18,12 @@
     <string name="select_all">Alle Auswählen</string>
     <string name="stop">Stoppen</string>
     <string name="every">Jede</string>
-
     <!-- Filters -->
     <string name="clear">Löschen</string>
     <string name="apply">Anwenden</string>
     <string name="before">Bevor</string>
     <string name="after">Nach</string>
     <string name="on">Am</string>
-
     <!-- Errors -->
     <string name="invalid_value">Ungültiger Wert angegeben</string>
     <string name="must_be_positive_int">Der Wert muss eine positive ganze Zahl sein</string>
@@ -46,11 +45,9 @@
     <string name="err_file_must_be_json">Die Exportdatei muss die Erweiterung .json haben</string>
     <string name="err_required">Erforderlich</string>
     <string name="err_file_access_denied">Zugriff auf diese Datei wurde verweigert</string>
-
     <!-- Time formats -->
     <string name="date_format">Mmm dd, yyyy</string>
     <string name="time_format_hh_mm_aa">hh:mm aa</string>
-
     <!-- Time -->
     <string name="sunday">Sonntag</string>
     <string name="monday">Montag</string>
@@ -63,7 +60,6 @@
     <string name="hours">Stunden</string>
     <string name="days">Tage</string>
     <string name="weeks">Wochen</string>
-
     <!-- MainActivity -->
     <string name="no_medications_found">Keine Medikamente gefunden</string>
     <string name="med_schedule">Medikamentenplan</string>
@@ -71,8 +67,7 @@
     <string name="cannot_take_more_than_hours">Medikamente können nicht mehr als %1$d Stunden im Voraus eingenommen werden</string>
     <string name="as_needed_dose">Nach Bedarf dosieren</string>
     <string name="welcome">Willkommen zu MediTrak!</string>
-    <string name="warranty_info">
-        Diese Anwendung soll dir dabei helfen, den Überblick über deine Medikamente zu behalten. Es ist 
+    <string name="warranty_info">        Diese Anwendung soll dir dabei helfen, den Überblick über deine Medikamente zu behalten. Es ist 
         nicht als medizinischer Rat gedacht und die in dieser Anwendung bereitgestellten Informationen 
         sollten nicht als solche missverstanden werden. Die Ersteller dieser Anwendung haften nicht für 
         etwaige versäumte Dosen Ihrer Medikamente, aus welchem Grund auch immer. Wenn Du medizinische Hilfe benötigst, 
@@ -83,7 +78,6 @@
         Diese Anwendung wird unter der GNU Public License Version 2 veröffentlicht. 
         Weitere Einzelheiten findest Du weiter unten:
     </string>
-
     <!-- Add/EditMedication -->
     <string name="add_medication">Medikamente hinzufügen</string>
     <string name="edit_medication">Medikamente bearbeiten</string>
@@ -153,7 +147,6 @@
     <string name="notify_when_remaining">Benachrichtigen bei Restmenge</string>
     <string name="notify_when_remaining_added">Benachrichtigungsschwelle festgelegt auf: %1$s</string>
     <string name="low_doses_warning">Vorrat von %1$s ist niedrig. %2$d Dosen verbleibend.</string>
-
     <!-- MyMedications -->
     <string name="my_medications">Meine Medikamente</string>
     <string name="med_name">Name des Medikaments: %1$s</string>
@@ -163,12 +156,10 @@
     <string name="alias_lbl">Alias</string>
     <string name="taken_since">Eingenommen, seit: %1$s</string>
     <string name="taken_as_needed">Nach Bedarf eingenommen.</string>
-
     <!-- Notes -->
     <string name="notes">Notizen</string>
     <string name="add_note">Notiz hinzufügen</string>
     <string name="edit_note">Notiz bearbeiten</string>
-
     <!-- Settings Activity -->
     <string name="settings">Einstellungen</string>
     <string name="options">Optionen</string>
@@ -176,8 +167,7 @@
     <string name="purpose">MediTrak ist eine kostenlose Open-Source-Anwendung, die dir dabei helfen soll, den Überblick über deine Medikamente zu behalten, damit Du die Frage \"Habe ich gestern meine Medikamente eingenommen?\" einfacher beantworten kannst</string>
     <string name="copyright">Copyright © 2022 Adam Guidarini</string>
     <string name="licenseInfo">MediTrak ist freie Software und darf unter den Bedingungen der GNU General Public License, wie von der Free Software Foundation veröffentlicht, entweder Version 2 oder (nach deiner Wahl) später, weitergegeben und/oder geändert werden.</string>
-    <string name="warranty">
-        Dieses Programm ist freie Software; Du kannst es weiterverbreiten und/oder
+    <string name="warranty">        Dieses Programm ist freie Software; Du kannst es weiterverbreiten und/oder
         unter den Bedingungen der GNU General Public License, wie von der 
         Free Software Foundation veröffentlicht, ändern; entweder Version 2
         der Lizenz oder (nach deiner Wahl) einer späteren Version.
@@ -187,8 +177,7 @@
         MARKTGÄNGIGKEIT oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK. Siehe die
         weiteren Informationen zur GNU General Public License.
     </string>
-    <string name="copyOfGPL2">
-        Sie sollten eine Kopie der GNU General Public License erhalten haben
+    <string name="copyOfGPL2">        Sie sollten eine Kopie der GNU General Public License erhalten haben
         zusammen mit diesem Programm; Wenn nicht, siehe https://www.gnu.org/licenses/.
     </string>
     <string name="cannot_take_medication_more_than">Kann Medikamente nicht mehr einnehmen als</string>
@@ -228,12 +217,10 @@
     <string name="hour_24">24 Stunden</string>
     <string name="language">Sprache</string>
     <string name="schedule_export">Exportplan</string>
-
     <!-- Schedule Export Dialog -->
     <string name="export_now">Exportieren jetzt</string>
     <string name="export_frequency">Exporthäufigkeit</string>
     <string name="date_must_be_future"> Das Datum muss in der Zukunft liegen</string>
-
     <!-- Dose Info dialog -->
     <string name="not_taken_yet">Noch nicht eingenommen</string>
     <string name="not_taken">Nicht eingenommen</string>
@@ -242,12 +229,10 @@
     <string name="time_taken">Eingenommen um</string>
     <string name="date_taken">Eingenommen am</string>
     <string name="this_dose">Diese Dosis</string>
-
     <!-- Delete Everything -->
     <string name="delete_all_data">Alle gespeicherten Daten löschen</string>
     <string name="delete_all_data_cannot_be_undone">Alle gespeicherten Daten löschen? Diese Aktion kann nicht rückgängig gemacht werden.</string>
     <string name="all_data_deleted">Alle Daten wurden gelöscht</string>
-
     <!-- Notifications -->
     <string name="mark_as_taken">Eingenommen</string>
     <string name="snooze_message">Schlummern</string>
@@ -258,7 +243,6 @@
     <string name="skip_unselected">Überspringen nicht ausgewählt</string>
     <string name="take_all">Alle Nehmen</string>
     <string name="take_selected">Ausgewählte nehmen</string>
-
     <!-- Med History -->
     <string name="history">Geschichte</string>
     <string name="scheduled">Geplant</string>
