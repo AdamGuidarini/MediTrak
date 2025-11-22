@@ -54,7 +54,8 @@
                 android:text="@string/as_needed_dose"
                 android:textAlignment="gravity"
                 android:gravity="center_vertical"
-                app:drawableStartCompat="@android:drawable/ic_menu_add" />
+                app:drawableStartCompat="@drawable/ic_add"
+                app:iconTint="?attr/colorControlNormal" />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>
