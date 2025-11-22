@@ -85,7 +85,7 @@
     <string name="note_edit_timestamp">Editato: %1$s alle: %2$s</string>
     <string name="patient_changed">Paziente cambiata da %1$s a %2$s\n</string>
     <string name="name_changed">Nome cambiato da %1$s a %2$s\n</string>
-    <string name="removed_alias">Alias %1$a eliminato\n</string>
+    <string name="removed_alias">Alias %1$s removed\n</string>
     <string name="added_alias">Alias %1$s aggiunto\n</string>
     <string name="changed_alias">Alias cambiato da %1$s a %2$s\n</string>
     <string name="changed_dosage">Dosaggio cambiato da %1$s a %2$s\n</string>
@@ -110,7 +110,7 @@
     <string name="medication_name_amp_dosage"><![CDATA[Nome & Dosaggio del Farmaco]]></string>
     <string name="who_takes_this_medication">Chi prende questo farmaco?</string>
     <string name="someone_else">Qualcun altro</string>
-    <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[Qual è il nome del farmaco & quanto se ne prende?]]></string>
+    <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[qual è il nome del farmaco & quanto se ne prende?]]></string>
     <string name="alias_for_notifications">Alias per le notifiche</string>
     <string name="how_often_is_the_medication_taken">Quanto spesso si prende questo farmaco?</string>
     <string name="start_date">Data d\'inizio</string>
@@ -122,13 +122,13 @@
     <string name="alias_for_medication">Alias per il farmaco</string>
     <string name="yourMedications">I tuoi farmaci:</string>
     <string name="no_notes_for_this_medication">Nessun appunto per questo farmaco</string>
-    <string name="unitExample">Es. mg, g, gocce</string>
+    <string name="unitExample">Es. mg, g, drops</string>
     <string name="patient_name">Nome del paziente:</string>
     <string name="no_alias">Senza alias</string>
     <string name="at">alle</string>
     <string name="apply_retroactive">Applicare le modifiche con effetto retroattivo</string>
     <string name="retroactive_warning">Avviso: Le modifiche alla frequenza possono rendere le dosi precedentemente prese non sono più visibili nel programma.</string>
-    <string name="would_like_apply_retroactively">Le modifiche al dosaggio si possono applicare con effetto retroattivo a partire all\'ultima modifica. Vorresti applicare queste modifiche con effetto retroattivo?</string>
+    <string name="would_like_apply_retroactively">Le modifiche al dosaggio si possono applicare con effetto retroattivo a partire all\'ultima modifica. Vorrersti applicare queste modifiche con effetto retroattivo?</string>
     <string name="instructions">Istruzioni</string>
     <string name="instructions_optional">Istruzioni (Opzionali)</string>
     <string name="instructions_added">Istruzioni aggiunte: %1$s</string>
@@ -143,7 +143,7 @@
     <string name="quantity_optional">Quantità (opzionale)</string>
     <string name="change_amount">Cambiare quantità</string>
     <string name="adjust_quantity">Aggiustare quantità</string>
-    <string name="notify_when_remaining">Notifica quando rimane</string>
+    <string name="notify_when_remaining">Notifica a (dosi rimanenti)</string>
     <string name="notify_when_remaining_added">Soglia di notifica impostata a: %1$s</string>
     <string name="low_doses_warning">Scorta di %1$s in esaurimento. %2$d dosi rimanenti.</string>
     <!-- MyMedications -->
@@ -163,8 +163,8 @@
     <string name="settings">Configurazioni</string>
     <string name="options">Opzioni</string>
     <string name="license">Licenza</string>
-    <string name="purpose">MediTrak è una applicazione libero e open source progettata per aiutarti a tenere traccia dei tuoi farmaci, così puoi rispondere più facilmente alla domanda \"ho preso il mio farmaco ieri?\"</string>
-    <string name="copyright">Copyright ©️ 2022 Adam Guidarini.</string>
+    <string name="purpose">MediTrak è una applicazione libero e open source progettata per aiutarti a tenere traccia dei tuoi faramci, così puoi rispondere più facilmente alla domanda \"ho preso il mio faramco ieri?\"</string>
+    <string name="copyright">Copyright © 2022 Adam Guidarini</string>
     <string name="licenseInfo">MediTrak è software gratuita e può essere ridistribuito e/o modificato secondo i termini della Licenza Pubblica Generica GNU come pubblicato dalla Free Software Foundation, o la versione 2 o (a propria scelta) più tardi.</string>
     <string name="warranty">        Questo programma è software libero; è possibile ridistribuirlo e/o
         modificarlo secondo i termini della licenza GNU General Public License,
@@ -183,7 +183,7 @@
     <string name="hours_in_advance">ore in anticipo</string>
     <string name="title_activity_settings">Configurazioni</string>
     <string name="delete_all">Eliminare tutto</string>
-    <string name="pause_medication">Mettere in pausa farmaco</string>
+    <string name="pause_medication">mettere in pausa farmaco</string>
     <string name="resume_medication">Riprendere farmaco</string>
     <string name="pause_message">Sei sicuro di voler mettere in pausa %1$s? Non apparirà più nel tuo programma, ma puoi riprenderlo in qualsiasi momento.</string>
     <string name="resume_message">Riprendere %1$s lo ristabilirà al tuo programma. Sei sicuro di voler procedere?</string>
@@ -192,7 +192,7 @@
     <string name="theme">Tema</string>
     <string name="light_mode">Modalità luce</string>
     <string name="dark_mode">Modalità scura</string>
-    <string name="match_system_theme">Predefinito del sistema</string>
+    <string name="match_system_theme">System default</string>
     <string name="number_of_hours_before_dose_can_be_taken">Limite prima di cui il farmaco non può essere preso:</string>
     <string name="export">Esportare</string>
     <string name="importData">Importare</string>
@@ -204,13 +204,13 @@
     <string name="export_data">Dati sulle esportazioni</string>
     <string name="successful_export">Dati esportati con successo: %1$s</string>
     <string name="import_success">Dati importati con successo</string>
-    <string name="failed_export">Impossibile esportare i dati</string>
+    <string name="failed_export">Data could not be exported</string>
     <string name="failed_import">Non è stato possibile esportare i dati</string>
     <string name="could_not_retrieve_file">Impossibile recuperare il file di importazione</string>
     <string name="notifications_already_enabled">Le notifiche sono già abilitate</string>
     <string name="date_format_title">Formato di data</string>
-    <string name="date_format_mm_dd_yyyy">MM/GG/AAAA</string>
-    <string name="date_format_dd_mm_yyyy">GG/MM/AAAA</string>
+    <string name="date_format_mm_dd_yyyy">MM/DD/YYYY</string>
+    <string name="date_format_dd_mm_yyyy">DD/MM/YYYY</string>
     <string name="time_format">Formato di tempo</string>
     <string name="hour_12">12 ore</string>
     <string name="hour_24">24 ore</string>
@@ -236,8 +236,8 @@
     <string name="mark_as_taken">Preso</string>
     <string name="snooze_message">Sospendere</string>
     <string name="its_time_your_med">È ora di prendere il tuo %1$s di %2$s</string>
-    <string name="time_for_other_med">È il momento dei %2$s di %3$s di %1$s</string>
-    <string name="add_dose">Aggiungi La Dose</string>
+    <string name="time_for_other_med">È il momento dei %2$s di %3$s  di %1$s</string>
+    <string name="add_dose">Aggiungere dose</string>
     <string name="open_notifications">Notifiche aperte</string>
     <string name="skip_unselected">Saltare non selezionate</string>
     <string name="take_all">Prendere tutto</string>
