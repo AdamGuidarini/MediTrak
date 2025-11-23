@@ -158,7 +158,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
                                 m -> m.getFrequency() == 0 && !m.getStartDate().toLocalDate().isAfter(thisDate)
                         ).collect(Collectors.toCollection(ArrayList::new)),
                         (LocalDate) v.getTag(),
-                        db
+                        nativeDb
                 );
                 asNeededDialog.show(getChildFragmentManager(), null);
             });

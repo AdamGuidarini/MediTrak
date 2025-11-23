@@ -44,7 +44,7 @@ public class ConfirmDeleteAllFragment extends DialogFragment {
             medications = db.getMedications();
             deletePendingNotifications();
 
-            db.purge();
+            db.deleteAll();
             Toast.makeText(this.getContext(), getString(R.string.all_data_deleted), Toast.LENGTH_SHORT)
                     .show();
         }));

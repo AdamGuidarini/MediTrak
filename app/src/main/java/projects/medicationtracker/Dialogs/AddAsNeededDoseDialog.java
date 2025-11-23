@@ -25,9 +25,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import projects.medicationtracker.Fragments.TimePickerFragment;
-import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Utils.NotificationUtils;
-import projects.medicationtracker.Utils.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Models.Dose;
@@ -35,7 +34,7 @@ import projects.medicationtracker.Models.Medication;
 
 public class AddAsNeededDoseDialog extends DialogFragment {
     private final ArrayList<Medication> medications;
-    private final DBHelper db;
+    private final NativeDbHelper db;
     private final LocalDate date;
     private TextInputEditText timeTaken;
     private AutoCompleteTextView yourMeds;
@@ -47,7 +46,7 @@ public class AddAsNeededDoseDialog extends DialogFragment {
      * @param dateTaken   Date medication is take.
      * @param database    Database helper to store dose
      */
-    public AddAsNeededDoseDialog(ArrayList<Medication> medications, LocalDate dateTaken, DBHelper database) {
+    public AddAsNeededDoseDialog(ArrayList<Medication> medications, LocalDate dateTaken, NativeDbHelper database) {
         db = database;
         this.medications = medications;
         date = dateTaken;
@@ -158,11 +157,9 @@ public class AddAsNeededDoseDialog extends DialogFragment {
         LocalTime time = (LocalTime) timeTaken.getTag();
         LocalDateTime dateTimeTaken = LocalDateTime.of(date, time);
         Fragment fragment = getParentFragment();
-        long doseId = db.addToMedicationTracker(med, dateTimeTaken);
+        long doseId = db.addDose(med.getId(), dateTimeTaken, dateTimeTaken, true);
 
-        db.updateDoseStatus(doseId, TimeFormatting.localDateTimeToDbString(dateTimeTaken.withSecond(0)), true);
-
-        Medication medication = db.getMedication(med.getId());
+        Medication medication = db.getMedicationById(med.getId());
 
         if (medication.getNotifyWhenRemaining() != -1 && medication.getNotifyWhenRemaining() >= medication.getRemainingDosesCount()) {
             NotificationUtils.notifyLowQuantity(medication, getContext());
