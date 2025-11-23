@@ -1,1 +1,1 @@
-keep track of your medications
+Отслеживайте приём препаратов.
