@@ -67,11 +67,11 @@
     <string name="cannot_take_more_than_hours">Cannot take medications more than %1$d hours in advance</string>
     <string name="as_needed_dose">As Needed Dose</string>
     <string name="welcome">Welcome to MediTrak!</string>
-    <string name="warranty_info">        Это приложение предназначено для помощи в отслеживании приёма лекарств. Оно не предназначено для предоставления медицинских рекомендаций, и никакая информация, предоставляемая этим приложением, не должна быть истолкована как таковая. Создатели этого приложения не несут ответственности за пропущенные вами приёмы лекарств по какой-либо причине. Если вам требуется медицинская помощь, обратитесь к врачу. Используя это приложение, вы соглашаетесь с вышеуказанными условиями, а также с условиями лицензии GPL версии 2,0, под которой оно выпущено.\n\n\n\n
+    <string name="warranty_info">        Это приложение предназначено для помощи в отслеживании приёма препаратов. Оно не предназначено для предоставления медицинских рекомендаций, и никакая информация, предоставляемая этим приложением, не должна быть истолкована как таковая. Создатели этого приложения не несут ответственности за пропущенные вами приёмы препаратов по какой-либо причине. Если вам требуется медицинская помощь, обратитесь к врачу. Используя это приложение, вы соглашаетесь с вышеуказанными условиями, а также с условиями лицензии GPL версии 2,0, под которой оно выпущено.\n\n\n\n
         Это приложение выпущено в соответствии с лицензией GNU Public License версии 2. Подробнее см. ниже:
     </string>
     <!-- Add/EditMedication -->
-    <string name="add_medication">Добавить лекарство</string>
+    <string name="add_medication">Добавить препарат</string>
     <string name="edit_medication">Edit Medication</string>
     <string name="delete_medication">Delete Medication</string>
     <string name="note_timestamp">Date: %1$s at: %2$s</string>
@@ -104,7 +104,7 @@
     <string name="who_takes_this_medication">Who takes this medication?</string>
     <string name="someone_else">Someone else</string>
     <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[What is the medication\'s name & how much is taken?]]></string>
-    <string name="alias_for_notifications">Alias for notifications</string>
+    <string name="alias_for_notifications">Псевдоним для препаратов</string>
     <string name="how_often_is_the_medication_taken">How often is the medication taken?</string>
     <string name="start_date">Start Date</string>
     <string name="taken_at">Taken at</string>
@@ -112,12 +112,12 @@
     <string name="custom_frequency">Пользовательская частота приёма</string>
     <string name="times_per_day">Times per day</string>
     <string name="starting">Starting:</string>
-    <string name="alias_for_medication">Alias for medication</string>
+    <string name="alias_for_medication">Псевдоним для препарата</string>
     <string name="yourMedications">Your Medications:</string>
     <string name="no_notes_for_this_medication">No notes for this medication</string>
     <string name="unitExample">Ex. mg, g, drops</string>
     <string name="patient_name">Patient Name:</string>
-    <string name="no_alias">No alias</string>
+    <string name="no_alias">Без псевдонима</string>
     <string name="at">at</string>
     <string name="apply_retroactive">Apply Changes Retroactively</string>
     <string name="retroactive_warning">Внимание: изменение частоты приема может привести к тому, что предыдущие приёмы не будут отображаться на графике.</string>
