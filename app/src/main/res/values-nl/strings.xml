@@ -83,9 +83,9 @@
     <string name="note_edit_timestamp">Bewerkt: %1$s op: %2$s</string>
     <string name="patient_changed">Patiënt gewijzigd van %1$s naar %2$s\n</string>
     <string name="name_changed">Naam gewijzigd van %1$s naar %2$s\n</string>
-    <string name="removed_alias">Schuilnaam %1$s verwijderd\n</string>
-    <string name="added_alias">Schuilnaam %1$s toegevoegd\n</string>
-    <string name="changed_alias">Schuilnaam gewijzigd van %1$s naar %2$s\n</string>
+    <string name="removed_alias">Alias %1$s verwijderd\n</string>
+    <string name="added_alias">Alias %1$s toegevoegd\n</string>
+    <string name="changed_alias">Alias gewijzigd van %1$s naar %2$s\n</string>
     <string name="changed_dosage">Dosering gewijzigd van %1$s naar %2$s\n</string>
     <string name="frequency_changed">Frequentie gewijzigd van %1$s naar %2$s\n</string>
     <string name="times_per">Tijden per</string>
@@ -109,7 +109,7 @@
     <string name="who_takes_this_medication">Wie gebruikt deze medicatie?</string>
     <string name="someone_else">Iemand anders</string>
     <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[Wat is de naam van het medicijn en hoeveel wordt er ingenomen?]]></string>
-    <string name="alias_for_notifications">Schuilnaam voor meldingen</string>
+    <string name="alias_for_notifications">Alias voor meldingen</string>
     <string name="how_often_is_the_medication_taken">Hoe vaak wordt de medicatie ingenomen?</string>
     <string name="start_date">Startdatum</string>
     <string name="taken_at">Genomen op</string>
@@ -117,12 +117,12 @@
     <string name="custom_frequency">Aangepaste frequentie</string>
     <string name="times_per_day">Aantal keer per dag</string>
     <string name="starting">Beginnend:</string>
-    <string name="alias_for_medication">Schuilnaam ​​voor medicatie</string>
+    <string name="alias_for_medication">Alias ​​voor medicatie</string>
     <string name="yourMedications">Uw medicijnen:</string>
     <string name="no_notes_for_this_medication">Geen notities voor dit medicijn</string>
     <string name="unitExample">Bijv. mg, g, druppels</string>
     <string name="patient_name">Naam patiënt:</string>
-    <string name="no_alias">Geen schuilnaam</string>
+    <string name="no_alias">Geen alias</string>
     <string name="at">bij</string>
     <string name="apply_retroactive">Wijzigingen met terugwerkende kracht toepassen</string>
     <string name="retroactive_warning">Waarschuwing: Wijzigingen in de frequentie kunnen ertoe leiden dat eerder ingenomen doses niet meer zichtbaar zijn in het schema.</string>
@@ -150,7 +150,7 @@
     <string name="dosage">Dosering: %1$s %2$s</string>
     <string name="taken_daily_at">Dagelijks ingenomen bij</string>
     <string name="taken_every_lbl">Elke keer genomen</string>
-    <string name="alias_lbl">Schuilnaam</string>
+    <string name="alias_lbl">Alias</string>
     <string name="taken_since">Gemaakt sinds: %1$s</string>
     <string name="taken_as_needed">Indien nodig innemen.</string>
     <!-- Notes -->
