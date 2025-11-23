@@ -14,8 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import java.time.LocalDateTime;
@@ -31,7 +31,7 @@ import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.Models.Note;
 import projects.medicationtracker.Views.StandardCardView;
 
-public class MedicationNotes extends AppCompatActivity implements IDialogCloseListener {
+public class MedicationNotes extends BaseActivity implements IDialogCloseListener {
     private final DBHelper db = new DBHelper(this);
     private LinearLayout notesLayout;
 
@@ -43,6 +43,13 @@ public class MedicationNotes extends AppCompatActivity implements IDialogCloseLi
         getSupportActionBar().setTitle(getString(R.string.notes));
 
         notesLayout = findViewById(R.id.notesLayout);
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                handleBackPressed();
+            }
+        });
 
         setCards();
     }
@@ -79,8 +86,7 @@ public class MedicationNotes extends AppCompatActivity implements IDialogCloseLi
     /**
      * Return to MyMedications if back arrow is pressed
      */
-    @Override
-    public void onBackPressed() {
+    public void handleBackPressed() {
         Intent intent = new Intent(this, MyMedications.class);
         finish();
         startActivity(intent);

@@ -32,6 +32,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -40,6 +41,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.os.LocaleListCompat;
 
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -64,7 +66,7 @@ import projects.medicationtracker.Interfaces.IDialogCloseListener;
 import projects.medicationtracker.Utils.DataExportUtils;
 import projects.medicationtracker.Utils.TimeFormatting;
 
-public class Settings extends AppCompatActivity implements IDialogCloseListener {
+public class Settings extends BaseActivity implements IDialogCloseListener {
     private final DBHelper db = new DBHelper(this);
     private ActivityResultLauncher<Intent> chooseFileLauncher;
     private final ActivityResultLauncher<String> permissionRequester = registerForActivityResult(
@@ -99,7 +101,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
         deleteAllButton.setBackgroundColor(Color.parseColor("#DD2222"));
 
         Button enableNotificationsButton = findViewById(R.id.enableNotifications);
-        SwitchCompat notificationToggle = findViewById(R.id.enableNotificationSwitch);
+        MaterialSwitch notificationToggle = findViewById(R.id.enableNotificationSwitch);
 
         nativeDb = new NativeDbHelper(this);
 
@@ -190,6 +192,13 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
                     }
                 }
         );
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                handleBackPressed();
+            }
+        });
     }
 
     /**
@@ -201,7 +210,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            handleBackPressed();
         }
 
         return super.onOptionsItemSelected(item);
@@ -210,9 +219,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
     /**
      * Return to MainActivity if back arrow is pressed
      */
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    public void handleBackPressed() {
         Intent intent = new Intent(this, MainActivity.class);
         finish();
         startActivity(intent);
@@ -222,7 +229,7 @@ public class Settings extends AppCompatActivity implements IDialogCloseListener 
      * Prepares dose restriction switch
      */
     private void setTimeBeforeDoseRestrictionSwitch() {
-        SwitchCompat timeBeforeDoseSwitch = findViewById(R.id.disableTimeBeforeDose);
+        MaterialSwitch timeBeforeDoseSwitch = findViewById(R.id.disableTimeBeforeDose);
 
         int timeBeforeDose = db.getTimeBeforeDose();
 

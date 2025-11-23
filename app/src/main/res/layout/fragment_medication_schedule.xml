@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/dateLabel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -47,14 +47,15 @@
                 android:orientation="vertical"
                 android:layout_marginStart="5dp" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/plusAsNeeded"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/as_needed_dose"
                 android:textAlignment="gravity"
                 android:gravity="center_vertical"
-                app:drawableStartCompat="@android:drawable/ic_menu_add" />
+                app:drawableStartCompat="@drawable/ic_add"
+                app:drawableTint="?attr/colorControlNormal" />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>
