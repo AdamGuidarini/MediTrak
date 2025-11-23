@@ -4,7 +4,8 @@
 
     <item
         android:id="@+id/addNote"
-        android:icon="@android:drawable/ic_menu_add"
+        android:icon="@drawable/ic_add"
+        app:iconTint="?attr/colorControlNormal"
         android:title="@string/add_note"
         app:showAsAction="ifRoom"
         android:onClick="onAddNoteClick" />

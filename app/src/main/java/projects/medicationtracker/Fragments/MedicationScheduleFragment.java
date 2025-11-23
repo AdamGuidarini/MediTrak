@@ -8,10 +8,12 @@ import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.service.notification.StatusBarNotification;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +21,15 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.checkbox.MaterialCheckBox;
+import com.google.android.material.color.MaterialColors;
+import com.google.android.material.textview.MaterialTextView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,11 +46,12 @@ import projects.medicationtracker.Dialogs.AddAsNeededDoseDialog;
 import projects.medicationtracker.Dialogs.DoseInfoDialog;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
+import projects.medicationtracker.R;
 import projects.medicationtracker.Utils.NotificationUtils;
+
 import projects.medicationtracker.Utils.TextViewUtils;
 import projects.medicationtracker.Utils.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
-import projects.medicationtracker.R;
 import projects.medicationtracker.Models.Dose;
 import projects.medicationtracker.Models.Medication;
 
@@ -136,7 +143,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         );
 
         if (meds.stream().anyMatch(m -> m.getFrequency() == 0 && !m.getStartDate().toLocalDate().isAfter(thisDate))) {
-            TextView plusAsNeeded = rootView.findViewById(R.id.plusAsNeeded);
+            MaterialTextView plusAsNeeded = rootView.findViewById(R.id.plusAsNeeded);
             LinearLayout asNeededList = rootView.findViewById(R.id.asNeededList);
 
             asNeededList.setVisibility(View.VISIBLE);
@@ -151,7 +158,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
                                 m -> m.getFrequency() == 0 && !m.getStartDate().toLocalDate().isAfter(thisDate)
                         ).collect(Collectors.toCollection(ArrayList::new)),
                         (LocalDate) v.getTag(),
-                        db
+                        nativeDb
                 );
                 asNeededDialog.show(getChildFragmentManager(), null);
             });
@@ -168,7 +175,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     private void createSchedule() {
         LinearLayout checkBoxHolder = rootView.findViewById(R.id.medicationSchedule);
         LinearLayout asNeededList = rootView.findViewById(R.id.asNeededViews);
-        TextView dayLabel = rootView.findViewById(R.id.dateLabel);
+        MaterialTextView dayLabel = rootView.findViewById(R.id.dateLabel);
         LocalDate thisSunday = TimeFormatting.whenIsSunday(dayInCurrentWeek);
         ArrayList<RelativeLayout> scheduledMeds = new ArrayList<>();
         ArrayList<RelativeLayout> asNeededMeds = new ArrayList<>();
@@ -198,7 +205,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         }
 
         if (scheduledMeds.size() == 0) {
-            TextView textView = new TextView(rootView.getContext());
+            MaterialTextView textView = new MaterialTextView(rootView.getContext());
             String noMed = getString(R.string.no_meds_for_day, dayOfWeek);
 
             TextViewUtils.setTextViewParams(textView, noMed, checkBoxHolder);
@@ -215,8 +222,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
 
     private RelativeLayout buildCheckbox(Medication medication, LocalDateTime time) {
         RelativeLayout rl = new RelativeLayout(rootView.getContext());
-        TextView thisMedication = medication.getFrequency() > 0
-                ? new CheckBox(rootView.getContext()) : new TextView(rootView.getContext());
+        MaterialCheckBox thisMedication = new MaterialCheckBox(rootView.getContext());
         long medId = medication.getId();
         Triple<Medication, Long, LocalDateTime> tag;
         long doseRowId = db.getDoseId(medId, TimeFormatting.localDateTimeToDbString(time));
@@ -224,7 +230,25 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
 
         ImageButton button = new ImageButton(rootView.getContext());
 
-        button.setBackgroundResource(android.R.drawable.ic_menu_info_details);
+        ContextThemeWrapper wrapper = new ContextThemeWrapper(rootView.getContext(), R.style.ActionBar);
+
+        int color = MaterialColors.getColor(
+                wrapper,
+                androidx.appcompat.R.attr.colorControlNormal,
+                Color.GRAY
+        );
+
+        button.setImageResource(R.drawable.info_circle);
+        button.setBackgroundColor(Color.TRANSPARENT);
+        button.setColorFilter(color);
+
+        button.setTranslationY(
+                -TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        5,
+                        rootView.getResources().getDisplayMetrics()
+                )
+        );
 
         rl.addView(thisMedication);
         rl.addView(button);
@@ -257,16 +281,16 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
             return rl;
         }
 
-        if (doseRowId != -1 && db.getTaken(doseRowId)) ((CheckBox) thisMedication).setChecked(true);
+        if (doseRowId != -1 && db.getTaken(doseRowId)) thisMedication.setChecked(true);
 
-        ((CheckBox) thisMedication).setOnCheckedChangeListener((compoundButton, b) -> {
+        thisMedication.setOnCheckedChangeListener((compoundButton, b) -> {
             Triple<Medication, Long, LocalDateTime> tvTag =
                     (Triple<Medication, Long, LocalDateTime>) thisMedication.getTag();
             final Long doseId = tvTag.getSecond();
             int timeBeforeDose = db.getTimeBeforeDose();
 
             if (LocalDateTime.now().isBefore(time.minusHours(timeBeforeDose)) && timeBeforeDose != -1) {
-                ((CheckBox) thisMedication).setChecked(false);
+                thisMedication.setChecked(false);
                 Toast.makeText(
                         rootView.getContext(),
                         getString(R.string.cannot_take_more_than_hours, timeBeforeDose),
@@ -278,7 +302,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
             String now = TimeFormatting.localDateTimeToDbString(LocalDateTime.now().withSecond(0));
 
             if (doseId != -1) {
-                dose.setTaken(((CheckBox) thisMedication).isChecked());
+                dose.setTaken(thisMedication.isChecked());
                 dose.setTimeTaken(now);
 
                 nativeDb.updateDose(dose);
@@ -347,7 +371,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
                 Locale.getDefault()
         ).format(doseTime.toLocalTime());
 
-        return medication.getName() + " - " + dosage + " - " + dosageTime;
+        return medication.getName() + " | " + dosage + " | " + dosageTime;
     }
 
     /**
@@ -360,8 +384,8 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
 
         for (int i = 1; i < count; i++) {
             for (int j = 0; j < (count - i); j++) {
-                TextView child1 = (TextView) layouts.get(j).getChildAt(0);
-                TextView child2 = (TextView) layouts.get(j + 1).getChildAt(0);
+                MaterialTextView child1 = (MaterialTextView) layouts.get(j).getChildAt(0);
+                MaterialTextView child2 = (MaterialTextView) layouts.get(j + 1).getChildAt(0);
 
                 Triple<Medication, Long, LocalDateTime> child1Pair =
                         (Triple<Medication, Long, LocalDateTime>) child1.getTag();

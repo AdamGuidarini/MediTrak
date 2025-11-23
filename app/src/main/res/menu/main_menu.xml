@@ -6,7 +6,8 @@
         android:title="@string/add_medication"
         android:onClick="onAddMedicationClick"
         app:showAsAction="ifRoom"
-        android:icon="@android:drawable/ic_menu_add" />
+        android:icon="@drawable/ic_add"
+        app:iconTint="?attr/colorControlNormal"/>
 
     <item
         android:title="@string/my_medications"

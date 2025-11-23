@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,14 +35,11 @@ import projects.medicationtracker.Models.Dose;
 import projects.medicationtracker.Models.FilterField;
 import projects.medicationtracker.Models.Medication;
 
-public class MedicationHistory extends AppCompatActivity implements IDialogCloseListener {
-    private long medId;
+public class MedicationHistory extends BaseActivity implements IDialogCloseListener {
     private NativeDbHelper db;
     private Medication medication;
     private HistoryAdapter historyAdapter;
     private RecyclerView recyclerView;
-    private LinearLayout barrier;
-    private TextView headerText;
     private String dateFormat;
     private String timeFormat;
     private FilterField<LocalDate>[] filters = new FilterField[]{};
@@ -55,9 +51,11 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
         setContentView(R.layout.activity_medication_history);
         Intent returnToMyMeds = new Intent(this, MyMedications.class);
 
-        medId = getIntent().getLongExtra("ID", -1);
-        barrier = findViewById(R.id.table_barrier);
-        headerText = findViewById(R.id.schedule_label);
+        Intent i = getIntent();
+
+        long medId = getIntent().getLongExtra("ID", -1);
+        LinearLayout barrier = findViewById(R.id.table_barrier);
+        TextView headerText = findViewById(R.id.schedule_label);
         barrier.setBackgroundColor(headerText.getCurrentTextColor());
 
         if (medId == -1) {
@@ -67,7 +65,7 @@ public class MedicationHistory extends AppCompatActivity implements IDialogClose
 
         db = new NativeDbHelper(this);
 
-        medication = db.getMedicationById(medId);
+        medication = db.getMedicationHistory(medId);
 
         if (medication == null) {
             finish();

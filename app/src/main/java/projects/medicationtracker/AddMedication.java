@@ -19,22 +19,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
+import com.google.android.material.card.MaterialCardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.radiobutton.MaterialRadioButton;
-import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -61,7 +59,7 @@ import projects.medicationtracker.Utils.TimeFormatting;
 import projects.medicationtracker.InputFilters.DecimalPlacesFilter;
 import projects.medicationtracker.Models.Medication;
 
-public class AddMedication extends AppCompatActivity implements IDialogCloseListener {
+public class AddMedication extends BaseActivity implements IDialogCloseListener {
     final public static String MED_ID = "medId";
     final public static int MINUTES_IN_DAY = 1440;
     private final DBHelper db = new DBHelper(this);
@@ -69,12 +67,12 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
     private MenuItem pauseButton;
     private MenuItem resumeButton;
     private long medId;
-    private RadioButton meButton;
+    private MaterialRadioButton meButton;
     private TextInputLayout patientNameInputLayout;
     private MaterialAutoCompleteTextView patientNameInput;
     private TextInputLayout medicationNameInputLayout;
     private TextInputEditText medNameInput;
-    private SwitchMaterial aliasSwitch;
+    private MaterialSwitch aliasSwitch;
     private TextInputLayout aliasInputLayout;
     private TextInputEditText aliasInput;
     private TextInputLayout dosageAmountInputLayout;
@@ -99,9 +97,9 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
     private TextInputEditText asNeededStartInput;
     private int selectedFrequencyTypeIndex = -1;
     private ArrayList<String> timeUnits;
-    private CardView applyRetroactiveCard;
-    private SwitchMaterial applyRetroActiveSwitch;
-    private Button saveButton;
+    private MaterialCardView applyRetroactiveCard;
+    private MaterialSwitch applyRetroActiveSwitch;
+    private MaterialButton saveButton;
     private boolean createClone = false;
     private LocalDateTime[] startingTimes;
     private TextInputEditText instructions;
@@ -164,6 +162,13 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
 
         getSupportActionBar().setTitle(title);
 
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                handleBackPressed();
+            }
+        });
+
         buildViews();
     }
 
@@ -200,7 +205,7 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            handleBackPressed();
         }
 
         return super.onOptionsItemSelected(item);
@@ -209,9 +214,7 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
     /**
      * Return to MainActivity if back arrow is pressed
      */
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    public void handleBackPressed() {
         Intent intent = new Intent(this, medId > -1 ? MyMedications.class : MainActivity.class);
         finish();
         startActivity(intent);
@@ -262,7 +265,7 @@ public class AddMedication extends AppCompatActivity implements IDialogCloseList
         ArrayList<String> patientNames;
         RadioGroup patientGroup = this.findViewById(R.id.patientRadioGroup);
         meButton = this.findViewById(R.id.patientIsMe);
-        RadioButton otherButton = this.findViewById(R.id.patientIsNotMe);
+        MaterialRadioButton otherButton = this.findViewById(R.id.patientIsNotMe);
         patientNameInput = this.findViewById(R.id.patientNameInput);
         patientNameInputLayout = this.findViewById(R.id.patientNameInputLayout);
 
