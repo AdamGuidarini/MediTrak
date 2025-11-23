@@ -9,28 +9,6 @@ MediTrak is an Android application designed to make it easier for users to keep 
 
 - Android 10+
 
-## Languages
- - **English** (Default)
- - Dutch by [ruditimmermans](https://github.com/ruditimmermans)<sup>1,2</sup>
- - German by [uDEV2019](https://github.com/uDEV2019)<sup>1,2</sup>
- - Italian<sup>4</sup>
- - Spanish by [zaovb](https://github.com/zaovb)<sup>1,3</sup>
- - Turkish by [mikropsoft](https://github.com/mikropsoft)<sup>1,2</sup>
-
-<ol style="font-size: 0.8em;">
-<li> Translated by native speaker.</li>
-<li> Additional translations provided by non-native speaker through a machine translator.</li>
-<li> Additional translations provided by non-native speaker.</li>
-<li> Translated by a non-native speaker.</li>
-</ol>
-
-### Contributing Translations
-
-If you'd like to crontribute to a translation or see at translation error:
-
-- You can add a or profread a translation on the Crowdin page: https://crowdin.com/project/meditrak
-- Submit a pull request with a new translation XML file, other formats may also work but would require more work.
-
 ## Installation
 
 [<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="90" alt="Get it on GitHub"/>](https://github.com/AdamGuidarini/MediTrak/releases)
@@ -58,6 +36,36 @@ Thanks to [IzzySoft](https://github.com/IzzySoft), this app is available in the 
 
 Alternatively, the app Droid-ify includes the base repository for F-Droid as well as the IzzyOnDroid repository by default and can be downloaded here: https://github.com/Droid-ify/client/releases
 
+## Languages
+ - **English** (Default)
+ - Dutch by [ruditimmermans](https://github.com/ruditimmermans)<sup>1,2</sup>
+ - German by [uDEV2019](https://github.com/uDEV2019)<sup>1,2</sup>
+ - Italian<sup>4</sup>
+ - Spanish by [zaovb](https://github.com/zaovb)<sup>1,3</sup>
+ - Turkish by [mikropsoft](https://github.com/mikropsoft)<sup>1,2</sup>
+
+<ol style="font-size: 0.8em;">
+<li> Translated by native speaker.</li>
+<li> Additional translations provided by non-native speaker through a machine translator.</li>
+<li> Additional translations provided by non-native speaker.</li>
+<li> Translated by a non-native speaker.</li>
+</ol>
+
+### Contributing Translations
+
+If you'd like to crontribute to a translation or see at translation error:
+
+- You can add a or profread a translation on the Crowdin page: https://crowdin.com/project/meditrak
+- Submit a pull request with a new translation XML file, other formats may also work but would require more work.
+
+## Credits
+### iconoir
+The info, pause, play, and trash icons are all from the iconoir project. You can learn more about the project and find all their icons here: https://iconoir.com/
+### Translators
+- [ruditimmermans](https://github.com/ruditimmermans) - Dutch
+- [uDEV2019](https://github.com/uDEV2019) - German
+- [zaovb](https://github.com/zaovb) - Spanish
+- [mikropsoft](https://github.com/mikropsoft) - Turkish
 ## Screenshots
 
 <div style="display: flex;" align="center">
