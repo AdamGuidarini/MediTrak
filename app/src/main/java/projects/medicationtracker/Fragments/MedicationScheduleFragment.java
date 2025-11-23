@@ -9,11 +9,11 @@ import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.service.notification.StatusBarNotification;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -229,7 +229,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
 
         ImageButton button = new ImageButton(rootView.getContext());
 
-        ContextThemeWrapper wrapper = new ContextThemeWrapper(rootView.getContext(), R.style.MyActionBar);
+        ContextThemeWrapper wrapper = new ContextThemeWrapper(rootView.getContext(), R.style.ActionBar);
 
         int color = MaterialColors.getColor(
                 wrapper,
@@ -240,6 +240,14 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
         button.setImageResource(R.drawable.info_circle);
         button.setBackgroundColor(Color.TRANSPARENT);
         button.setColorFilter(color);
+
+        button.setTranslationY(
+                -TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        5,
+                        rootView.getResources().getDisplayMetrics()
+                )
+        );
 
         rl.addView(thisMedication);
         rl.addView(button);
@@ -362,7 +370,7 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
                 Locale.getDefault()
         ).format(doseTime.toLocalTime());
 
-        return medication.getName() + " - " + dosage + " - " + dosageTime;
+        return medication.getName() + " | " + dosage + " | " + dosageTime;
     }
 
     /**
