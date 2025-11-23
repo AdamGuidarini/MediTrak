@@ -10,11 +10,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textview.MaterialTextView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,18 +36,18 @@ import projects.medicationtracker.Models.Medication;
  * create an instance of this fragment.
  */
 public class MyMedicationsFragment extends Fragment {
-    TextView name;
-    TextView dosage;
-    TextView doseUnit;
-    TextView alias;
-    TextView frequency;
-    TextView remainingDose;
-    TextView takenSince;
-    TextView endDate;
-    TextView instructions;
-    Button notesButton;
-    Button editButton;
-    Button historyButton;
+    MaterialTextView name;
+    MaterialTextView dosage;
+    MaterialTextView doseUnit;
+    MaterialTextView alias;
+    MaterialTextView frequency;
+    MaterialTextView remainingDose;
+    MaterialTextView takenSince;
+    MaterialTextView endDate;
+    MaterialTextView instructions;
+    MaterialButton notesButton;
+    MaterialButton editButton;
+    MaterialButton historyButton;
 
     public MyMedicationsFragment() {
     }
@@ -87,7 +88,6 @@ public class MyMedicationsFragment extends Fragment {
         LinearLayout barrier2 = v.findViewById(R.id.barrier2);
         LinearLayout barrier3 = v.findViewById(R.id.barrier3);
         LinearLayout barrier4 = v.findViewById(R.id.barrier4);
-
 
         name = v.findViewById(R.id.myMedCardMedicationName);
         dosage = v.findViewById(R.id.dosage_amount);

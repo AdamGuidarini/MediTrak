@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.MedicationTracker" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.MedicationTracker" parent="Theme.Material3.DayNight">
         <!-- Primary brand color. -->
         <item name="colorPrimary">#8691CF</item>
         <item name="colorPrimaryVariant">#6872A5</item>
@@ -17,14 +17,13 @@
         <item name="actionBarStyle">@style/ActionBar</item>
     </style>
 
-    <!-- Define the custom Action Bar style to force the background color -->
-    <style name="ActionBar" parent="Widget.MaterialComponents.ActionBar.Solid">
+    <style name="ActionBar" parent="Widget.Material3.ActionBar.Solid">
         <item name="background">?android:attr/colorBackground</item>
         <item name="colorControlNormal">@color/white</item>
         <item name="elevation">0dp</item>
     </style>
 
-    <style name="TitleText" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+    <style name="TitleText" parent="TextAppearance.Material3.TitleLarge">
         <item name="android:textColor">@color/white</item>
     </style>
 </resources>

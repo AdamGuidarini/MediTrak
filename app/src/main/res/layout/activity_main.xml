@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/noMeds"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
                 android:layout_gravity="bottom"
                 android:layout_weight=".01">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/navButtonLeft"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
@@ -76,7 +76,7 @@
                     android:onClick="onLeftClick"
                     android:layout_alignParentStart="true" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/todayButton"
                     android:layout_width="50dp"
                     android:layout_height="45dp"
@@ -84,7 +84,7 @@
                     android:onClick="onTodayClick"
                     android:layout_centerInParent="true" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/navButtonRight"
                     android:layout_width="45dp"
                     android:layout_height="45dp"

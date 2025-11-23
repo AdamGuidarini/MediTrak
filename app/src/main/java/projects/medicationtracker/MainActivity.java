@@ -39,6 +39,7 @@ import androidx.fragment.app.FragmentContainerView;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.textview.MaterialTextView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -195,7 +196,7 @@ public class MainActivity extends projects.medicationtracker.BaseActivity implem
      * Creates CardViews for MainActivity
      */
     public void createMainActivityViews() {
-        TextView noMeds = findViewById(R.id.noMeds);
+        MaterialTextView noMeds = findViewById(R.id.noMeds);
         ScrollView scheduleScrollView = findViewById(R.id.scheduleScrollView);
         MaterialAutoCompleteTextView patientNames = findViewById(R.id.patientSpinner);
         final String you = getString(R.string.you);

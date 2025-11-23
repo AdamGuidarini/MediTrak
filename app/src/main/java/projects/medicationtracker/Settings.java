@@ -41,6 +41,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.os.LocaleListCompat;
 
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -100,7 +101,7 @@ public class Settings extends BaseActivity implements IDialogCloseListener {
         deleteAllButton.setBackgroundColor(Color.parseColor("#DD2222"));
 
         Button enableNotificationsButton = findViewById(R.id.enableNotifications);
-        SwitchCompat notificationToggle = findViewById(R.id.enableNotificationSwitch);
+        MaterialSwitch notificationToggle = findViewById(R.id.enableNotificationSwitch);
 
         nativeDb = new NativeDbHelper(this);
 
@@ -228,7 +229,7 @@ public class Settings extends BaseActivity implements IDialogCloseListener {
      * Prepares dose restriction switch
      */
     private void setTimeBeforeDoseRestrictionSwitch() {
-        SwitchCompat timeBeforeDoseSwitch = findViewById(R.id.disableTimeBeforeDose);
+        MaterialSwitch timeBeforeDoseSwitch = findViewById(R.id.disableTimeBeforeDose);
 
         int timeBeforeDose = db.getTimeBeforeDose();
 

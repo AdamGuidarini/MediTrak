@@ -22,14 +22,14 @@
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/name"
                 android:textStyle="bold"
                 android:textSize="18sp"/>
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -52,12 +52,12 @@
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/myMedCardMedicationName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/myMedCardAlias"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -72,14 +72,14 @@
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/medication_dosage"
                 android:textStyle="bold"
                 android:textSize="18sp"/>
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -102,12 +102,12 @@
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/dosage_amount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/dosage_unit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -122,14 +122,14 @@
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/frequency"
                 android:textStyle="bold"
                 android:textSize="18sp"/>
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -152,12 +152,12 @@
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/myMedCardFrequency"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/remainingDoses"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -172,14 +172,14 @@
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/start_date"
                 android:textStyle="bold"
                 android:textSize="18sp"/>
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -202,12 +202,12 @@
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/myMedCardTakenSince"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/endDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -222,7 +222,7 @@
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -245,7 +245,7 @@
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp">
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/instructions"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -294,7 +294,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/history_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
