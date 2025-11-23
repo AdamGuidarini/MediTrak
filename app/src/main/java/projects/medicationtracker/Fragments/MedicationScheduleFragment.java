@@ -384,8 +384,8 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
 
         for (int i = 1; i < count; i++) {
             for (int j = 0; j < (count - i); j++) {
-                MaterialTextView child1 = (MaterialTextView) layouts.get(j).getChildAt(0);
-                MaterialTextView child2 = (MaterialTextView) layouts.get(j + 1).getChildAt(0);
+                View child1 = layouts.get(j).getChildAt(0);
+                View child2 = layouts.get(j + 1).getChildAt(0);
 
                 Triple<Medication, Long, LocalDateTime> child1Pair =
                         (Triple<Medication, Long, LocalDateTime>) child1.getTag();
