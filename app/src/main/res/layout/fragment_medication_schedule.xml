@@ -47,7 +47,7 @@
                 android:orientation="vertical"
                 android:layout_marginStart="5dp" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/plusAsNeeded"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
