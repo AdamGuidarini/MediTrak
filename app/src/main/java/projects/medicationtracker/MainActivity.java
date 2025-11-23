@@ -34,12 +34,12 @@ import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentContainerView;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.textview.MaterialTextView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -61,7 +61,7 @@ import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Notification;
 import projects.medicationtracker.Views.StandardCardView;
 
-public class MainActivity extends AppCompatActivity implements IDialogCloseListener {
+public class MainActivity extends projects.medicationtracker.BaseActivity implements IDialogCloseListener {
     public static Bundle preferences;
     private final DBHelper db = new DBHelper(this);
     private LinearLayout scheduleLayout;
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements IDialogCloseListe
      * Creates CardViews for MainActivity
      */
     public void createMainActivityViews() {
-        TextView noMeds = findViewById(R.id.noMeds);
+        MaterialTextView noMeds = findViewById(R.id.noMeds);
         ScrollView scheduleScrollView = findViewById(R.id.scheduleScrollView);
         MaterialAutoCompleteTextView patientNames = findViewById(R.id.patientSpinner);
         final String you = getString(R.string.you);

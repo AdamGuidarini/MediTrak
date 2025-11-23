@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -747,27 +746,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return count > 0;
     }
 
-    /**
-     * Add dose to MedicationTracker table
-     *
-     * @param medication Medication whose dose will be added
-     * @param time       Time of dose
-     * @return rowid of added dose on success, -1 on failure
-     */
-    public long addToMedicationTracker(Medication medication, LocalDateTime time) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues medTrackerValues = new ContentValues();
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String dateTime = time.format(formatter);
-
-        medTrackerValues.put(MED_ID, medication.getId());
-        medTrackerValues.put(DOSE_TIME, dateTime);
-        medTrackerValues.put(TAKEN, false);
-
-        return db.insert(MEDICATION_TRACKER_TABLE, null, medTrackerValues);
-    }
-
     public LocalDateTime[] getMedicationDoses(Medication medication) {
         LocalDateTime[] times;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -852,27 +830,9 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Updates status of dose
-     *
-     * @param doseId    ID of dose
-     * @param timeTaken Time of dose
-     * @param status    Status of whether dose has been taken or not
-     */
-    public void updateDoseStatus(long doseId, String timeTaken, boolean status) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues newValues = new ContentValues();
-        int bool = status ? 1 : 0;
-
-        newValues.put(TAKEN, bool);
-        newValues.put(TIME_TAKEN, timeTaken);
-
-        db.update(MEDICATION_TRACKER_TABLE, newValues, DOSE_ID + "=?", new String[]{String.valueOf(doseId)});
-    }
-
-    /**
      * Deletes all entries from database
      */
-    public void purge() {
+    public void deleteAll() {
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.delete(MEDICATION_TABLE, "1", null);
@@ -1116,32 +1076,6 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(THEME, theme);
 
         db.update(SETTINGS_TABLE, cv, null, null);
-    }
-
-    /**
-     * Retrieves the time when a dose was taken.
-     *
-     * @param doseId ID of dose whose time is sought.
-     * @return The time the dose was marked taken or null.
-     */
-    public LocalDateTime getTimeTaken(long doseId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        LocalDateTime time;
-        String query = "SELECT " + TIME_TAKEN + " FROM " + MEDICATION_TRACKER_TABLE + " WHERE "
-                + DOSE_ID + " = " + doseId;
-
-        Cursor cursor = db.rawQuery(query, null);
-
-        cursor.moveToFirst();
-
-        time = cursor.getCount() > 0 ?
-                TimeFormatting.stringToLocalDateTime(
-                        cursor.getString(cursor.getColumnIndexOrThrow(TIME_TAKEN))
-                ) : null;
-
-        cursor.close();
-
-        return time;
     }
 
     /**

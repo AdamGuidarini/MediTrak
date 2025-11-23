@@ -255,11 +255,7 @@ public class NotificationUtils {
         long[] medicationTimeIds = db.getMedicationTimeIds(medication);
         LocalTime[] medTimes = db.getMedicationTimes(medication.getId());
 
-        if (
-                !db.isMedicationActive(medication)
-                && isMedicationDone(medication)
-                && medication.getId() != -1
-        ) {
+        if (!db.isMedicationActive(medication) && medication.getId() != -1) {
             return;
         }
 

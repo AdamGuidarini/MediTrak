@@ -5,9 +5,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
+import com.google.android.material.card.MaterialCardView;
 
-public class StandardCardView extends CardView {
+import com.google.android.material.card.MaterialCardView;
+
+public class StandardCardView extends MaterialCardView {
     public StandardCardView(@NonNull Context context) {
         super(context);
 
@@ -21,6 +23,5 @@ public class StandardCardView extends CardView {
         ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) this.getLayoutParams();
         marginLayoutParams.setMargins(25, 20, 25, 20);
         this.requestLayout();
-        this.setRadius(20);
     }
 }

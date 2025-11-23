@@ -93,24 +93,23 @@ public class DoseInfoDialog extends DialogFragment {
         dosageUnit = infoDialog.findViewById(R.id.dosage_unit);
 
         if (doseId != -1) {
-            LocalDateTime doseDate = db.getTimeTaken(doseId);
             String date = DateTimeFormatter.ofPattern(
                     preferences.getString(DATE_FORMAT),
                     Locale.getDefault()
-            ).format(doseDate);
+            ).format(thisDose.getTimeTaken());
             String time = DateTimeFormatter.ofPattern(
                     preferences.getString(TIME_FORMAT),
                     Locale.getDefault()
-            ).format(doseDate);
+            ).format(thisDose.getTimeTaken());
 
             timeTaken.setShowSoftInputOnFocus(false);
             dateTaken.setShowSoftInputOnFocus(false);
 
             timeTaken.setText(time);
-            timeTaken.setTag(doseDate.toLocalTime());
+            timeTaken.setTag(thisDose.getTimeTaken().toLocalTime());
 
             dateTaken.setText(date);
-            dateTaken.setTag(doseDate.toLocalDate());
+            dateTaken.setTag(thisDose.getTimeTaken().toLocalDate());
 
             if (thisDose.getOverrideDoseAmount() == -1) {
                 dosageAmount.setText(formatter.format(medication.getDosage()));
