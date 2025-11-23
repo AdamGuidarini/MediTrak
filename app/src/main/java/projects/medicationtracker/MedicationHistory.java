@@ -51,6 +51,8 @@ public class MedicationHistory extends BaseActivity implements IDialogCloseListe
         setContentView(R.layout.activity_medication_history);
         Intent returnToMyMeds = new Intent(this, MyMedications.class);
 
+        Intent i = getIntent();
+
         long medId = getIntent().getLongExtra("ID", -1);
         LinearLayout barrier = findViewById(R.id.table_barrier);
         TextView headerText = findViewById(R.id.schedule_label);
@@ -63,7 +65,7 @@ public class MedicationHistory extends BaseActivity implements IDialogCloseListe
 
         db = new NativeDbHelper(this);
 
-        medication = db.getMedicationById(medId);
+        medication = db.getMedicationHistory(medId);
 
         if (medication == null) {
             finish();
