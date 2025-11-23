@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -164,6 +165,13 @@ public class AddMedication extends BaseActivity implements IDialogCloseListener 
 
         getSupportActionBar().setTitle(title);
 
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                handleBackPressed();
+            }
+        });
+
         buildViews();
     }
 
@@ -200,7 +208,7 @@ public class AddMedication extends BaseActivity implements IDialogCloseListener 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            handleBackPressed();
         }
 
         return super.onOptionsItemSelected(item);
@@ -209,9 +217,7 @@ public class AddMedication extends BaseActivity implements IDialogCloseListener 
     /**
      * Return to MainActivity if back arrow is pressed
      */
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    public void handleBackPressed() {
         Intent intent = new Intent(this, medId > -1 ? MyMedications.class : MainActivity.class);
         finish();
         startActivity(intent);

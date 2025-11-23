@@ -8,6 +8,8 @@ import static projects.medicationtracker.Workers.NotificationWorker.SUMMARY_ID;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -23,7 +25,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.color.MaterialColors;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,11 +45,11 @@ import projects.medicationtracker.Dialogs.AddAsNeededDoseDialog;
 import projects.medicationtracker.Dialogs.DoseInfoDialog;
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
+import projects.medicationtracker.R;
 import projects.medicationtracker.Utils.NotificationUtils;
 import projects.medicationtracker.Utils.TextViewUtils;
 import projects.medicationtracker.Utils.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
-import projects.medicationtracker.R;
 import projects.medicationtracker.Models.Dose;
 import projects.medicationtracker.Models.Medication;
 
@@ -224,7 +229,17 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
 
         ImageButton button = new ImageButton(rootView.getContext());
 
-        button.setBackgroundResource(android.R.drawable.ic_menu_info_details);
+        ContextThemeWrapper wrapper = new ContextThemeWrapper(rootView.getContext(), R.style.MyActionBar);
+
+        int color = MaterialColors.getColor(
+                wrapper,
+                androidx.appcompat.R.attr.colorControlNormal,
+                Color.GRAY
+        );
+
+        button.setImageResource(R.drawable.info_circle);
+        button.setBackgroundColor(Color.TRANSPARENT);
+        button.setColorFilter(color);
 
         rl.addView(thisMedication);
         rl.addView(button);

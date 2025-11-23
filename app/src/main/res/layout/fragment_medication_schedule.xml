@@ -55,7 +55,7 @@
                 android:textAlignment="gravity"
                 android:gravity="center_vertical"
                 app:drawableStartCompat="@drawable/ic_add"
-                app:iconTint="?attr/colorControlNormal" />
+                app:drawableTint="?attr/colorControlNormal" />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

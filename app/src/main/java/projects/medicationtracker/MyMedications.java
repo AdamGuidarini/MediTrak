@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentContainerView;
@@ -134,6 +135,13 @@ public class MyMedications extends BaseActivity {
                 namesSelector.setText(adapter.getItem(0).toString(), false);
             }
         }
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                handleBackPressed();
+            }
+        });
     }
 
     /**
@@ -155,9 +163,7 @@ public class MyMedications extends BaseActivity {
     /**
      * Return to MainActivity if back arrow is pressed
      */
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    public void handleBackPressed() {
         Intent intent = new Intent(this, MainActivity.class);
         finish();
         startActivity(intent);

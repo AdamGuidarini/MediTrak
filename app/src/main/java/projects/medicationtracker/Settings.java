@@ -32,6 +32,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -190,6 +191,13 @@ public class Settings extends BaseActivity implements IDialogCloseListener {
                     }
                 }
         );
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                handleBackPressed();
+            }
+        });
     }
 
     /**
@@ -201,7 +209,7 @@ public class Settings extends BaseActivity implements IDialogCloseListener {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            handleBackPressed();
         }
 
         return super.onOptionsItemSelected(item);
@@ -210,9 +218,7 @@ public class Settings extends BaseActivity implements IDialogCloseListener {
     /**
      * Return to MainActivity if back arrow is pressed
      */
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    public void handleBackPressed() {
         Intent intent = new Intent(this, MainActivity.class);
         finish();
         startActivity(intent);

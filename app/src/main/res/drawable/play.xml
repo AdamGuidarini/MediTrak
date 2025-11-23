@@ -1,0 +1,19 @@
+<!--
+    Icon: Pause
+    Source: Iconoir (https://iconoir.com)
+    License: MIT
+-->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:pathData="M6.906,4.537C6.506,4.3 6,4.588 6,5.053V18.947C6,19.412 6.506,19.7 6.906,19.463L18.629,12.516C19.021,12.284 19.021,11.716 18.629,11.484L6.906,4.537Z"
+      android:strokeLineJoin="round"
+      android:strokeWidth="1.5"
+      android:fillColor="#00000000"
+      android:strokeColor="#000000"
+      android:strokeLineCap="round"/>
+</vector>
