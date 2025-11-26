@@ -71,8 +71,8 @@
 
         Bu uygulama GNU Genel Kamu Lisansı Sürüm 2 altında yayınlanmıştır, daha fazla detay için aşağıya bakın:
     </string>
-    <string name="permission_needed">İzin Gerekli</string>
-    <string name="exact_alarm_permission_request"><![CDATA[Hatırlatıcıların istenen saatte çalmasını sağlamak için MediTrak\'in "Alarmlar ve Hatırlatıcılar"a erişmesi gerekir.\n\nZamanında bildirim alabilmek için MediTrak'in alarm ve hatırlatıcı ayarlamasına izin verin.]]></string>
+    <string name="permission_needed">Permission Needed</string>
+    <string name="exact_alarm_permission_request"><![CDATA[MediTrak needs access to Alarms & Reminders to ensure reminders ring at the desired time.\n\nAllow MediTrak to set alarms and reminders so you can receive timely notifications.]]></string>
     <!-- Add/EditMedication -->
     <string name="add_medication">İlaç Ekle</string>
     <string name="edit_medication">İlaç Düzenle</string>
@@ -205,8 +205,8 @@
     <string name="hour_24">24 Saat</string>
     <string name="language">Dil</string>
     <string name="schedule_export">Takvim Dışa Aktar</string>
-    <string name="notifications">Bildirimler</string>
-    <string name="manage_exact_alarms">Tam Zamanlı Alarmları Yönet</string>
+    <string name="notifications">Notifications</string>
+    <string name="manage_exact_alarms">Manage Exact Alarms</string>
     <!-- Schedule Export Dialog -->
     <string name="export_now">Şimdi Dışa Aktar</string>
     <string name="export_frequency">Dışa Aktarma Sıklığı</string>
