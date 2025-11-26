@@ -70,6 +70,8 @@
     <string name="warranty_info">        Это приложение предназначено для помощи в отслеживании приёма препаратов. Оно не предназначено для предоставления медицинских рекомендаций, и никакая информация, предоставляемая этим приложением, не должна быть истолкована как таковая. Создатели этого приложения не несут ответственности за пропущенные вами приёмы препаратов по какой-либо причине. Если вам требуется медицинская помощь, обратитесь к врачу. Используя это приложение, вы соглашаетесь с вышеуказанными условиями, а также с условиями лицензии GPL версии 2,0, под которой оно выпущено.\n\n\n\n
         Это приложение выпущено в соответствии с лицензией GNU Public License версии 2. Подробнее см. ниже:
     </string>
+    <string name="permission_needed">Permission Needed</string>
+    <string name="exact_alarm_permission_request"><![CDATA[MediTrak needs access to Alarms & Reminders to ensure reminders ring at the desired time.\n\nAllow MediTrak to set alarms and reminders so you can receive timely notifications.]]></string>
     <!-- Add/EditMedication -->
     <string name="add_medication">Добавить препарат</string>
     <string name="edit_medication">Edit Medication</string>
@@ -202,6 +204,8 @@
     <string name="hour_24">24-часовой</string>
     <string name="language">Язык интерфейса</string>
     <string name="schedule_export">Schedule Export</string>
+    <string name="notifications">Notifications</string>
+    <string name="manage_exact_alarms">Manage Exact Alarms</string>
     <!-- Schedule Export Dialog -->
     <string name="export_now">Export now</string>
     <string name="export_frequency">Экспортировать частоту приёма</string>
