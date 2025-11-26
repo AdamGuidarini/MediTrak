@@ -73,6 +73,6 @@ The info, pause, play, and trash icons are all from the iconoir project. You can
  <img src="https://github.com/AdamGuidarini/MediTrak/blob/main/fastlane/metadata/android/en-US/images/phoneScreenshots/02.png?raw=true" width="15%">
  <img src="https://github.com/AdamGuidarini/MediTrak/blob/main/fastlane/metadata/android/en-US/images/phoneScreenshots/03.png?raw=true" width="15%">
  <img src="https://github.com/AdamGuidarini/MediTrak/blob/main/fastlane/metadata/android/en-US/images/phoneScreenshots/04.png?raw=true" width="15%">
- <img src="https://github.com/AdamGuidarini/MediTrak/blob/main/fastlane/metadata/android/en-US/images/phoneScreenshots/06.png?raw=true" width="15%">
  <img src="https://github.com/AdamGuidarini/MediTrak/blob/main/fastlane/metadata/android/en-US/images/phoneScreenshots/05.png?raw=true" width="15%">
+ <img src="https://github.com/AdamGuidarini/MediTrak/blob/main/fastlane/metadata/android/en-US/images/phoneScreenshots/06.png?raw=true" width="15%">
 </div>
