@@ -10,7 +10,6 @@ import android.app.Activity;
 import android.app.Dialog;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.NotificationManager;
@@ -28,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.materialswitch.MaterialSwitch;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -48,7 +48,7 @@ public class OpenNotificationsDialog extends DialogFragment {
     private final ArrayList<CheckBox> doseCheckBoxes = new ArrayList<>();
     private LinearLayout checkBoxHolder;
     private CheckBox checkAll;
-    private SwitchCompat dismissUnselected;
+    private MaterialSwitch dismissUnselected;
     private NotificationManager manager;
 
     public OpenNotificationsDialog(

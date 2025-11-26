@@ -44,7 +44,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         long notificationId = extras.getLong(NOTIFICATION_ID, System.currentTimeMillis());
 
-        if (!medication.isActive()) {
+        if (!medication.isActive() || NotificationUtils.isMedicationDone(medication)) {
             db.close();
             nativeDbHelper.deleteNotification(notificationId);
 

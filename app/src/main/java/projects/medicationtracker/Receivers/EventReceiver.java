@@ -169,6 +169,7 @@ public class EventReceiver extends BroadcastReceiver {
         }
 
         notificationManager.cancel((int) notificationId);
+        closeSummaryIfAlone(notificationManager);
     }
 
     private void snoozeFor15(
@@ -189,6 +190,8 @@ public class EventReceiver extends BroadcastReceiver {
         );
 
         notificationManager.cancel((int) notificationId);
+
+        closeSummaryIfAlone(notificationManager);
     }
 
     private void takeAll(NotificationManager manager, NativeDbHelper nativeDbHelper, Context context) {
@@ -230,5 +233,15 @@ public class EventReceiver extends BroadcastReceiver {
         }
 
         manager.cancelAll();
+    }
+
+    private void closeSummaryIfAlone(NotificationManager manager) {
+        boolean summaryExists = Arrays.stream(manager.getActiveNotifications()).anyMatch(
+                n -> n.getId() == SUMMARY_ID
+        );
+
+        if (summaryExists) {
+            manager.cancel(SUMMARY_ID);
+        }
     }
 }

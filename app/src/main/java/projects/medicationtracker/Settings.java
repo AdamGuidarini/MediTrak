@@ -1,5 +1,6 @@
 package projects.medicationtracker;
 
+import static android.os.Build.VERSION.SDK_INT;
 import static projects.medicationtracker.Helpers.DBHelper.DARK;
 import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.DEFAULT;
@@ -100,21 +101,13 @@ public class Settings extends BaseActivity implements IDialogCloseListener {
         Button deleteAllButton = findViewById(R.id.deleteAllButton);
         deleteAllButton.setBackgroundColor(Color.parseColor("#DD2222"));
 
-        Button enableNotificationsButton = findViewById(R.id.enableNotifications);
-        MaterialSwitch notificationToggle = findViewById(R.id.enableNotificationSwitch);
-
         nativeDb = new NativeDbHelper(this);
 
-        if (Build.VERSION.SDK_INT >= 33) {
-            enableNotificationsButton.setVisibility(View.VISIBLE);
-            notificationToggle.setVisibility(View.GONE);
-        } else {
-            enableNotificationsButton.setVisibility(View.GONE);
-            notificationToggle.setVisibility(View.VISIBLE);
+        if (SDK_INT >= Build.VERSION_CODES.S) {
+            findViewById(R.id.enableExactAlarms).setVisibility(View.VISIBLE);
         }
 
         setTimeBeforeDoseRestrictionSwitch();
-        setEnableNotificationSwitch();
         setThemeMenu();
         setDateFormatMenu();
         setTimeFormatMenu();
@@ -556,7 +549,7 @@ public class Settings extends BaseActivity implements IDialogCloseListener {
     }
 
     public void onImportClick(View view) {
-        String type = Build.VERSION.SDK_INT >= 30 ? "application/json" : "*/*";
+        String type = SDK_INT >= 30 ? "application/json" : "*/*";
         Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
         i.setType(type);
@@ -594,14 +587,21 @@ public class Settings extends BaseActivity implements IDialogCloseListener {
         return true;
     }
 
-    public void OnEnableNotificationsClick(View view) {
-        if (Build.VERSION.SDK_INT >= 33
-                && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)
-                != PackageManager.PERMISSION_GRANTED
-        ) {
-            permissionRequester.launch(android.Manifest.permission.POST_NOTIFICATIONS);
-        } else {
-            Toast.makeText(this, getString(R.string.notifications_already_enabled), Toast.LENGTH_SHORT).show();
+    public void onEnableNotificationsClick(View view) {
+        Intent intent = new Intent();
+
+        intent.setAction(android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+        intent.putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, getPackageName());
+        startActivity(intent);
+    }
+
+    public void onEnablePreciseReminders(View view) {
+        if (SDK_INT >= Build.VERSION_CODES.S) {
+            Intent intent = new Intent();
+
+            intent.setAction(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            startActivity(intent);
         }
     }
 
@@ -614,18 +614,6 @@ public class Settings extends BaseActivity implements IDialogCloseListener {
 
         BackupDestinationPicker picker = new BackupDestinationPicker("json", true);
         picker.show(getSupportFragmentManager(), null);
-    }
-
-    /**
-     * Enable notifications for application
-     */
-    private void setEnableNotificationSwitch() {
-        SwitchCompat enableNotificationsSwitch = findViewById(R.id.enableNotificationSwitch);
-
-        enableNotificationsSwitch.setChecked(db.getNotificationEnabled());
-
-        enableNotificationsSwitch.setOnCheckedChangeListener(((compoundButton, b) ->
-                db.setNotificationEnabled(enableNotificationsSwitch.isChecked())));
     }
 
     @Override

@@ -780,7 +780,8 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getSettings(
     const std::string boolKeys[] = {
             controller.ENABLE_NOTIFICATIONS,
             controller.SEEN_NOTIFICATION_REQUEST,
-            controller.AGREED_TO_TERMS,
+            controller.SEEN_SCHEDULE_EXACT_REQUEST,
+            controller.AGREED_TO_TERMS
     };
 
     for (const auto& sKey : stringKeys) {

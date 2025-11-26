@@ -67,6 +67,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String TIME_BEFORE_DOSE = "TimeBeforeDose";
     public static final String ENABLE_NOTIFICATIONS = "EnableNotifications";
     public static final String SEEN_NOTIFICATION_REQUEST = "SeenNotificationRequest";
+    public static final String SEEN_SCHEDULE_EXACT_REQUEST = "SeenScheduleExactRequest";
+
     public static final String AGREED_TO_TERMS = "AgreedToTerms";
     public static final String EXPORT_FREQUENCY = "ExportFrequency";
     public static final String EXPORT_START = "ExportStart";

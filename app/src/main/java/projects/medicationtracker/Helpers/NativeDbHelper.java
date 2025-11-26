@@ -7,6 +7,7 @@ import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FILE_NAME;
 import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FREQUENCY;
 import static projects.medicationtracker.Helpers.DBHelper.EXPORT_START;
 import static projects.medicationtracker.Helpers.DBHelper.SEEN_NOTIFICATION_REQUEST;
+import static projects.medicationtracker.Helpers.DBHelper.SEEN_SCHEDULE_EXACT_REQUEST;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 
@@ -187,6 +188,7 @@ public class NativeDbHelper {
                 new Pair<>(THEME, preferences.getString(THEME)),
                 new Pair<>(AGREED_TO_TERMS, preferences.getBoolean(AGREED_TO_TERMS) ? "1" : "0"),
                 new Pair<>(SEEN_NOTIFICATION_REQUEST, preferences.getBoolean(SEEN_NOTIFICATION_REQUEST) ? "1" : "0"),
+                new Pair<>(SEEN_SCHEDULE_EXACT_REQUEST, preferences.getBoolean(SEEN_SCHEDULE_EXACT_REQUEST) ? "1" : "0"),
                 new Pair<>(DATE_FORMAT, preferences.getString(DATE_FORMAT)),
                 new Pair<>(TIME_FORMAT, preferences.getString(TIME_FORMAT)),
                 new Pair<>(EXPORT_FREQUENCY, String.valueOf(preferences.getInt(EXPORT_FREQUENCY))),

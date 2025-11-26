@@ -80,6 +80,8 @@
         which it is released. \n\n\n\n
         This application is released under the GNU Public License Version 2, see below for more details:
     </string>
+    <string name="permission_needed">Permission Needed</string>
+    <string name="exact_alarm_permission_request"><![CDATA[MediTrak needs access to Alarms & Reminders to ensure reminders ring at the desired time.\n\nAllow MediTrak to set alarms and reminders so you can receive timely notifications.]]></string>
 
     <!-- Add/EditMedication -->
     <string name="add_medication">Add Medication</string>
@@ -225,6 +227,8 @@
     <string name="hour_24">24 Hour</string>
     <string name="language">Language</string>
     <string name="schedule_export">Schedule Export</string>
+    <string name="notifications">Notifications</string>
+    <string name="manage_exact_alarms">Manage Exact Alarms</string>
 
     <!-- Schedule Export Dialog -->
     <string name="export_now">Export now</string>
