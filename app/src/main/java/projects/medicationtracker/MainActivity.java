@@ -147,8 +147,8 @@ public class MainActivity extends projects.medicationtracker.BaseActivity implem
                 };
 
                 new ConfirmationDialog(
-                        "=Permission Needed=",
-                        "=To ensure reminders ring at the desired time, MediTrak requires the ability to set exact alarms.\n\nPlease allow \"Alarms & Reminders\" on the next screen.",
+                        getString(R.string.permission_needed),
+                        getString(R.string.exact_alarm_permission_request),
                         acceptAction,
                         getString(R.string.ok),
                         getString(R.string.cancel)

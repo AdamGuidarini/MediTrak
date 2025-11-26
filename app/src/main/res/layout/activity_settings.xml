@@ -83,15 +83,6 @@
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
 
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/enableNotificationSwitch"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginBottom="5dp"
-                        android:text="@string/enable_notifications" />
-
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                         android:layout_width="match_parent"
@@ -156,13 +147,24 @@
                             android:inputType="none" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/enableNotifications"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="15dp"
-                        android:onClick="OnEnableNotificationsClick"
-                        android:text="@string/enable_notifications"
+                        android:onClick="onEnableNotificationsClick"
+                        android:text="@string/notifications"
+                        app:cornerRadius="30dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/enableExactAlarms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:onClick="onEnablePreciseReminders"
+                        android:text="@string/manage_exact_alarms"
                         android:visibility="gone"
                         app:cornerRadius="30dp" />
                 </LinearLayout>
