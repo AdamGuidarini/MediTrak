@@ -151,7 +151,7 @@ public class MainActivity extends projects.medicationtracker.BaseActivity implem
                         getString(R.string.exact_alarm_permission_request),
                         acceptAction,
                         getString(R.string.ok),
-                        getString(R.string.cancel)
+                        getString(R.string.close)
                 ).show(getSupportFragmentManager(), null);
             }
         }
