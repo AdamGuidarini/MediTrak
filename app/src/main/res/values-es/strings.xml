@@ -76,8 +76,8 @@
 
         Esta aplicación está publicada bajo la Licencia Pública GNU Versión 2, ver más abajo para más detalles:
     </string>
-    <string name="permission_needed">Permiso Necesarioo</string>
-    <string name="exact_alarm_permission_request"><![CDATA[MediTrak necesita acceso a Alarmas & recordatorios para asegurar que los recordatorios tocan a la hora deseada.\n\nPermitir que MediTrak establezca alarmas y recordatorios para que pueda recibir notificaciones oportunas.]]></string>
+    <string name="permission_needed">Permission Needed</string>
+    <string name="exact_alarm_permission_request"><![CDATA[MediTrak needs access to Alarms & Reminders to ensure reminders ring at the desired time.\n\nAllow MediTrak to set alarms and reminders so you can receive timely notifications.]]></string>
     <!-- Add/EditMedication -->
     <string name="add_medication">Añadir medicamento</string>
     <string name="edit_medication">Editar medicamento</string>
@@ -217,8 +217,8 @@
     <string name="hour_24">24 horas</string>
     <string name="language">Idioma</string>
     <string name="schedule_export">Programar la exportación</string>
-    <string name="notifications">Notificaciones</string>
-    <string name="manage_exact_alarms">Administrar alarmas exactas</string>
+    <string name="notifications">Notifications</string>
+    <string name="manage_exact_alarms">Manage Exact Alarms</string>
     <!-- Schedule Export Dialog -->
     <string name="export_now">Exportar ahora</string>
     <string name="export_frequency">Frequencia de Exportación</string>
