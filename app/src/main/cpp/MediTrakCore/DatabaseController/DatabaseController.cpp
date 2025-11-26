@@ -106,6 +106,7 @@ void DatabaseController::create() {
             + DATE_FORMAT + " TEXT DEFAULT '" + DateFormats::MMM_DD_YYYY + "',"
             + TIME_FORMAT + " TEXT DEFAULT '" + TimeFormats::_12_HOUR + "',"
             + SEEN_NOTIFICATION_REQUEST + " BOOLEAN DEFAULT 0,"
+            + SEEN_SCHEDULE_EXACT_REQUEST + " BOOLEAN DEFAULT 0,"
             + EXPORT_FREQUENCY + " INTEGER DEFAULT -1,"
             + EXPORT_START + " DATETIME,"
             + EXPORT_FILE_NAME + " TEXT);"
@@ -313,6 +314,14 @@ void DatabaseController::upgrade(int currentVersion) {
             + " ADD COLUMN " + QUANTITY + " INTEGER DEFAULT -1;"
             + "ALTER TABLE " + MEDICATION_TABLE +
             + " ADD COLUMN " + NOTIFY_WHEN_REMAINING + " INTEGER DEFAULT -1;"
+        );
+    }
+
+    if (currentVersion < 20) {
+        manager.execSql(
+            "ALTER TABLE " + SETTINGS_TABLE
+            + " ADD COLUMN " + SEEN_SCHEDULE_EXACT_REQUEST
+            + " BOOLEAN DEFAULT 0;"
         );
     }
 

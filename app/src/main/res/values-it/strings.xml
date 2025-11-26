@@ -146,6 +146,8 @@
     <string name="notify_when_remaining">Notifica a (dosi rimanenti)</string>
     <string name="notify_when_remaining_added">Soglia di notifica impostata a: %1$s</string>
     <string name="low_doses_warning">Scorta di %1$s in esaurimento. %2$d dosi rimanenti.</string>
+    <string name="permission_needed">Autorizzazione necessaria</string>
+    <string name="exact_alarm_permission_request"><![CDATA[MediTrak ha bisogno di accesso agli allarmi e promemoria per garantire che i promemoria suonino all\'ora desiderato.\n\nConsenti a MediTrak di impostare allarmi e promemoria in modo da poter ricevere notifiche tempestive.]]></string>
     <!-- MyMedications -->
     <string name="my_medications">I miei farmaci</string>
     <string name="med_name">Nome del farmaco: %1$s</string>
@@ -216,6 +218,8 @@
     <string name="hour_24">24 ore</string>
     <string name="language">Lingua</string>
     <string name="schedule_export">Programmare l\'esportazione</string>
+    <string name="notifications">Notifiche</string>
+    <string name="manage_exact_alarms">Gestire allarmi esatti</string>
     <!-- Schedule Export Dialog -->
     <string name="export_now">Esportare ora</string>
     <string name="export_frequency">Frequenza di Esportazione</string>

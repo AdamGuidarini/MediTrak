@@ -613,7 +613,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="10dp"
-                        android:hint="=Take Until="
+                        android:hint="@string/end_date"
                         android:visibility="gone">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/limit_date_selector"

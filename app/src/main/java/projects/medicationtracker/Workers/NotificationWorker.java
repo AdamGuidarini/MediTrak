@@ -66,10 +66,7 @@ public class NotificationWorker extends Worker {
                     message, doseTime, notificationId, medId
             );
 
-            if (
-                    Arrays.stream(openNotes).noneMatch(n -> n.getId() == SUMMARY_ID)
-                            && openNotes.length > 0
-            ) {
+            if (Arrays.stream(openNotes).noneMatch(n -> n.getId() == SUMMARY_ID)) {
                 Notification notificationSummary
                         = new NotificationCompat.Builder(context, MED_REMINDER_CHANNEL_ID)
                         .setContentTitle(context.getString(R.string.app_name))

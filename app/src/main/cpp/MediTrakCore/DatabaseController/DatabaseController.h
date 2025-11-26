@@ -33,7 +33,7 @@ namespace DateFormats {
 
 class DatabaseController {
 private:
-    const int DB_VERSION = 19;
+    const int DB_VERSION = 20;
     const string DATABASE_NAME = "Medications.db";
     vector<string> tablesToIgnore;
     DbManager manager;
@@ -121,6 +121,7 @@ public:
     const string EXPORT_FREQUENCY = "ExportFrequency";
     const string EXPORT_START = "ExportStart";
     const string EXPORT_FILE_NAME = "ExportFileName";
+    const string SEEN_SCHEDULE_EXACT_REQUEST = "SeenScheduleExactRequest";
 
     const string NOTES_TABLE = "Notes";
     const string SETTINGS_TABLE = "Settings";

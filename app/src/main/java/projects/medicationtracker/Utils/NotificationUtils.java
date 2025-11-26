@@ -128,7 +128,7 @@ public class NotificationUtils {
         String message = createMedicationReminderMessage(medication, notificationContext);
 
         notificationIntent.putExtra(NOTIFICATION_ID, notificationId);
-        notificationIntent.putExtra(MESSAGE,message);
+        notificationIntent.putExtra(MESSAGE, message);
         notificationIntent.putExtra(DOSE_TIME, time);
         notificationIntent.putExtra(MEDICATION_ID, medication.getId());
 
@@ -143,7 +143,11 @@ public class NotificationUtils {
 
         alarmManager = (AlarmManager) notificationContext.getSystemService(ALARM_SERVICE);
 
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent);
+        if (SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms()) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent);
+        } else {
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent);
+        }
     }
 
     /**
@@ -302,7 +306,7 @@ public class NotificationUtils {
      * @param med Medication to be checked
      * @return whether or not a medication should still be taken
      */
-    private static boolean isMedicationDone(Medication med) {
+    public static boolean isMedicationDone(Medication med) {
         if (med.getRemainingDosesCount() != -1 && med.getEndDate() != null) {
             return med.getRemainingDosesCount() == 0 &&
                     med.getEndDate().toLocalDate().equals(LocalDate.of(9999, 12,31));

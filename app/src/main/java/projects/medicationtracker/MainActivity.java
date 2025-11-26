@@ -1,5 +1,6 @@
 package projects.medicationtracker;
 
+import static android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM;
 import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DAY_IN_CURRENT_WEEK;
 import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DAY_NUMBER;
 import static projects.medicationtracker.Fragments.MedicationScheduleFragment.DAY_OF_WEEK;
@@ -10,13 +11,16 @@ import static projects.medicationtracker.Helpers.DBHelper.EXPORT_FREQUENCY;
 import static projects.medicationtracker.Helpers.DBHelper.EXPORT_START;
 import static projects.medicationtracker.Helpers.DBHelper.LIGHT;
 import static projects.medicationtracker.Helpers.DBHelper.SEEN_NOTIFICATION_REQUEST;
+import static projects.medicationtracker.Helpers.DBHelper.SEEN_SCHEDULE_EXACT_REQUEST;
 import static projects.medicationtracker.Helpers.DBHelper.THEME;
 import static projects.medicationtracker.Receivers.ExportReceiver.EXPORT_ID;
 
+import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
@@ -30,7 +34,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -47,7 +50,10 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
+import projects.medicationtracker.Dialogs.ConfirmationDialog;
 import projects.medicationtracker.Dialogs.OpenNotificationsDialog;
 import projects.medicationtracker.Dialogs.WelcomeDialog;
 import projects.medicationtracker.Fragments.MedicationScheduleFragment;
@@ -123,6 +129,31 @@ public class MainActivity extends projects.medicationtracker.BaseActivity implem
                         != PackageManager.PERMISSION_GRANTED
         ) {
             notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !preferences.getBoolean(SEEN_SCHEDULE_EXACT_REQUEST)) {
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+            if (!alarmManager.canScheduleExactAlarms()) {
+                Consumer<Boolean> acceptAction = (Boolean accepted) -> {
+                    preferences.putBoolean(SEEN_SCHEDULE_EXACT_REQUEST, true);
+                    nativeDb.updateSettings(preferences);
+
+                    if (accepted) {
+                        Intent intent = new Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                        intent.setData(Uri.parse("package:" + getPackageName()));
+                        startActivity(intent);
+                    }
+                };
+
+                new ConfirmationDialog(
+                        getString(R.string.permission_needed),
+                        getString(R.string.exact_alarm_permission_request),
+                        acceptAction,
+                        getString(R.string.ok),
+                        getString(R.string.close)
+                ).show(getSupportFragmentManager(), null);
+            }
         }
 
         namesLayout = findViewById(R.id.names_layout_main);
