@@ -78,6 +78,8 @@
         Diese Anwendung wird unter der GNU Public License Version 2 veröffentlicht. 
         Weitere Einzelheiten findest Du weiter unten:
     </string>
+    <string name="permission_needed">Berechtigung erforderlich</string>
+    <string name="exact_alarm_permission_request"><![CDATA[MediTrak benötigt Zugriff auf „Wecker & Erinnerungen“, um sicherzustellen, dass Erinnerungen zur gewünschten Zeit klingeln.\n\nErlauben Sie MediTrak, Wecker und Erinnerungen einzustellen, damit Sie rechtzeitige Benachrichtigungen erhalten.]]></string>
     <!-- Add/EditMedication -->
     <string name="add_medication">Medikamente hinzufügen</string>
     <string name="edit_medication">Medikamente bearbeiten</string>
@@ -217,6 +219,8 @@
     <string name="hour_24">24 Stunden</string>
     <string name="language">Sprache</string>
     <string name="schedule_export">Exportplan</string>
+    <string name="notifications">Benachrichtigungen</string>
+    <string name="manage_exact_alarms">Genaue Weckzeiten verwalten</string>
     <!-- Schedule Export Dialog -->
     <string name="export_now">Exportieren jetzt</string>
     <string name="export_frequency">Exporthäufigkeit</string>
