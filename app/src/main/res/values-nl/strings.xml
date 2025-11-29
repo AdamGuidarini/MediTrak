@@ -75,8 +75,8 @@
 
         Deze applicatie is vrijgegeven onder de GNU Public License Version 2, zie hieronder voor meer details:
     </string>
-    <string name="permission_needed">Permission Needed</string>
-    <string name="exact_alarm_permission_request"><![CDATA[MediTrak needs access to Alarms & Reminders to ensure reminders ring at the desired time.\n\nAllow MediTrak to set alarms and reminders so you can receive timely notifications.]]></string>
+    <string name="permission_needed">Machtiging vereist</string>
+    <string name="exact_alarm_permission_request"><![CDATA[MediTrak heeft toegang nodig tot "Wekkers en herinneringen" om ervoor te zorgen dat herinneringen op het gewenste tijdstip afgaan.\n\nSta MediTrak toe wekkers en herinneringen in te stellen zodat u tijdig meldingen ontvangt.]]></string>
     <!-- Add/EditMedication -->
     <string name="add_medication">Medicatie toevoegen</string>
     <string name="edit_medication">Bewerken Medicatie</string>
@@ -216,8 +216,8 @@
     <string name="hour_24">24 uur</string>
     <string name="language">Taal</string>
     <string name="schedule_export">Export Schema</string>
-    <string name="notifications">Notifications</string>
-    <string name="manage_exact_alarms">Manage Exact Alarms</string>
+    <string name="notifications">Meldingen</string>
+    <string name="manage_exact_alarms">Exacte wekkers beheren</string>
     <!-- Schedule Export Dialog -->
     <string name="export_now">Nu exporteren</string>
     <string name="export_frequency">Frequentie Export</string>
