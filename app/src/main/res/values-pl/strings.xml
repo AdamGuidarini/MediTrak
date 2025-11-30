@@ -7,106 +7,105 @@
     <string name="cancel">Anuluj</string>
     <string name="app_name">MediTrak</string>
     <string name="edit">Edytuj</string>
-    <string name="submit">Submit</string>
-    <string name="save_changes">Save Changes</string>
-    <string name="save">Save</string>
-    <string name="you">You</string>
-    <string name="your">Your</string>
+    <string name="submit">Zatwierdź</string>
+    <string name="save_changes">Zapisz zmiany</string>
+    <string name="save">Zapisz</string>
+    <string name="you">Ty</string>
+    <string name="your">Twoje</string>
     <string name="ok">OK</string>
-    <string name="delete">Delete</string>
-    <string name="i_agree">I agree</string>
-    <string name="select_all">Select All</string>
+    <string name="delete">Usuń</string>
+    <string name="i_agree">Akceptuję</string>
+    <string name="select_all">Zaznacz wszystko</string>
     <string name="stop">Stop</string>
-    <string name="every">Every</string>
+    <string name="every">Każdy</string>
     <!-- Filters -->
-    <string name="clear">Clear</string>
-    <string name="apply">Apply</string>
-    <string name="before">Before</string>
-    <string name="after">After</string>
-    <string name="on">On</string>
+    <string name="clear">Wyczyść</string>
+    <string name="apply">Zastosuj</string>
+    <string name="before">Przed</string>
+    <string name="after">Po</string>
+    <string name="on">Włączone</string>
     <!-- Errors -->
-    <string name="invalid_value">Invalid value entered</string>
-    <string name="must_be_positive_int">Value must be a positive integer</string>
-    <string name="val_too_big">Provided value is too big</string>
-    <string name="cannot_exceed_50">Provided value cannot exceed 50</string>
-    <string name="must_be_greater_than_0">Provided value must be greater than 0</string>
-    <string name="provided_name_invalid">Provided name is invalid</string>
-    <string name="err_provide_name">Please provide a name</string>
-    <string name="err_enter_dosage">Please enter a dosage</string>
-    <string name="err_units_for_med">Please enter the units for this medication</string>
-    <string name="err_select_frequency">Please select a frequency type</string>
-    <string name="err_select_time">Please select a time</string>
-    <string name="err_select_start_date">Please select a start date.</string>
-    <string name="err_enter_num_timers_per_day">Please enter the number of times this medication is taken in a day</string>
-    <string name="err_enter_med_freq">Please enter how often the medication is taken.</string>
-    <string name="err_enter_time_unit">Please select a time unit.</string>
-    <string name="err_name_for_med">Please enter a name for this medication</string>
-    <string name="err_missing_file_name">Missing file name</string>
-    <string name="err_file_must_be_json">Export file must have a .json extension</string>
-    <string name="err_required">Required</string>
-    <string name="err_file_access_denied">Access to this file was denied</string>
+    <string name="invalid_value">Wpisano nieprawidłową wartość</string>
+    <string name="must_be_positive_int">Wartość musi być dodatnią liczbą całkowitą</string>
+    <string name="val_too_big">Podana wartość jest za duża</string>
+    <string name="cannot_exceed_50">Podana wartość nie może być większa niż 50</string>
+    <string name="must_be_greater_than_0">Podana wartość musi być większa niż 0</string>
+    <string name="provided_name_invalid">Podana nazwa jest nieprawidłowa</string>
+    <string name="err_provide_name">Proszę podać nazwę</string>
+    <string name="err_enter_dosage">Prosimy podać dawkę</string>
+    <string name="err_units_for_med">Proszę podać jednostki tej dawki</string>
+    <string name="err_select_frequency">Proszę wybrać częstość dawania dawki</string>
+    <string name="err_select_time">Proszę wybrać czas</string>
+    <string name="err_select_start_date">Proszę wybrać datę rozpoczęcia.</string>
+    <string name="err_enter_num_timers_per_day">Proszę wybrać liczbę razy, ile ta dawka jest wzięta w dzień</string>
+    <string name="err_enter_med_freq">Proszę wybrać jak często ta dawka zostaje wzięta.</string>
+    <string name="err_enter_time_unit">Proszę wybrać czas.</string>
+    <string name="err_name_for_med">Proszę dać nazwę dla tej dawki</string>
+    <string name="err_missing_file_name">Nie ma nazwy pliku</string>
+    <string name="err_file_must_be_json">Plik eksportowany musi mieć na końcu nazwy .JSON</string>
+    <string name="err_required">Wymagany</string>
+    <string name="err_file_access_denied">Dostęp do tego pliku jest odmówiony</string>
     <!-- Time formats -->
-    <string name="date_format">Mmm dd, yyyy</string>
+    <string name="date_format">Dd Mmm, yyyy</string>
     <string name="time_format_hh_mm_aa">hh:mm aa</string>
     <!-- Time -->
-    <string name="sunday">Sunday</string>
-    <string name="monday">Monday</string>
-    <string name="tuesday">Tuesday</string>
-    <string name="wednesday">Wednesday</string>
-    <string name="thursday">Thursday</string>
-    <string name="friday">Friday</string>
-    <string name="saturday">Saturday</string>
-    <string name="minutes">Minutes</string>
-    <string name="hours">Hours</string>
-    <string name="days">Days</string>
-    <string name="weeks">Weeks</string>
+    <string name="sunday">Niedziela</string>
+    <string name="monday">Poniedziałek</string>
+    <string name="tuesday">Wtorek</string>
+    <string name="wednesday">Środa</string>
+    <string name="thursday">Czwartek</string>
+    <string name="friday">Piątek</string>
+    <string name="saturday">Sobota</string>
+    <string name="minutes">Minuty</string>
+    <string name="hours">Godziny</string>
+    <string name="days">Dni</string>
+    <string name="weeks">Tygodni</string>
     <!-- MainActivity -->
-    <string name="no_medications_found">No medications found</string>
-    <string name="med_schedule">Medication Schedule</string>
-    <string name="no_meds_for_day">No medications for %1$s</string>
-    <string name="cannot_take_more_than_hours">Cannot take medications more than %1$d hours in advance</string>
-    <string name="as_needed_dose">As Needed Dose</string>
-    <string name="welcome">Welcome to MediTrak!</string>
-    <string name="warranty_info">        This application is meant to assist in keeping track of your medications. It is not intended
-        to provide medical advice and no information provided by this application should be misconstrued
-        as such. The creators of this application are not responsible for any missed
-        doses of your medications for any reason. If you require medical assistance, please contact a medical professional.
-        By using this application, you are agreeing to the aforementioned terms as well as those of the GPL version 2.0 license under
-        which it is released. \n\n\n\n
-        This application is released under the GNU Public License Version 2, see below for more details:
-    </string>
+    <string name="no_medications_found">Nie znaleziono żadnej dawki</string>
+    <string name="med_schedule">Harmonogram dawki</string>
+    <string name="no_meds_for_day">Brak dawki na %1$s</string>
+    <string name="cannot_take_more_than_hours">Nie można mieć więcej niż %1$d godzin wcześniej</string>
+    <string name="as_needed_dose">Dawka w razie potrzeby</string>
+    <string name="welcome">Witaj w MediTrak!</string>
+    <string name="warranty_info">Ta aplikacja ma pomóc w śledzeniu przyjmowanych leków. Nie służy ona
+do udzielania porad medycznych i żadnych informacji w niej zawartych nie należy interpretować
+jako takich. Twórcy tej aplikacji nie ponoszą odpowiedzialności za pominięte
+dawki leków z jakiegokolwiek powodu. W razie potrzeby pomocy medycznej prosimy o kontakt z lekarzem.
+Korzystając z tej aplikacji, wyrażasz zgodę na powyższe warunki, a także na warunki licencji GPL w wersji 2.0,
+na której została wydana. \n\n\n\n
+Ta aplikacja jest udostępniana na licencji GNU Public License w wersji 2. Więcej informacji poniżej:        </string>
     <string name="permission_needed">Permission Needed</string>
-    <string name="exact_alarm_permission_request"><![CDATA[MediTrak needs access to Alarms & Reminders to ensure reminders ring at the desired time.\n\nAllow MediTrak to set alarms and reminders so you can receive timely notifications.]]></string>
+    <string name="exact_alarm_permission_request"><![CDATA[MediTrak potrzebuje dostępu do funkcji Alarmy i Przypomnienia, aby zapewnić, że przypomnienia będą dzwonić o żądanej porze.\n\nZezwól MediTrak na ustawianie alarmów i przypomnień, aby otrzymywać terminowe powiadomienia.]]></string>
     <!-- Add/EditMedication -->
-    <string name="add_medication">Add Medication</string>
-    <string name="edit_medication">Edit Medication</string>
-    <string name="delete_medication">Delete Medication</string>
-    <string name="note_timestamp">Date: %1$s at: %2$s</string>
+    <string name="add_medication">Dodaj dawkę</string>
+    <string name="edit_medication">Edytuj dawkę</string>
+    <string name="delete_medication">Usuń dawkę</string>
+    <string name="note_timestamp">Data: %1$s %2$s</string>
     <string name="note_edit_timestamp">Edited: %1$s at: %2$s</string>
-    <string name="patient_changed">Patient changed from %1$s to %2$s\n</string>
-    <string name="name_changed">Name changed from %1$s to %2$s\n</string>
-    <string name="removed_alias">Alias %1$s removed\n</string>
-    <string name="added_alias">Alias %1$s added\n</string>
+    <string name="patient_changed">Zmiana pacjenta z %1$s na %2$s\n</string>
+    <string name="name_changed">Imię zmienione od %1$s do %2$s\n</string>
+    <string name="removed_alias">Alias ​​%1$s został usunięty\n</string>
+    <string name="added_alias">Alias %1$s został dodany\n</string>
     <string name="changed_alias">Alias changed from %1$s to %2$s\n</string>
     <string name="changed_dosage">Dosage changed from %1$s to %2$s\n</string>
-    <string name="frequency_changed">Frequency changed from %1$s to %2$s\n</string>
-    <string name="times_per">Times per</string>
-    <string name="patientIsMe">Me</string>
-    <string name="patient">Patient</string>
-    <string name="other">Other</string>
-    <string name="name">Name</string>
-    <string name="medication_name">Medication Name</string>
-    <string name="medication_dosage">Dosage</string>
-    <string name="medication_frequency">Frequency</string>
-    <string name="taken_every">Taken Every</string>
-    <string name="units">Dosage Unit</string>
-    <string name="taken">Taken</string>
-    <string name="frequency">Frequency</string>
-    <string name="multiple_times_per_day">Multiple Times per Day</string>
-    <string name="as_needed">As Needed</string>
-    <string name="daily">Daily</string>
-    <string name="weekly">Weekly</string>
-    <string name="monthly">Monthly</string>
+    <string name="frequency_changed">Częstość zmieniona z %1$s na %2$s\n</string>
+    <string name="times_per">Ile</string>
+    <string name="patientIsMe">Ja</string>
+    <string name="patient">Pacjent</string>
+    <string name="other">Inne</string>
+    <string name="name">Imię</string>
+    <string name="medication_name">Imię dawki</string>
+    <string name="medication_dosage">Dawka</string>
+    <string name="medication_frequency">Częstość</string>
+    <string name="taken_every">Wzięto co</string>
+    <string name="units">Jednostka dawki</string>
+    <string name="taken">Wzięto</string>
+    <string name="frequency">Częstość</string>
+    <string name="multiple_times_per_day">Wiele razy na dzień</string>
+    <string name="as_needed">Kiedy potrzeba</string>
+    <string name="daily">Co dzień</string>
+    <string name="weekly">Co tydzień</string>
+    <string name="monthly">Co miesiąc</string>
     <string name="medication_name_amp_dosage"><![CDATA[Medication Name & Dosage]]></string>
     <string name="who_takes_this_medication">Who takes this medication?</string>
     <string name="someone_else">Someone else</string>
