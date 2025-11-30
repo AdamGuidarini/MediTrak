@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Common -->
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="close">Close</string>
-    <string name="cancel">Cancel</string>
+    <string name="yes">Tak</string>
+    <string name="no">Nie</string>
+    <string name="close">Zamknij</string>
+    <string name="cancel">Anuluj</string>
     <string name="app_name">MediTrak</string>
-    <string name="edit">Edit</string>
+    <string name="edit">Edytuj</string>
     <string name="submit">Submit</string>
     <string name="save_changes">Save Changes</string>
     <string name="save">Save</string>
