@@ -73,7 +73,6 @@
     </string>
     <string name="permission_needed">İzin Gerekli</string>
     <string name="exact_alarm_permission_request"><![CDATA[Hatırlatıcıların istenen saatte çalmasını sağlamak için MediTrak&apos;in "Alarmlar ve Hatırlatıcılar"a erişmesi gerekir.\n\nZamanında bildirim alabilmek için MediTrak&apos;in alarm ve hatırlatıcı ayarlamasına izin verin.]]></string>
-
     <!-- Add/EditMedication -->
     <string name="add_medication">İlaç Ekle</string>
     <string name="edit_medication">İlaç Düzenle</string>

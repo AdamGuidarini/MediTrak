@@ -98,7 +98,7 @@
     <string name="medication_name">Medicatie Naam</string>
     <string name="medication_dosage">Dosering</string>
     <string name="medication_frequency">Frequentie</string>
-    <string name="taken_every">Elke keer genomen</string>
+    <string name="taken_every">Elke keer ingenomen</string>
     <string name="units">Eenheden</string>
     <string name="taken">Genomen</string>
     <string name="frequency">Frequentie</string>
@@ -224,18 +224,18 @@
     <string name="date_must_be_future">De datum moet in de toekomst zijn</string>
     <!-- Dose Info dialog -->
     <string name="not_taken_yet">Nog niet genomen</string>
-    <string name="not_taken">Niet genomen</string>
-    <string name="marked_taken_at">Gemarkeerd genomen op</string>
+    <string name="not_taken">Niet ingenomen</string>
+    <string name="marked_taken_at">Gemarkeerd ingenomen op</string>
     <string name="dose_information">Dosisinformatie</string>
     <string name="time_taken">Tijdsduur</string>
-    <string name="date_taken">Datum genomen</string>
+    <string name="date_taken">Datum ingenomen</string>
     <string name="this_dose">Deze dosis</string>
     <!-- Delete Everything -->
     <string name="delete_all_data">Alle opgeslagen gegevens verwijderen</string>
     <string name="delete_all_data_cannot_be_undone">Alle opgeslagen gegevens verwijderen? Deze actie kan niet ongedaan worden gemaakt.</string>
     <string name="all_data_deleted">Alle gegevens zijn verwijderd</string>
     <!-- Notifications -->
-    <string name="mark_as_taken">Genomen</string>
+    <string name="mark_as_taken">Ingenomen</string>
     <string name="snooze_message">Sluimeren</string>
     <string name="its_time_your_med">Het is tijd om je %1$s van %2$s te pakken</string>
     <string name="time_for_other_med">Het is tijd voor %1$s\"s %2$s van %3$s</string>
