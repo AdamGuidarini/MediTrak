@@ -167,7 +167,7 @@ jobject medicationToJavaConverter(Medication med, JNIEnv *env, jclass jMedicatio
         env->CallVoidMethod(jMedicationInstance, setParent, medParent);
     }
 
-    if (med.doses.size() > 0) {
+    if (!med.doses.empty()) {
         jfieldID medDoses = env->GetFieldID(env->GetObjectClass(jMedicationInstance), "doses",
                                             "[Lprojects/medicationtracker/Models/Dose;");
         jobjectArray jDoses = static_cast<jobjectArray>(env->GetObjectField(jMedicationInstance,

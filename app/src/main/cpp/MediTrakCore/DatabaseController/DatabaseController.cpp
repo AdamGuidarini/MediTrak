@@ -466,6 +466,21 @@ Medication DatabaseController::getMedicationHistory(long medicationId) {
 
     medication.doses = getTakenDoses(medication.id);
 
+    shared_ptr<Medication> currentParent = medication.parent;
+
+    while (currentParent != nullptr) {
+        vector<Dose> parentDoses = getTakenDoses(currentParent->id);
+
+        // Add parent doses to the main list
+        medication.doses.insert(
+                medication.doses.end(),
+                parentDoses.begin(),
+                parentDoses.end()
+        );
+
+        currentParent = currentParent->parent;
+    }
+
     return medication;
 }
 

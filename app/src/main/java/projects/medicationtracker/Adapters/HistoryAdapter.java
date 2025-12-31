@@ -115,6 +115,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     }
 
     Medication getDoseMed(Dose dose, Medication med) {
-        return dose.getMedId() == med.getId() ? med : getDoseMed(dose, med.getChild());
+        return med != null && dose.getMedId() == med.getId() ? med : getDoseMed(dose, med.getChild());
     }
 }
