@@ -169,7 +169,6 @@ public class EventReceiver extends BroadcastReceiver {
         }
 
         notificationManager.cancel((int) notificationId);
-        closeSummaryIfAlone(notificationManager);
     }
 
     private void snoozeFor15(

@@ -466,13 +466,27 @@ Medication DatabaseController::getMedicationHistory(long medicationId) {
 
     medication.doses = getTakenDoses(medication.id);
 
+    shared_ptr<Medication> currentParent = medication.parent;
+
+    while (currentParent != nullptr) {
+        vector<Dose> parentDoses = getTakenDoses(currentParent->id);
+
+        medication.doses.insert(
+                medication.doses.end(),
+                parentDoses.begin(),
+                parentDoses.end()
+        );
+
+        currentParent = currentParent->parent;
+    }
+
     return medication;
 }
 
 vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
     string query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE
                    + " WHERE " + MED_ID + "=" + to_string(medicationId)
-                   + " AND " + TAKEN + " = TRUE";
+                   + " AND " + TAKEN + " = '1'";
     vector<Dose> doses = {};
 
     Table *table = manager.execSqlWithReturn(query);
