@@ -118,7 +118,7 @@ public class NativeDbHelper {
      * @return Medication with all doses - Includes any parents/children
      */
     public Medication getMedicationHistory(long medId) {
-        return getMedHistory(dbPath, medId, Medication.class);
+        return getMedHistory(dbPath, medId, Medication.class, Dose.class);
     }
 
     /**
@@ -133,7 +133,7 @@ public class NativeDbHelper {
     }
 
     public Medication getMedicationById(long medId) {
-        return getMedicationById(dbPath, medId, Medication.class);
+        return getMedicationById(dbPath, medId, Medication.class, Dose.class);
     }
 
     public Dose findDose(long medicationId, LocalDateTime doseTime) {
@@ -146,7 +146,7 @@ public class NativeDbHelper {
     }
 
     public Dose getDoseById(long doseId) {
-        return getDoseById(dbPath, doseId, new Medication());
+        return getDoseById(dbPath, doseId, new Medication(), Dose.class);
     }
 
     public void updateDose(Dose dose) {
@@ -213,11 +213,11 @@ public class NativeDbHelper {
     private native long delete(String dbPath, String table, Pair<String, String>[] values);
     private native boolean dbExporter(String databaseName, String exportDirectory, String[] ignoredTables);
     private native boolean dbImporter(String dbPath, String fileContents, String[] ignoredTables);
-    private native Medication getMedHistory(String dbPath, long medId, Class<Medication> medicationClass);
-    private native Medication getMedicationById(String dbPath, long medId, Class<Medication> medicationClass);
+    private native Medication getMedHistory(String dbPath, long medId, Class<Medication> medicationClass, Class<Dose> doseClass);
+    private native Medication getMedicationById(String dbPath, long medId, Class<Medication> medicationClass, Class<Dose> doseClass);
     private native boolean exportMedHistory(String dbPath, String exportPath, Pair<String, String[]>[] data);
     private native Dose findDose(String dbPath, long medicationId, String doseTime, Medication med);
-    private native Dose getDoseById(String dbPath, long doseId, Medication med);
+    private native Dose getDoseById(String dbPath, long doseId, Medication med, Class<Dose> doseClass);
     private native boolean updateDose(String dbPath, Dose dose);
     private native long stashNotification(String dbPath, Notification notification);
     private native void deleteNotification(String dbPath, long notificationId);

@@ -471,7 +471,6 @@ Medication DatabaseController::getMedicationHistory(long medicationId) {
     while (currentParent != nullptr) {
         vector<Dose> parentDoses = getTakenDoses(currentParent->id);
 
-        // Add parent doses to the main list
         medication.doses.insert(
                 medication.doses.end(),
                 parentDoses.begin(),
@@ -487,7 +486,7 @@ Medication DatabaseController::getMedicationHistory(long medicationId) {
 vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
     string query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE
                    + " WHERE " + MED_ID + "=" + to_string(medicationId)
-                   + " AND " + TAKEN + " = TRUE";
+                   + " AND " + TAKEN + " = '1'";
     vector<Dose> doses = {};
 
     Table *table = manager.execSqlWithReturn(query);
