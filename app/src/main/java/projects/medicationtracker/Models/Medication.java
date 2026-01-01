@@ -59,7 +59,7 @@ public class Medication implements Cloneable, Parcelable {
         startDate = firstDate;
         medDosage = dosage;
         alias = medAlias != null ? medAlias : "";
-        doses = new Dose[]{ new Dose() };
+        doses = new Dose[]{};
     }
 
     /**
@@ -95,7 +95,7 @@ public class Medication implements Cloneable, Parcelable {
         startDate = LocalDateTime.parse(firstDate, formatter);
         medDosage = dosage;
         alias = medAlias != null ? medAlias : "";
-        doses = new Dose[]{ new Dose() };
+        doses = new Dose[]{};
     }
 
     /**
@@ -111,7 +111,7 @@ public class Medication implements Cloneable, Parcelable {
         startDate = LocalDateTime.now();
         medDosage = 0;
         alias = "";
-        doses = new Dose[]{ new Dose() };
+        doses = new Dose[]{};
         active = true;
         remainingAmountNotification = -1;
         doseAmount = -1;

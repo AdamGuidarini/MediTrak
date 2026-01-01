@@ -207,7 +207,7 @@ public:
      * One element from each record will be added to the row corresponding to its key
      * @param data Data to export - The first row of the file will consist of the keys of the data map
      */
-    void exportCsv(const string& exportPath, map<string, vector<string>> data);
+    static void exportCsv(const string& exportPath, map<string, vector<string>> data);
 
     /**
      * Retrieves a Medication from the database

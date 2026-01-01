@@ -34,7 +34,7 @@
     <string name="err_provide_name">Please provide a name</string>
     <string name="err_enter_dosage">Please enter a dosage</string>
     <string name="err_units_for_med">Please enter the units for this medication</string>
-    <string name="err_select_frequency">Выберите тип частоты приёма</string>
+    <string name="err_select_frequency">Please select a frequency type</string>
     <string name="err_select_time">Please select a time</string>
     <string name="err_select_start_date">Please select a start date.</string>
     <string name="err_enter_num_timers_per_day">Please enter the number of times this medication is taken in a day</string>
@@ -44,7 +44,7 @@
     <string name="err_missing_file_name">Missing file name</string>
     <string name="err_file_must_be_json">Export file must have a .json extension</string>
     <string name="err_required">Required</string>
-    <string name="err_file_access_denied">Доступ к этому файлу запрещён</string>
+    <string name="err_file_access_denied">Access to this file was denied</string>
     <!-- Time formats -->
     <string name="date_format">Mmm dd, yyyy</string>
     <string name="time_format_hh_mm_aa">hh:mm aa</string>
@@ -67,24 +67,29 @@
     <string name="cannot_take_more_than_hours">Cannot take medications more than %1$d hours in advance</string>
     <string name="as_needed_dose">As Needed Dose</string>
     <string name="welcome">Welcome to MediTrak!</string>
-    <string name="warranty_info">        Это приложение предназначено для помощи в отслеживании приёма препаратов. Оно не предназначено для предоставления медицинских рекомендаций, и никакая информация, предоставляемая этим приложением, не должна быть истолкована как таковая. Создатели этого приложения не несут ответственности за пропущенные вами приёмы препаратов по какой-либо причине. Если вам требуется медицинская помощь, обратитесь к врачу. Используя это приложение, вы соглашаетесь с вышеуказанными условиями, а также с условиями лицензии GPL версии 2,0, под которой оно выпущено.\n\n\n\n
-        Это приложение выпущено в соответствии с лицензией GNU Public License версии 2. Подробнее см. ниже:
+    <string name="warranty_info">        This application is meant to assist in keeping track of your medications. It is not intended
+        to provide medical advice and no information provided by this application should be misconstrued
+        as such. The creators of this application are not responsible for any missed
+        doses of your medications for any reason. If you require medical assistance, please contact a medical professional.
+        By using this application, you are agreeing to the aforementioned terms as well as those of the GPL version 2.0 license under
+        which it is released. \n\n\n\n
+        This application is released under the GNU Public License Version 2, see below for more details:
     </string>
     <string name="permission_needed">Permission Needed</string>
     <string name="exact_alarm_permission_request"><![CDATA[MediTrak needs access to Alarms & Reminders to ensure reminders ring at the desired time.\n\nAllow MediTrak to set alarms and reminders so you can receive timely notifications.]]></string>
     <!-- Add/EditMedication -->
-    <string name="add_medication">Добавить препарат</string>
+    <string name="add_medication">Add Medication</string>
     <string name="edit_medication">Edit Medication</string>
     <string name="delete_medication">Delete Medication</string>
     <string name="note_timestamp">Date: %1$s at: %2$s</string>
     <string name="note_edit_timestamp">Edited: %1$s at: %2$s</string>
     <string name="patient_changed">Patient changed from %1$s to %2$s\n</string>
     <string name="name_changed">Name changed from %1$s to %2$s\n</string>
-    <string name="removed_alias">Псевдоним %1$s удалён\n</string>
-    <string name="added_alias">Псевдоним %1$s добавлен\n</string>
-    <string name="changed_alias">Псевдоним изменён с %1$s на %2$s\n</string>
+    <string name="removed_alias">Alias %1$s removed\n</string>
+    <string name="added_alias">Alias %1$s added\n</string>
+    <string name="changed_alias">Alias changed from %1$s to %2$s\n</string>
     <string name="changed_dosage">Dosage changed from %1$s to %2$s\n</string>
-    <string name="frequency_changed">Частота приёма изменена с %1$s на %2$s\n</string>
+    <string name="frequency_changed">Frequency changed from %1$s to %2$s\n</string>
     <string name="times_per">Times per</string>
     <string name="patientIsMe">Me</string>
     <string name="patient">Patient</string>
@@ -92,11 +97,11 @@
     <string name="name">Name</string>
     <string name="medication_name">Medication Name</string>
     <string name="medication_dosage">Dosage</string>
-    <string name="medication_frequency">Частота приёма</string>
+    <string name="medication_frequency">Frequency</string>
     <string name="taken_every">Taken Every</string>
     <string name="units">Dosage Unit</string>
     <string name="taken">Taken</string>
-    <string name="frequency">Частота приёма</string>
+    <string name="frequency">Frequency</string>
     <string name="multiple_times_per_day">Multiple Times per Day</string>
     <string name="as_needed">As Needed</string>
     <string name="daily">Daily</string>
@@ -106,24 +111,24 @@
     <string name="who_takes_this_medication">Who takes this medication?</string>
     <string name="someone_else">Someone else</string>
     <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[What is the medication\'s name & how much is taken?]]></string>
-    <string name="alias_for_notifications">Псевдоним для препаратов</string>
+    <string name="alias_for_notifications">Alias for notifications</string>
     <string name="how_often_is_the_medication_taken">How often is the medication taken?</string>
     <string name="start_date">Start Date</string>
     <string name="taken_at">Taken at</string>
     <string name="unit_of_time">Unit of Time</string>
-    <string name="custom_frequency">Пользовательская частота приёма</string>
+    <string name="custom_frequency">Custom Frequency</string>
     <string name="times_per_day">Times per day</string>
     <string name="starting">Starting:</string>
-    <string name="alias_for_medication">Псевдоним для препарата</string>
+    <string name="alias_for_medication">Alias for medication</string>
     <string name="yourMedications">Your Medications:</string>
     <string name="no_notes_for_this_medication">No notes for this medication</string>
     <string name="unitExample">Ex. mg, g, drops</string>
     <string name="patient_name">Patient Name:</string>
-    <string name="no_alias">Без псевдонима</string>
+    <string name="no_alias">No alias</string>
     <string name="at">at</string>
     <string name="apply_retroactive">Apply Changes Retroactively</string>
-    <string name="retroactive_warning">Внимание: изменение частоты приема может привести к тому, что предыдущие приёмы не будут отображаться на графике.</string>
-    <string name="would_like_apply_retroactively">Изменения в дозировке и частоте приема могут быть применены задним числом, начиная с момента предыдущего изменения. Применить изменения задним числом?</string>
+    <string name="retroactive_warning">Warning: Changes to frequency may cause previously taken doses to no longer be visible in the schedule.</string>
+    <string name="would_like_apply_retroactively">Changes to dosage and frequency can be applied retroactively as of the previous change. Would you like to apply these changes retroactively?</string>
     <string name="instructions">Instructions</string>
     <string name="instructions_optional">Instructions (Optional)</string>
     <string name="instructions_added">Added instructions: %1$s</string>
@@ -147,29 +152,36 @@
     <string name="dosage">Dosage: %1$s %2$s</string>
     <string name="taken_daily_at">Taken daily at </string>
     <string name="taken_every_lbl">Taken every </string>
-    <string name="alias_lbl">Псевдоним</string>
+    <string name="alias_lbl">Alias</string>
     <string name="taken_since">Taken since: %1$s</string>
     <string name="taken_as_needed">Taken as needed.</string>
     <!-- Notes -->
     <string name="notes">Notes</string>
-    <string name="add_note">Добавить примечание</string>
+    <string name="add_note">Add Note</string>
     <string name="edit_note">Edit Note</string>
     <!-- Settings Activity -->
-    <string name="settings">Настройки</string>
-    <string name="options">Настройки</string>
+    <string name="settings">Settings</string>
+    <string name="options">Options</string>
     <string name="license">License</string>
     <string name="purpose">MediTrak is a free and open source application designed to help you keep track of your medications, so you can more easily answer the question \"did I take my medication yesterday?\"</string>
     <string name="copyright">Copyright © 2022 Adam Guidarini</string>
     <string name="licenseInfo">MediTrak is free software and may be redistributed and/or modified under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 or (at your option) later.</string>
-    <string name="warranty">        Эта программа является свободным программным обеспечением; вы можете распространять и/или изменять её в соответствии с условиями GNU General Public License, опубликованной Free Software Foundation; как версии 2, так и (по вашему выбору) любой более поздней версии.
+    <string name="warranty">        This program is free software; you can redistribute it and/or
+        modify it under the terms of the GNU General Public License
+        as published by the Free Software Foundation; either version 2
+        of the License, or (at your option) any later version.
 
-        Эта программа распространяется в надежде на то, что она будет вам полезна, но БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ; в том числе без подразумеваемых гарантий ТОВАРНОЙ ПРИГОДНОСТИ или ПРИГОДНОСТИ ДЛЯ КОНКРЕТНОЙ ЦЕЛИ. Подробнее см. в GNU General Public License.
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
     </string>
-    <string name="copyOfGPL2">        Вы должны были получить копию GNU General Public License вместе с этой программой. Если же нет, вы можете найти её на https://www.gnu.org/licenses/.
+    <string name="copyOfGPL2">        You should have received a copy of the GNU General Public License
+        along with this program; if not, see https://www.gnu.org/licenses/.
     </string>
     <string name="cannot_take_medication_more_than">Cannot take medication more than</string>
     <string name="hours_in_advance">hours in advance</string>
-    <string name="title_activity_settings">Настройки</string>
+    <string name="title_activity_settings">Settings</string>
     <string name="delete_all">Delete All</string>
     <string name="pause_medication">Pause Medication</string>
     <string name="resume_medication">Resume Medication</string>
@@ -177,10 +189,10 @@
     <string name="resume_message">Resuming %1$s will restore it to your schedule. Are you sure you want to proceed?</string>
     <string name="enable_notifications">Enable Notifications</string>
     <string name="disable_time_before_dose_requirement">Disable time in advance limit</string>
-    <string name="theme">Тема</string>
+    <string name="theme">Theme</string>
     <string name="light_mode">Light mode</string>
     <string name="dark_mode">Dark mode</string>
-    <string name="match_system_theme">Системные настройки по умолчанию</string>
+    <string name="match_system_theme">System default</string>
     <string name="number_of_hours_before_dose_can_be_taken">Limit before which medication cannot be taken:</string>
     <string name="export">Export</string>
     <string name="importData">Import</string>
@@ -191,24 +203,24 @@
     <string name="documents">Documents</string>
     <string name="export_data">Export Data</string>
     <string name="successful_export">Successfully exported data to: %1$s</string>
-    <string name="import_success">Успешно импортировал %1$s</string>
+    <string name="import_success">Successfully imported data</string>
     <string name="failed_export">Data could not be exported</string>
     <string name="failed_import">Failed to import data</string>
     <string name="could_not_retrieve_file">Could not retrieve import file</string>
     <string name="notifications_already_enabled">Notifications are already enabled</string>
-    <string name="date_format_title">Формат времени</string>
+    <string name="date_format_title">Date Format</string>
     <string name="date_format_mm_dd_yyyy">MM/DD/YYYY</string>
     <string name="date_format_dd_mm_yyyy">DD/MM/YYYY</string>
-    <string name="time_format">Формат даты</string>
-    <string name="hour_12">12-часовой</string>
-    <string name="hour_24">24-часовой</string>
-    <string name="language">Язык интерфейса</string>
+    <string name="time_format">Time Format</string>
+    <string name="hour_12">12 Hour</string>
+    <string name="hour_24">24 Hour</string>
+    <string name="language">Language</string>
     <string name="schedule_export">Schedule Export</string>
     <string name="notifications">Notifications</string>
     <string name="manage_exact_alarms">Manage Exact Alarms</string>
     <!-- Schedule Export Dialog -->
     <string name="export_now">Export now</string>
-    <string name="export_frequency">Экспортировать частоту приёма</string>
+    <string name="export_frequency">Export Frequency</string>
     <string name="date_must_be_future">Date must be in the future</string>
     <!-- Dose Info dialog -->
     <string name="not_taken_yet">Not yet taken</string>
@@ -227,7 +239,7 @@
     <string name="snooze_message">Snooze</string>
     <string name="its_time_your_med">It\'s time to take your %1$s of %2$s</string>
     <string name="time_for_other_med">It\'s time for %1$s\'s %2$s of %3$s</string>
-    <string name="add_dose">Добавить дозу</string>
+    <string name="add_dose">Add Dose</string>
     <string name="open_notifications">Open Notifications</string>
     <string name="skip_unselected">Skip Unselected</string>
     <string name="take_all">Take All</string>
