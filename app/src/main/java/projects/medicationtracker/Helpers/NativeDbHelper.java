@@ -141,7 +141,8 @@ public class NativeDbHelper {
                 dbPath,
                 medicationId,
                 TimeFormatting.localDateTimeToDbString(doseTime),
-                new Medication()
+                new Medication(),
+                Dose.class
         );
     }
 
@@ -216,7 +217,7 @@ public class NativeDbHelper {
     private native Medication getMedHistory(String dbPath, long medId, Class<Medication> medicationClass, Class<Dose> doseClass);
     private native Medication getMedicationById(String dbPath, long medId, Class<Medication> medicationClass, Class<Dose> doseClass);
     private native boolean exportMedHistory(String dbPath, String exportPath, Pair<String, String[]>[] data);
-    private native Dose findDose(String dbPath, long medicationId, String doseTime, Medication med);
+    private native Dose findDose(String dbPath, long medicationId, String doseTime, Medication med, Class<Dose> doseClass);
     private native Dose getDoseById(String dbPath, long doseId, Medication med, Class<Dose> doseClass);
     private native boolean updateDose(String dbPath, Dose dose);
     private native long stashNotification(String dbPath, Notification notification);

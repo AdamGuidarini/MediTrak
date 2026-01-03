@@ -114,7 +114,7 @@
     <string name="alias_for_notifications">Alias voor meldingen</string>
     <string name="how_often_is_the_medication_taken">Hoe vaak wordt de medicatie ingenomen?</string>
     <string name="start_date">Startdatum</string>
-    <string name="taken_at">Genomen op</string>
+    <string name="taken_at">Tijd</string>
     <string name="unit_of_time">Tijdseenheid</string>
     <string name="custom_frequency">Aangepaste frequentie</string>
     <string name="times_per_day">Aantal keer per dag</string>
