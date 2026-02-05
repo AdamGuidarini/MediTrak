@@ -97,19 +97,24 @@ void DbManager::closeDb() { sqlite3_close(db); }
 
 int DbManager::getVersionNumber() {
     sqlite3_stmt *stmt;
-    int version;
+    int version = 0;
     string query = "PRAGMA schema_version;";
     int rc;
 
     rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
-    sqlite3_step(stmt);
-
 
     if (rc != SQLITE_OK) {
-        throw runtime_error("An error occurred while querying schema_version");
+        throw runtime_error("Failed to prepare schema_version query: " + string(sqlite3_errmsg(db)));
     }
 
-    version = atoi(reinterpret_cast<const char *>(sqlite3_column_text(stmt, 0)));
+    rc = sqlite3_step(stmt);
+
+    if (rc == SQLITE_ROW) {
+        version = sqlite3_column_int(stmt, 0);
+    } else {
+        sqlite3_finalize(stmt);
+        throw runtime_error("An error occurred while querying schema_version: step returned " + to_string(rc));
+    }
 
     sqlite3_finalize(stmt);
 

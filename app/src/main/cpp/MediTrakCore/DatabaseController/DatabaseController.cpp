@@ -11,11 +11,12 @@ DatabaseController::DatabaseController(string path) {
 
     manager.openDb();
 
-    int currentVersion;
+    int currentVersion = 0;
 
     for (int i = 0; i < 5; i++) {
         try {
             currentVersion = manager.getVersionNumber();
+            break;
         } catch (exception &e) {
             string err = "Failed to retrieve version number.";
 
@@ -462,7 +463,7 @@ Medication DatabaseController::getMedication(long medicationId) {
 }
 
 Medication DatabaseController::getMedicationHistory(long medicationId) {
-    Medication medication = getMedication(medicationId);
+    Medication medication = getMedication( medicationId );
 
     medication.doses = getTakenDoses(medication.id);
 
