@@ -97,19 +97,24 @@ void DbManager::closeDb() { sqlite3_close(db); }
 
 int DbManager::getVersionNumber() {
     sqlite3_stmt *stmt;
-    int version;
+    int version = 0;
     string query = "PRAGMA schema_version;";
     int rc;
 
     rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
-    sqlite3_step(stmt);
-
 
     if (rc != SQLITE_OK) {
-        throw runtime_error("An error occurred while querying schema_version");
+        throw runtime_error("An error occurred while preparing schema_version query");
     }
 
-    version = atoi(reinterpret_cast<const char *>(sqlite3_column_text(stmt, 0)));
+    rc = sqlite3_step(stmt);
+
+    if (rc == SQLITE_ROW) {
+        version = sqlite3_column_int(stmt, 0);
+    } else {
+        sqlite3_finalize(stmt);
+        throw runtime_error("An error occurred while querying schema_version: " + to_string(rc));
+    }
 
     sqlite3_finalize(stmt);
 
@@ -165,12 +170,15 @@ long DbManager::insert(const string &table, map<string, string> values) {
     execSql(query.str());
 
     sqlite3_prepare_v2(db, "SELECT last_insert_rowid()", -1, &stmt, nullptr);
-    sqlite3_step(stmt);
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        string colName = string(reinterpret_cast<const char *>(sqlite3_column_name(stmt, 0)));
 
-    string colName = string(reinterpret_cast<const char *>(sqlite3_column_name(stmt, 0)));
-
-    if (colName == "last_insert_rowid()") {
-        rowId = stol(reinterpret_cast<const char *>(sqlite3_column_text(stmt, 0)));
+        if (colName == "last_insert_rowid()") {
+            const char* text = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 0));
+            if (text) {
+                rowId = stol(text);
+            }
+        }
     }
 
     sqlite3_finalize(stmt);
