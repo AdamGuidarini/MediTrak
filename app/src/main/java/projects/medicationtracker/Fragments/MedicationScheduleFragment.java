@@ -175,6 +175,10 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     private void createSchedule() {
         LinearLayout checkBoxHolder = rootView.findViewById(R.id.medicationSchedule);
         LinearLayout asNeededList = rootView.findViewById(R.id.asNeededViews);
+
+        checkBoxHolder.removeAllViews();
+        asNeededList.removeAllViews();
+
         MaterialTextView dayLabel = rootView.findViewById(R.id.dateLabel);
         LocalDate thisSunday = TimeFormatting.whenIsSunday(dayInCurrentWeek);
         ArrayList<RelativeLayout> scheduledMeds = new ArrayList<>();
