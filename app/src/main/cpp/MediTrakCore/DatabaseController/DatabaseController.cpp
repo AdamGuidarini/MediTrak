@@ -6,16 +6,13 @@
 
 using namespace std;
 
-DatabaseController::DatabaseController(string path) {
-    manager = DbManager(std::move(path), true);
-
-    manager.openDb();
-
-    int currentVersion;
+DatabaseController::DatabaseController(string path) : manager(std::move(path), true) {
+    int currentVersion = 0;
 
     for (int i = 0; i < 5; i++) {
         try {
             currentVersion = manager.getVersionNumber();
+            break;
         } catch (exception &e) {
             string err = "Failed to retrieve version number.";
 
