@@ -60,6 +60,7 @@ public class MyMedications extends BaseActivity {
         final TextInputLayout namesLayout = findViewById(R.id.names_layout);
         final MaterialAutoCompleteTextView namesSelector = findViewById(R.id.nameSpinner);
         final LinearLayout myMedsLayout = findViewById(R.id.medLayout);
+        final LinearLayout inactiveMedsLayout = findViewById(R.id.medLayoutInactive);
 
         ArrayList<String> patientNames = db.getPatients();
         ArrayList<Pair<String, ArrayList<Medication>>> allMeds = new ArrayList<>();
@@ -69,7 +70,7 @@ public class MyMedications extends BaseActivity {
                     m -> m.getChild() == null
             ).collect(Collectors.toCollection(ArrayList::new));
 
-            if (meds.size() > 0) {
+            if (!meds.isEmpty()) {
                 allMeds.add(new Pair<>(patient, meds));
             }
         }
@@ -115,15 +116,24 @@ public class MyMedications extends BaseActivity {
                     String selected = s.toString();
                     final String patient = selected.equals(you) ? "ME!" : selected;
 
-                    ArrayList<Medication> patientMeds = allMedsClone.stream().filter(
-                            m -> m.getFirst().equals(patient)
-                    ).map(Pair::getSecond).collect(Collectors.toList()).get(0);
+                    ArrayList<Medication> patientMeds = allMedsClone.stream()
+                            .filter(m -> m.getFirst().equals(patient))
+                            .map(Pair::getSecond)
+                            .collect(Collectors.toList())
+                            .stream()
+                            .findFirst()
+                            .orElse(null);
 
-                    for (Medication medication : patientMeds) {
-                        if (medication.getChild() != null) continue;
-
-                        createMyMedCards(medication, myMedsLayout);
+                    if (patientMeds == null) {
+                        return;
                     }
+
+                    patientMeds.stream()
+                            .filter(med -> med.getChild() == null)
+                            .forEach(med -> createMyMedCards(
+                                    med,
+                                    med.isActive() ? myMedsLayout : inactiveMedsLayout
+                            ));
 
                     namesSelector.clearFocus();
                 }
@@ -132,7 +142,7 @@ public class MyMedications extends BaseActivity {
             if (Arrays.asList(patients).contains(you)) {
                 namesSelector.setText(you, false);
             } else {
-                namesSelector.setText(adapter.getItem(0).toString(), false);
+                namesSelector.setText(adapter.getItem(0), false);
             }
         }
 
