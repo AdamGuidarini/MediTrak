@@ -1,6 +1,11 @@
 package projects.medicationtracker;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,8 +19,11 @@ import android.widget.TextView;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentContainerView;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.color.MaterialColors;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -32,6 +40,10 @@ import projects.medicationtracker.Views.StandardCardView;
 
 public class MyMedications extends BaseActivity {
     DBHelper db = new DBHelper(this);
+
+    private MaterialButton activeButton;
+    private MaterialButton inactiveButton;
+    private boolean activeSelected = true;
 
     /**
      * Creates MyMedications
@@ -52,15 +64,18 @@ public class MyMedications extends BaseActivity {
             return;
         else {
             TextView noMeds = findViewById(R.id.noMyMeds);
-            noMeds.setVisibility(View.GONE);
+            noMeds.setVisibility(GONE);
             ScrollView scrollMyMeds = findViewById(R.id.scrollMyMeds);
-            scrollMyMeds.setVisibility(View.VISIBLE);
+            scrollMyMeds.setVisibility(VISIBLE);
         }
 
         final TextInputLayout namesLayout = findViewById(R.id.names_layout);
         final MaterialAutoCompleteTextView namesSelector = findViewById(R.id.nameSpinner);
         final LinearLayout myMedsLayout = findViewById(R.id.medLayout);
         final LinearLayout inactiveMedsLayout = findViewById(R.id.medLayoutInactive);
+
+        activeButton = findViewById(R.id.active_button);
+        inactiveButton = findViewById(R.id.inactive_button);
 
         ArrayList<String> patientNames = db.getPatients();
         ArrayList<Pair<String, ArrayList<Medication>>> allMeds = new ArrayList<>();
@@ -101,7 +116,7 @@ public class MyMedications extends BaseActivity {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, patients);
             namesSelector.setAdapter(adapter);
 
-            namesLayout.setVisibility(View.VISIBLE);
+            namesLayout.setVisibility(VISIBLE);
 
             final ArrayList<Pair<String, ArrayList<Medication>>> allMedsClone = (ArrayList<Pair<String, ArrayList<Medication>>>) allMeds.clone();
 
@@ -145,6 +160,24 @@ public class MyMedications extends BaseActivity {
                 namesSelector.setText(adapter.getItem(0), false);
             }
         }
+
+        activeButton.setOnClickListener(
+                (view) -> {
+                    setActive(true);
+                    myMedsLayout.setVisibility(VISIBLE);
+                    inactiveMedsLayout.setVisibility(GONE);
+                }
+        );
+
+        inactiveButton.setOnClickListener(
+                (view) -> {
+                    setActive(false);
+                    myMedsLayout.setVisibility(GONE);
+                    inactiveMedsLayout.setVisibility(VISIBLE);
+                }
+        );
+
+        setActive(true);
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -202,5 +235,21 @@ public class MyMedications extends BaseActivity {
                 .setReorderingAllowed(true)
                 .add((int) medication.getId(), MyMedicationsFragment.class, bundle)
                 .commit();
+    }
+
+    private void setActive(boolean isActive) {
+        int primaryColor = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.BLACK);
+        int onPrimaryColor = MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnPrimary, Color.WHITE);
+
+        MaterialButton selected = isActive ? activeButton : inactiveButton;
+        selected.setStrokeWidth(0);
+        selected.setBackgroundTintList(ColorStateList.valueOf(primaryColor));
+        selected.setTextColor(onPrimaryColor);
+
+        MaterialButton unselected = isActive ? inactiveButton : activeButton;
+        unselected.setStrokeWidth(3);
+        unselected.setStrokeColor(ColorStateList.valueOf(primaryColor));
+        unselected.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
+        unselected.setTextColor(primaryColor);
     }
 }

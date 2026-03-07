@@ -68,20 +68,32 @@
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp">
-            <com.google.android.material.textview.MaterialTextView
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="=Active="
-                android:textStyle="bold"
-                android:textSize="18sp"/>
-            <com.google.android.material.textview.MaterialTextView
+                android:gravity="center"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/active_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:text="=Active=" />
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="=Inactive="
-                android:textStyle="bold"
-                android:textSize="18sp"/>
+                android:gravity="center"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/inactive_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:text="=Inactive=" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
