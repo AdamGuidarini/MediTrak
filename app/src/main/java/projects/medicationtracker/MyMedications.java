@@ -158,6 +158,8 @@ public class MyMedications extends BaseActivity {
                     if (inactiveLayout.getChildCount() > 0) {
                         activeToggleLayout.setVisibility(VISIBLE);
                     }
+
+                    setActive(activeLayout.getChildCount() > 0);
                 }
             });
 
