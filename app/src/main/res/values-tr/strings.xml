@@ -151,6 +151,8 @@
     <string name="alias_lbl">Takma ad</string>
     <string name="taken_since">Şu tarihten beri alınıyor: %1$s</string>
     <string name="taken_as_needed">İhtiyaç halinde alınır.</string>
+    <string name="active">Etkin</string>
+    <string name="inactive">Etkin olmayan</string>
     <!-- Notes -->
     <string name="notes">Notlar</string>
     <string name="add_note">Not Ekle</string>
