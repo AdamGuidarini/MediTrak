@@ -43,6 +43,8 @@ public class MyMedications extends BaseActivity {
     private MaterialButton inactiveButton;
     private LinearLayout activeLayout;
     private LinearLayout inactiveLayout;
+    private ScrollView scrollMyMeds;
+    private TextView noMeds;
 
     /**
      * Creates MyMedications
@@ -63,8 +65,8 @@ public class MyMedications extends BaseActivity {
         String you = getString(R.string.you);
         ArrayList<Medication> allMeds = db.getAllMedications();
 
-        TextView noMeds = findViewById(R.id.noMyMeds);
-        ScrollView scrollMyMeds = findViewById(R.id.scrollMyMeds);
+        noMeds = findViewById(R.id.noMyMeds);
+        scrollMyMeds = findViewById(R.id.scrollMyMeds);
 
         if (allMeds.isEmpty())
             return;
@@ -264,6 +266,14 @@ public class MyMedications extends BaseActivity {
         unselected.setStrokeColor(ColorStateList.valueOf(primaryColor));
         unselected.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
         unselected.setTextColor(primaryColor);
+
+        if (isActive && activeLayout.getChildCount() == 0 && inactiveLayout.getChildCount() > 0) {
+            scrollMyMeds.setVisibility(GONE);
+            noMeds.setVisibility(VISIBLE);
+        } else {
+            scrollMyMeds.setVisibility(VISIBLE);
+            noMeds.setVisibility(GONE);
+        }
     }
 
     private void populateViews(ArrayList<Medication> patientMeds) {

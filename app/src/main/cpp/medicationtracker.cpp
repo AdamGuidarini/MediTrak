@@ -475,9 +475,7 @@ JNIEXPORT jobjectArray JNICALL
             jclass doseClass
 ) {
     std::string path = env->GetStringUTFChars(db_path, new jboolean(true));
-
     DatabaseController dbController(path);
-
     std::vector<Medication> meds;
 
     try {
@@ -499,18 +497,9 @@ JNIEXPORT jobjectArray JNICALL
     );
 
     for (int i = 0; i < meds.size(); i++) {
-        __android_log_write(ANDROID_LOG_DEBUG, "getAllMedications",
-                            ("Converting med: " + to_string(i)).c_str());
-
         jobject jmed = medicationToJavaConverter(meds.at(i), env, medClass, doseClass);
 
-        __android_log_write(ANDROID_LOG_DEBUG, "getAllMedications",
-                            ("jmed null: " + to_string(jmed == nullptr)).c_str());
-
         env->SetObjectArrayElement(jMeds, i, jmed);
-
-        __android_log_write(ANDROID_LOG_DEBUG, "getAllMedications",
-                            ("Set element: " + to_string(i)).c_str());
     }
 
     return jMeds;
