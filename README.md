@@ -12,7 +12,8 @@ MediTrak is an Android application designed to make it easier for users to keep 
 ## Installation
 
 [<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" height="90" alt="Get it on GitHub"/>](https://github.com/AdamGuidarini/MediTrak/releases)
-[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height=90 alt="Get it on IzzyOnDroid"/>](https://apt.izzysoft.de/fdroid/index/apk/projects.medicationtracker)
+[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="90" alt="Get it on IzzyOnDroid"/>](https://apt.izzysoft.de/fdroid/index/apk/projects.medicationtracker)
+[<img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height="90"/></a>](https://play.google.com/store/apps/details?id=projects.medicationtracker&hl=en&pli=1)
 
 ### GitHub
 
@@ -26,6 +27,7 @@ Thanks to [IzzySoft](https://github.com/IzzySoft), this app is available in the 
 ##### Adding the repository to the F-Droid App
 
 - Download [F-Droid](https://f-droid.org/) (if not already installed)
+
 - Navigate to "Settings"
 - Under the "My Apps" section, select "Repositories"
 - Click on the "+" button

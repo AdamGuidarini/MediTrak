@@ -217,6 +217,13 @@ public:
     Medication getMedication(long medicationId);
 
     /**
+     * Retrieves given medication or all medications if no ID is provided
+     * @param medId Sought medId if only 1 medication is desired
+     * @return all medications
+     */
+    vector<Medication> fetchMedications(long medId = -1);
+
+    /**
      * Retrieves a Medication from the database
      * @param medicationId ID of medication sought
      * @return Medication including data on its doses and potential parents/children

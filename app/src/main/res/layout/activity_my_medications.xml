@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MyMedications">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,14 +13,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/noMyMeds"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/no_medications_found" />
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/names_layout"
             android:layout_width="match_parent"
@@ -31,29 +22,83 @@
             android:layout_marginBottom="15dp"
             android:visibility="gone"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
-
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/nameSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
-
+        <TextView
+            android:id="@+id/noMyMeds"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/no_medications_found" />
         <ScrollView
             android:id="@+id/scrollMyMeds"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:visibility="gone"
             tools:visibility="gone">
-
             <LinearLayout
-                android:id="@+id/medLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
+                <LinearLayout
+                    android:id="@+id/med_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/med_layout_inactive"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                </LinearLayout>
             </LinearLayout>
         </ScrollView>
-
+        <LinearLayout
+            android:id="@+id/active_toggle_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:visibility="gone">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/active_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:text="@string/active" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/inactive_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:text="@string/inactive" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
