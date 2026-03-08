@@ -101,11 +101,7 @@ public class MyMedications extends BaseActivity {
         }
 
         if (patientMedPairs.size() == 1) {
-            for (Medication medication : allMeds) {
-                if (medication.getChild() != null) continue;
-
-                createMyMedCard(medication, activeLayout);
-            }
+            populateViews(allMeds);
         } else if (patientMedPairs.size() > 1) {
             String[] patients = patientMedPairs.stream().map(Pair::getFirst).map(p ->
                     Objects.equals(p, "ME!") ? getString(R.string.you) : p).toArray(String[]::new
