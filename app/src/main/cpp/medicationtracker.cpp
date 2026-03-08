@@ -424,7 +424,12 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getMedHistory(
     DatabaseController dbController(path);
 
     try {
-        return medicationToJavaConverter(dbController.getMedicationHistory(med_id), env, medClass, doseClass);
+        return medicationToJavaConverter(
+                dbController.getMedicationHistory(med_id),
+                env,
+                medClass,
+                doseClass
+        );
     } catch (exception e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, "Error retrieving history");
 
@@ -447,12 +452,68 @@ JNIEXPORT jobject JNICALL
     DatabaseController dbController(path);
 
     try {
-    return medicationToJavaConverter(dbController.getMedication(med_id), env, medClass, doseClass);
+        return medicationToJavaConverter(
+                dbController.getMedication(med_id),
+                env,
+                medClass,
+                doseClass
+        );
     } catch (exception e) {
-    __android_log_write(ANDROID_LOG_ERROR, nullptr, "Error retrieving history");
+        __android_log_write(ANDROID_LOG_ERROR, nullptr, "Error retrieving history");
 
-    return nullptr;
+        return nullptr;
     }
+}
+
+extern "C"
+JNIEXPORT jobjectArray JNICALL
+    Java_projects_medicationtracker_Helpers_NativeDbHelper_getAllMedications(
+            JNIEnv *env,
+            jobject thiz,
+            jstring db_path,
+            jclass medClass,
+            jclass doseClass
+) {
+    std::string path = env->GetStringUTFChars(db_path, new jboolean(true));
+
+    DatabaseController dbController(path);
+
+    std::vector<Medication> meds;
+
+    try {
+        meds = dbController.fetchMedications();
+    } catch (exception e) {
+        __android_log_write(
+                ANDROID_LOG_ERROR,
+                nullptr,
+                "Failed to retrieve medications"
+        );
+
+        meds = {};
+    }
+
+    jobjectArray jMeds = env->NewObjectArray(
+            meds.size(),
+            medClass,
+            nullptr
+    );
+
+    for (int i = 0; i < meds.size(); i++) {
+        jobject jmed = medicationToJavaConverter(
+                meds.at(i),
+                env,
+                medClass,
+                doseClass
+        );
+
+        env->SetObjectArrayElement(
+                jMeds,
+                i,
+                jmed
+        );
+    }
+
+    return jMeds;
 }
 
 extern "C"

@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -18,8 +17,6 @@ import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentContainerView;
 
 import com.google.android.material.button.MaterialButton;
@@ -29,21 +26,23 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import kotlin.Pair;
 import projects.medicationtracker.Fragments.MyMedicationsFragment;
-import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Views.StandardCardView;
 
 public class MyMedications extends BaseActivity {
-    DBHelper db = new DBHelper(this);
+    NativeDbHelper db;
 
     private MaterialButton activeButton;
     private MaterialButton inactiveButton;
-    private boolean activeSelected = true;
+    private LinearLayout activeLayout;
+    private LinearLayout inactiveLayout;
 
     /**
      * Creates MyMedications
@@ -54,57 +53,66 @@ public class MyMedications extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_medications);
+
+        db = new NativeDbHelper(this);
+
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.my_medications));
 
         String you = getString(R.string.you);
+        ArrayList<Medication> allMeds = db.getAllMedications();
 
-        if (db.numberOfRows() == 0)
+        TextView noMeds = findViewById(R.id.noMyMeds);
+        ScrollView scrollMyMeds = findViewById(R.id.scrollMyMeds);
+
+        if (allMeds.isEmpty())
             return;
         else {
-            TextView noMeds = findViewById(R.id.noMyMeds);
             noMeds.setVisibility(GONE);
-            ScrollView scrollMyMeds = findViewById(R.id.scrollMyMeds);
             scrollMyMeds.setVisibility(VISIBLE);
         }
 
         final TextInputLayout namesLayout = findViewById(R.id.names_layout);
         final MaterialAutoCompleteTextView namesSelector = findViewById(R.id.nameSpinner);
-        final LinearLayout myMedsLayout = findViewById(R.id.medLayout);
-        final LinearLayout inactiveMedsLayout = findViewById(R.id.medLayoutInactive);
+        final LinearLayout activeToggleLayout = findViewById(R.id.active_toggle_layout);
+
+        activeLayout = findViewById(R.id.med_layout);
+        inactiveLayout = findViewById(R.id.med_layout_inactive);
 
         activeButton = findViewById(R.id.active_button);
         inactiveButton = findViewById(R.id.inactive_button);
 
-        ArrayList<String> patientNames = db.getPatients();
-        ArrayList<Pair<String, ArrayList<Medication>>> allMeds = new ArrayList<>();
+        List<String> patientNames = allMeds.stream()
+                .map(Medication::getName)
+                .distinct()
+                .collect(Collectors.toList());
+
+        ArrayList<Pair<String, ArrayList<Medication>>> patientMedPairs = new ArrayList<>();
 
         for (String patient : patientNames) {
-            ArrayList<Medication> meds = db.getMedicationsForPatient(patient).stream().filter(
-                    m -> m.getChild() == null
-            ).collect(Collectors.toCollection(ArrayList::new));
+            ArrayList<Medication> meds = allMeds.stream()
+                    .filter(m -> m.getPatientName().equals(patient) && m.getChild() == null)
+                    .collect(Collectors.toCollection(ArrayList::new));
 
             if (!meds.isEmpty()) {
-                allMeds.add(new Pair<>(patient, meds));
+                patientMedPairs.add(new Pair<>(patient, meds));
             }
         }
 
         if (allMeds.size() == 1) {
-            ArrayList<Medication> patientMeds = db.getMedicationsForPatient(allMeds.get(0).getFirst());
-
-            for (Medication medication : patientMeds) {
+            for (Medication medication : allMeds) {
                 if (medication.getChild() != null) continue;
 
-                createMyMedCards(medication, myMedsLayout);
+                createMyMedCard(medication, activeLayout);
             }
         } else if (allMeds.size() > 1) {
-            String[] patients = allMeds.stream().map(Pair::getFirst).map(p ->
+            String[] patients = patientMedPairs.stream().map(Pair::getFirst).map(p ->
                     Objects.equals(p, "ME!") ? getString(R.string.you) : p).toArray(String[]::new
             );
 
-            if (allMeds.stream().allMatch(m -> m.getFirst().equals("ME!"))) {
-                allMeds = allMeds.stream().map(m -> {
+            if (patientMedPairs.stream().allMatch(m -> m.getFirst().equals("ME!"))) {
+                patientMedPairs = patientMedPairs.stream().map(m -> {
                     if (m.getFirst().equals("ME!")) {
                         m = new Pair<>(you, m.getSecond());
                     }
@@ -118,7 +126,7 @@ public class MyMedications extends BaseActivity {
 
             namesLayout.setVisibility(VISIBLE);
 
-            final ArrayList<Pair<String, ArrayList<Medication>>> allMedsClone = (ArrayList<Pair<String, ArrayList<Medication>>>) allMeds.clone();
+            final ArrayList<Pair<String, ArrayList<Medication>>> allMedsClone = (ArrayList<Pair<String, ArrayList<Medication>>>) patientMedPairs.clone();
 
             namesSelector.addTextChangedListener(new TextWatcher() {
                 @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -126,7 +134,9 @@ public class MyMedications extends BaseActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    myMedsLayout.removeAllViews();
+                    activeLayout.removeAllViews();
+                    inactiveLayout.removeAllViews();
+                    activeToggleLayout.setVisibility(GONE);
 
                     String selected = s.toString();
                     final String patient = selected.equals(you) ? "ME!" : selected;
@@ -143,14 +153,13 @@ public class MyMedications extends BaseActivity {
                         return;
                     }
 
-                    patientMeds.stream()
-                            .filter(med -> med.getChild() == null)
-                            .forEach(med -> createMyMedCards(
-                                    med,
-                                    med.isActive() ? myMedsLayout : inactiveMedsLayout
-                            ));
+                    populateViews(patientMeds);
 
                     namesSelector.clearFocus();
+
+                    if (inactiveLayout.getChildCount() > 0) {
+                        activeToggleLayout.setVisibility(VISIBLE);
+                    }
                 }
             });
 
@@ -164,20 +173,24 @@ public class MyMedications extends BaseActivity {
         activeButton.setOnClickListener(
                 (view) -> {
                     setActive(true);
-                    myMedsLayout.setVisibility(VISIBLE);
-                    inactiveMedsLayout.setVisibility(GONE);
+                    activeLayout.setVisibility(VISIBLE);
+                    inactiveLayout.setVisibility(GONE);
                 }
         );
 
         inactiveButton.setOnClickListener(
                 (view) -> {
                     setActive(false);
-                    myMedsLayout.setVisibility(GONE);
-                    inactiveMedsLayout.setVisibility(VISIBLE);
+                    activeLayout.setVisibility(GONE);
+                    inactiveLayout.setVisibility(VISIBLE);
                 }
         );
 
         setActive(true);
+
+        if (inactiveLayout.getChildCount() > 0) {
+            activeToggleLayout.setVisibility(VISIBLE);
+        }
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -218,7 +231,7 @@ public class MyMedications extends BaseActivity {
      * @param medication The Medication whose details will be displayed.
      * @param baseLayout The LinearLayout in which to place the card
      */
-    private void createMyMedCards(Medication medication, LinearLayout baseLayout) {
+    private void createMyMedCard(Medication medication, LinearLayout baseLayout) {
         StandardCardView thisMedCard = new StandardCardView(this);
         FragmentContainerView thisMedLayout = new FragmentContainerView(this);
         Bundle bundle = new Bundle();
@@ -238,8 +251,12 @@ public class MyMedications extends BaseActivity {
     }
 
     private void setActive(boolean isActive) {
-        int primaryColor = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.BLACK);
-        int onPrimaryColor = MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnPrimary, Color.WHITE);
+        int primaryColor = MaterialColors.getColor(
+                this, androidx.appcompat.R.attr.colorPrimary, Color.BLACK
+        );
+        int onPrimaryColor = MaterialColors.getColor(
+                this, com.google.android.material.R.attr.colorOnPrimary, Color.WHITE
+        );
 
         MaterialButton selected = isActive ? activeButton : inactiveButton;
         selected.setStrokeWidth(0);
@@ -251,5 +268,14 @@ public class MyMedications extends BaseActivity {
         unselected.setStrokeColor(ColorStateList.valueOf(primaryColor));
         unselected.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
         unselected.setTextColor(primaryColor);
+    }
+
+    private void populateViews(ArrayList<Medication> patientMeds) {
+        patientMeds.stream()
+                .filter(med -> med.getChild() == null)
+                .forEach(med -> createMyMedCard(
+                        med,
+                        med.isActive() ? activeLayout : inactiveLayout
+                ));
     }
 }

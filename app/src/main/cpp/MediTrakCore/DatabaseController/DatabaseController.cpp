@@ -404,58 +404,77 @@ void DatabaseController::exportCsv(const string &exportPath, map<string, vector<
 }
 
 Medication DatabaseController::getMedication(long medicationId) {
+    return fetchMedications(medicationId).at(0);
+}
+
+vector<Medication> DatabaseController::fetchMedications(
+        long medId
+) {
     string query = "SELECT * FROM " + MEDICATION_TABLE + " m "
                    + " LEFT JOIN " + MEDICATION_TIMES + " mt "
-                   + " ON " + "m." + MED_ID + "= mt." + MED_ID
-                   + " WHERE m." + MED_ID + "=" + to_string(medicationId);
-    Medication medication;
+                   + " ON " + "m." + MED_ID + "= mt." + MED_ID;
+
+    if (medId > -1) {
+        query += " WHERE m." + MED_ID + "=" + to_string(medId);
+    }
+
+    vector<Medication> medications;
     Table *table = manager.execSqlWithReturn(query);
-    long parentId = 0;
-    vector<string> times;
 
     table->moveToFirst();
 
-    medication = Medication(
-            table->getItem(MED_NAME),
-            table->getItem(PATIENT_NAME),
-            table->getItem(MED_UNITS),
-            {},
-            table->getItem(START_DATE),
-            stol(table->getItem(MED_ID)),
-            stof(table->getItem(MED_DOSAGE)),
-            stoi(table->getItem(MED_FREQUENCY)),
-            table->getItem(ACTIVE) == "1",
-            table->getItem(ALIAS),
-            stoi(table->getItem(QUANTITY)),
-            table->getItem(END_DATE),
-            stoi(table->getItem(NOTIFY_WHEN_REMAINING))
-    );
-
-    if (!table->getItem(PARENT_ID).empty()) {
-        parentId = stol(table->getItem(PARENT_ID));
-    }
-
     while (!table->isAfterLast()) {
-        string t = table->getItem(DRUG_TIME);
+        long parentId = 0;
+        vector<string> times;
 
-        if (!t.empty()) {
-            times.push_back(table->getItem(DRUG_TIME));
+        Medication medication = Medication(
+                table->getItem(MED_NAME),
+                table->getItem(PATIENT_NAME),
+                table->getItem(MED_UNITS),
+                {},
+                table->getItem(START_DATE),
+                stol(table->getItem(MED_ID)),
+                stof(table->getItem(MED_DOSAGE)),
+                stoi(table->getItem(MED_FREQUENCY)),
+                table->getItem(ACTIVE) == "1",
+                table->getItem(ALIAS),
+                stoi(table->getItem(QUANTITY)),
+                table->getItem(END_DATE),
+                stoi(table->getItem(NOTIFY_WHEN_REMAINING))
+        );
+
+        if (!table->getItem(PARENT_ID).empty()) {
+            parentId = stol(table->getItem(PARENT_ID));
         }
 
-        table->moveToNext();
-    }
+        while (!table->isAfterLast()) {
+            string t = table->getItem(DRUG_TIME);
 
-    medication.times = std::move(times);
+            if (!t.empty()) {
+                times.push_back(t);
+            }
+
+            table->moveToNext();
+
+            if (table->isAfterLast() || stol(table->getItem(MED_ID)) != medication.id) {
+                break;
+            }
+        }
+
+        medication.times = std::move(times);
+
+        if (parentId > 0) {
+            Medication parent = getMedication(parentId);
+            medication.parent = make_shared<Medication>(parent);
+            medication.parent->child = make_shared<Medication>(medication);
+        }
+
+        medications.push_back(medication);
+    }
 
     delete table;
 
-    if (parentId > 0) {
-        Medication parent = getMedication(parentId);
-        medication.parent = make_shared<Medication>(parent);
-        medication.parent->child = make_shared<Medication>(medication);
-    }
-
-    return medication;
+    return medications;
 }
 
 Medication DatabaseController::getMedicationHistory(long medicationId) {

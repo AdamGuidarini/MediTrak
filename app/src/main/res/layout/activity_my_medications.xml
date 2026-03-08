@@ -46,13 +46,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <LinearLayout
-                    android:id="@+id/medLayout"
+                    android:id="@+id/med_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                 </LinearLayout>
                 <LinearLayout
-                    android:id="@+id/medLayoutInactive"
+                    android:id="@+id/med_layout_inactive"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -61,13 +61,15 @@
             </LinearLayout>
         </ScrollView>
         <LinearLayout
+            android:id="@+id/active_toggle_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:baselineAligned="false"
             android:gravity="center"
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="5dp">
+            android:layout_marginBottom="5dp"
+            android:visibility="gone">
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -76,10 +78,10 @@
                 android:layout_weight="1">
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/active_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:text="=Active=" />
+                    android:text="@string/active" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="0dp"
@@ -89,10 +91,10 @@
                 android:layout_weight="1">
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/inactive_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:text="=Inactive=" />
+                    android:text="@string/inactive" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
