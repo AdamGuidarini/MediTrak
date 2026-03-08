@@ -410,9 +410,9 @@ Medication DatabaseController::getMedication(long medicationId) {
 vector<Medication> DatabaseController::fetchMedications(
         long medId
 ) {
-    string query = "SELECT * FROM " + MEDICATION_TABLE + " m "
+    string query = "SELECT m.*, mt.*, m." + MED_ID + " AS med_primary_id FROM " + MEDICATION_TABLE + " m "
                    + " LEFT JOIN " + MEDICATION_TIMES + " mt "
-                   + " ON " + "m." + MED_ID + "= mt." + MED_ID;
+                   + " ON m." + MED_ID + " = mt." + MED_ID;
 
     if (medId > -1) {
         query += " WHERE m." + MED_ID + "=" + to_string(medId);
@@ -433,7 +433,7 @@ vector<Medication> DatabaseController::fetchMedications(
                 table->getItem(MED_UNITS),
                 {},
                 table->getItem(START_DATE),
-                stol(table->getItem(MED_ID)),
+                stol(table->getItem("med_primary_id")),
                 stof(table->getItem(MED_DOSAGE)),
                 stoi(table->getItem(MED_FREQUENCY)),
                 table->getItem(ACTIVE) == "1",
@@ -456,7 +456,7 @@ vector<Medication> DatabaseController::fetchMedications(
 
             table->moveToNext();
 
-            if (table->isAfterLast() || stol(table->getItem(MED_ID)) != medication.id) {
+            if (table->isAfterLast() || stol(table->getItem("med_primary_id")) != medication.id) {
                 break;
             }
         }

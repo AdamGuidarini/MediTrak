@@ -84,7 +84,7 @@ public class MyMedications extends BaseActivity {
         inactiveButton = findViewById(R.id.inactive_button);
 
         List<String> patientNames = allMeds.stream()
-                .map(Medication::getName)
+                .map(Medication::getPatientName)
                 .distinct()
                 .collect(Collectors.toList());
 
@@ -100,13 +100,13 @@ public class MyMedications extends BaseActivity {
             }
         }
 
-        if (allMeds.size() == 1) {
+        if (patientMedPairs.size() == 1) {
             for (Medication medication : allMeds) {
                 if (medication.getChild() != null) continue;
 
                 createMyMedCard(medication, activeLayout);
             }
-        } else if (allMeds.size() > 1) {
+        } else if (patientMedPairs.size() > 1) {
             String[] patients = patientMedPairs.stream().map(Pair::getFirst).map(p ->
                     Objects.equals(p, "ME!") ? getString(R.string.you) : p).toArray(String[]::new
             );
