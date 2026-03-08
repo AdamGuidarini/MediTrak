@@ -136,6 +136,10 @@ public class NativeDbHelper {
         return getMedicationById(dbPath, medId, Medication.class, Dose.class);
     }
 
+    public ArrayList<Medication> getAllMedications() {
+        return new ArrayList<>(Arrays.asList(getAllMedications(dbPath, Medication.class, Dose.class)));
+    }
+
     public Dose findDose(long medicationId, LocalDateTime doseTime) {
         return findDose(
                 dbPath,
@@ -145,7 +149,6 @@ public class NativeDbHelper {
                 Dose.class
         );
     }
-
     public Dose getDoseById(long doseId) {
         return getDoseById(dbPath, doseId, new Medication(), Dose.class);
     }
@@ -216,6 +219,7 @@ public class NativeDbHelper {
     private native boolean dbImporter(String dbPath, String fileContents, String[] ignoredTables);
     private native Medication getMedHistory(String dbPath, long medId, Class<Medication> medicationClass, Class<Dose> doseClass);
     private native Medication getMedicationById(String dbPath, long medId, Class<Medication> medicationClass, Class<Dose> doseClass);
+    private native Medication[] getAllMedications(String dbPath, Class<Medication> medicationClass, Class<Dose> doseClass);
     private native boolean exportMedHistory(String dbPath, String exportPath, Pair<String, String[]>[] data);
     private native Dose findDose(String dbPath, long medicationId, String doseTime, Medication med, Class<Dose> doseClass);
     private native Dose getDoseById(String dbPath, long doseId, Medication med, Class<Dose> doseClass);

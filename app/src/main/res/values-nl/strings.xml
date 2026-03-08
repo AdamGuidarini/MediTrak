@@ -113,8 +113,8 @@
     <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[Wat is de naam van het medicijn en hoeveel wordt er ingenomen?]]></string>
     <string name="alias_for_notifications">Alias voor meldingen</string>
     <string name="how_often_is_the_medication_taken">Hoe vaak wordt de medicatie ingenomen?</string>
-    <string name="start_date">Startdatum</string>
-    <string name="taken_at">Tijd</string>
+    <string name="start_date">Datum</string>
+    <string name="taken_at">Uur</string>
     <string name="unit_of_time">Tijdseenheid</string>
     <string name="custom_frequency">Aangepaste frequentie</string>
     <string name="times_per_day">Aantal keer per dag</string>
@@ -155,6 +155,8 @@
     <string name="alias_lbl">Alias</string>
     <string name="taken_since">Gemaakt sinds: %1$s</string>
     <string name="taken_as_needed">Indien nodig innemen.</string>
+    <string name="active">Actief</string>
+    <string name="inactive">Inactief</string>
     <!-- Notes -->
     <string name="notes">Notities</string>
     <string name="add_note">Notitie toevoegen</string>
