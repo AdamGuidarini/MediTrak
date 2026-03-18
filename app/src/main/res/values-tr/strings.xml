@@ -147,7 +147,7 @@
     <string name="med_name">İlaç adı: %1$s</string>
     <string name="dosage">Doz: %1$s %2$s</string>
     <string name="taken_daily_at">Günlük olarak şu saatte alınır </string>
-    <string name="taken_every_lbl">Her alındığında </string>
+    <string name="taken_every_lbl">Her alındığında\u0020</string>
     <string name="alias_lbl">Takma ad</string>
     <string name="taken_since">Şu tarihten beri alınıyor: %1$s</string>
     <string name="taken_as_needed">İhtiyaç halinde alınır.</string>
