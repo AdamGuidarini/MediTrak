@@ -1766,7 +1766,7 @@ public class AddMedication extends BaseActivity implements IDialogCloseListener 
      * @return Notes for all changes made to medication or empty string
      */
     private String createChangesNote(Medication child, Medication parent) {
-        String note = "";
+        ArrayList<String> notes = new ArrayList<>();
 
         if (!child.getPatientName().equals(parent.getPatientName())) {
             String patientChild = child.getPatientName();
@@ -1780,30 +1780,30 @@ public class AddMedication extends BaseActivity implements IDialogCloseListener 
                 patientParent = getString(R.string.you);
             }
 
-            note += getString(R.string.patient_changed, patientParent, patientChild);
+            notes.add(getString(R.string.patient_changed, patientParent, patientChild));
         }
 
         if (!child.getName().equals(parent.getName())) {
-            note += getString(R.string.name_changed, parent.getName(), child.getName());
+            notes.add(getString(R.string.name_changed, parent.getName(), child.getName()));
         }
 
         if (!child.getAlias().equals(parent.getAlias())) {
             if (child.getAlias().isEmpty() && !parent.getAlias().isEmpty()) {
-                note += getString(R.string.removed_alias, parent.getAlias());
+                notes.add(R.string.removed_alias, parent.getAlias());
             } else if (!child.getAlias().isEmpty() && parent.getAlias().isEmpty()) {
-                note += getString(R.string.added_alias, child.getAlias());
+                notes.add(getString(R.string.added_alias, child.getAlias()));
             } else {
-                note += getString(R.string.changed_alias, parent.getAlias(), child.getAlias());
+                notes.add(getString(R.string.changed_alias, parent.getAlias(), child.getAlias()));
             }
         }
 
         if (child.getDosage() != parent.getDosage() || !child.getDosageUnits().equals(parent.getDosageUnits())) {
             createClone = true;
 
-            note += getString(R.string.changed_dosage,
+            notes.add(getString(R.string.changed_dosage,
                     parent.getDosage() + " " + parent.getDosageUnits(),
                     child.getDosage() + " " + child.getDosageUnits()
-            );
+            ));
         }
 
         if (child.getFrequency() != parent.getFrequency() || !Arrays.equals(child.getTimes(), startingTimes)) {
@@ -1820,15 +1820,15 @@ public class AddMedication extends BaseActivity implements IDialogCloseListener 
                     preferences.getString(TIME_FORMAT)
             ).toLowerCase();
 
-            note += getString(R.string.frequency_changed, oldFreq, newFreq);
+            notes.add(getString(R.string.frequency_changed, oldFreq, newFreq));
         }
 
         if (medication.getInstructions() != null && !medication.getInstructions().isEmpty()) {
-            note += getString(R.string.instructions_added, medication.getInstructions());
+            notes.add(getString(R.string.instructions_added, medication.getInstructions()));
         }
 
         if (medication.getRemainingDosesCount() != parent.getRemainingDosesCount()) {
-            note += getString(R.string.dose_limit_added, String.valueOf(medication.getRemainingDosesCount()));
+            notes.add(getString(R.string.dose_limit_added, String.valueOf(medication.getRemainingDosesCount())));
         }
 
         if (medication.getEndDate() != parent.getEndDate()) {
@@ -1837,20 +1837,23 @@ public class AddMedication extends BaseActivity implements IDialogCloseListener 
             if (medication.getEndDate() == null) {
                 endString = "N/A";
             } else {
-                endString = TimeFormatting.localDateTimeToDbString(medication.getEndDate());
+                endString = DateTimeFormatter.ofPattern(
+                        preferences.getString(DATE_FORMAT),
+                        Locale.getDefault()
+                ).format(medication.getEndDate());
             }
 
-            note += getString(R.string.end_date_added, endString);
+            notes.add(getString(R.string.end_date_added, endString));
         }
 
         if (medication.getNotifyWhenRemaining() != parent.getNotifyWhenRemaining()) {
             String text = medication.getNotifyWhenRemaining() == -1 ? "N/A"
                     : String.valueOf(medication.getNotifyWhenRemaining());
 
-            note += getString(R.string.notify_when_remaining_added, text);
+            notes.add(getString(R.string.notify_when_remaining_added, text));
         }
 
-        return note;
+        return String.join(", ", notes);
     }
 
     /**

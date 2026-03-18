@@ -152,7 +152,7 @@
     <string name="med_name">Nombre del medicamento: %1$s</string>
     <string name="dosage">Dosis: %1$s %2$s</string>
     <string name="taken_daily_at">Tomado diariamente a las </string>
-    <string name="taken_every_lbl">Tomado cada </string>
+    <string name="taken_every_lbl">Tomado cada\u0020</string>
     <string name="alias_lbl">Alias</string>
     <string name="taken_since">Tomado desde: %1$s</string>
     <string name="taken_as_needed">Tomado según necesidad.</string>
