@@ -119,6 +119,10 @@ public class Medication implements Cloneable, Parcelable {
         instructions = "";
     }
 
+    /**
+     * Constructor to create from a Parcel
+     * @param in Parceled Medication
+     */
     protected Medication(Parcel in) {
         medName = in.readString();
         medDosageUnits = in.readString();
@@ -151,11 +155,12 @@ public class Medication implements Cloneable, Parcelable {
         }
     }
 
+    /**
+     * Handles parceling a medication
+     */
     public static final Creator<Medication> CREATOR = new Creator<Medication>() {
         @Override
         public Medication createFromParcel(Parcel in) {
-
-
             return new Medication(in);
         }
 
@@ -521,6 +526,11 @@ public class Medication implements Cloneable, Parcelable {
         return 0;
     }
 
+    /**
+     * Write Medication to Parcel
+     * @param parcel Parcel reference
+     * @param i unused, needed for Override
+     */
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(medName);
