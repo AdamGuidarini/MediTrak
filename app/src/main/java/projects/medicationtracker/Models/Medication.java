@@ -124,14 +124,38 @@ public class Medication implements Cloneable, Parcelable {
         medDosageUnits = in.readString();
         patientName = in.readString();
         alias = in.readString();
-        medId = in.readInt();
-        medFrequency = in.readInt();
+        instructions = in.readString();
+
+        medId = in.readLong();
         medDosage = in.readFloat();
+        medFrequency = in.readInt();
+        doseAmount = in.readInt();
+        remainingAmountNotification = in.readInt();
+
+        active = in.readByte() != 0;
+
+        String startStr = in.readString();
+        startDate = (startStr != null) ? LocalDateTime.parse(startStr) : null;
+
+        String endStr = in.readString();
+        endDate = (endStr != null) ? LocalDateTime.parse(endStr) : null;
+
+        int timesSize = in.readInt();
+        if (timesSize >= 0) {
+            times = new LocalDateTime[timesSize];
+            for (int i = 0; i < timesSize; i++) {
+                times[i] = LocalDateTime.parse(in.readString());
+            }
+        } else {
+            times = new LocalDateTime[0];
+        }
     }
 
     public static final Creator<Medication> CREATOR = new Creator<Medication>() {
         @Override
         public Medication createFromParcel(Parcel in) {
+
+
             return new Medication(in);
         }
 
@@ -504,9 +528,21 @@ public class Medication implements Cloneable, Parcelable {
         parcel.writeString(patientName);
         parcel.writeString(alias);
         parcel.writeLong(medId);
-        parcel.writeLong(medFrequency);
         parcel.writeFloat(medDosage);
         parcel.writeInt(doseAmount);
         parcel.writeInt(remainingAmountNotification);
+        parcel.writeString(startDate != null ? startDate.toString() : null);
+        parcel.writeString(endDate != null ? endDate.toString() : null);
+        parcel.writeBoolean(active);
+        parcel.writeInt(medFrequency);
+
+        if (times != null) {
+            parcel.writeInt(times.length);
+            for (LocalDateTime time : times) {
+                parcel.writeString(time.toString());
+            }
+        } else {
+            parcel.writeInt(-1);
+        }
     }
 }
