@@ -148,7 +148,8 @@ public class Medication implements Cloneable, Parcelable {
         if (timesSize >= 0) {
             times = new LocalDateTime[timesSize];
             for (int i = 0; i < timesSize; i++) {
-                times[i] = LocalDateTime.parse(in.readString());
+                String time = in.readString();
+                times[i] = time != null ? LocalDateTime.parse(time) : null;
             }
         } else {
             times = new LocalDateTime[0];
@@ -537,19 +538,22 @@ public class Medication implements Cloneable, Parcelable {
         parcel.writeString(medDosageUnits);
         parcel.writeString(patientName);
         parcel.writeString(alias);
+        parcel.writeString(instructions);
+
         parcel.writeLong(medId);
         parcel.writeFloat(medDosage);
+        parcel.writeInt(medFrequency);
         parcel.writeInt(doseAmount);
         parcel.writeInt(remainingAmountNotification);
+
+        parcel.writeByte((byte) (active ? 1 : 0));
         parcel.writeString(startDate != null ? startDate.toString() : null);
         parcel.writeString(endDate != null ? endDate.toString() : null);
-        parcel.writeBoolean(active);
-        parcel.writeInt(medFrequency);
 
         if (times != null) {
             parcel.writeInt(times.length);
             for (LocalDateTime time : times) {
-                parcel.writeString(time.toString());
+                parcel.writeString(time != null ? time.toString() : null);
             }
         } else {
             parcel.writeInt(-1);

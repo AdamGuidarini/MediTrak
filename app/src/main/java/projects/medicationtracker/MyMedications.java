@@ -1,5 +1,9 @@
 package projects.medicationtracker;
 
+import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
+import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
+import static projects.medicationtracker.MainActivity.preferences;
+import static projects.medicationtracker.MediTrak.formatter;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
@@ -9,6 +13,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -17,27 +23,34 @@ import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentContainerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.color.MaterialColors;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import kotlin.Pair;
-import projects.medicationtracker.Fragments.MyMedicationsFragment;
+import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Views.StandardCardView;
 
 public class MyMedications extends BaseActivity {
+    public static final String MEDICATION_ID_ARG = "MediTrakCore/MedicationId";
     NativeDbHelper db;
+    DBHelper javaDb;
 
     private MaterialButton activeButton;
     private MaterialButton inactiveButton;
@@ -57,6 +70,7 @@ public class MyMedications extends BaseActivity {
         setContentView(R.layout.activity_my_medications);
 
         db = new NativeDbHelper(this);
+        javaDb = new DBHelper(this);
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
@@ -233,21 +247,117 @@ public class MyMedications extends BaseActivity {
      */
     private void createMyMedCard(Medication medication, LinearLayout baseLayout) {
         StandardCardView thisMedCard = new StandardCardView(this);
-        FragmentContainerView thisMedLayout = new FragmentContainerView(this);
-        Bundle bundle = new Bundle();
+        View thisMedLayout = LayoutInflater.from(this).inflate(
+                R.layout.fragment_my_medications,
+                thisMedCard,
+                false
+        );
 
         baseLayout.addView(thisMedCard);
         thisMedCard.addView(thisMedLayout);
+        bindMedicationCard(thisMedLayout, medication);
+    }
 
-        thisMedLayout.setId((int) medication.getId());
+    private void bindMedicationCard(View cardView, Medication medication) {
+        LocalTime[] times = javaDb.getMedicationTimes(medication.getId());
+        LocalDateTime[] dateTimes = new LocalDateTime[times.length];
 
-        bundle.putParcelable("MediTrakCore/Medication", medication);
+        LinearLayout barrier = cardView.findViewById(R.id.barrier);
+        LinearLayout barrier1 = cardView.findViewById(R.id.barrier1);
+        LinearLayout barrier2 = cardView.findViewById(R.id.barrier2);
+        LinearLayout barrier3 = cardView.findViewById(R.id.barrier3);
+        LinearLayout barrier4 = cardView.findViewById(R.id.barrier4);
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .setReorderingAllowed(true)
-                .add((int) medication.getId(), MyMedicationsFragment.class, bundle)
-                .commit();
+        MaterialTextView name = cardView.findViewById(R.id.myMedCardMedicationName);
+        MaterialTextView dosage = cardView.findViewById(R.id.dosage_amount);
+        MaterialTextView doseUnit = cardView.findViewById(R.id.dosage_unit);
+        MaterialTextView alias = cardView.findViewById(R.id.myMedCardAlias);
+        MaterialTextView frequency = cardView.findViewById(R.id.myMedCardFrequency);
+        MaterialTextView remainingDose = cardView.findViewById(R.id.remainingDoses);
+        MaterialTextView takenSince = cardView.findViewById(R.id.myMedCardTakenSince);
+        MaterialTextView endDate = cardView.findViewById(R.id.endDate);
+        MaterialTextView instructions = cardView.findViewById(R.id.instructions);
+        MaterialButton notesButton = cardView.findViewById(R.id.myMedsNotes);
+        MaterialButton editButton = cardView.findViewById(R.id.myMedsEdit);
+        MaterialButton historyButton = cardView.findViewById(R.id.history_button);
+
+        for (int i = 0; i < times.length; i++) {
+            dateTimes[i] = LocalDateTime.of(medication.getStartDate().toLocalDate(), times[i]);
+        }
+
+        medication.setTimes(dateTimes);
+
+        name.setText(medication.getName());
+        dosage.setText(formatter.format(medication.getDosage()));
+        doseUnit.setText(medication.getDosageUnits());
+
+        String label = medication.generateFrequencyLabel(
+                this,
+                preferences.getString(DATE_FORMAT),
+                preferences.getString(TIME_FORMAT)
+        );
+        frequency.setText(label);
+
+        String doseLimit = medication.getRemainingDosesCount() > -1
+                ? String.valueOf(medication.getRemainingDosesCount())
+                : "N/A";
+        remainingDose.setText(doseLimit);
+
+        alias.setText(medication.getAlias().isEmpty() ? "N/A" : medication.getAlias());
+
+        LocalDateTime start = medication.getParent() == null
+                ? medication.getStartDate()
+                : medication.getParent().getStartDate();
+        String beginning = DateTimeFormatter.ofPattern(
+                preferences.getString(DATE_FORMAT),
+                Locale.getDefault()
+        ).format(start);
+        takenSince.setText(beginning);
+
+        LocalDateTime end = medication.getEndDate();
+        if (end == null || end.toLocalDate().isEqual(LocalDate.of(9999, 12, 31))) {
+            endDate.setText("N/A");
+        } else {
+            String endSt = DateTimeFormatter.ofPattern(
+                    preferences.getString(DATE_FORMAT),
+                    Locale.getDefault()
+            ).format(end);
+            endDate.setText(endSt);
+        }
+
+        if (medication.getInstructions() == null || medication.getInstructions().isEmpty()) {
+            instructions.setText("N/A");
+        } else {
+            instructions.setText(medication.getInstructions());
+        }
+
+        notesButton.setOnClickListener(view -> {
+            Intent notesIntent = new Intent(this, MedicationNotes.class);
+            notesIntent.putExtra("medId", medication.getId());
+            finish();
+            startActivity(notesIntent);
+        });
+
+        editButton.setOnClickListener(view -> {
+            Intent editMedIntent = new Intent(this, AddMedication.class);
+            editMedIntent.putExtra("medId", medication.getId());
+            finish();
+            startActivity(editMedIntent);
+        });
+
+        historyButton.setOnClickListener(view -> {
+            Intent historyIntent = new Intent(this, MedicationHistory.class);
+            historyIntent.putExtra("ID", medication.getId());
+            finish();
+            startActivity(historyIntent);
+        });
+
+        int separatorColor = name.getCurrentTextColor();
+        barrier.setBackgroundColor(separatorColor);
+        barrier1.setBackgroundColor(separatorColor);
+        barrier2.setBackgroundColor(separatorColor);
+        barrier3.setBackgroundColor(separatorColor);
+        barrier4.setBackgroundColor(separatorColor);
     }
 
     private void setActive(boolean isActive) {

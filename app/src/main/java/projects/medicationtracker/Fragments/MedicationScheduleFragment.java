@@ -67,11 +67,11 @@ public class MedicationScheduleFragment extends Fragment implements IDialogClose
     public static final String DAY_NUMBER = "dayNumber";
     private View rootView;
 
-    private static ArrayList<Medication> meds;
-    private static DBHelper db;
-    private static String dayOfWeek;
-    private static LocalDate dayInCurrentWeek;
-    private static int dayNumber;
+    private ArrayList<Medication> meds;
+    private DBHelper db;
+    private String dayOfWeek;
+    private LocalDate dayInCurrentWeek;
+    private int dayNumber;
     private NativeDbHelper nativeDb;
 
     /**
