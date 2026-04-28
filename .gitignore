@@ -41,3 +41,4 @@ google-services.json
 *sqlite3ext.h
 
 sqlite3/
+/app/src/main/cpp/json/nlohmann

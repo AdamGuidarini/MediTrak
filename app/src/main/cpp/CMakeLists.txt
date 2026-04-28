@@ -49,6 +49,17 @@ while (NOT EXISTS "${SQLITE3_PATH}/sqlite3.h")
     )
 endwhile ()
 
+set(JSON_ROOT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/json")
+set(JSON_HPP_URL "https://raw.githubusercontent.com/nlohmann/json/v3.11.3/single_include/nlohmann/json.hpp")
+set(JSON_HPP_PATH "${JSON_ROOT_PATH}/nlohmann/json.hpp")
+
+if (NOT EXISTS ${JSON_HPP_PATH})
+    file(MAKE_DIRECTORY "${JSON_ROOT_PATH}/nlohmann")
+    file(DOWNLOAD ${JSON_HPP_URL} ${JSON_HPP_PATH} TIMEOUT 120)
+endif()
+
+include_directories(${SQLITE3_PATH} MediTrakCore Sqlite3Database ${JSON_ROOT_PATH})
+
 include_directories(${SQLITE3_PATH} MediTrakCore Sqlite3Database)
 
 add_subdirectory(Sqlite3Database)

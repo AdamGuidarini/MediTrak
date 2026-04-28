@@ -4,10 +4,13 @@
 
 #include "DbManager.h"
 
-DbManager::DbManager() {}
+DbManager::DbManager() {
+    db = nullptr;
+}
 
 DbManager::DbManager(string databasePath, bool enableForeignKeys) {
-    char *err;
+    char *err = nullptr;
+    db = nullptr;
 
     database_name = std::move(databasePath);
     openDb();
@@ -18,7 +21,9 @@ DbManager::DbManager(string databasePath, bool enableForeignKeys) {
 }
 
 DbManager::~DbManager() {
-    closeDb();
+    if (db != nullptr) {
+        closeDb();
+    }
 }
 
 string DbManager::escapeUnsafeChars(string str) {
@@ -93,7 +98,10 @@ void DbManager::openDb() {
     }
 }
 
-void DbManager::closeDb() { sqlite3_close(db); }
+void DbManager::closeDb() {
+    sqlite3_close(db);
+    db = nullptr;
+}
 
 int DbManager::getVersionNumber() {
     sqlite3_stmt *stmt;
@@ -414,7 +422,7 @@ void DbManager::exportData(const string &exportFilePath, const vector<string> &i
             outData += "{";
 
             for (const auto &col: tblInfo) {
-                outData += "\"" + col.first + "\":\"" + escapeUnsafeChars(col.second) + "\",";
+                outData += "\"" + col.first + "\":\"" + col.second + "\",";
             }
 
             if (outData.at(outData.size() - 1) == ',') {
@@ -478,155 +486,177 @@ void DbManager::importDataFromFile(const std::string &importFilePath,
     importData(inData, ignoreTables);
 }
 
+//void DbManager::importData(string &inData, const vector<string> &ignoreTables) {
+//    map<string, vector<map<string, string>>> data;
+//    vector<string> tables = getTables(ignoreTables);
+//    stringstream importQuery;
+//    char *err;
+//
+//    // Remove unneeded chars
+//    inData.erase(
+//            remove_if(inData.begin(), inData.end(),
+//                      [](unsigned char x) { return std::isspace(x); }),
+//            inData.end()
+//    );
+//
+//    inData.erase(0, 1);
+//    inData.erase(inData.end() - 1, inData.end());
+//
+//    inData.erase(
+//            remove_if(
+//                    inData.begin(),
+//                    inData.end(),
+//                    [](unsigned char x) { return x == '\"'; }
+//            ),
+//            inData.end()
+//    );
+//
+//    try {
+//        for (const string &tbl: tables) {
+//            vector<map<string, string>> table;
+//            size_t pos;
+//            string tblStr;
+//            size_t tblStart = inData.find(tbl + ":[");
+//            size_t endTblData = inData.find(']', tblStart + string(tbl + ":[").size());
+//
+//            if (tblStart == string::npos) {
+//                continue;
+//            }
+//
+//            tblStr = inData.substr(tblStart, endTblData - tblStart);
+//
+//            tblStr.erase(0, (tbl + ":[").size());
+//
+//            if (tblStr.empty()) {
+//                data.insert({tbl, {}});
+//                continue;
+//            }
+//
+//            tblStr.erase(0, 1);
+//            tblStr.erase(tblStr.size() - 1, 1);
+//
+//            int ind = 0;
+//            table.resize(count(tblStr.begin(), tblStr.end(), '}') + 1);
+//
+//            while ((pos = tblStr.find(',')) != string::npos || tblStr.length() > 0) {
+//                unsigned int end =
+//                        tblStr.find(',') != string::npos ? tblStr.find(',') : tblStr.length();
+//                string token = tblStr.substr(0, end);
+//                bool incrementInd = false;
+//
+//                if (token.at(0) == '{') token.erase(0, 1);
+//                if (token.at(token.size() - 1) == '}') {
+//                    token.erase(token.find('}'), 1);
+//                    incrementInd = true;
+//                }
+//
+//                pair<string, string> col = {
+//                        token.substr(0, token.find(':')),
+//                        unescapeSafeChars(
+//                                token.substr(token.find(':') + 1, token.size() - 1)
+//                        )
+//                };
+//
+//                table.at(ind).insert(col);
+//
+//                if (incrementInd) ind++;
+//                if (pos != string::npos) {
+//                    tblStr.erase(0, pos + 1);
+//                } else {
+//                    tblStr = "";
+//                }
+//            }
+//
+//            data.insert({tbl, table});
+//        }
+//    } catch (exception &e) {
+//        cerr << e.what() << endl;
+//
+//        throw e;
+//    }
+//
+//    importQuery << "BEGIN TRANSACTION;";
+//
+//    for (const string &tbl: tables) {
+//        importQuery << "DELETE FROM " << tbl << ';';
+//    }
+//
+//    map<string, string>::iterator it;
+//
+//    for (const auto &tbl: data) {
+//        if (tbl.second.empty()) continue;
+//
+//        importQuery << "INSERT INTO "
+//                    << tbl.first
+//                    << "(";
+//
+//        for (auto &col: tbl.second.at(0)) {
+//            importQuery << col.first << ',';
+//        }
+//
+//        importQuery.seekp(-1, ios_base::end);
+//        importQuery << ") VALUES ";
+//
+//        for (auto &row: tbl.second) {
+//            importQuery << '(';
+//            for (auto &col: row) {
+//                if (isNumber(col.second)) {
+//                    importQuery << col.second << ',';
+//                } else if (col.second.empty()) {
+//                    importQuery << "NULL,";
+//                } else {
+//                    importQuery << "\"" << col.second << "\"" << ',';
+//                }
+//            }
+//            importQuery.seekp(-1, ios_base::end);
+//            importQuery << "),";
+//        }
+//
+//        importQuery.seekp(-1, ios_base::end);
+//
+//        importQuery << ";";
+//    }
+//
+//    importQuery << "COMMIT;";
+//
+//    try {
+//        const int retVal = sqlite3_exec(
+//                db, importQuery.str().c_str(), nullptr, nullptr, &err
+//        );
+//
+//        if (retVal != SQLITE_OK) {
+//            throw runtime_error(err);
+//        }
+//    } catch (exception &e) {
+//        cerr << e.what() << endl;
+//
+//        string error = "SQLite Error: ";
+//        error += err;
+//
+//        throw runtime_error(error);
+//    }
+//}
+
 void DbManager::importData(string &inData, const vector<string> &ignoreTables) {
-    map<string, vector<map<string, string>>> data;
+    json root = json::parse(inData);
     vector<string> tables = getTables(ignoreTables);
-    stringstream importQuery;
-    char *err;
 
-    // Remove unneeded chars
-    inData.erase(
-            remove_if(inData.begin(), inData.end(),
-                      [](unsigned char x) { return std::isspace(x); }),
-            inData.end()
-    );
+    execSql("BEGIN TRANSACTION;");
 
-    inData.erase(0, 1);
-    inData.erase(inData.end() - 1, inData.end());
+    for (const auto &tbl : tables) {
+        execSql("DELETE FROM " + tbl + ";");
 
-    inData.erase(
-            remove_if(
-                    inData.begin(),
-                    inData.end(),
-                    [](unsigned char x) { return x == '\"'; }
-            ),
-            inData.end()
-    );
+        if (!root.contains(tbl) || !root[tbl].is_array()) continue;
 
-    try {
-        for (const string &tbl: tables) {
-            vector<map<string, string>> table;
-            size_t pos;
-            string tblStr;
-            size_t tblStart = inData.find(tbl + ":[");
-            size_t endTblData = inData.find(']', tblStart + string(tbl + ":[").size());
+        for (const auto &row : root[tbl]) {
+            if (!row.is_object()) continue;
 
-            if (tblStart == string::npos) {
-                continue;
-            }
-
-            tblStr = inData.substr(tblStart, endTblData - tblStart);
-
-            tblStr.erase(0, (tbl + ":[").size());
-
-            if (tblStr.empty()) {
-                data.insert({tbl, {}});
-                continue;
-            }
-
-            tblStr.erase(0, 1);
-            tblStr.erase(tblStr.size() - 1, 1);
-
-            int ind = 0;
-            table.resize(count(tblStr.begin(), tblStr.end(), '}') + 1);
-
-            while ((pos = tblStr.find(',')) != string::npos || tblStr.length() > 0) {
-                unsigned int end =
-                        tblStr.find(',') != string::npos ? tblStr.find(',') : tblStr.length();
-                string token = tblStr.substr(0, end);
-                bool incrementInd = false;
-
-                if (token.at(0) == '{') token.erase(0, 1);
-                if (token.at(token.size() - 1) == '}') {
-                    token.erase(token.find('}'), 1);
-                    incrementInd = true;
-                }
-
-                pair<string, string> col = {
-                        token.substr(0, token.find(':')),
-                        unescapeSafeChars(
-                                token.substr(token.find(':') + 1, token.size() - 1)
-                        )
-                };
-
-                table.at(ind).insert(col);
-
-                if (incrementInd) ind++;
-                if (pos != string::npos) {
-                    tblStr.erase(0, pos + 1);
-                } else {
-                    tblStr = "";
-                }
-            }
-
-            data.insert({tbl, table});
+            // Build insert dynamically OR use fixed schema mapping.
+            // Prefer sqlite3_prepare_v2 + sqlite3_bind_* for each value.
         }
-    } catch (exception &e) {
-        cerr << e.what() << endl;
-
-        throw e;
     }
 
-    importQuery << "BEGIN TRANSACTION;";
-
-    for (const string &tbl: tables) {
-        importQuery << "DELETE FROM " << tbl << ';';
-    }
-
-    map<string, string>::iterator it;
-
-    for (const auto &tbl: data) {
-        if (tbl.second.empty()) continue;
-
-        importQuery << "INSERT INTO "
-                    << tbl.first
-                    << "(";
-
-        for (auto &col: tbl.second.at(0)) {
-            importQuery << col.first << ',';
-        }
-
-        importQuery.seekp(-1, ios_base::end);
-        importQuery << ") VALUES ";
-
-        for (auto &row: tbl.second) {
-            importQuery << '(';
-            for (auto &col: row) {
-                if (isNumber(col.second)) {
-                    importQuery << col.second << ',';
-                } else if (col.second.empty()) {
-                    importQuery << "NULL,";
-                } else {
-                    importQuery << "\"" << col.second << "\"" << ',';
-                }
-            }
-            importQuery.seekp(-1, ios_base::end);
-            importQuery << "),";
-        }
-
-        importQuery.seekp(-1, ios_base::end);
-
-        importQuery << ";";
-    }
-
-    importQuery << "COMMIT;";
-
-    try {
-        const int retVal = sqlite3_exec(
-                db, importQuery.str().c_str(), nullptr, nullptr, &err
-        );
-
-        if (retVal != SQLITE_OK) {
-            throw runtime_error(err);
-        }
-    } catch (exception &e) {
-        cerr << e.what() << endl;
-
-        string error = "SQLite Error: ";
-        error += err;
-
-        throw runtime_error(error);
-    }
+    execSql("COMMIT;");
 }
 
 bool DbManager::isNumber(string str) {
