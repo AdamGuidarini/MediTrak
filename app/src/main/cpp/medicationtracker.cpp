@@ -165,10 +165,10 @@ jobject medicationToJavaConverter(Medication med, JNIEnv *env, jclass jMedicatio
     env->CallVoidMethod(jMedicationInstance, setEndDate, env->NewStringUTF(med.endDate.c_str()));
     env->CallVoidMethod(jMedicationInstance, setNotifyWhenRemaining, med.notifyWhenRemainingAmount);
 
-    if (med.parent != nullptr) {
+    if (auto parentPtr = med.parent.lock()) {
         jmethodID setChild = env->GetMethodID(jMedication, "setChild",
                                               "(Lprojects/medicationtracker/Models/Medication;)V");
-        jobject medParent = medicationToJavaConverter(*med.parent, env, jMedication, jDoseClass);
+        jobject medParent = medicationToJavaConverter(*parentPtr, env, jMedication, jDoseClass);
 
         // Add this null check
         if (medParent != nullptr) {
