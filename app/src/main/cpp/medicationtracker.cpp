@@ -55,6 +55,10 @@ jobject doseToJavaConverter(const Dose &dose, JNIEnv *env, jobject &jMedication,
 
     jobject javaDose = env->NewObject(jDose, constructorDefault);
 
+    if (javaDose == nullptr) {
+        return nullptr;
+    }
+
     if (dose.id == -1) {
         return javaDose;
     }
@@ -139,6 +143,10 @@ jobject medicationToJavaConverter(Medication med, JNIEnv *env, jclass jMedicatio
             env->NewStringUTF(med.alias.c_str())
     );
 
+    if (jMedicationInstance == nullptr) {
+        return nullptr;
+    }
+
     jmethodID setActiveStatus = env->GetMethodID(jMedication, "setActiveStatus", "(Z)V");
     jmethodID setParent = env->GetMethodID(jMedication, "setParent",
                                            "(Lprojects/medicationtracker/Models/Medication;)V");
@@ -157,13 +165,16 @@ jobject medicationToJavaConverter(Medication med, JNIEnv *env, jclass jMedicatio
     env->CallVoidMethod(jMedicationInstance, setEndDate, env->NewStringUTF(med.endDate.c_str()));
     env->CallVoidMethod(jMedicationInstance, setNotifyWhenRemaining, med.notifyWhenRemainingAmount);
 
-    if (med.parent != nullptr) {
+    if (auto parentPtr = med.parent.lock()) {
         jmethodID setChild = env->GetMethodID(jMedication, "setChild",
                                               "(Lprojects/medicationtracker/Models/Medication;)V");
-        jobject medParent = medicationToJavaConverter(*med.parent, env, jMedication, jDoseClass);
+        jobject medParent = medicationToJavaConverter(*parentPtr, env, jMedication, jDoseClass);
 
-        env->CallVoidMethod(medParent, setChild, jMedicationInstance);
-        env->CallVoidMethod(jMedicationInstance, setParent, medParent);
+        // Add this null check
+        if (medParent != nullptr) {
+            env->CallVoidMethod(medParent, setChild, jMedicationInstance);
+            env->CallVoidMethod(jMedicationInstance, setParent, medParent);
+        }
     }
 
     if (!med.doses.empty()) {//

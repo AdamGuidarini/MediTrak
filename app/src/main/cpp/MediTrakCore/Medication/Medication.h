@@ -27,7 +27,7 @@ struct Medication {
         int quantity;
         string endDate;
         int notifyWhenRemainingAmount;
-        shared_ptr<Medication> parent = nullptr;
+        weak_ptr<Medication> parent;
         shared_ptr<Medication> child = nullptr;
 
         /**

@@ -4,6 +4,8 @@
 
 #include "DatabaseController.h"
 
+#include <unordered_set>
+
 using namespace std;
 
 DatabaseController::DatabaseController(string path) : manager(std::move(path), true) {
@@ -464,9 +466,9 @@ vector<Medication> DatabaseController::fetchMedications(
         medication.times = std::move(times);
 
         if (parentId > 0) {
-            Medication parent = getMedication(parentId);
-            medication.parent = make_shared<Medication>(parent);
-            medication.parent->child = make_shared<Medication>(medication);
+            auto parentPtr = make_shared<Medication>(getMedication(parentId));
+            medication.parent = parentPtr;
+            medicationLineageRefs.push_back(parentPtr);
         }
 
         medications.push_back(medication);
@@ -482,9 +484,10 @@ Medication DatabaseController::getMedicationHistory(long medicationId) {
 
     medication.doses = getTakenDoses(medication.id);
 
-    shared_ptr<Medication> currentParent = medication.parent;
+    shared_ptr<Medication> currentParent = medication.parent.lock();
+    unordered_set<long> visitedParentIds;
 
-    while (currentParent != nullptr) {
+    while (currentParent != nullptr && visitedParentIds.insert(currentParent->id).second) {
         vector<Dose> parentDoses = getTakenDoses(currentParent->id);
 
         medication.doses.insert(
@@ -493,7 +496,7 @@ Medication DatabaseController::getMedicationHistory(long medicationId) {
                 parentDoses.end()
         );
 
-        currentParent = currentParent->parent;
+        currentParent = currentParent->parent.lock();
     }
 
     return medication;

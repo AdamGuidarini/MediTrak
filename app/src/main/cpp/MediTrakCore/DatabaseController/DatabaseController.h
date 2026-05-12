@@ -36,6 +36,7 @@ private:
     const int DB_VERSION = 20;
     const string DATABASE_NAME = "Medications.db";
     vector<string> tablesToIgnore;
+    vector<shared_ptr<Medication>> medicationLineageRefs;
     DbManager manager;
 
     const string ANDROID_METADATA = "android_metadata";

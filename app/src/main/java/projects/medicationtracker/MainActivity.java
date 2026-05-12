@@ -63,6 +63,7 @@ import projects.medicationtracker.Utils.DataExportUtils;
 import projects.medicationtracker.Utils.NotificationUtils;
 import projects.medicationtracker.Utils.TimeFormatting;
 import projects.medicationtracker.Interfaces.IDialogCloseListener;
+import projects.medicationtracker.Models.Dose;
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Notification;
 import projects.medicationtracker.Views.StandardCardView;
@@ -499,9 +500,12 @@ public class MainActivity extends projects.medicationtracker.BaseActivity implem
         StandardCardView thisDayCard = new StandardCardView(this);
         FragmentContainerView fragmentContainer = new FragmentContainerView(this);
         int viewId = day == 0 ? 7 : day;
+        LocalDate thisSunday = TimeFormatting.whenIsSunday(aDayThisWeek);
+        LocalDate targetDate = thisSunday.plusDays(day);
+        ArrayList<Medication> medsForDay = buildDayMedicationPayload(medications, targetDate);
 
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(MEDICATIONS, medications);
+        bundle.putParcelableArrayList(MEDICATIONS, medsForDay);
         bundle.putString(DAY_OF_WEEK + "_" + viewId, dayOfWeek);
         bundle.putLong(DAY_IN_CURRENT_WEEK + "_" + viewId, aDayThisWeek.toEpochDay());
         bundle.putInt(DAY_NUMBER + "_" + viewId, day);
@@ -513,8 +517,43 @@ public class MainActivity extends projects.medicationtracker.BaseActivity implem
 
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .add(viewId, MedicationScheduleFragment.class, bundle)
+                .replace(
+                        viewId,
+                        MedicationScheduleFragment.class,
+                        bundle,
+                        "schedule_day_" + viewId
+                )
                 .commit();
+    }
+
+    /**
+     * Creates a minimal payload for one day so Fragment arguments stay small.
+     */
+    private ArrayList<Medication> buildDayMedicationPayload(ArrayList<Medication> medications, LocalDate targetDate) {
+        ArrayList<Medication> payload = new ArrayList<>();
+
+        for (Medication medication : medications) {
+            LocalDateTime[] dayTimes = Arrays.stream(medication.getTimes())
+                    .filter(time -> time.toLocalDate().isEqual(targetDate))
+                    .toArray(LocalDateTime[]::new);
+
+            boolean includeMedication = medication.getFrequency() == 0 || dayTimes.length > 0;
+
+            if (!includeMedication) {
+                continue;
+            }
+
+            try {
+                Medication copy = (Medication) medication.clone();
+                copy.setTimes(dayTimes);
+                copy.setDoses(new Dose[]{});
+                payload.add(copy);
+            } catch (CloneNotSupportedException ignored) {
+                // Medication implements Cloneable; skip entry only if cloning unexpectedly fails.
+            }
+        }
+
+        return payload;
     }
 
     /**
