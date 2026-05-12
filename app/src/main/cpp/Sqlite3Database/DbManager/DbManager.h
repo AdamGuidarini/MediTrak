@@ -14,6 +14,7 @@
 #include <map>
 #include <vector>
 #include <cstdlib>
+#include <cstdio>
 #include <nlohmann/json.hpp>
 
 using namespace std;

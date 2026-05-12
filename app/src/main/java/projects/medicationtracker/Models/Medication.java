@@ -498,7 +498,7 @@ public class Medication implements Cloneable, Parcelable {
         } else if (getFrequency() == 0) {
             freqLabel = new StringBuilder(applicationContext.getString(R.string.taken_as_needed));
         } else {
-            freqLabel = new StringBuilder(applicationContext.getString(R.string.taken_every_lbl) + TimeFormatting.freqConversion(getFrequency()));
+            freqLabel = new StringBuilder(applicationContext.getString(R.string.taken_every_lbl) + " " + TimeFormatting.freqConversion(getFrequency()));
         }
 
         return freqLabel.toString();

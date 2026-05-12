@@ -392,7 +392,6 @@ DbManager::getAllRowFromAllTables(const vector<string> &ignoreTables) {
 void DbManager::exportData(const string &exportFilePath, const vector<string> &ignoreTables) {
     ofstream outFile;
     map<string, vector<map<string, string>>> data = getAllRowFromAllTables(ignoreTables);
-    string outData;
 
     outFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
@@ -412,38 +411,8 @@ void DbManager::exportData(const string &exportFilePath, const vector<string> &i
         throw runtime_error(errMessage);
     }
 
-    outFile << "{";
-
-    for (const auto &tbl: data) {
-        outData += "\"" + tbl.first + "\":[";
-
-
-        for (const auto &tblInfo: tbl.second) {
-            outData += "{";
-
-            for (const auto &col: tblInfo) {
-                outData += "\"" + col.first + "\":\"" + col.second + "\",";
-            }
-
-            if (outData.at(outData.size() - 1) == ',') {
-                outData.erase(outData.size() - 1);
-            }
-
-            outData += "},";
-        }
-
-        if (outData.at(outData.size() - 1) == ',') {
-            outData.erase(outData.size() - 1);
-        }
-
-        outData += "],";
-    }
-
-    if (outData.at(outData.size() - 1) == ',') {
-        outData.erase(outData.size() - 1);
-    }
-
-    outFile << outData << "}";
+    json root = data;
+    outFile << root.dump();
 
     outFile.close();
 }
@@ -487,59 +456,157 @@ void DbManager::importDataFromFile(const std::string &importFilePath,
 }
 
 void DbManager::importData(string &inData, const vector<string> &ignoreTables) {
-    json root = json::parse(inData);
-    vector<string> tables = getTables(ignoreTables);
-
-    execSql("BEGIN TRANSACTION;");
-
-    for (const auto &tbl : tables) {
-        execSql("DELETE FROM " + tbl + ";");
-
-        if (!root.contains(tbl) || !root[tbl].is_array()) continue;
-
-        for (const auto &row : root[tbl]) {
-            if (!row.is_object()) continue;
-
-            vector<string> columns;
-
-            for (auto it = row.begin(); it != row.end(); ++it) {
-                columns.push_back(it.key());
-            }
-
-            stringstream query;
-            query << "INSERT INTO " << tbl << " (";
-
-            for (auto i = 0; i < columns.size(); i++) {
-                query << columns[i];
-                if (i < columns.size() - 1) {
-                    query << ",";
-                }
-            }
-
-            query << ") VALUES (";
-
-            for (auto i = 0; i < columns.size(); i++) {
-                const auto& value = row[columns[i]];
-                if (value.is_string() && !value.get<string>().empty()) {
-                    query << "'" << unescapeSafeChars(value.get<string>()) << "'";
-                } else if (value.is_null() || (value.is_string() && value.get<string>().empty())) {
-                    query << "NULL";
+    json root;
+    try {
+        root = json::parse(inData);
+    } catch (const json::parse_error& e) {
+        // Handle legacy files with unescaped control characters (Error 101)
+        if (e.id == 101) {
+            string sanitized;
+            bool insideQuotes = false;
+            for (size_t i = 0; i < inData.length(); ++i) {
+                unsigned char c = (unsigned char)inData[i];
+                if (c == '"' && (i == 0 || inData[i - 1] != '\\')) {
+                    insideQuotes = !insideQuotes;
+                    sanitized += inData[i];
+                } else if (insideQuotes && c < 0x20) {
+                    if (c == '\n') sanitized += "\\n";
+                    else if (c == '\r') sanitized += "\\r";
+                    else if (c == '\t') sanitized += "\\t";
+                    else {
+                        char buf[7];
+                        snprintf(buf, sizeof(buf), "\\u%04x", c);
+                        sanitized += buf;
+                    }
                 } else {
-                    query << value.dump();
-                }
-
-                if (i < columns.size() - 1) {
-                    query << ",";
+                    sanitized += inData[i];
                 }
             }
-
-            query << ");";
-
-            execSql(query.str());
+            root = json::parse(sanitized);
+        } else {
+            throw e;
         }
     }
 
-    execSql("COMMIT;");
+    vector<string> tables = getTables(ignoreTables);
+    bool transactionStarted = false;
+
+    try {
+        // Import all tables first, then validate FK integrity once all rows exist.
+        execSql("PRAGMA foreign_keys = OFF;");
+        execSql("BEGIN TRANSACTION;");
+        transactionStarted = true;
+
+        for (const auto &tbl : tables) {
+            execSql("DELETE FROM " + tbl + ";");
+
+            if (!root.contains(tbl) || !root[tbl].is_array()) continue;
+
+            for (const auto &row : root[tbl]) {
+                if (!row.is_object()) continue;
+
+                vector<string> columns;
+
+                for (auto it = row.begin(); it != row.end(); ++it) {
+                    columns.push_back(it.key());
+                }
+
+                stringstream query;
+                query << "INSERT INTO " << tbl << " (";
+
+                for (auto i = 0; i < columns.size(); i++) {
+                    query << columns[i];
+                    if (i < columns.size() - 1) {
+                        query << ",";
+                    }
+                }
+
+                query << ") VALUES (";
+
+                for (auto i = 0; i < columns.size(); i++) {
+                    const auto& value = row[columns[i]];
+                    if (value.is_string() && !value.get<string>().empty()) {
+                        string val = value.get<string>();
+                        // Escape single quotes for SQL by doubling them
+                        size_t pos = 0;
+                        while ((pos = val.find("'", pos)) != string::npos) {
+                            val.replace(pos, 1, "''");
+                            pos += 2;
+                        }
+                        query << "'" << unescapeSafeChars(val) << "'";
+                    } else if (value.is_null() || (value.is_string() && value.get<string>().empty())) {
+                        query << "NULL";
+                    } else {
+                        query << value.dump();
+                    }
+
+                    if (i < columns.size() - 1) {
+                        query << ",";
+                    }
+                }
+
+                query << ");";
+
+                execSql(query.str());
+            }
+        }
+
+        sqlite3_stmt *checkStmt = nullptr;
+        int rc = sqlite3_prepare_v2(db, "PRAGMA foreign_key_check;", -1, &checkStmt, nullptr);
+
+        if (rc != SQLITE_OK) {
+            if (checkStmt != nullptr) {
+                sqlite3_finalize(checkStmt);
+            }
+
+            throw runtime_error("Failed to run foreign_key_check after import.");
+        }
+
+        rc = sqlite3_step(checkStmt);
+
+        if (rc == SQLITE_ROW) {
+            string tableName;
+            string rowId;
+            string parentTable;
+
+            if (sqlite3_column_text(checkStmt, 0) != nullptr) {
+                tableName = reinterpret_cast<const char *>(sqlite3_column_text(checkStmt, 0));
+            }
+
+            if (sqlite3_column_text(checkStmt, 1) != nullptr) {
+                rowId = reinterpret_cast<const char *>(sqlite3_column_text(checkStmt, 1));
+            }
+
+            if (sqlite3_column_text(checkStmt, 2) != nullptr) {
+                parentTable = reinterpret_cast<const char *>(sqlite3_column_text(checkStmt, 2));
+            }
+
+            sqlite3_finalize(checkStmt);
+
+            throw runtime_error(
+                    "Import failed FK validation in table '" + tableName
+                    + "' (rowid=" + rowId + ") referencing '" + parentTable + "'."
+            );
+        }
+
+        sqlite3_finalize(checkStmt);
+
+        execSql("COMMIT;");
+        transactionStarted = false;
+        execSql("PRAGMA foreign_keys = ON;");
+    } catch (...) {
+        if (transactionStarted) {
+            try {
+                execSql("ROLLBACK;");
+            } catch (...) {}
+        }
+
+        try {
+            execSql("PRAGMA foreign_keys = ON;");
+        } catch (...) {}
+
+        throw;
+    }
 }
 
 bool DbManager::isNumber(string str) {
