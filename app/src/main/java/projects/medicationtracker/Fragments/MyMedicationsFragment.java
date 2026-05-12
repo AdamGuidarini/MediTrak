@@ -4,6 +4,7 @@ import static projects.medicationtracker.Helpers.DBHelper.DATE_FORMAT;
 import static projects.medicationtracker.Helpers.DBHelper.TIME_FORMAT;
 import static projects.medicationtracker.MainActivity.preferences;
 import static projects.medicationtracker.MediTrak.formatter;
+import static projects.medicationtracker.MyMedications.MEDICATION_ID_ARG;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import java.util.Locale;
 
 import projects.medicationtracker.AddMedication;
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.MedicationHistory;
 import projects.medicationtracker.MedicationNotes;
 import projects.medicationtracker.R;
@@ -70,9 +72,20 @@ public class MyMedicationsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Medication med = requireArguments().getParcelable("MediTrakCore/Medication");
-
         final View rootView = inflater.inflate(R.layout.fragment_my_medications, container, false);
+
+        long medId = requireArguments().getLong(MEDICATION_ID_ARG, -1L);
+
+        if (medId < 0) {
+            return rootView;
+        }
+
+        NativeDbHelper nativeDb = new NativeDbHelper(requireContext());
+        Medication med = nativeDb.getMedicationById(medId);
+
+        if (med == null) {
+            return rootView;
+        }
 
         insertMedicationData(med, rootView);
 

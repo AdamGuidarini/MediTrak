@@ -119,16 +119,46 @@ public class Medication implements Cloneable, Parcelable {
         instructions = "";
     }
 
+    /**
+     * Constructor to create from a Parcel
+     * @param in Parceled Medication
+     */
     protected Medication(Parcel in) {
         medName = in.readString();
         medDosageUnits = in.readString();
         patientName = in.readString();
         alias = in.readString();
-        medId = in.readInt();
-        medFrequency = in.readInt();
+        instructions = in.readString();
+
+        medId = in.readLong();
         medDosage = in.readFloat();
+        medFrequency = in.readInt();
+        doseAmount = in.readInt();
+        remainingAmountNotification = in.readInt();
+
+        active = in.readByte() != 0;
+
+        String startStr = in.readString();
+        startDate = (startStr != null) ? LocalDateTime.parse(startStr) : null;
+
+        String endStr = in.readString();
+        endDate = (endStr != null) ? LocalDateTime.parse(endStr) : null;
+
+        int timesSize = in.readInt();
+        if (timesSize >= 0) {
+            times = new LocalDateTime[timesSize];
+            for (int i = 0; i < timesSize; i++) {
+                String time = in.readString();
+                times[i] = time != null ? LocalDateTime.parse(time) : null;
+            }
+        } else {
+            times = new LocalDateTime[0];
+        }
     }
 
+    /**
+     * Handles parceling a medication
+     */
     public static final Creator<Medication> CREATOR = new Creator<Medication>() {
         @Override
         public Medication createFromParcel(Parcel in) {
@@ -468,7 +498,7 @@ public class Medication implements Cloneable, Parcelable {
         } else if (getFrequency() == 0) {
             freqLabel = new StringBuilder(applicationContext.getString(R.string.taken_as_needed));
         } else {
-            freqLabel = new StringBuilder(applicationContext.getString(R.string.taken_every_lbl) + TimeFormatting.freqConversion(getFrequency()));
+            freqLabel = new StringBuilder(applicationContext.getString(R.string.taken_every_lbl) + " " + TimeFormatting.freqConversion(getFrequency()));
         }
 
         return freqLabel.toString();
@@ -497,16 +527,36 @@ public class Medication implements Cloneable, Parcelable {
         return 0;
     }
 
+    /**
+     * Write Medication to Parcel
+     * @param parcel Parcel reference
+     * @param i unused, needed for Override
+     */
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(medName);
         parcel.writeString(medDosageUnits);
         parcel.writeString(patientName);
         parcel.writeString(alias);
+        parcel.writeString(instructions);
+
         parcel.writeLong(medId);
-        parcel.writeLong(medFrequency);
         parcel.writeFloat(medDosage);
+        parcel.writeInt(medFrequency);
         parcel.writeInt(doseAmount);
         parcel.writeInt(remainingAmountNotification);
+
+        parcel.writeByte((byte) (active ? 1 : 0));
+        parcel.writeString(startDate != null ? startDate.toString() : null);
+        parcel.writeString(endDate != null ? endDate.toString() : null);
+
+        if (times != null) {
+            parcel.writeInt(times.length);
+            for (LocalDateTime time : times) {
+                parcel.writeString(time != null ? time.toString() : null);
+            }
+        } else {
+            parcel.writeInt(-1);
+        }
     }
 }
