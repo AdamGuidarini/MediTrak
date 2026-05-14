@@ -152,7 +152,7 @@
     <string name="taken_since">Şu tarihten beri alınıyor: %1$s</string>
     <string name="taken_as_needed">İhtiyaç halinde alınır.</string>
     <string name="active">Active</string>
-    <string name="inactive">Inactive</string>
+    <string name="inactive">Etkinleştirilmemiş</string>
     <!-- Notes -->
     <string name="notes">Notlar</string>
     <string name="add_note">Not Ekle</string>
