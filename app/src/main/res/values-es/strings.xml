@@ -157,7 +157,7 @@
     <string name="taken_since">Tomado desde: %1$s</string>
     <string name="taken_as_needed">Tomado según necesidad.</string>
     <string name="active">Active</string>
-    <string name="inactive">Inactive</string>
+    <string name="inactive">Inactivo</string>
     <!-- Notes -->
     <string name="notes">Notas</string>
     <string name="add_note">Añadir nota</string>
