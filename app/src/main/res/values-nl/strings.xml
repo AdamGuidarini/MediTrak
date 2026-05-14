@@ -155,7 +155,7 @@
     <string name="alias_lbl">Alias</string>
     <string name="taken_since">Gemaakt sinds: %1$s</string>
     <string name="taken_as_needed">Indien nodig innemen.</string>
-    <string name="active">Active</string>
+    <string name="active">Actief</string>
     <string name="inactive">Inactive</string>
     <!-- Notes -->
     <string name="notes">Notities</string>
