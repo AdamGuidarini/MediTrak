@@ -14,24 +14,35 @@
         android:text="@string/no_medications_found"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="gone" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    <!-- Full Width Content Wrapper -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/mainContentWrapper"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/navButtonLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <!-- Centered Patient Selector -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/names_layout_main"
-            android:layout_width="match_parent"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="15dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_max="600dp">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/patientSpinner"
@@ -40,60 +51,73 @@
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Edge-to-Edge ScrollView -->
         <ScrollView
             android:id="@+id/scheduleScrollView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight=".7"
-            android:visibility="visible">
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/names_layout_main">
 
-            <LinearLayout
-                android:id="@+id/scheduleLayout"
+            <!-- Centered Schedule Layout Container -->
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/scheduleLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_max="600dp" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="1dp">
+    <!-- Edge-to-Edge Navigation Bar -->
+    <RelativeLayout
+        android:id="@+id/navButtonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-            <RelativeLayout
-                android:id="@+id/navButtonLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="bottom"
-                android:layout_weight=".01">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/navButtonLeft"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/outline_chevron_backward_24"
+            android:onClick="onLeftClick" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/navButtonLeft"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/outline_chevron_backward_24"
-                    android:onClick="onLeftClick"
-                    android:layout_alignParentStart="true" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/todayButton"
+            android:layout_width="50dp"
+            android:layout_height="45dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/calendar"
+            android:onClick="onTodayClick" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/todayButton"
-                    android:layout_width="50dp"
-                    android:layout_height="45dp"
-                    android:background="@drawable/calendar"
-                    android:onClick="onTodayClick"
-                    android:layout_centerInParent="true" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/navButtonRight"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/outline_chevron_backward_24"
+            android:onClick="onRightClick"
+            android:rotation="180" />
+    </RelativeLayout>
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/navButtonRight"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@drawable/outline_chevron_backward_24"
-                    android:rotation="180"
-                    android:onClick="onRightClick"
-                    android:layout_alignParentEnd="true" />
-            </RelativeLayout>
-        </LinearLayout>
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

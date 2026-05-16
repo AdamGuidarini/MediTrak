@@ -8,359 +8,143 @@
     tools:context=".AddMedication">
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="20dp">
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_max="600dp">
 
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="10dp"
-                    android:orientation="vertical">
+                    android:layout_marginBottom="20dp">
 
-                    <TextView
-                        style="@style/standardTextView"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/who_takes_this_medication" />
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:orientation="vertical">
 
-                    <RadioGroup
-                        android:id="@+id/patientRadioGroup"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.radiobutton.MaterialRadioButton
-                            android:id="@+id/patientIsMe"
+                        <TextView
+                            style="@style/standardTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/patientIsMe" />
+                            android:text="@string/who_takes_this_medication" />
 
-                        <com.google.android.material.radiobutton.MaterialRadioButton
-                            android:id="@+id/patientIsNotMe"
+                        <RadioGroup
+                            android:id="@+id/patientRadioGroup"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="15dp"
-                            android:text="@string/someone_else" />
-                    </RadioGroup>
+                            android:orientation="horizontal">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/patientNameInputLayout"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="15dp"
-                        android:gravity="center"
-                        android:visibility="gone">
+                            <com.google.android.material.radiobutton.MaterialRadioButton
+                                android:id="@+id/patientIsMe"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/patientIsMe" />
 
-                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                            android:id="@+id/patientNameInput"
+                            <com.google.android.material.radiobutton.MaterialRadioButton
+                                android:id="@+id/patientIsNotMe"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="15dp"
+                                android:text="@string/someone_else" />
+                        </RadioGroup>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/patientNameInputLayout"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/name" />
-                    </com.google.android.material.textfield.TextInputLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                            android:layout_marginBottom="15dp"
+                            android:gravity="center"
+                            android:visibility="gone">
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="20dp">
+                            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                                android:id="@+id/patientNameInput"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/name" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/standardTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/what_is_the_medication_s_name_amp_how_much_is_taken" />
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/medicationNameInputLayout"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="15dp"
-                        android:gravity="center">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/medicationName"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/medication_name"
-                            android:inputType="text" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/aliasSwitch"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/alias_for_notifications" />
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/aliasInputLayout"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="15dp"
-                        android:visibility="gone">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/enterAlias"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:hint="@string/alias_for_medication"
-                            android:inputType="text" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginBottom="20dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:orientation="vertical">
 
-                        <RelativeLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
-                            android:layout_weight="1">
-
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:id="@+id/dosageAmountInputLayout"
-                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_alignParentStart="true"
-                                android:layout_marginBottom="15dp">
-
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/dosageAmount"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:hint="@string/medication_dosage"
-                                    android:inputType="numberDecimal" />
-                            </com.google.android.material.textfield.TextInputLayout>
-                        </RelativeLayout>
-
-
-                        <RelativeLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:layout_weight="1">
-
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:id="@+id/dosageUnitsInputLayout"
-                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_alignParentEnd="true"
-                                android:layout_marginBottom="15dp">
-
-                                <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/dosageUnits"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:hint="@string/units"
-                                    android:inputType="text" />
-                            </com.google.android.material.textfield.TextInputLayout>
-                        </RelativeLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal">
-
-                        <RelativeLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
-                            android:layout_weight="1">
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:id="@+id/limit_amount_input_layout"
-                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginBottom="10dp"
-                                android:hint="@string/quantity_optional">
-
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/limit_amount_text"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:inputType="number" />
-                            </com.google.android.material.textfield.TextInputLayout>
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:layout_weight="1">
-
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:id="@+id/notify_amount_layout"
-                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginBottom="10dp"
-                                android:hint="@string/notify_when_remaining">
-
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/remaining_amount_notification"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:enabled="false"
-                                    android:inputType="number" />
-                            </com.google.android.material.textfield.TextInputLayout>
-                        </RelativeLayout>
-                    </LinearLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/instructions_input"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="15dp"
-                        android:gravity="center">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/enter_instructions"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:hint="@string/instructions_optional"
-                            android:lines="3"
-                            android:minLines="3"
-                            android:maxLines="5"
-                            android:inputType="textMultiLine" />
-                    </com.google.android.material.textfield.TextInputLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="20dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="15dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/standardTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/how_often_is_the_medication_taken" />
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/frequencyDropdownLayout"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/frequency">
-
-                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                            android:id="@+id/frequencyOptionsDropdown"
+                        <TextView
+                            style="@style/standardTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="none" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                            android:text="@string/what_is_the_medication_s_name_amp_how_much_is_taken" />
 
-                    <!-- Daily Frequency -->
-                    <LinearLayout
-                        android:id="@+id/dailyMedFrequency"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal"
-                        android:visibility="gone">
-
-                        <RelativeLayout
-                            android:layout_width="0dp"
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/medicationNameInputLayout"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
-                            android:layout_weight="1">
+                            android:layout_marginBottom="15dp"
+                            android:gravity="center">
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:id="@+id/startDateTaken"
-                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/medicationName"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:hint="@string/start_date">
+                                android:hint="@string/medication_name"
+                                android:inputType="text" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/dailyMedStart"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:cursorVisible="false"
-                                    android:inputType="date" />
-                            </com.google.android.material.textfield.TextInputLayout>
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="0dp"
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/aliasSwitch"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:layout_weight="1">
+                            android:text="@string/alias_for_notifications" />
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                android:id="@+id/timeTakenLayout"
-                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/aliasInputLayout"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="15dp"
+                            android:visibility="gone">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/enterAlias"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:hint="@string/taken_at">
-
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/dailyMedTime"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:cursorVisible="false"
-                                    android:inputType="time" />
-                            </com.google.android.material.textfield.TextInputLayout>
-                        </RelativeLayout>
-                    </LinearLayout>
-
-                    <!-- Multiple Per Day Frequency -->
-                    <LinearLayout
-                        android:id="@+id/multiplePerDayFrequency"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:orientation="vertical"
-                        android:visibility="gone">
+                                android:layout_height="match_parent"
+                                android:hint="@string/alias_for_medication"
+                                android:inputType="text" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -375,21 +159,22 @@
                                 android:layout_weight="1">
 
                                 <com.google.android.material.textfield.TextInputLayout
-                                    android:id="@+id/multiplePerDayStartDateLayout"
+                                    android:id="@+id/dosageAmountInputLayout"
                                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_alignParentStart="true"
-                                    android:hint="@string/start_date">
+                                    android:layout_marginBottom="15dp">
 
                                     <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/startDateMultiplePerDay"
+                                        android:id="@+id/dosageAmount"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
-                                        android:cursorVisible="false"
-                                        android:inputType="date" />
+                                        android:hint="@string/medication_dosage"
+                                        android:inputType="numberDecimal" />
                                 </com.google.android.material.textfield.TextInputLayout>
                             </RelativeLayout>
+
 
                             <RelativeLayout
                                 android:layout_width="0dp"
@@ -398,41 +183,26 @@
                                 android:layout_weight="1">
 
                                 <com.google.android.material.textfield.TextInputLayout
-                                    android:id="@+id/numberOfTimersPerDayLayout"
+                                    android:id="@+id/dosageUnitsInputLayout"
                                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_alignParentEnd="true"
-                                    android:hint="@string/times_per_day">
+                                    android:layout_marginBottom="15dp">
 
                                     <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/numberOfTimersPerDay"
+                                        android:id="@+id/dosageUnits"
                                         android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:inputType="number" />
+                                        android:layout_height="match_parent"
+                                        android:hint="@string/units"
+                                        android:inputType="text" />
                                 </com.google.android.material.textfield.TextInputLayout>
                             </RelativeLayout>
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/timesPerDayHolder"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical" />
-                    </LinearLayout>
-
-                    <!-- Custom Frequency -->
-                    <LinearLayout
-                        android:id="@+id/customFrequencyLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
                             android:baselineAligned="false"
                             android:orientation="horizontal">
 
@@ -443,16 +213,127 @@
                                 android:layout_weight="1">
 
                                 <com.google.android.material.textfield.TextInputLayout
-                                    android:id="@+id/customFreqStartDate"
+                                    android:id="@+id/limit_amount_input_layout"
                                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
+                                    android:layout_marginBottom="10dp"
+                                    android:hint="@string/quantity_optional">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/limit_amount_text"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="number" />
+                                </com.google.android.material.textfield.TextInputLayout>
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:layout_weight="1">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:id="@+id/notify_amount_layout"
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginBottom="10dp"
+                                    android:hint="@string/notify_when_remaining">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/remaining_amount_notification"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:enabled="false"
+                                        android:inputType="number" />
+                                </com.google.android.material.textfield.TextInputLayout>
+                            </RelativeLayout>
+                        </LinearLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/instructions_input"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="15dp"
+                            android:gravity="center">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/enter_instructions"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:hint="@string/instructions_optional"
+                                android:inputType="textMultiLine"
+                                android:lines="3"
+                                android:maxLines="5"
+                                android:minLines="3" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="15dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/standardTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/how_often_is_the_medication_taken" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/frequencyDropdownLayout"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/frequency">
+
+                            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                                android:id="@+id/frequencyOptionsDropdown"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="none" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <!-- Daily Frequency -->
+                        <LinearLayout
+                            android:id="@+id/dailyMedFrequency"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:baselineAligned="false"
+                            android:orientation="horizontal"
+                            android:visibility="gone">
+
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="5dp"
+                                android:layout_weight="1">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:id="@+id/startDateTaken"
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
                                     android:layout_alignParentStart="true"
-                                    android:layout_marginBottom="15dp"
                                     android:hint="@string/start_date">
 
                                     <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/CustomFreqMedStart"
+                                        android:id="@+id/dailyMedStart"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:cursorVisible="false"
@@ -467,15 +348,15 @@
                                 android:layout_weight="1">
 
                                 <com.google.android.material.textfield.TextInputLayout
-                                    android:id="@+id/CustomFreqTimeTakenLayout"
+                                    android:id="@+id/timeTakenLayout"
                                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
+                                    android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:hint="@string/taken_at">
 
                                     <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/CustomFreqMedTime"
+                                        android:id="@+id/dailyMedTime"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:cursorVisible="false"
@@ -484,196 +365,334 @@
                             </RelativeLayout>
                         </LinearLayout>
 
-
+                        <!-- Multiple Per Day Frequency -->
                         <LinearLayout
+                            android:id="@+id/multiplePerDayFrequency"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:baselineAligned="false"
-                            android:orientation="horizontal">
+                            android:layout_marginTop="15dp"
+                            android:orientation="vertical"
+                            android:visibility="gone">
 
-                            <RelativeLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="5dp"
-                                android:layout_weight="1">
-
-                                <com.google.android.material.textfield.TextInputLayout
-                                    android:id="@+id/customFreqTakenEveryLayout"
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_alignParentStart="true"
-                                    android:hint="@string/taken_every">
-
-                                    <com.google.android.material.textfield.TextInputEditText
-                                        android:id="@+id/CustomFreqMTakenEveryEnter"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:cursorVisible="false"
-                                        android:inputType="number" />
-                                </com.google.android.material.textfield.TextInputLayout>
-                            </RelativeLayout>
-
-                            <RelativeLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="5dp"
-                                android:layout_weight="1">
-
-                                <com.google.android.material.textfield.TextInputLayout
-                                    android:id="@+id/CustomFreqTimeUnitLayout"
-                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_alignParentEnd="true"
-                                    android:hint="@string/unit_of_time">
-
-                                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                                        android:id="@+id/CustomFreqTimeUnitEnter"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:cursorVisible="false"
-                                        android:inputType="none" />
-                                </com.google.android.material.textfield.TextInputLayout>
-                            </RelativeLayout>
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <!-- As needed -->
-                    <LinearLayout
-                        android:id="@+id/asNeededLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:visibility="gone">
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/asNeededStart"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/start_date">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/asNeededStartInput"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:cursorVisible="false"
-                                android:inputType="date" />
-                        </com.google.android.material.textfield.TextInputLayout>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                                android:baselineAligned="false"
+                                android:orientation="horizontal">
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="20dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        style="@style/standardTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/set_limit_by"/>
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="5dp"
+                                    android:layout_weight="1">
 
-                    <RadioGroup
-                        android:id="@+id/limit_radio_group"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:orientation="horizontal">
-                        <com.google.android.material.radiobutton.MaterialRadioButton
-                            android:id="@+id/limit_date_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/end_date" />
-                        <com.google.android.material.radiobutton.MaterialRadioButton
-                            android:id="@+id/limit_amount_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/out_of_doses" />
-                        <com.google.android.material.radiobutton.MaterialRadioButton
-                            android:id="@+id/limit_none_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/none"
-                            android:checked="true" />
-                    </RadioGroup>
+                                    <com.google.android.material.textfield.TextInputLayout
+                                        android:id="@+id/multiplePerDayStartDateLayout"
+                                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentStart="true"
+                                        android:hint="@string/start_date">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/limit_date_input_layout"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:hint="@string/end_date"
-                        android:visibility="gone">
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/limit_date_selector"
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:id="@+id/startDateMultiplePerDay"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:cursorVisible="false"
+                                            android:inputType="date" />
+                                    </com.google.android.material.textfield.TextInputLayout>
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_weight="1">
+
+                                    <com.google.android.material.textfield.TextInputLayout
+                                        android:id="@+id/numberOfTimersPerDayLayout"
+                                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentEnd="true"
+                                        android:hint="@string/times_per_day">
+
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:id="@+id/numberOfTimersPerDay"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:inputType="number" />
+                                    </com.google.android.material.textfield.TextInputLayout>
+                                </RelativeLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/timesPerDayHolder"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical" />
+                        </LinearLayout>
+
+                        <!-- Custom Frequency -->
+                        <LinearLayout
+                            android:id="@+id/customFrequencyLayout"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:cursorVisible="false"
-                            android:inputType="date" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="gone">
 
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="15dp"
+                                android:baselineAligned="false"
+                                android:orientation="horizontal">
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/retroactive_card"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="20dp"
-                android:visibility="gone">
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="5dp"
+                                    android:layout_weight="1">
 
-                <LinearLayout
+                                    <com.google.android.material.textfield.TextInputLayout
+                                        android:id="@+id/customFreqStartDate"
+                                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentStart="true"
+                                        android:layout_marginBottom="15dp"
+                                        android:hint="@string/start_date">
+
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:id="@+id/CustomFreqMedStart"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:cursorVisible="false"
+                                            android:inputType="date" />
+                                    </com.google.android.material.textfield.TextInputLayout>
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_weight="1">
+
+                                    <com.google.android.material.textfield.TextInputLayout
+                                        android:id="@+id/CustomFreqTimeTakenLayout"
+                                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentEnd="true"
+                                        android:hint="@string/taken_at">
+
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:id="@+id/CustomFreqMedTime"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:cursorVisible="false"
+                                            android:inputType="time" />
+                                    </com.google.android.material.textfield.TextInputLayout>
+                                </RelativeLayout>
+                            </LinearLayout>
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:baselineAligned="false"
+                                android:orientation="horizontal">
+
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="5dp"
+                                    android:layout_weight="1">
+
+                                    <com.google.android.material.textfield.TextInputLayout
+                                        android:id="@+id/customFreqTakenEveryLayout"
+                                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentStart="true"
+                                        android:hint="@string/taken_every">
+
+                                        <com.google.android.material.textfield.TextInputEditText
+                                            android:id="@+id/CustomFreqMTakenEveryEnter"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:cursorVisible="false"
+                                            android:inputType="number" />
+                                    </com.google.android.material.textfield.TextInputLayout>
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_weight="1">
+
+                                    <com.google.android.material.textfield.TextInputLayout
+                                        android:id="@+id/CustomFreqTimeUnitLayout"
+                                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_alignParentEnd="true"
+                                        android:hint="@string/unit_of_time">
+
+                                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                                            android:id="@+id/CustomFreqTimeUnitEnter"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:cursorVisible="false"
+                                            android:inputType="none" />
+                                    </com.google.android.material.textfield.TextInputLayout>
+                                </RelativeLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- As needed -->
+                        <LinearLayout
+                            android:id="@+id/asNeededLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:visibility="gone">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/asNeededStart"
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/start_date">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/asNeededStartInput"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:cursorVisible="false"
+                                    android:inputType="date" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="15dp"
-                    android:orientation="vertical">
+                    android:layout_marginBottom="20dp">
 
-                    <TextView
-                        style="@style/standardTextView"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/apply_retroactive" />
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:paddingBottom="12dp"
-                        android:layout_width="wrap_content"
+                        <TextView
+                            style="@style/standardTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/set_limit_by" />
+
+                        <RadioGroup
+                            android:id="@+id/limit_radio_group"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.radiobutton.MaterialRadioButton
+                                android:id="@+id/limit_date_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/end_date" />
+
+                            <com.google.android.material.radiobutton.MaterialRadioButton
+                                android:id="@+id/limit_amount_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/out_of_doses" />
+
+                            <com.google.android.material.radiobutton.MaterialRadioButton
+                                android:id="@+id/limit_none_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="true"
+                                android:text="@string/none" />
+                        </RadioGroup>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/limit_date_input_layout"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:hint="@string/end_date"
+                            android:visibility="gone">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/limit_date_selector"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:cursorVisible="false"
+                                android:inputType="date" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/retroactive_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/retroactive_warning"/>
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="15dp"
+                        android:orientation="vertical">
 
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/apply_retroactive_checkbox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/would_like_apply_retroactively"
-                        tools:ignore="UseSwitchCompatOrMaterialXml" />
-                </LinearLayout>
+                        <TextView
+                            style="@style/standardTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/apply_retroactive" />
 
-            </com.google.android.material.card.MaterialCardView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="12dp"
+                            android:text="@string/retroactive_warning" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/saveButton"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/save"
-                app:cornerRadius="30dp" />
-        </LinearLayout>
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/apply_retroactive_checkbox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/would_like_apply_retroactively"
+                            tools:ignore="UseSwitchCompatOrMaterialXml" />
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/saveButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:text="@string/save"
+                    app:cornerRadius="30dp" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
