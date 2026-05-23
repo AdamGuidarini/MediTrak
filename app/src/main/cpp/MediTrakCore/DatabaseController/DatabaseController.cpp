@@ -617,6 +617,7 @@ bool DatabaseController::updateDose(const Dose &dose) {
 
     values.insert(pair<string, string>(TIME_TAKEN, dose.timeTaken));
     values.insert(pair<string, string>(DOSE_TIME, dose.doseTime));
+    values.insert(pair<string, string>(TAKEN, dose.taken ? "1" : "0"));
 
     if (dose.overrideDoseAmount != -1) {
         values.insert(pair<string, string>(
