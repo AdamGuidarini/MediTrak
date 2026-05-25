@@ -304,16 +304,12 @@ public class NotificationUtils {
     /**
      * Determines if a medication is no longer to be taken
      * @param med Medication to be checked
-     * @return whether or not a medication should still be taken
+     * @return Whether a medication can still be taken
      */
     public static boolean isMedicationDone(Medication med) {
-        if (med.getRemainingDosesCount() != -1 && med.getEndDate() != null) {
-            return med.getRemainingDosesCount() == 0 &&
-                    med.getEndDate().toLocalDate().equals(LocalDate.of(9999, 12,31));
-        } else if (med.getEndDate() != null) {
-            LocalDateTime now = LocalDateTime.now();
-
-            return med.getEndDate().isBefore(now);
+        if (med.getEndDate() != null) {
+            return med.getRemainingDosesCount() == 0
+                    || med.getEndDate().isBefore(LocalDateTime.now());
         }
 
         return false;
