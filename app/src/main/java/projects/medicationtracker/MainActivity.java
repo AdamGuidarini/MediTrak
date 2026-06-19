@@ -51,7 +51,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 import projects.medicationtracker.Dialogs.ConfirmationDialog;
 import projects.medicationtracker.Dialogs.OpenNotificationsDialog;
@@ -307,6 +306,34 @@ public class MainActivity extends projects.medicationtracker.BaseActivity implem
         // Add times to custom frequency
         LocalDate thisSunday = TimeFormatting.whenIsSunday(aDayThisWeek);
 
+        medications.forEach(med -> {
+            if (med.getEndDate() != null && med.getRemainingDosesCount() > 0) {
+                LocalDateTime calculatedEndDate;
+                if (med.getFrequency() == 1440) {
+                    int dosesPerDay = med.getTimes().length;
+
+                    if (dosesPerDay == 0) {
+                        return;
+                    }
+
+                    int doseLimit = med.getRemainingDosesCount();
+                    int daysToAdd = (doseLimit - 1) / dosesPerDay;
+                    int finalDoseIndex = (doseLimit - 1) % dosesPerDay;
+
+                    LocalDate finalDate = med.getStartDate().toLocalDate().plusDays(daysToAdd);
+                    LocalTime finalTime = med.getTimes()[finalDoseIndex].toLocalTime();
+
+                    calculatedEndDate = LocalDateTime.of(finalDate, finalTime);
+                } else {
+                    long frequencyInMinutes = med.getFrequency();
+                    long totalDurationInMinutes = frequencyInMinutes * (med.getRemainingDosesCount() - 1);
+                    calculatedEndDate = med.getStartDate().plusMinutes(totalDurationInMinutes);
+                }
+
+                med.setEndDate(calculatedEndDate);
+            }
+        });
+
         // Look at each medication
         for (final Medication med : medications) {
             LocalDateTime[] timeArr;
@@ -383,7 +410,7 @@ public class MainActivity extends projects.medicationtracker.BaseActivity implem
             validTimes.removeIf(
                     (time) ->
                     {
-                        if (med.getRemainingDosesCount() > 0 && med.getEndDate() != null && med.getEndDate().toLocalDate().isEqual(LocalDate.of(9999, 12, 31))) {
+                        if (med.getRemainingDosesCount() > 0 && med.getEndDate() != null) {
                             LocalDateTime calculatedEndDate;
                             if (med.getFrequency() == 1440) {
                                 int dosesPerDay = med.getTimes().length;
