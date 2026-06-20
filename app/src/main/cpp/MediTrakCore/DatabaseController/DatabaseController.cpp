@@ -311,7 +311,7 @@ void DatabaseController::upgrade(int currentVersion) {
             + " ADD COLUMN " + END_DATE + " DATETIME;"
             + "ALTER TABLE " + MEDICATION_TABLE
             + " ADD COLUMN " + QUANTITY + " INTEGER DEFAULT -1;"
-            + "ALTER TABLE " + MEDICATION_TABLE +
+            + "ALTER TABLE " + MEDICATION_TABLE
             + " ADD COLUMN " + NOTIFY_WHEN_REMAINING + " INTEGER DEFAULT -1;"
         );
     }
@@ -422,6 +422,12 @@ vector<Medication> DatabaseController::fetchMedications(
 
     vector<Medication> medications;
     Table *table = manager.execSqlWithReturn(query);
+
+    if (table->getCount() == 0) {
+        delete table;
+
+        return {};
+    }
 
     table->moveToFirst();
 
@@ -651,10 +657,17 @@ void DatabaseController::adjustRemainingDoses(long medId, bool increment) {
 
     if (med.quantity > 0) {
         increment ? med.quantity++ : med.quantity--;
+        map<string, string> values = {
+                pair<string, string>({ QUANTITY, to_string(med.quantity) })
+        };
+
+        if (med.quantity == 0 && !empty(med.endDate)) {
+            values.insert(pair<string, string>({ ACTIVE, "0" }));
+        }
 
         update(
                 MEDICATION_TABLE,
-                { pair<string, string>({ QUANTITY, to_string(med.quantity) }) },
+                values,
                 { pair<string, string>({  MED_ID, to_string(med.id) }) }
         );
     }

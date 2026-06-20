@@ -501,6 +501,10 @@ JNIEXPORT jobjectArray JNICALL
         meds = {};
     }
 
+    if (meds.size() == 0) {
+        return nullptr;
+    }
+
     jobjectArray jMeds = env->NewObjectArray(
             meds.size(),
             medClass,
