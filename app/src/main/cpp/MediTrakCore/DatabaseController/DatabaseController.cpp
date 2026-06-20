@@ -311,7 +311,7 @@ void DatabaseController::upgrade(int currentVersion) {
             + " ADD COLUMN " + END_DATE + " DATETIME;"
             + "ALTER TABLE " + MEDICATION_TABLE
             + " ADD COLUMN " + QUANTITY + " INTEGER DEFAULT -1;"
-            + "ALTER TABLE " + MEDICATION_TABLE +
+            + "ALTER TABLE " + MEDICATION_TABLE
             + " ADD COLUMN " + NOTIFY_WHEN_REMAINING + " INTEGER DEFAULT -1;"
         );
     }
@@ -422,6 +422,12 @@ vector<Medication> DatabaseController::fetchMedications(
 
     vector<Medication> medications;
     Table *table = manager.execSqlWithReturn(query);
+
+    if (table->getCount() == 0) {
+        delete table;
+
+        return {};
+    }
 
     table->moveToFirst();
 

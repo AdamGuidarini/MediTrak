@@ -14,12 +14,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.ArrayList;
 
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Utils.NotificationUtils;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Models.Medication;
 
 public class ConfirmDeleteAllFragment extends DialogFragment {
     private final DBHelper db;
+    private NativeDbHelper nativeDb;
     private ArrayList<Medication> medications;
     private NotificationManager manager;
 
@@ -30,6 +32,8 @@ public class ConfirmDeleteAllFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstances) {
+        nativeDb = new NativeDbHelper(getActivity());
+
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
         manager = (NotificationManager) getActivity().getSystemService(
             Context.NOTIFICATION_SERVICE
@@ -41,7 +45,7 @@ public class ConfirmDeleteAllFragment extends DialogFragment {
 
         builder.setPositiveButton(getString(R.string.yes), ((DialogInterface, i) ->
         {
-            medications = db.getMedications();
+            medications = nativeDb.getAllMedications();
             deletePendingNotifications();
 
             db.deleteAll();

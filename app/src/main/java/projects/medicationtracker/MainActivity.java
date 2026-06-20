@@ -92,7 +92,7 @@ public class MainActivity extends projects.medicationtracker.BaseActivity implem
 
         nativeDb = new NativeDbHelper(getApplicationContext());
         nativeDb.create();
-        allMeds = db.getMedications();
+        allMeds = nativeDb.getAllMedications();
         preferences = nativeDb.getSettings();
 
         String theme = preferences.getString(THEME);
@@ -233,11 +233,12 @@ public class MainActivity extends projects.medicationtracker.BaseActivity implem
         final String you = getString(R.string.you);
 
         // Exit if there are no patients in DB
-        if (db.numberOfRows() == 0) {
+        if (allMeds.isEmpty()) {
             noMeds.setVisibility(View.VISIBLE);
             scheduleScrollView.setVisibility(View.GONE);
             namesLayout.setVisibility(View.GONE);
             this.findViewById(R.id.navButtonLayout).setVisibility(View.GONE);
+
             return;
         }
 
@@ -302,7 +303,7 @@ public class MainActivity extends projects.medicationtracker.BaseActivity implem
      */
     public ArrayList<Medication> medicationsForThisWeek() {
         ArrayList<LocalDateTime> validTimes;
-        ArrayList<Medication> medications = db.getMedications();
+        ArrayList<Medication> medications = nativeDb.getAllMedications();
         // Add times to custom frequency
         LocalDate thisSunday = TimeFormatting.whenIsSunday(aDayThisWeek);
 

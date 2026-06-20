@@ -39,14 +39,21 @@ import projects.medicationtracker.Workers.NotificationWorker;
 public class EventReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        final DBHelper db = new DBHelper(context);
-        final NativeDbHelper nativedb = new NativeDbHelper(context);
+        if (intent == null || intent.getAction() == null) {
+            return;
+        }
 
-        final NativeDbHelper nativeDbHelper = new NativeDbHelper(context);
+        final DBHelper db = new DBHelper(context);
+
+        final NativeDbHelper nativeDb = new NativeDbHelper(context);
         final NotificationManager manager
                 = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        ArrayList<Medication> medications = db.getMedications();
+        if (nativeDb.getDbPath() == null || nativeDb.getDbPath().isEmpty()) {
+            return;
+        }
+
+        ArrayList<Medication> medications = nativeDb.getAllMedications();
 
         String action = Objects.requireNonNull(intent.getAction());
 
@@ -58,10 +65,10 @@ public class EventReceiver extends BroadcastReceiver {
                     intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0),
                     intent.getLongExtra(MEDICATION_ID + embeddedId, 0),
                     intent.getStringExtra(DOSE_TIME + embeddedId),
-                    nativedb
+                    nativeDb
             );
 
-            nativeDbHelper.deleteNotification(intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0));
+            nativeDb.deleteNotification(intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0));
         } else if (intent.getAction().contains(SNOOZE_ACTION)) {
             String embeddedId = "_" + intent.getAction().split("_")[1];
 
@@ -75,13 +82,13 @@ public class EventReceiver extends BroadcastReceiver {
         } else if (intent.getAction().contains(DISMISSED_ACTION)) {
             String embeddedId = "_" + intent.getAction().split("_")[1];
 
-            nativeDbHelper.deleteNotification(intent.getLongExtra(MEDICATION_ID + embeddedId, 0));
+            nativeDb.deleteNotification(intent.getLongExtra(MEDICATION_ID + embeddedId, 0));
         } else if (intent.getAction().contains(TAKE_ALL_ACTION)) {
-            takeAll(manager, nativeDbHelper, context);
+            takeAll(manager, nativeDb, context);
         } else {
-            final ArrayList<Notification> notifications = nativeDbHelper.getNotifications();
+            final ArrayList<Notification> notifications = nativeDb.getNotifications();
 
-            prepareExport(context, nativeDbHelper.getSettings());
+            prepareExport(context, nativeDb.getSettings());
             medications.forEach(m -> prepareNotification(context, m));
 
             for (final Notification n : notifications) {
@@ -127,6 +134,10 @@ public class EventReceiver extends BroadcastReceiver {
     }
 
     private void prepareExport(Context context, Bundle preferences) {
+        if (preferences == null) {
+            return;
+        }
+
         if (preferences.getString(EXPORT_START).isEmpty()) {
             return;
         }

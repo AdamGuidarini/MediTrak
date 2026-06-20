@@ -42,6 +42,10 @@ public class NativeDbHelper {
         dbCreate(dbPath);
     }
 
+    public String getDbPath() {
+        return dbPath;
+    }
+
     /**
      * Creates database
      */
@@ -137,7 +141,16 @@ public class NativeDbHelper {
     }
 
     public ArrayList<Medication> getAllMedications() {
-        return new ArrayList<>(Arrays.asList(getAllMedications(dbPath, Medication.class, Dose.class)));
+        if (dbPath == null || dbPath.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        Medication[] meds = getAllMedications(dbPath, Medication.class, Dose.class);
+        if (meds == null) {
+            return new ArrayList<>();
+        }
+
+        return new ArrayList<>(Arrays.asList(meds));
     }
 
     public Dose findDose(long medicationId, LocalDateTime doseTime) {
