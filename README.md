@@ -45,6 +45,7 @@ Alternatively, the app Droid-ify includes the base repository for F-Droid as wel
  - Italian<sup>4</sup>
  - Spanish by [zaovb](https://github.com/zaovb)<sup>1,3</sup>
  - Turkish by [mikropsoft](https://github.com/mikropsoft)<sup>1,2</sup>
+ - Arabic by [nemoXdev](https://github.com/nemoXdev)<sup>1</sup>
 
 <ol style="font-size: 0.8em;">
 <li> Translated by native speaker.</li>
@@ -68,6 +69,7 @@ The info, pause, play, and trash icons are all from the iconoir project. You can
 - [uDEV2019](https://github.com/uDEV2019) - German
 - [zaovb](https://github.com/zaovb) - Spanish
 - [mikropsoft](https://github.com/mikropsoft) - Turkish
+- [nemoXdev](https://github.com/nemoXdev) - Arabic
 ## Screenshots
 
 <div style="display: flex;" align="center">
