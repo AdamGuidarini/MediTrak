@@ -16,9 +16,9 @@ android {
         targetSdkVersion 35
         compileSdkVersion 36
 
-        versionCode 54
-        versionName "0.17.6"
-        resourceConfigurations += ['en', 'de', 'es', 'it', 'tr', 'nl']
+        versionCode 55
+        versionName "0.17.7"
+        resourceConfigurations += ['en', 'de', 'es', 'it', 'tr', 'nl', 'ar']
 
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
