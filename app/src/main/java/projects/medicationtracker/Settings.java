@@ -414,8 +414,8 @@ public class Settings extends BaseActivity implements IDialogCloseListener {
      */
     private void setLanguageMenu() {
         MaterialAutoCompleteTextView langSelector = findViewById(R.id.language_selector);
-        String[] langOpts = {"Deutsch", "English", "Español", "Italiano", "Nederlands", "Türkçe"};
-        String[] langCodes = {"de", "en", "es", "it", "nl", "tr"};
+        String[] langOpts = {"Deutsch", "English", "Español", "Italiano", "Nederlands", "Türkçe", "العربية"};
+        String[] langCodes = {"de", "en", "es", "it", "nl", "tr", "ar"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_dropdown_item_1line,
@@ -443,6 +443,9 @@ public class Settings extends BaseActivity implements IDialogCloseListener {
                 break;
             case "tr":
                 langSelector.setText(langOpts[5], false);
+                break;
+            case "ar":
+                langSelector.setText(langOpts[6], false);
                 break;
             case "en":
             default:

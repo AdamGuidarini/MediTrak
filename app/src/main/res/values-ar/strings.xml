@@ -1,0 +1,271 @@
+<resources>
+    <!-- Common -->
+    <string name="yes">نعم</string>
+    <string name="no">لا</string>
+    <string name="close">إغلاق</string>
+    <string name="cancel">إلغاء</string>
+    <string name="app_name">MediTrak</string>
+    <string name="edit">تعديل</string>
+    <string name="submit">إرسال</string>
+    <string name="save_changes">حفظ التغييرات</string>
+    <string name="save">حفظ</string>
+    <string name="you">أنت</string>
+    <string name="your">لك</string>
+    <string name="ok">حسناً</string>
+    <string name="delete">حذف</string>
+    <string name="i_agree">أوافق</string>
+    <string name="select_all">تحديد الكل</string>
+    <string name="stop">إيقاف</string>
+    <string name="every">كل</string>
+
+    <!-- Filters -->
+    <string name="clear">مسح</string>
+    <string name="apply">تطبيق</string>
+    <string name="before">قبل</string>
+    <string name="after">بعد</string>
+    <string name="on">في</string>
+
+    <!-- Errors -->
+    <string name="invalid_value">قيمة غير صالحة</string>
+    <string name="must_be_positive_int">يجب أن تكون القيمة رقماً موجباً</string>
+    <string name="val_too_big">القيمة كبيرة جداً</string>
+    <string name="cannot_exceed_50">القيمة لا يمكن أن تتجاوز 50</string>
+    <string name="must_be_greater_than_0">يجب أن تكون القيمة أكبر من 0</string>
+    <string name="provided_name_invalid">الاسم المُدخل غير صالح</string>
+    <string name="err_provide_name">يرجى تقديم اسم</string>
+    <string name="err_enter_dosage">يرجى إدخال الجرعة</string>
+    <string name="err_units_for_med">يرجى إدخال وحدة الجرعة لهذا الدواء</string>
+    <string name="err_select_frequency">يرجى اختيار نوع التكرار</string>
+    <string name="err_select_time">يرجى اختيار وقت</string>
+    <string name="err_select_start_date">يرجى اختيار تاريخ البدء</string>
+    <string name="err_enter_num_timers_per_day">يرجى إدخال عدد مرات أخذ الدواء في اليوم</string>
+    <string name="err_enter_med_freq">يرجى إدخال عدد مرات أخذ الدواء</string>
+    <string name="err_enter_time_unit">يرجى اختيار وحدة الوقت</string>
+    <string name="err_name_for_med">يرجى إدخال اسم لهذا الدواء</string>
+    <string name="err_missing_file_name">اسم الملف مفقود</string>
+    <string name="err_file_must_be_json">ملف التصدير يجب أن يكون بامتداد .json</string>
+    <string name="err_required">مطلوب</string>
+    <string name="err_file_access_denied">تم رفض الوصول إلى هذا الملف</string>
+
+    <!-- Time formats -->
+    <string name="date_format">yyyy/MM/dd</string>
+    <string name="time_format_hh_mm_aa">hh:mm aa</string>
+
+    <!-- Time -->
+    <string name="sunday">الأحد</string>
+    <string name="monday">الإثنين</string>
+    <string name="tuesday">الثلاثاء</string>
+    <string name="wednesday">الأربعاء</string>
+    <string name="thursday">الخميس</string>
+    <string name="friday">الجمعة</string>
+    <string name="saturday">السبت</string>
+    <string name="minutes">دقائق</string>
+    <string name="hours">ساعات</string>
+    <string name="days">أيام</string>
+    <string name="weeks">أسابيع</string>
+
+    <!-- MainActivity -->
+    <string name="no_medications_found">لا توجد أدوية</string>
+    <string name="med_schedule">جدول الأدوية</string>
+    <string name="no_meds_for_day">لا توجد أدوية لـ %1$s</string>
+    <string name="cannot_take_more_than_hours">لا يمكن أخذ الدواء قبل أكثر من %1$d ساعة</string>
+    <string name="as_needed_dose">جرعة عند الحاجة</string>
+    <string name="welcome">مرحباً بك في MediTrak!</string>
+    <string name="warranty_info">
+        هذا التطبيق مصمم للمساعدة في تتبع أدويتك. ليس المقصود منه تقديم نصائح طبية
+        ولا يجب تفسير أي معلومات يقدمها هذا التطبيق على أنها كذلك. منشئو هذا التطبيق
+        غير مسؤولين عن أي جرعات فائتة من أدويتك لأي سبب كان. إذا كنت بحاجة إلى مساعدة طبية،
+        يرجى الاتصال بطبيب مختص. باستخدامك لهذا التطبيق، أنت توافق على الشروط المذكورة أعلاه
+        وكذلك شروط ترخيص GPL الإصدار 2 الذي صدر بموجبه هذا التطبيق. \n\n\n\n
+        هذا التطبيق صدر تحت رخصة GNU العامة الإصدار 2، انظر أدناه للمزيد من التفاصيل:
+    </string>
+    <string name="permission_needed">صلاحية مطلوبة</string>
+    <string name="exact_alarm_permission_request"><![CDATA[MediTrak يحتاج إلى صلاحية الوصول إلى المنبهات والتذكيرات لضمان رنين التذكيرات في الوقت المطلوب.\n\nاسمح لـ MediTrak بتعيين المنبهات والتذكيرات لتتمكن من تلقي الإشعارات في الوقت المناسب.]]></string>
+
+    <!-- Add/EditMedication -->
+    <string name="add_medication">إضافة دواء</string>
+    <string name="edit_medication">تعديل الدواء</string>
+    <string name="delete_medication">حذف الدواء</string>
+    <string name="note_timestamp">التاريخ: %1$s الساعة: %2$s</string>
+    <string name="note_edit_timestamp">تم التعديل: %1$s الساعة: %2$s</string>
+    <string name="patient_changed">تم تغيير المريض من %1$s إلى %2$s\n</string>
+    <string name="name_changed">تم تغيير الاسم من %1$s إلى %2$s\n</string>
+    <string name="removed_alias">تم إزالة الاسم المستعار %1$s\n</string>
+    <string name="added_alias">تم إضافة الاسم المستعار %1$s\n</string>
+    <string name="changed_alias">تم تغيير الاسم المستعار من %1$s إلى %2$s\n</string>
+    <string name="changed_dosage">تم تغيير الجرعة من %1$s إلى %2$s\n</string>
+    <string name="frequency_changed">تم تغيير التكرار من %1$s إلى %2$s\n</string>
+    <string name="times_per">مرات لكل</string>
+    <string name="patientIsMe">أنا</string>
+    <string name="patient">المريض</string>
+    <string name="other">آخر</string>
+    <string name="name">الاسم</string>
+    <string name="medication_name">اسم الدواء</string>
+    <string name="medication_dosage">الجرعة</string>
+    <string name="medication_frequency">التكرار</string>
+    <string name="taken_every">يؤخذ كل</string>
+    <string name="units">وحدة الجرعة</string>
+    <string name="taken">أُخذ</string>
+    <string name="frequency">التكرار</string>
+    <string name="multiple_times_per_day">عدة مرات في اليوم</string>
+    <string name="as_needed">عند الحاجة</string>
+    <string name="daily">يومياً</string>
+    <string name="weekly">أسبوعياً</string>
+    <string name="monthly">شهرياً</string>
+    <string name="medication_name_amp_dosage"><![CDATA[اسم الدواء والجرعة]]></string>
+    <string name="who_takes_this_medication">من يأخذ هذا الدواء؟</string>
+    <string name="someone_else">شخص آخر</string>
+    <string name="what_is_the_medication_s_name_amp_how_much_is_taken"><![CDATA[ما اسم الدواء وما هي الجرعة؟]]></string>
+    <string name="alias_for_notifications">الاسم المستعار للإشعارات</string>
+    <string name="how_often_is_the_medication_taken">كم مرة يؤخذ الدواء؟</string>
+    <string name="start_date">تاريخ البدء</string>
+    <string name="taken_at">يؤخذ في</string>
+    <string name="unit_of_time">وحدة الوقت</string>
+    <string name="custom_frequency">تكرار مخصص</string>
+    <string name="times_per_day">مرة/مرات في اليوم</string>
+    <string name="starting">بدءاً من:</string>
+    <string name="alias_for_medication">اسم مستعار للدواء</string>
+    <string name="yourMedications">أدويتك:</string>
+    <string name="no_notes_for_this_medication">لا توجد ملاحظات لهذا الدواء</string>
+    <string name="unitExample">مثال: ملغ، غرام، قطرات</string>
+    <string name="patient_name">اسم المريض:</string>
+    <string name="no_alias">لا يوجد اسم مستعار</string>
+    <string name="at">في</string>
+    <string name="apply_retroactive">تطبيق التغييرات بأثر رجعي</string>
+    <string name="retroactive_warning">تحذير: التغييرات في التكرار قد تؤدي إلى اختفاء جرعات سابقة من الجدول.</string>
+    <string name="would_like_apply_retroactively">يمكن تطبيق التغييرات في الجرعة والتكرار بأثر رجعي من تاريخ آخر تغيير. هل تريد تطبيق هذه التغييرات بأثر رجعي؟</string>
+    <string name="instructions">تعليمات</string>
+    <string name="instructions_optional">تعليمات (اختياري)</string>
+    <string name="instructions_added">تم إضافة تعليمات: %1$s</string>
+    <string name="dose_limit_added">تم إضافة حد للجرعة: %1$s</string>
+    <string name="end_date_added">تم إضافة تاريخ انتهاء: %1$s</string>
+    <string name="new_quantity">الكمية الجديدة: %1$d</string>
+    <string name="remaining_doses">الجرعات المتبقية</string>
+    <string name="end_date">تاريخ الانتهاء</string>
+    <string name="set_limit_by">تعيين الحد بـ</string>
+    <string name="out_of_doses">لا توجد جرعات متبقية</string>
+    <string name="none">لا شيء</string>
+    <string name="quantity_optional">الكمية (اختياري)</string>
+    <string name="change_amount">تغيير الكمية</string>
+    <string name="adjust_quantity">تعديل الكمية</string>
+    <string name="notify_when_remaining">إشعار عند بقاء</string>
+    <string name="notify_when_remaining_added">تم تعيين الإشعار عند بقاء: %1$s</string>
+    <string name="low_doses_warning">مخزون %1$s منخفض. %2$d جرعة متبقية.</string>
+
+    <!-- MyMedications -->
+    <string name="my_medications">أدويتي</string>
+    <string name="med_name">اسم الدواء: %1$s</string>
+    <string name="dosage">الجرعة: %1$s %2$s</string>
+    <string name="taken_daily_at">يؤخذ يومياً في </string>
+    <string name="taken_every_lbl">يؤخذ كل </string>
+    <string name="alias_lbl">الاسم المستعار</string>
+    <string name="taken_since">يؤخذ منذ: %1$s</string>
+    <string name="taken_as_needed">يؤخذ عند الحاجة</string>
+    <string name="active">نشط</string>
+    <string name="inactive">غير نشط</string>
+
+    <!-- Notes -->
+    <string name="notes">ملاحظات</string>
+    <string name="add_note">إضافة ملاحظة</string>
+    <string name="edit_note">تعديل الملاحظة</string>
+
+    <!-- Settings Activity -->
+    <string name="settings">الإعدادات</string>
+    <string name="options">الخيارات</string>
+    <string name="license">الترخيص</string>
+    <string name="purpose">MediTrak هو تطبيق مجاني ومفتوح المصدر مصمم لمساعدتك في تتبع أدويتك، لتتمكن من الإجابة بسهولة على سؤال "هل أخذت دوائي أمس؟"</string>
+    <string name="copyright">حقوق النشر © 2022 Adam Guidarini</string>
+    <string name="licenseInfo">MediTrak هو برنامج مجاني ويمكن إعادة توزيعه و/أو تعديله وفقاً لشروط رخصة GNU العامة كما نشرتها مؤسسة البرمجيات الحرة، إما النسخة 2 أو (حسب رغبتك) أي نسخة لاحقة.</string>
+    <string name="warranty">
+        هذا البرنامج برنامج مجاني؛ يمكنك إعادة توزيعه و/أو تعديله
+        وفقاً لشروط رخصة GNU العامة
+        كما نشرتها مؤسسة البرمجيات الحرة؛ إما النسخة 2
+        من الترخيص، أو (حسب رغبتك) أي نسخة لاحقة.
+
+        هذا البرنامج موزع على أمل أن يكون مفيداً،
+        ولكن دون أي ضمان؛ حتى بدون الضمان الضمني
+        للتسويق أو الملاءمة لغرض معين. راجع
+        رخصة GNU العامة للمزيد من التفاصيل.
+    </string>
+    <string name="copyOfGPL2">
+        يجب أن تكون قد تلقيت نسخة من رخصة GNU العامة
+        مع هذا البرنامج؛ إذا لم يكن الأمر كذلك، راجع https://www.gnu.org/licenses/.
+    </string>
+    <string name="cannot_take_medication_more_than">لا يمكن أخذ الدواء أكثر من</string>
+    <string name="hours_in_advance">ساعة مقدماً</string>
+    <string name="title_activity_settings">الإعدادات</string>
+    <string name="delete_all">حذف الكل</string>
+    <string name="pause_medication">إيقاف الدواء مؤقتاً</string>
+    <string name="resume_medication">استئناف الدواء</string>
+    <string name="pause_message">هل أنت متأكد أنك تريد إيقاف %1$s مؤقتاً؟ لن يظهر في جدولك بعد الآن، ولكن يمكن استئنافه في أي وقت.</string>
+    <string name="resume_message">استئناف %1$s سيعيده إلى جدولك. هل أنت متأكد أنك تريد المتابعة؟</string>
+    <string name="enable_notifications">تفعيل الإشعارات</string>
+    <string name="disable_time_before_dose_requirement">تعطيل حد الوقت المسبق للجرعة</string>
+    <string name="theme">المظهر</string>
+    <string name="light_mode">وضع فاتح</string>
+    <string name="dark_mode">وضع داكن</string>
+    <string name="match_system_theme">إعدادات النظام</string>
+    <string name="number_of_hours_before_dose_can_be_taken">الحد الأقصى لوقت أخذ الجرعة مسبقاً:</string>
+    <string name="export">تصدير</string>
+    <string name="importData">استيراد</string>
+    <string name="data">البيانات</string>
+    <string name="export_directory">مجلد التصدير</string>
+    <string name="export_file_name">اسم ملف التصدير</string>
+    <string name="downloads">التنزيلات</string>
+    <string name="documents">المستندات</string>
+    <string name="export_data">تصدير البيانات</string>
+    <string name="successful_export">تم تصدير البيانات بنجاح إلى: %1$s</string>
+    <string name="import_success">تم استيراد البيانات بنجاح</string>
+    <string name="failed_export">تعذر تصدير البيانات</string>
+    <string name="failed_import">فشل استيراد البيانات</string>
+    <string name="could_not_retrieve_file">تعذر الوصول إلى ملف الاستيراد</string>
+    <string name="notifications_already_enabled">الإشعارات مفعلة بالفعل</string>
+    <string name="date_format_title">تنسيق التاريخ</string>
+    <string name="date_format_mm_dd_yyyy">MM/DD/YYYY</string>
+    <string name="date_format_dd_mm_yyyy">DD/MM/YYYY</string>
+    <string name="time_format">تنسيق الوقت</string>
+    <string name="hour_12">12 ساعة</string>
+    <string name="hour_24">24 ساعة</string>
+    <string name="language">اللغة</string>
+    <string name="schedule_export">تصدير الجدول</string>
+    <string name="notifications">الإشعارات</string>
+    <string name="manage_exact_alarms">إدارة المنبهات الدقيقة</string>
+
+    <!-- Schedule Export Dialog -->
+    <string name="export_now">تصدير الآن</string>
+    <string name="export_frequency">تكرار التصدير</string>
+    <string name="date_must_be_future">يجب أن يكون التاريخ في المستقبل</string>
+
+    <!-- Dose Info dialog -->
+    <string name="not_taken_yet">لم يؤخذ بعد</string>
+    <string name="not_taken">لم يؤخذ</string>
+    <string name="marked_taken_at">تم تسجيل أخذه في</string>
+    <string name="dose_information">معلومات الجرعة</string>
+    <string name="time_taken">وقت الأخذ</string>
+    <string name="date_taken">تاريخ الأخذ</string>
+    <string name="this_dose">هذه الجرعة</string>
+
+    <!-- Delete Everything -->
+    <string name="delete_all_data">حذف جميع البيانات المحفوظة</string>
+    <string name="delete_all_data_cannot_be_undone">حذف جميع البيانات؟ هذا الإجراء لا يمكن التراجع عنه.</string>
+    <string name="all_data_deleted">تم حذف جميع البيانات</string>
+
+    <!-- Notifications -->
+    <string name="mark_as_taken">تم الأخذ</string>
+    <string name="snooze_message">تأجيل</string>
+    <string name="its_time_your_med">حان وقت أخذ %1$s من %2$s</string>
+    <string name="time_for_other_med">حان وقت %1$s لأخذ %2$s من %3$s</string>
+    <string name="add_dose">إضافة جرعة</string>
+    <string name="open_notifications">فتح الإشعارات</string>
+    <string name="skip_unselected">تخطي غير المحدد</string>
+    <string name="take_all">أخذ الكل</string>
+    <string name="take_selected">أخذ المحدد</string>
+
+    <!-- Med History -->
+    <string name="history">السجل</string>
+    <string name="scheduled">مجدول</string>
+    <string name="dosage_hist">الجرعة</string>
+    <string name="filter">تصفية</string>
+    <string name="export_csv">تصدير CSV</string>
+    <string name="no_records">لا توجد سجلات</string>
+</resources>
