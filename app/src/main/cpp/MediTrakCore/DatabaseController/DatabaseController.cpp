@@ -324,6 +324,19 @@ void DatabaseController::upgrade(int currentVersion) {
         );
     }
 
+    if (currentVersion < 21) {
+        manager.execSql(
+            "UPDATE " + MEDICATION_TIMES
+            + " SET " + DRUG_TIME + " = " + DRUG_TIME + " || ':00'"
+            + " WHERE length(" + DRUG_TIME + ") = 5"
+            + " AND " + DRUG_TIME + " GLOB '[0-2][0-9]:[0-5][0-9]';"
+            + "UPDATE " + MEDICATION_TIMES
+            + " SET " + DRUG_TIME + " = " + DRUG_TIME + " || '0'"
+            + " WHERE length(" + DRUG_TIME + ") = 7"
+            + " AND " + DRUG_TIME + " GLOB '[0-2][0-9]:[0-5][0-9]:[0-9]';"
+        );
+    }
+
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
 }
 
