@@ -146,8 +146,6 @@ public class DBHelper extends SQLiteOpenHelper {
         if (nativeHelper == null) {
             nativeHelper = new NativeDbHelper(context);
         }
-
-        nativeHelper.upgrade(i);
     }
 
     /**
@@ -334,7 +332,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         for (int i = 0; i < cursor.getCount(); i++) {
             final String time = cursor.getString(cursor.getColumnIndexOrThrow(DRUG_TIME));
-            times[i] = LocalTime.parse(time);
+            times[i] = TimeFormatting.stringToLocalTime(time);
             cursor.moveToNext();
         }
 
@@ -406,7 +404,10 @@ public class DBHelper extends SQLiteOpenHelper {
             // Add additional times
             if (diff > 0) {
                 for (int i = maxIndex; i < medication.getTimes().length; i++) {
-                    String timeAsString = medication.getTimes()[i].toLocalTime().toString();
+                    String timeAsString = TimeFormatting.formatTimeForDB(
+                            medication.getTimes()[i].getHour(),
+                            medication.getTimes()[i].getMinute()
+                    );
 
                     cv.put(MED_ID, medication.getId());
                     cv.put(DRUG_TIME, timeAsString);
