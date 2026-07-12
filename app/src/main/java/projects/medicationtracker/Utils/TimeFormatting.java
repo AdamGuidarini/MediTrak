@@ -17,19 +17,7 @@ public class TimeFormatting {
      * @return A containing the date and time to be stored in database
      */
     public static String formatTimeForDB(int hour, int minute) {
-        String time;
-
-        if (hour < 10)
-            time = "0" + hour;
-        else
-            time = String.valueOf(hour);
-
-        if (minute < 10)
-            time += ":0" + minute;
-        else
-            time += ":" + minute;
-
-        return time + ":00";
+        return String.format(Locale.ROOT, "%02d:%02d:00", hour, minute);
     }
 
     /**
