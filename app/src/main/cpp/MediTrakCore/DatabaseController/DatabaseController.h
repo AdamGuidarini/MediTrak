@@ -33,7 +33,7 @@ namespace DateFormats {
 
 class DatabaseController {
 private:
-    const int DB_VERSION = 20;
+    const int DB_VERSION = 21;
     const string DATABASE_NAME = "Medications.db";
     vector<string> tablesToIgnore;
     vector<shared_ptr<Medication>> medicationLineageRefs;
@@ -106,6 +106,11 @@ private:
      * @param increment Whether or not to increment the medication's remaining doses
      */
     void adjustRemainingDoses(long medId, bool increment);
+
+    /**
+     * Normalizes legacy MedicationTimes values to HH:mm:ss.
+     */
+    void normalizeLegacyMedicationTimes();
 
 public:
     // Settings

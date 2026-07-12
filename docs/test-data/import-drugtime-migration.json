@@ -1,0 +1,37 @@
+{
+  "Medication": [
+    {
+      "MedicationID": 1001,
+      "MedName": "Migration Test Med",
+      "PatientName": "Test User",
+      "Dosage": 1.0,
+      "Units": "tablet",
+      "StartDate": "2026-07-10 00:00:00",
+      "DrugFrequency": 1440,
+      "Alias": "LegacyTimeCase",
+      "Active": 1,
+      "ParentId": null,
+      "ChildId": null,
+      "Instructions": "Used to verify DrugTime normalization/parsing",
+      "EndDate": null,
+      "DoseLimit": -1,
+      "NotifyWhenRemaining": -1
+    }
+  ],
+  "MedicationTimes": [
+    {
+      "TimeID": 2001,
+      "MedicationID": 1001,
+      "DrugTime": "00:00"
+    },
+    {
+      "TimeID": 2002,
+      "MedicationID": 1001,
+      "DrugTime": "21:45:5"
+    }
+  ],
+  "MedicationTracker": [],
+  "Notes": [],
+  "ActivityChanges": []
+}
+

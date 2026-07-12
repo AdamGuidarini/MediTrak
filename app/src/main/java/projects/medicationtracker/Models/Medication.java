@@ -78,12 +78,10 @@ public class Medication implements Cloneable, Parcelable {
      */
     public Medication(String thisMed, String patient, String units, String[] times,
                       String firstDate, long id, int frequency, float dosage, String medAlias) {
-        final String dateFormat = "yyyy-MM-dd HH:mm:ss";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat, Locale.getDefault());
         LocalDateTime[] medTimes = new LocalDateTime[times.length];
 
         for (int i = 0; i < times.length; i++) {
-            medTimes[i] = LocalDateTime.parse(times[i], formatter);
+            medTimes[i] = TimeFormatting.stringToLocalDateTime(times[i]);
         }
 
         medName = thisMed;
@@ -92,7 +90,7 @@ public class Medication implements Cloneable, Parcelable {
         this.times = medTimes;
         medId = id;
         medFrequency = frequency;
-        startDate = LocalDateTime.parse(firstDate, formatter);
+        startDate = TimeFormatting.stringToLocalDateTime(firstDate);
         medDosage = dosage;
         alias = medAlias != null ? medAlias : "";
         doses = new Dose[]{};

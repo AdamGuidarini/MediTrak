@@ -324,6 +324,10 @@ void DatabaseController::upgrade(int currentVersion) {
         );
     }
 
+    if (currentVersion < 21) {
+        normalizeLegacyMedicationTimes();
+    }
+
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
 }
 
@@ -673,6 +677,19 @@ void DatabaseController::adjustRemainingDoses(long medId, bool increment) {
     }
 }
 
+void DatabaseController::normalizeLegacyMedicationTimes() {
+    manager.execSql(
+            "UPDATE " + MEDICATION_TIMES
+            + " SET " + DRUG_TIME + " = " + DRUG_TIME + " || ':00'"
+            + " WHERE length(" + DRUG_TIME + ") = 5"
+            + " AND " + DRUG_TIME + " GLOB '[0-2][0-9]:[0-5][0-9]';"
+            + "UPDATE " + MEDICATION_TIMES
+            + " SET " + DRUG_TIME + " = " + DRUG_TIME + " || '0'"
+            + " WHERE length(" + DRUG_TIME + ") = 7"
+            + " AND " + DRUG_TIME + " GLOB '[0-2][0-9]:[0-5][0-9]:[0-9]';"
+    );
+}
+
 bool DatabaseController::stashNotification(const Notification &notification) {
     string subquery = "SELECT " + NOTIFICATION_ID + " FROM " + NOTIFICATIONS
                       + " WHERE " + MED_ID + "=" + to_string(notification.medId)
@@ -741,7 +758,6 @@ void DatabaseController::deleteNotificationsByMedicationId(long medicationId) {
 void DatabaseController::repairImportErrors() {
     auto doses = manager.execSqlWithReturn("SELECT * FROM " + MEDICATION_TRACKER_TABLE);
     auto meds = manager.execSqlWithReturn("SELECT * FROM " + MEDICATION_TABLE);
-    auto times = manager.execSqlWithReturn("SELECT * FROM " + MEDICATION_TIMES);
     auto notes = manager.execSqlWithReturn("SELECT * FROM " + NOTES_TABLE);
     regex dateRegex("^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$");
 
@@ -799,22 +815,8 @@ void DatabaseController::repairImportErrors() {
         meds->moveToNext();
     }
 
-    while (!times->isAfterLast() && times->getCount() > 0) {
-        auto schedTime = times->getItem(DRUG_TIME);
-
-        bool match = regex_match(schedTime, dateRegex);
-
-        // scheduled datetime is wrong
-        if (!match && schedTime.length() == DateFormats::DB_DATE_FORMAT.length() - 1) {
-            manager.update(
-                    MEDICATION_TIMES,
-                    {pair(DRUG_TIME, schedTime + "0")},
-                    {pair(TIME_ID, times->getItem(TIME_ID))}
-            );
-        }
-
-        times->moveToNext();
-    }
+    // Normalize legacy time-only values with set-based SQL for import performance.
+    normalizeLegacyMedicationTimes();
 
     while (!notes->isAfterLast() && notes->getCount() > 0) {
         string editTime = notes->getItem(TIME_EDITED);
@@ -842,6 +844,5 @@ void DatabaseController::repairImportErrors() {
 
     delete doses;
     delete meds;
-    delete times;
     delete notes;
 }

@@ -4,6 +4,7 @@ import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
@@ -17,19 +18,7 @@ public class TimeFormatting {
      * @return A containing the date and time to be stored in database
      */
     public static String formatTimeForDB(int hour, int minute) {
-        String time;
-
-        if (hour < 10)
-            time = "0" + hour;
-        else
-            time = String.valueOf(hour);
-
-        if (minute < 10)
-            time += ":0" + minute;
-        else
-            time += ":" + minute;
-
-        return time + ":00";
+        return String.format(Locale.ROOT, "%02d:%02d:00", hour, minute);
     }
 
     /**
@@ -42,16 +31,51 @@ public class TimeFormatting {
         final String pattern = "yyyy-MM-dd HH:mm:ss";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern, Locale.getDefault());
 
-        // Handle bug where seconds < 10 were sorted as 1 digit
-        if (date.length() < pattern.length()) {
-            date += "0";
+        return LocalDateTime.parse(normalizeDbDateTime(date), formatter);
+    }
+
+    /**
+     * Normalizes legacy datetime strings from DB so they always match yyyy-MM-dd HH:mm:ss.
+     */
+    private static String normalizeDbDateTime(String date) {
+        if (date == null) {
+            return null;
         }
 
-        LocalDateTime dateTime;
+        // Old rows may store HH:mm only.
+        if (date.length() == 16) {
+            return date + ":00";
+        }
 
-        dateTime = LocalDateTime.parse(date, formatter);
+        // Old rows may store one-digit seconds.
+        if (date.length() == 18 && date.charAt(16) == ':') {
+            return date + "0";
+        }
 
-        return dateTime;
+        return date;
+    }
+
+    /**
+     * Converts DB time values to LocalTime, tolerating legacy values missing full seconds.
+     */
+    public static LocalTime stringToLocalTime(String time) {
+        if (time == null) {
+            return null;
+        }
+
+        return LocalTime.parse(normalizeDbTime(time));
+    }
+
+    private static String normalizeDbTime(String time) {
+        if (time.length() == 5) {
+            return time + ":00";
+        }
+
+        if (time.length() == 7 && time.charAt(5) == ':') {
+            return time + "0";
+        }
+
+        return time;
     }
 
     /**

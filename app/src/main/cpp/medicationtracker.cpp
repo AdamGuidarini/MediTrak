@@ -332,10 +332,10 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbUpgrade(
         jint version
 ) {
     std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
+    (void) version;
 
     try {
         DatabaseController dbController(db);
-        dbController.upgrade(static_cast<int>(version));
     } catch (exception &e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
     }
