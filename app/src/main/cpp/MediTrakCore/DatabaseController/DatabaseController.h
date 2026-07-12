@@ -107,6 +107,11 @@ private:
      */
     void adjustRemainingDoses(long medId, bool increment);
 
+    /**
+     * Normalizes legacy MedicationTimes values to HH:mm:ss.
+     */
+    void normalizeLegacyMedicationTimes();
+
 public:
     // Settings
     const string TIME_BEFORE_DOSE = "TimeBeforeDose";
