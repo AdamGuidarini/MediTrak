@@ -16,8 +16,8 @@ android {
         targetSdkVersion 35
         compileSdkVersion 36
 
-        versionCode 57
-        versionName "0.17.9"
+        versionCode 58
+        versionName "0.17.10"
         resourceConfigurations += ['en', 'de', 'es', 'it', 'tr', 'nl', 'ar']
 
         ndk {
@@ -36,7 +36,10 @@ android {
 
         packagingOptions {
             jniLibs {
-                useLegacyPackaging = true
+                useLegacyPackaging = false
+            }
+            resources {
+                excludes += ['assets/dexopt/baseline.prof', 'assets/dexopt/baseline.profm']
             }
         }
     }
@@ -76,4 +79,10 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}
+
+tasks.configureEach {
+    if (name in ['compileReleaseArtProfile', 'mergeReleaseArtProfile', 'mergeReleaseStartupProfile']) {
+        enabled = false
+    }
 }
