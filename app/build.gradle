@@ -29,7 +29,7 @@ android {
             cmake {
                 arguments '-DANDROID_TOOLCHAIN=clang',
                         '-DANDROID_ARM_NEON=TRUE',
-                        '-DCMAKE_SHARED_LINKER_FLAGS=-Wl,--build-id=none -Wl,-z,max-page-size=16384' // <-- ADD THE FLAG HERE
+                        '-DCMAKE_SHARED_LINKER_FLAGS=-Wl,--build-id=none -Wl,-z,max-page-size=16384'
                 cppFlags '-frtti -fexceptions'
             }
         }
