@@ -20,20 +20,13 @@ allprojects {
 }
 
 tasks.register('clean', Delete) {
-    def sqlite3Lib = file('app/src/main/cpp/sqlite3')
-    def cxx = file('app/.cxx')
-
     delete rootProject.layout.buildDirectory
+}
 
-    if (sqlite3Lib.exists()) {
-        delete sqlite3Lib
-    }
+def appProject = project(':app')
+def appSqlite3Dir = appProject.layout.projectDirectory.dir('src/main/cpp/sqlite3')
+def appCxxDir = appProject.layout.projectDirectory.dir('.cxx')
 
-    if (cxx.exists()) {
-        file(cxx).list().each {
-            f -> delete "${cxx}/${f}"
-        }
-
-        delete cxx
-    }
+appProject.tasks.matching { it.name == 'clean' && it instanceof Delete }.configureEach {
+    delete appSqlite3Dir, appCxxDir
 }
