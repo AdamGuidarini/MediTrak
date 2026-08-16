@@ -226,8 +226,9 @@ jobject medicationToJavaConverter(Medication med, JNIEnv *env, jclass jMedicatio
 
             __android_log_write(ANDROID_LOG_INFO, nullptr, msg.c_str());
 
-            env->SetObjectArrayElement(jDoses, i,
-                                       doseToJavaConverter(med.doses.at(i), env, jMedicationInstance, jDoseClass));
+            auto jDose = doseToJavaConverter(med.doses.at(i), env, jMedicationInstance, jDoseClass);
+
+            env->SetObjectArrayElement(jDoses, i, jDose);
         }
 
         env->CallVoidMethod(jMedicationInstance, setDoses, jDoses);

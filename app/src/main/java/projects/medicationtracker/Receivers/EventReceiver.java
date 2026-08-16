@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import projects.medicationtracker.Helpers.DBHelper;
 import projects.medicationtracker.Helpers.NativeDbHelper;
@@ -82,7 +83,7 @@ public class EventReceiver extends BroadcastReceiver {
         } else if (intent.getAction().contains(DISMISSED_ACTION)) {
             String embeddedId = "_" + intent.getAction().split("_")[1];
 
-            nativeDb.deleteNotification(intent.getLongExtra(MEDICATION_ID + embeddedId, 0));
+            nativeDb.deleteNotification(intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0));
         } else if (intent.getAction().contains(TAKE_ALL_ACTION)) {
             takeAll(manager, nativeDb, context);
         } else {
@@ -208,15 +209,19 @@ public class EventReceiver extends BroadcastReceiver {
         StatusBarNotification[] activeNotifications
                 = Arrays.stream(manager.getActiveNotifications()).filter(
                 n -> n.getId() != SUMMARY_ID
+                        && Objects.equals(
+                        n.getNotification().getChannelId(),
+                        MED_REMINDER_CHANNEL_ID
+                )
         ).toArray(StatusBarNotification[]::new);
         ArrayList<Notification> notifications = nativeDbHelper.getNotifications();
 
         for (final StatusBarNotification n : activeNotifications) {
-            Notification thisNotification = notifications.stream().filter(
+            ArrayList<Notification> matchingNotifications = notifications.stream().filter(
                     _n -> _n.getNotificationId() == n.getId()
-            ).findFirst().orElse(null);
+            ).collect(Collectors.toCollection(ArrayList::new));
 
-            if (thisNotification == null) {
+            if (matchingNotifications.isEmpty()) {
                 Log.e(
                         "EventReceiver",
                         "Failed to find notification with ID: "
@@ -226,19 +231,22 @@ public class EventReceiver extends BroadcastReceiver {
                 continue;
             }
 
-            nativeDbHelper.addDose(
-                    thisNotification.getMedId(),
-                    thisNotification.getDoseTime(),
-                    LocalDateTime.now().withSecond(0).withNano(0),
-                    true
-            );
+            for (Notification thisNotification : matchingNotifications) {
+                nativeDbHelper.addDose(
+                        thisNotification.getMedId(),
+                        thisNotification.getDoseTime(),
+                        LocalDateTime.now().withSecond(0).withNano(0),
+                        true
+                );
 
-            nativeDbHelper.deleteNotification(thisNotification.getId());
+                nativeDbHelper.deleteNotification(thisNotification.getNotificationId());
 
-            Medication medication = nativeDbHelper.getMedicationById(thisNotification.getMedId());
+                Medication medication = nativeDbHelper.getMedicationById(thisNotification.getMedId());
 
-            if (medication.getNotifyWhenRemaining() != -1 && medication.getNotifyWhenRemaining() <= medication.getRemainingDosesCount()) {
-                NotificationUtils.notifyLowQuantity(medication, context);
+                if (medication.getNotifyWhenRemaining() != -1
+                        && medication.getRemainingDosesCount() <= medication.getNotifyWhenRemaining()) {
+                    NotificationUtils.notifyLowQuantity(medication, context);
+                }
             }
         }
 
@@ -246,11 +254,14 @@ public class EventReceiver extends BroadcastReceiver {
     }
 
     private void closeSummaryIfAlone(NotificationManager manager) {
-        boolean summaryExists = Arrays.stream(manager.getActiveNotifications()).anyMatch(
-                n -> n.getId() == SUMMARY_ID
-        );
+        StatusBarNotification[] medReminderNotifications = Arrays.stream(
+                manager.getActiveNotifications()
+        ).filter(
+                n -> Objects.equals(n.getNotification().getChannelId(), MED_REMINDER_CHANNEL_ID)
+        ).toArray(StatusBarNotification[]::new);
 
-        if (summaryExists) {
+        if (medReminderNotifications.length == 1
+                && medReminderNotifications[0].getId() == SUMMARY_ID) {
             manager.cancel(SUMMARY_ID);
         }
     }
