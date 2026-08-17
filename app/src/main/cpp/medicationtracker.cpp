@@ -150,6 +150,8 @@ jobject medicationToJavaConverter(Medication med, JNIEnv *env, jclass jMedicatio
     jmethodID setActiveStatus = env->GetMethodID(jMedication, "setActiveStatus", "(Z)V");
     jmethodID setParent = env->GetMethodID(jMedication, "setParent",
                                            "(Lprojects/medicationtracker/Models/Medication;)V");
+    jmethodID setChild = env->GetMethodID(jMedication, "setChild",
+                                          "(Lprojects/medicationtracker/Models/Medication;)V");
     jmethodID setDoses = env->GetMethodID(jMedication, "setDoses",
                                           "([Lprojects/medicationtracker/Models/Dose;)V");
     jmethodID setDoseAmount = env->GetMethodID(jMedication, "setDoseAmount", "(I)V");
@@ -165,9 +167,42 @@ jobject medicationToJavaConverter(Medication med, JNIEnv *env, jclass jMedicatio
     env->CallVoidMethod(jMedicationInstance, setEndDate, env->NewStringUTF(med.endDate.c_str()));
     env->CallVoidMethod(jMedicationInstance, setNotifyWhenRemaining, med.notifyWhenRemainingAmount);
 
+    if (med.child != nullptr) {
+        Medication child = *med.child;
+        jobjectArray childTimes = env->NewObjectArray(child.times.size(), String, NULL);
+
+        for (int i = 0; i < child.times.size(); i++) {
+            std::string dateString =
+                    child.startDate.substr(0, child.startDate.find(" ")) + " " + child.times.at(i);
+
+            env->SetObjectArrayElement(childTimes, i, env->NewStringUTF(dateString.c_str()));
+        }
+
+        jobject jChild = env->NewObject(
+                jMedication,
+                medConstructor,
+                env->NewStringUTF(child.medicationName.c_str()),
+                env->NewStringUTF(child.patientName.c_str()),
+                env->NewStringUTF(child.dosageUnit.c_str()),
+                childTimes,
+                env->NewStringUTF(child.startDate.c_str()),
+                child.id,
+                jint(child.frequency),
+                child.dosage,
+                env->NewStringUTF(child.alias.c_str())
+        );
+
+        if (jChild != nullptr) {
+            env->CallVoidMethod(jChild, setActiveStatus, child.active);
+            env->CallVoidMethod(jChild, setDoseAmount, child.quantity);
+            env->CallVoidMethod(jChild, setEndDate, env->NewStringUTF(child.endDate.c_str()));
+            env->CallVoidMethod(jChild, setNotifyWhenRemaining, child.notifyWhenRemainingAmount);
+            env->CallVoidMethod(jChild, setParent, jMedicationInstance);
+            env->CallVoidMethod(jMedicationInstance, setChild, jChild);
+        }
+    }
+
     if (auto parentPtr = med.parent.lock()) {
-        jmethodID setChild = env->GetMethodID(jMedication, "setChild",
-                                              "(Lprojects/medicationtracker/Models/Medication;)V");
         jobject medParent = medicationToJavaConverter(*parentPtr, env, jMedication, jDoseClass);
 
         // Add this null check
@@ -191,8 +226,9 @@ jobject medicationToJavaConverter(Medication med, JNIEnv *env, jclass jMedicatio
 
             __android_log_write(ANDROID_LOG_INFO, nullptr, msg.c_str());
 
-            env->SetObjectArrayElement(jDoses, i,
-                                       doseToJavaConverter(med.doses.at(i), env, jMedicationInstance, jDoseClass));
+            auto jDose = doseToJavaConverter(med.doses.at(i), env, jMedicationInstance, jDoseClass);
+
+            env->SetObjectArrayElement(jDoses, i, jDose);
         }
 
         env->CallVoidMethod(jMedicationInstance, setDoses, jDoses);

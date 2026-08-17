@@ -106,8 +106,10 @@ public class MyMedications extends BaseActivity {
 
         ArrayList<Pair<String, ArrayList<Medication>>> patientMedPairs = new ArrayList<>();
 
+        ArrayList<Medication> meds = new ArrayList<>();
+
         for (String patient : patientNames) {
-            ArrayList<Medication> meds = allMeds.stream()
+            meds = allMeds.stream()
                     .filter(m -> m.getPatientName().equals(patient) && m.getChild() == null)
                     .collect(Collectors.toCollection(ArrayList::new));
 
@@ -117,11 +119,12 @@ public class MyMedications extends BaseActivity {
         }
 
         if (patientMedPairs.size() == 1) {
-            populateViews(allMeds);
+            populateViews(meds);
         } else if (patientMedPairs.size() > 1) {
-            String[] patients = patientMedPairs.stream().map(Pair::getFirst).map(p ->
-                    Objects.equals(p, "ME!") ? getString(R.string.you) : p).toArray(String[]::new
-            );
+            String[] patients = patientMedPairs.stream()
+                    .map(Pair::getFirst)
+                    .map(p -> Objects.equals(p, "ME!") ? getString(R.string.you) : p)
+                    .toArray(String[]::new);
 
             if (patientMedPairs.stream().allMatch(m -> m.getFirst().equals("ME!"))) {
                 patientMedPairs = patientMedPairs.stream().map(m -> {
@@ -133,12 +136,15 @@ public class MyMedications extends BaseActivity {
                 }).collect(Collectors.toCollection(ArrayList::new));
             }
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, patients);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    this, android.R.layout.simple_dropdown_item_1line, patients
+            );
             namesSelector.setAdapter(adapter);
 
             namesLayout.setVisibility(VISIBLE);
 
-            final ArrayList<Pair<String, ArrayList<Medication>>> allMedsClone = (ArrayList<Pair<String, ArrayList<Medication>>>) patientMedPairs.clone();
+            final ArrayList<Pair<String, ArrayList<Medication>>> patientMedsClone =
+                    (ArrayList<Pair<String, ArrayList<Medication>>>) patientMedPairs.clone();
 
             namesSelector.addTextChangedListener(new TextWatcher() {
                 @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -153,7 +159,7 @@ public class MyMedications extends BaseActivity {
                     String selected = s.toString();
                     final String patient = selected.equals(you) ? "ME!" : selected;
 
-                    ArrayList<Medication> patientMeds = allMedsClone.stream()
+                    ArrayList<Medication> patientMeds = patientMedsClone.stream()
                             .filter(m -> m.getFirst().equals(patient))
                             .map(Pair::getSecond)
                             .collect(Collectors.toList())

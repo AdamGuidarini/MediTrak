@@ -5,6 +5,7 @@
 #include "DatabaseController.h"
 
 #include <unordered_set>
+#include <unordered_map>
 
 using namespace std;
 
@@ -425,6 +426,8 @@ vector<Medication> DatabaseController::fetchMedications(
     }
 
     vector<Medication> medications;
+    unordered_map<long, long> parentIds;
+    unordered_map<long, long> childIds;
     Table *table = manager.execSqlWithReturn(query);
 
     if (table->getCount() == 0) {
@@ -459,6 +462,11 @@ vector<Medication> DatabaseController::fetchMedications(
             parentId = stol(table->getItem(PARENT_ID));
         }
 
+        long childId = 0;
+        if (!table->getItem(CHILD_ID).empty()) {
+            childId = stol(table->getItem(CHILD_ID));
+        }
+
         while (!table->isAfterLast()) {
             string t = table->getItem(DRUG_TIME);
 
@@ -475,13 +483,53 @@ vector<Medication> DatabaseController::fetchMedications(
 
         medication.times = std::move(times);
 
-        if (parentId > 0) {
-            auto parentPtr = make_shared<Medication>(getMedication(parentId));
-            medication.parent = parentPtr;
-            medicationLineageRefs.push_back(parentPtr);
+        parentIds[medication.id] = parentId;
+        childIds[medication.id] = childId;
+        medications.push_back(medication);
+    }
+
+    unordered_map<long, shared_ptr<Medication>> medicationRefs;
+    for (const auto &med: medications) {
+        auto medPtr = make_shared<Medication>(med);
+        medicationRefs.insert({med.id, medPtr});
+        medicationLineageRefs.push_back(medPtr);
+    }
+
+    for (auto &med: medications) {
+        auto thisMedRef = medicationRefs.find(med.id);
+
+        if (thisMedRef == medicationRefs.end()) {
+            continue;
         }
 
-        medications.push_back(medication);
+        auto parentIdIt = parentIds.find(med.id);
+        if (parentIdIt != parentIds.end() && parentIdIt->second > 0) {
+            shared_ptr<Medication> parentPtr = nullptr;
+
+            auto parentRef = medicationRefs.find(parentIdIt->second);
+            if (parentRef != medicationRefs.end()) {
+                parentPtr = parentRef->second;
+            } else {
+                parentPtr = make_shared<Medication>(getMedication(parentIdIt->second));
+                medicationLineageRefs.push_back(parentPtr);
+            }
+
+            med.parent = parentPtr;
+
+            if (parentPtr != nullptr) {
+                parentPtr->child = thisMedRef->second;
+            }
+        }
+
+        auto childIdIt = childIds.find(med.id);
+        if (childIdIt != childIds.end() && childIdIt->second > 0) {
+            auto childRef = medicationRefs.find(childIdIt->second);
+
+            if (childRef != medicationRefs.end()) {
+                med.child = childRef->second;
+                childRef->second->parent = thisMedRef->second;
+            }
+        }
     }
 
     delete table;
