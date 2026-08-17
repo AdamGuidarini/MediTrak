@@ -16,8 +16,8 @@ android {
         targetSdkVersion 35
         compileSdkVersion 36
 
-        versionCode 58
-        versionName "0.17.10"
+        versionCode 59
+        versionName "0.17.11"
         resourceConfigurations += ['en', 'de', 'es', 'it', 'tr', 'nl', 'ar']
 
         ndk {
@@ -56,7 +56,6 @@ android {
         java {
             toolchain {
                 languageVersion.set(JavaLanguageVersion.of(21))
-                vendor.set(JvmVendorSpec.ADOPTIUM)
             }
         }
     }

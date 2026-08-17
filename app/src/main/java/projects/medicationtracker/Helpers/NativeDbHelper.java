@@ -146,6 +146,7 @@ public class NativeDbHelper {
         }
 
         Medication[] meds = getAllMedications(dbPath, Medication.class, Dose.class);
+
         if (meds == null) {
             return new ArrayList<>();
         }

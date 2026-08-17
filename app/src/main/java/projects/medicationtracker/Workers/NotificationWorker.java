@@ -66,24 +66,6 @@ public class NotificationWorker extends Worker {
                     message, doseTime, notificationId, medId
             );
 
-            if (Arrays.stream(openNotes).noneMatch(n -> n.getId() == SUMMARY_ID)) {
-                Notification notificationSummary
-                        = new NotificationCompat.Builder(context, MED_REMINDER_CHANNEL_ID)
-                        .setContentTitle(context.getString(R.string.app_name))
-                        .setSmallIcon(R.drawable.pill)
-                        .setStyle(new NotificationCompat.InboxStyle())
-                        .setGroup(GROUP_KEY)
-                        .setSilent(true)
-                        .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
-                        .setGroupSummary(true)
-                        .setAutoCancel(true)
-                        .build();
-
-                notificationManager.notify(SUMMARY_ID, notificationSummary);
-
-                sleep(500);
-            }
-
             // Only fire notification if no other active notification has the same ID
             if (Arrays.stream(openNotes).noneMatch(n -> n.getId() == notificationId)) {
                 NativeDbHelper nativeDb = new NativeDbHelper(context);
@@ -100,51 +82,49 @@ public class NotificationWorker extends Worker {
                 // Force wait thread to prevent Muting recently noisy 0 error
                 sleep(5000);
             }
+
+            ensureReminderSummaryState();
         } catch (Exception e) {
             Log.e("NotificationWorker:CreateNotification", e.getMessage());
 
             return Result.failure();
         }
 
-        try {
-            StatusBarNotification[] filteredNotifications = Arrays.stream(
-                    notificationManager.getActiveNotifications()
-            ).filter(
-                    n ->
-                        n.getId() != SUMMARY_ID
-                        && n.getNotification().getChannelId().equals(MED_REMINDER_CHANNEL_ID)
-            ).toArray(StatusBarNotification[]::new);
-
-            if (filteredNotifications.length == 1) {
-                return Result.success();
-            }
-
-            for (final StatusBarNotification n : filteredNotifications) {
-                Notification note = n.getNotification();
-
-                long thisMedId = note.extras.getLong(MEDICATION_ID);
-                String time = note.extras.getString(DOSE_TIME);
-
-                PendingIntent takeAllIntent = createTakeAllIntent(thisMedId, n.getId(), time);
-
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context, note);
-
-                if (builder.mActions.stream().anyMatch(a -> a.getTitle() == context.getString(R.string.take_all))) {
-                    continue;
-                }
-
-                builder.addAction(0, context.getString(R.string.take_all), takeAllIntent);
-                builder.setSilent(true);
-
-                notificationManager.notify(n.getId(), builder.build());
-            }
-        } catch (Exception e) {
-            Log.e("NotificationWorker:AddTakeAll", e.getMessage());
-
-            return Result.failure();
-        }
+        ensureReminderSummaryState();
 
         return Result.success();
+    }
+
+    private void ensureReminderSummaryState() {
+        StatusBarNotification[] reminderChildren = Arrays.stream(
+                notificationManager.getActiveNotifications()
+        ).filter(
+                n -> n.getId() != SUMMARY_ID
+                        && n.getNotification().getChannelId().equals(MED_REMINDER_CHANNEL_ID)
+                        && GROUP_KEY.equals(n.getNotification().getGroup())
+        ).toArray(StatusBarNotification[]::new);
+        boolean summaryExists = Arrays.stream(notificationManager.getActiveNotifications()).anyMatch(
+                n -> n.getId() == SUMMARY_ID
+                        && n.getNotification().getChannelId().equals(MED_REMINDER_CHANNEL_ID)
+                        && GROUP_KEY.equals(n.getNotification().getGroup())
+        );
+
+        if (reminderChildren.length > 1 && !summaryExists) {
+            Notification notificationSummary = new NotificationCompat.Builder(context, MED_REMINDER_CHANNEL_ID)
+                    .setContentTitle(context.getString(R.string.app_name))
+                    .setContentText(context.getString(R.string.my_medications))
+                    .setSmallIcon(R.drawable.pill)
+                    .setGroup(GROUP_KEY)
+                    .setSilent(true)
+                    .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
+                    .setGroupSummary(true)
+                    .setAutoCancel(true)
+                    .build();
+
+            notificationManager.notify(SUMMARY_ID, notificationSummary);
+        } else if (reminderChildren.length <= 1 && summaryExists) {
+            notificationManager.cancel(SUMMARY_ID);
+        }
     }
 
     /**
@@ -232,12 +212,13 @@ public class NotificationWorker extends Worker {
                                 snoozePendingIntent
                         )
                         .setDeleteIntent(deleteIntent);
+        long activeReminderChildren = Arrays.stream(notificationManager.getActiveNotifications())
+                .filter(n -> n.getId() != SUMMARY_ID
+                        && n.getNotification().getChannelId().equals(MED_REMINDER_CHANNEL_ID)
+                        && GROUP_KEY.equals(n.getNotification().getGroup()))
+                .count();
 
-        StatusBarNotification[] open = Arrays.stream(notificationManager.getActiveNotifications())
-                .filter(n -> n.getNotification().getChannelId().equals(MED_REMINDER_CHANNEL_ID))
-                .toArray(StatusBarNotification[]::new);
-
-        if (Arrays.stream(open).filter(n -> n.getId() != SUMMARY_ID).count() >= 1) {
+        if (activeReminderChildren >= 1) {
             builder.addAction(
                     0,
                     context.getString(R.string.take_all),
