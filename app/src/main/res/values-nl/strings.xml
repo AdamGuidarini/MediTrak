@@ -237,7 +237,7 @@
     <string name="delete_all_data_cannot_be_undone">Alle opgeslagen gegevens verwijderen? Deze actie kan niet ongedaan worden gemaakt.</string>
     <string name="all_data_deleted">Alle gegevens zijn verwijderd</string>
     <!-- Notifications -->
-    <string name="mark_as_taken">Ingenomen</string>
+    <string name="mark_as_taken">Innemen</string>
     <string name="snooze_message">Sluimeren</string>
     <string name="its_time_your_med">Het is tijd om je %1$s van %2$s te pakken</string>
     <string name="time_for_other_med">Het is tijd voor %1$s\"s %2$s van %3$s</string>

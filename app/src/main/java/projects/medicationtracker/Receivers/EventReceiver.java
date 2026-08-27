@@ -50,7 +50,7 @@ public class EventReceiver extends BroadcastReceiver {
         final NotificationManager manager
                 = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (nativeDb.getDbPath() == null || nativeDb.getDbPath().isEmpty()) {
+        if (nativeDb.getDbPath().isEmpty()) {
             return;
         }
 
@@ -139,7 +139,7 @@ public class EventReceiver extends BroadcastReceiver {
             return;
         }
 
-        if (preferences.getString(EXPORT_START).isEmpty()) {
+        if (Objects.requireNonNull(preferences.getString(EXPORT_START)).isEmpty()) {
             return;
         }
 
@@ -256,8 +256,8 @@ public class EventReceiver extends BroadcastReceiver {
     private void closeSummaryIfAlone(NotificationManager manager) {
         StatusBarNotification[] medReminderNotifications = Arrays.stream(
                 manager.getActiveNotifications()
-        ).filter(
-                n -> Objects.equals(n.getNotification().getChannelId(), MED_REMINDER_CHANNEL_ID)
+        ).filter(n ->
+                Objects.equals(n.getNotification().getChannelId(), MED_REMINDER_CHANNEL_ID)
         ).toArray(StatusBarNotification[]::new);
 
         if (medReminderNotifications.length == 1

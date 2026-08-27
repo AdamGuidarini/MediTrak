@@ -239,7 +239,7 @@
     <string name="delete_all_data_cannot_be_undone">Eliminare tutti i dati salvati? Questa azione non si può disfare.</string>
     <string name="all_data_deleted">Tutti i dati sono stati eliminati</string>
     <!-- Notifications -->
-    <string name="mark_as_taken">Preso</string>
+    <string name="mark_as_taken">Prendere</string>
     <string name="snooze_message">Sospendere</string>
     <string name="its_time_your_med">È ora di prendere il tuo %1$s di %2$s</string>
     <string name="time_for_other_med">È il momento dei %2$s di %3$s  di %1$s</string>
