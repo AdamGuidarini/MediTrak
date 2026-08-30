@@ -1,7 +1,6 @@
 package projects.medicationtracker.Workers;
 
 import static android.os.Build.VERSION.SDK_INT;
-import static android.os.SystemClock.sleep;
 import static projects.medicationtracker.Utils.NotificationUtils.MED_REMINDER_CHANNEL_ID;
 import static projects.medicationtracker.Utils.NotificationUtils.DOSE_TIME;
 import static projects.medicationtracker.Utils.NotificationUtils.GROUP_KEY;
@@ -17,6 +16,7 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
@@ -63,7 +63,7 @@ public class NotificationWorker extends Worker {
 
         try {
             Notification notification = createNotification(
-                    message, doseTime, notificationId, medId
+                    context, notificationManager, message, doseTime, notificationId, medId
             );
 
             // Only fire notification if no other active notification has the same ID
@@ -78,24 +78,19 @@ public class NotificationWorker extends Worker {
 
                 nativeDb.stashNotification(alert);
                 notificationManager.notify((int) notificationId, notification);
-
-                // Force wait thread to prevent Muting recently noisy 0 error
-                sleep(5000);
             }
 
-            ensureReminderSummaryState();
+            ensureReminderSummaryState(context, notificationManager);
         } catch (Exception e) {
             Log.e("NotificationWorker:CreateNotification", e.getMessage());
 
             return Result.failure();
         }
 
-        ensureReminderSummaryState();
-
         return Result.success();
     }
 
-    private void ensureReminderSummaryState() {
+    public static void ensureReminderSummaryState(Context context, NotificationManager notificationManager) {
         StatusBarNotification[] reminderChildren = Arrays.stream(
                 notificationManager.getActiveNotifications()
         ).filter(
@@ -108,6 +103,29 @@ public class NotificationWorker extends Worker {
                         && n.getNotification().getChannelId().equals(MED_REMINDER_CHANNEL_ID)
                         && GROUP_KEY.equals(n.getNotification().getGroup())
         );
+
+        boolean showTakeAll = reminderChildren.length > 1;
+
+        for (StatusBarNotification sbn : reminderChildren) {
+            boolean hasTakeAll = sbn.getNotification().actions != null && Arrays.stream(sbn.getNotification().actions)
+                    .anyMatch(a -> a.title != null && a.title.equals(context.getString(R.string.take_all)));
+
+            if (hasTakeAll != showTakeAll) {
+                Bundle extras = sbn.getNotification().extras;
+                long medId = extras.getLong(MEDICATION_ID);
+                long notificationId = extras.getLong(NOTIFICATION_ID);
+                String doseTime = extras.getString(DOSE_TIME);
+                String message = extras.getString(MESSAGE);
+
+                if (message != null && doseTime != null) {
+                    Notification updatedNote = createNotification(
+                            context, notificationManager, message, doseTime, notificationId, medId
+                    );
+
+                    notificationManager.notify((int) notificationId, updatedNote);
+                }
+            }
+        }
 
         if (reminderChildren.length > 1 && !summaryExists) {
             Notification notificationSummary = new NotificationCompat.Builder(context, MED_REMINDER_CHANNEL_ID)
@@ -127,24 +145,19 @@ public class NotificationWorker extends Worker {
         }
     }
 
-    /**
-     * Creates a notification
-     *
-     * @param message Message to display in the notification.
-     * @return A built notification.
-     */
-    private Notification createNotification(
+    public static Notification createNotification(
+            Context context,
+            NotificationManager notificationManager,
             String message,
             String doseTime,
             long notificationId,
             long medId
     ) {
-        Intent markTakenIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
-        Intent snoozeIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
-        Intent deletedIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
+        Intent markTakenIntent = new Intent(context, EventReceiver.class);
+        Intent snoozeIntent = new Intent(context, EventReceiver.class);
+        Intent deletedIntent = new Intent(context, EventReceiver.class);
         String embeddedNoteId = "_" + notificationId;
 
-        markTakenIntent.removeExtra(DOSE_TIME);
         markTakenIntent.removeExtra(DOSE_TIME);
 
         markTakenIntent.setAction(MARK_AS_TAKEN_ACTION + embeddedNoteId);
@@ -164,7 +177,7 @@ public class NotificationWorker extends Worker {
 
         PendingIntent markAsTakenPendingIntent =
                 PendingIntent.getBroadcast(
-                        this.getApplicationContext(),
+                        context,
                         0,
                         markTakenIntent,
                         SDK_INT >= Build.VERSION_CODES.S ?
@@ -174,7 +187,7 @@ public class NotificationWorker extends Worker {
 
         PendingIntent snoozePendingIntent =
                 PendingIntent.getBroadcast(
-                        getApplicationContext(),
+                        context,
                         0,
                         snoozeIntent,
                         SDK_INT >= Build.VERSION_CODES.S ?
@@ -184,7 +197,7 @@ public class NotificationWorker extends Worker {
 
         PendingIntent deleteIntent =
                 PendingIntent.getBroadcast(
-                        getApplicationContext(),
+                        context,
                         0,
                         deletedIntent,
                         SDK_INT >= Build.VERSION_CODES.S ?
@@ -212,8 +225,17 @@ public class NotificationWorker extends Worker {
                                 snoozePendingIntent
                         )
                         .setDeleteIntent(deleteIntent);
+
+        Bundle extras = new Bundle();
+        extras.putLong(MEDICATION_ID, medId);
+        extras.putLong(NOTIFICATION_ID, notificationId);
+        extras.putString(DOSE_TIME, doseTime);
+        extras.putString(MESSAGE, message);
+        builder.addExtras(extras);
+
         long activeReminderChildren = Arrays.stream(notificationManager.getActiveNotifications())
                 .filter(n -> n.getId() != SUMMARY_ID
+                        && n.getId() != (int) notificationId
                         && n.getNotification().getChannelId().equals(MED_REMINDER_CHANNEL_ID)
                         && GROUP_KEY.equals(n.getNotification().getGroup()))
                 .count();
@@ -222,7 +244,7 @@ public class NotificationWorker extends Worker {
             builder.addAction(
                     0,
                     context.getString(R.string.take_all),
-                    createTakeAllIntent(medId, notificationId, doseTime)
+                    createTakeAllIntent(context, medId, notificationId, doseTime)
             );
         }
 
@@ -244,9 +266,9 @@ public class NotificationWorker extends Worker {
         return builder.build();
     }
 
-    private PendingIntent createTakeAllIntent(long medId, long notificationId, String doseTime) {
+    private static PendingIntent createTakeAllIntent(Context context, long medId, long notificationId, String doseTime) {
         String embeddedMedId = "_" + medId;
-        Intent takeAllIntent = new Intent(this.getApplicationContext(), EventReceiver.class);
+        Intent takeAllIntent = new Intent(context, EventReceiver.class);
 
         takeAllIntent.setAction(TAKE_ALL_ACTION + embeddedMedId);
         takeAllIntent.putExtra(MEDICATION_ID + embeddedMedId, medId);
@@ -254,7 +276,7 @@ public class NotificationWorker extends Worker {
         takeAllIntent.putExtra(DOSE_TIME + embeddedMedId, doseTime);
 
         return PendingIntent.getBroadcast(
-                getApplicationContext(),
+                context,
                 0,
                 takeAllIntent,
                 SDK_INT >= Build.VERSION_CODES.S ?

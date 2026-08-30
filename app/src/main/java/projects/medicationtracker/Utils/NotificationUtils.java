@@ -157,7 +157,7 @@ public class NotificationUtils {
      *                   * @param context Application context, needed for getString call
      * @return The content text to display in the notification.
      */
-    private static String createMedicationReminderMessage(Medication medication, Context context) {
+    public static String createMedicationReminderMessage(Medication medication, Context context) {
         String message;
         String patientName = medication.getPatientName();
         String medicationName = medication.getName();
