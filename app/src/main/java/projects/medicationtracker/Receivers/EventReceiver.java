@@ -57,6 +57,7 @@ public class EventReceiver extends BroadcastReceiver {
         ArrayList<Medication> medications = nativeDb.getAllMedications();
 
         String action = Objects.requireNonNull(intent.getAction());
+        java.util.Set<Integer> cancelledNotificationIds = java.util.Collections.emptySet();
 
         if (action.contains(NotificationWorker.MARK_AS_TAKEN_ACTION)) {
             String embeddedId = "_" + intent.getAction().split("_")[1];
@@ -85,7 +86,7 @@ public class EventReceiver extends BroadcastReceiver {
 
             nativeDb.deleteNotification(intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0));
         } else if (intent.getAction().contains(TAKE_ALL_ACTION)) {
-            takeAll(manager, nativeDb, context);
+            cancelledNotificationIds = takeAll(manager, nativeDb, context);
         } else {
             final ArrayList<Notification> notifications = nativeDb.getNotifications();
 
@@ -112,7 +113,7 @@ public class EventReceiver extends BroadcastReceiver {
             }
         }
 
-        NotificationWorker.ensureReminderSummaryState(context, manager);
+        NotificationWorker.ensureReminderSummaryState(context, manager, cancelledNotificationIds);
 
         db.close();
     }
@@ -199,7 +200,7 @@ public class EventReceiver extends BroadcastReceiver {
         NotificationWorker.ensureReminderSummaryState(context, notificationManager);
     }
 
-    private void takeAll(NotificationManager manager, NativeDbHelper nativeDbHelper, Context context) {
+    private java.util.Set<Integer> takeAll(NotificationManager manager, NativeDbHelper nativeDbHelper, Context context) {
         StatusBarNotification[] activeNotifications
                 = Arrays.stream(manager.getActiveNotifications()).filter(
                 n -> n.getId() != SUMMARY_ID
@@ -244,10 +245,15 @@ public class EventReceiver extends BroadcastReceiver {
             }
         }
 
+        java.util.Set<Integer> cancelledIds = new java.util.HashSet<>();
+
         for (final StatusBarNotification n : activeNotifications) {
             manager.cancel(n.getId());
+            cancelledIds.add(n.getId());
         }
 
         manager.cancel(SUMMARY_ID);
+
+        return cancelledIds;
     }
 }

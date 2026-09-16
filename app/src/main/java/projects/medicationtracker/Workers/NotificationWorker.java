@@ -101,42 +101,28 @@ public class NotificationWorker extends Worker {
     }
 
     public static void ensureReminderSummaryState(Context context, NotificationManager notificationManager) {
-        NativeDbHelper nativeDb = new NativeDbHelper(context);
-        ArrayList<projects.medicationtracker.Models.Notification> stashedNotifications
-                = nativeDb.getNotifications();
+        ensureReminderSummaryState(context, notificationManager, java.util.Collections.emptySet());
+    }
 
+    /**
+     * @param excludedNotificationIds IDs of notifications that were just cancelled by the
+     *                                caller (e.g. EventReceiver's takeAll()) and must be
+     *                                treated as gone even if the system hasn't yet reflected
+     *                                that in getActiveNotifications().
+     */
+    public static void ensureReminderSummaryState(
+            Context context,
+            NotificationManager notificationManager,
+            java.util.Set<Integer> excludedNotificationIds
+    ) {
         StatusBarNotification[] reminderChildren = Arrays.stream(
                 notificationManager.getActiveNotifications()
         ).filter(
                 n -> n.getId() != SUMMARY_ID
+                        && !excludedNotificationIds.contains(n.getId())
                         && n.getNotification().getChannelId().equals(MED_REMINDER_CHANNEL_ID)
                         && GROUP_KEY.equals(n.getNotification().getGroup())
         ).toArray(StatusBarNotification[]::new);
-
-        // A notification may still briefly appear in getActiveNotifications() right after
-        // being cancelled (e.g. from EventReceiver's takeAll()). Its backing DB record is
-        // always deleted before the cancel happens, so treat "no stashed record" as stale
-        // and cancel it outright instead of recreating/re-notifying it below.
-        ArrayList<StatusBarNotification> staleChildren = new ArrayList<>();
-        ArrayList<StatusBarNotification> liveChildren = new ArrayList<>();
-
-        for (StatusBarNotification sbn : reminderChildren) {
-            boolean stillStashed = stashedNotifications.stream().anyMatch(
-                    n -> n.getNotificationId() == sbn.getId()
-            );
-
-            if (stillStashed) {
-                liveChildren.add(sbn);
-            } else {
-                staleChildren.add(sbn);
-            }
-        }
-
-        for (StatusBarNotification stale : staleChildren) {
-            notificationManager.cancel(stale.getId());
-        }
-
-        reminderChildren = liveChildren.toArray(new StatusBarNotification[0]);
 
         boolean summaryExists = Arrays.stream(notificationManager.getActiveNotifications()).anyMatch(
                 n -> n.getId() == SUMMARY_ID
@@ -180,7 +166,7 @@ public class NotificationWorker extends Worker {
                     .build();
 
             notificationManager.notify(SUMMARY_ID, notificationSummary);
-        } else if (reminderChildren.length <= 1 && summaryExists) {
+        } else if (reminderChildren.length == 0 && summaryExists) {
             notificationManager.cancel(SUMMARY_ID);
         }
     }
