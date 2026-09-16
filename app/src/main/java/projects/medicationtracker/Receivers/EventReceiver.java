@@ -250,6 +250,4 @@ public class EventReceiver extends BroadcastReceiver {
 
         manager.cancel(SUMMARY_ID);
     }
-
-
 }

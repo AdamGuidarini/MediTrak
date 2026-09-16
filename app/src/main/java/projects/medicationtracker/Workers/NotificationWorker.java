@@ -29,6 +29,7 @@ import java.util.Arrays;
 
 import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.MainActivity;
+import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Receivers.EventReceiver;
 
@@ -60,6 +61,14 @@ public class NotificationWorker extends Worker {
         );
         final long medId = getInputData().getLong(MEDICATION_ID, -1);
         final StatusBarNotification[] openNotes = notificationManager.getActiveNotifications();
+        final NativeDbHelper db = new NativeDbHelper(context);
+        final Medication med = db.getMedicationById(medId);
+
+        if (!med.isActive() || med.getRemainingDosesCount() <= 0) {
+            db.deleteNotification(notificationId);
+
+            return Result.success();
+        }
 
         try {
             Notification notification = createNotification(
@@ -68,7 +77,6 @@ public class NotificationWorker extends Worker {
 
             // Only fire notification if no other active notification has the same ID
             if (Arrays.stream(openNotes).noneMatch(n -> n.getId() == notificationId)) {
-                NativeDbHelper nativeDb = new NativeDbHelper(context);
                 String doseTimeDb = doseTime.replace("T", " ") + ":00";
 
                 projects.medicationtracker.Models.Notification alert
@@ -76,7 +84,7 @@ public class NotificationWorker extends Worker {
                         -1, medId, notificationId, doseTimeDb
                 );
 
-                nativeDb.stashNotification(alert);
+                db.stashNotification(alert);
                 notificationManager.notify((int) notificationId, notification);
             }
 
