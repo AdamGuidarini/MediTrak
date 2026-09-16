@@ -7,6 +7,7 @@ import static projects.medicationtracker.Utils.NotificationUtils.GROUP_KEY;
 import static projects.medicationtracker.Utils.NotificationUtils.MEDICATION_ID;
 import static projects.medicationtracker.Utils.NotificationUtils.MESSAGE;
 import static projects.medicationtracker.Utils.NotificationUtils.NOTIFICATION_ID;
+import static projects.medicationtracker.Utils.NotificationUtils.isMedicationDone;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -25,6 +26,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import projects.medicationtracker.Helpers.NativeDbHelper;
@@ -64,7 +66,7 @@ public class NotificationWorker extends Worker {
         final NativeDbHelper db = new NativeDbHelper(context);
         final Medication med = db.getMedicationById(medId);
 
-        if (!med.isActive() || med.getRemainingDosesCount() <= 0) {
+        if (!med.isActive() || isMedicationDone(med)) {
             db.deleteNotification(notificationId);
 
             return Result.success();
@@ -99,6 +101,10 @@ public class NotificationWorker extends Worker {
     }
 
     public static void ensureReminderSummaryState(Context context, NotificationManager notificationManager) {
+        NativeDbHelper nativeDb = new NativeDbHelper(context);
+        ArrayList<projects.medicationtracker.Models.Notification> stashedNotifications
+                = nativeDb.getNotifications();
+
         StatusBarNotification[] reminderChildren = Arrays.stream(
                 notificationManager.getActiveNotifications()
         ).filter(
@@ -106,6 +112,32 @@ public class NotificationWorker extends Worker {
                         && n.getNotification().getChannelId().equals(MED_REMINDER_CHANNEL_ID)
                         && GROUP_KEY.equals(n.getNotification().getGroup())
         ).toArray(StatusBarNotification[]::new);
+
+        // A notification may still briefly appear in getActiveNotifications() right after
+        // being cancelled (e.g. from EventReceiver's takeAll()). Its backing DB record is
+        // always deleted before the cancel happens, so treat "no stashed record" as stale
+        // and cancel it outright instead of recreating/re-notifying it below.
+        ArrayList<StatusBarNotification> staleChildren = new ArrayList<>();
+        ArrayList<StatusBarNotification> liveChildren = new ArrayList<>();
+
+        for (StatusBarNotification sbn : reminderChildren) {
+            boolean stillStashed = stashedNotifications.stream().anyMatch(
+                    n -> n.getNotificationId() == sbn.getId()
+            );
+
+            if (stillStashed) {
+                liveChildren.add(sbn);
+            } else {
+                staleChildren.add(sbn);
+            }
+        }
+
+        for (StatusBarNotification stale : staleChildren) {
+            notificationManager.cancel(stale.getId());
+        }
+
+        reminderChildren = liveChildren.toArray(new StatusBarNotification[0]);
+
         boolean summaryExists = Arrays.stream(notificationManager.getActiveNotifications()).anyMatch(
                 n -> n.getId() == SUMMARY_ID
                         && n.getNotification().getChannelId().equals(MED_REMINDER_CHANNEL_ID)

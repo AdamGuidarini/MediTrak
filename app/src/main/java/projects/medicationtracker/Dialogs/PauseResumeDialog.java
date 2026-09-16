@@ -17,6 +17,9 @@ import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Utils.NotificationUtils;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Models.Medication;
+import projects.medicationtracker.Workers.NotificationWorker;
+
+import static projects.medicationtracker.Utils.NotificationUtils.MEDICATION_ID;
 
 public class PauseResumeDialog extends DialogFragment {
     private final Medication medication;
@@ -66,10 +69,15 @@ public class PauseResumeDialog extends DialogFragment {
                 StatusBarNotification[] openNotifications = manager.getActiveNotifications();
 
                 for (StatusBarNotification notification : openNotifications) {
-                    if (notification.getId() == medication.getId()) {
-                        manager.cancel((int) medication.getId());
+                    Bundle notificationExtras = notification.getNotification().extras;
+
+                    if (notificationExtras != null
+                            && notificationExtras.getLong(MEDICATION_ID, -1) == medication.getId()) {
+                        manager.cancel(notification.getId());
                     }
                 }
+
+                NotificationWorker.ensureReminderSummaryState(getActivity(), manager);
 
                 NotificationUtils.clearPendingNotifications(medication, getActivity());
             } else {
