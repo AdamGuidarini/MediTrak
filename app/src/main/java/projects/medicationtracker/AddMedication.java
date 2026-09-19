@@ -1450,9 +1450,12 @@ public class AddMedication extends BaseActivity implements IDialogCloseListener 
                         nativeDb.deleteNotification(id);
                         manager.cancel((int) id);
                     }
-                } else {
-                    nativeDb.deleteNotification(parentMed.getId());
-                    manager.cancel((int) parentMed.getId());
+                } else if (ids.length == 1) {
+                    // Notification IDs are per dose-time IDs (medication_times.TIME_ID),
+                    // not the medication's own ID. Using parentMed.getId() here cancelled
+                    // (or failed to cancel) the wrong tray notification.
+                    nativeDb.deleteNotification(ids[0]);
+                    manager.cancel((int) ids[0]);
                 }
             } else if (!changesNotes.isEmpty()) {
                 db.updateMedication(medication);

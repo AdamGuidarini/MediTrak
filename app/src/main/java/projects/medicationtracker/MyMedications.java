@@ -106,10 +106,8 @@ public class MyMedications extends BaseActivity {
 
         ArrayList<Pair<String, ArrayList<Medication>>> patientMedPairs = new ArrayList<>();
 
-        ArrayList<Medication> meds = new ArrayList<>();
-
         for (String patient : patientNames) {
-            meds = allMeds.stream()
+            ArrayList<Medication> meds = allMeds.stream()
                     .filter(m -> m.getPatientName().equals(patient) && m.getChild() == null)
                     .collect(Collectors.toCollection(ArrayList::new));
 
@@ -119,7 +117,7 @@ public class MyMedications extends BaseActivity {
         }
 
         if (patientMedPairs.size() == 1) {
-            populateViews(meds);
+            populateViews(patientMedPairs.get(0).getSecond());
         } else if (patientMedPairs.size() > 1) {
             String[] patients = patientMedPairs.stream()
                     .map(Pair::getFirst)

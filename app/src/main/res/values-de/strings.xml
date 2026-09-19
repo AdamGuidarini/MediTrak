@@ -240,7 +240,7 @@
     <string name="delete_all_data_cannot_be_undone">Alle gespeicherten Daten löschen? Diese Aktion kann nicht rückgängig gemacht werden.</string>
     <string name="all_data_deleted">Alle Daten wurden gelöscht</string>
     <!-- Notifications -->
-    <string name="mark_as_taken">Eingenommen</string>
+    <string name="mark_as_taken">Einnehmen</string>
     <string name="snooze_message">Schlummern</string>
     <string name="its_time_your_med">Es ist Zeit, dein %1$s %2$s zu nehmen</string>
     <string name="time_for_other_med">Es ist Zeit für die %2$s %3$s von %1$s</string>
