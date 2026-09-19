@@ -1,7 +1,10 @@
 package projects.medicationtracker.Dialogs;
 
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Bundle;
+import android.service.notification.StatusBarNotification;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -10,13 +13,18 @@ import androidx.fragment.app.DialogFragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import projects.medicationtracker.Helpers.DBHelper;
+import projects.medicationtracker.Helpers.NativeDbHelper;
 import projects.medicationtracker.Utils.NotificationUtils;
 import projects.medicationtracker.R;
 import projects.medicationtracker.Models.Medication;
+import projects.medicationtracker.Workers.NotificationWorker;
+
+import static projects.medicationtracker.Utils.NotificationUtils.MEDICATION_ID;
 
 public class PauseResumeDialog extends DialogFragment {
     private final Medication medication;
     private DBHelper db;
+    private NativeDbHelper nativeDb;
     private final MenuItem pauseButton;
     private final MenuItem resumeButton;
 
@@ -32,6 +40,7 @@ public class PauseResumeDialog extends DialogFragment {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
 
         db = new DBHelper(getActivity());
+        nativeDb = new NativeDbHelper(getActivity());
 
         boolean isActive = db.isMedicationActive(medication);
 
@@ -52,6 +61,23 @@ public class PauseResumeDialog extends DialogFragment {
             if (isActive) {
                 resumeButton.setVisible(true);
                 pauseButton.setVisible(false);
+                nativeDb.deleteNotificationByMedicationId(medication.getId());
+
+                NotificationManager manager = (NotificationManager) getActivity().getSystemService(
+                        Context.NOTIFICATION_SERVICE
+                );
+                StatusBarNotification[] openNotifications = manager.getActiveNotifications();
+
+                for (StatusBarNotification notification : openNotifications) {
+                    Bundle notificationExtras = notification.getNotification().extras;
+
+                    if (notificationExtras != null
+                            && notificationExtras.getLong(MEDICATION_ID, -1) == medication.getId()) {
+                        manager.cancel(notification.getId());
+                    }
+                }
+
+                NotificationWorker.ensureReminderSummaryState(getActivity(), manager);
 
                 NotificationUtils.clearPendingNotifications(medication, getActivity());
             } else {

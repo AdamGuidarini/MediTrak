@@ -238,7 +238,7 @@
     <string name="delete_all_data_cannot_be_undone">¿Eliminar todos los datos guardados? Esta acción no se puede deshacer.</string>
     <string name="all_data_deleted">Se han eliminado todos los datos</string>
     <!-- Notifications -->
-    <string name="mark_as_taken">Tomado</string>
+    <string name="mark_as_taken">Tomar</string>
     <string name="snooze_message">Posponer</string>
     <string name="its_time_your_med">Es hora de tomar tu %1$s de %2$s</string>
     <string name="time_for_other_med">Es la hora de los %2$s de %3$s de %1$s</string>

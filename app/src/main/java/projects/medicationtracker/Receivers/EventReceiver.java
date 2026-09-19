@@ -50,13 +50,14 @@ public class EventReceiver extends BroadcastReceiver {
         final NotificationManager manager
                 = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (nativeDb.getDbPath() == null || nativeDb.getDbPath().isEmpty()) {
+        if (nativeDb.getDbPath().isEmpty()) {
             return;
         }
 
         ArrayList<Medication> medications = nativeDb.getAllMedications();
 
         String action = Objects.requireNonNull(intent.getAction());
+        java.util.Set<Integer> cancelledNotificationIds = java.util.Collections.emptySet();
 
         if (action.contains(NotificationWorker.MARK_AS_TAKEN_ACTION)) {
             String embeddedId = "_" + intent.getAction().split("_")[1];
@@ -85,7 +86,7 @@ public class EventReceiver extends BroadcastReceiver {
 
             nativeDb.deleteNotification(intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0));
         } else if (intent.getAction().contains(TAKE_ALL_ACTION)) {
-            takeAll(manager, nativeDb, context);
+            cancelledNotificationIds = takeAll(manager, nativeDb, context);
         } else {
             final ArrayList<Notification> notifications = nativeDb.getNotifications();
 
@@ -112,13 +113,7 @@ public class EventReceiver extends BroadcastReceiver {
             }
         }
 
-        StatusBarNotification[] notifications = Arrays.stream(manager.getActiveNotifications())
-                .filter(n -> n.getNotification().getChannelId().equals(MED_REMINDER_CHANNEL_ID))
-                .toArray(StatusBarNotification[]::new);
-
-        if (notifications.length == 1 && notifications[0].getId() == SUMMARY_ID) {
-            manager.cancel(SUMMARY_ID);
-        }
+        NotificationWorker.ensureReminderSummaryState(context, manager, cancelledNotificationIds);
 
         db.close();
     }
@@ -139,7 +134,7 @@ public class EventReceiver extends BroadcastReceiver {
             return;
         }
 
-        if (preferences.getString(EXPORT_START).isEmpty()) {
+        if (Objects.requireNonNull(preferences.getString(EXPORT_START)).isEmpty()) {
             return;
         }
 
@@ -202,10 +197,10 @@ public class EventReceiver extends BroadcastReceiver {
 
         notificationManager.cancel((int) notificationId);
 
-        closeSummaryIfAlone(notificationManager);
+        NotificationWorker.ensureReminderSummaryState(context, notificationManager);
     }
 
-    private void takeAll(NotificationManager manager, NativeDbHelper nativeDbHelper, Context context) {
+    private java.util.Set<Integer> takeAll(NotificationManager manager, NativeDbHelper nativeDbHelper, Context context) {
         StatusBarNotification[] activeNotifications
                 = Arrays.stream(manager.getActiveNotifications()).filter(
                 n -> n.getId() != SUMMARY_ID
@@ -250,19 +245,15 @@ public class EventReceiver extends BroadcastReceiver {
             }
         }
 
-        manager.cancelAll();
-    }
+        java.util.Set<Integer> cancelledIds = new java.util.HashSet<>();
 
-    private void closeSummaryIfAlone(NotificationManager manager) {
-        StatusBarNotification[] medReminderNotifications = Arrays.stream(
-                manager.getActiveNotifications()
-        ).filter(
-                n -> Objects.equals(n.getNotification().getChannelId(), MED_REMINDER_CHANNEL_ID)
-        ).toArray(StatusBarNotification[]::new);
-
-        if (medReminderNotifications.length == 1
-                && medReminderNotifications[0].getId() == SUMMARY_ID) {
-            manager.cancel(SUMMARY_ID);
+        for (final StatusBarNotification n : activeNotifications) {
+            manager.cancel(n.getId());
+            cancelledIds.add(n.getId());
         }
+
+        manager.cancel(SUMMARY_ID);
+
+        return cancelledIds;
     }
 }
