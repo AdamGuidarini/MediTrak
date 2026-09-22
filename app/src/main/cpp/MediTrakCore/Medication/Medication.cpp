@@ -9,6 +9,7 @@ Medication::Medication() {
     dosageUnit = "";
     patientName = "";
     startDate = "";
+    instructions = "";
     alias = "";
     times = {};
     id = -1;
@@ -26,6 +27,7 @@ Medication::Medication(
         string dosageUnit,
         vector<string> times,
         string startDate,
+        string instructions,
         long id,
         float dosage,
         int frequency,
@@ -40,6 +42,7 @@ Medication::Medication(
     this->dosageUnit = dosageUnit;
     this->times = times;
     this->startDate = startDate;
+    this->instructions = instructions;
     this->id = id;
     this->dosage = dosage;
     this->frequency = frequency;
