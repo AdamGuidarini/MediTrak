@@ -18,6 +18,7 @@ struct Medication {
         string patientName;
         string startDate;
         string alias;
+        string instructions;
         vector<string> times;
         vector<Dose> doses;
         long id;
@@ -57,6 +58,7 @@ struct Medication {
             string dosageUnit,
             vector<string> times,
             string startDate,
+            string instructions,
             long id,
             float dosage,
             int frequency,

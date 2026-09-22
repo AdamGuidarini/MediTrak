@@ -448,6 +448,7 @@ vector<Medication> DatabaseController::fetchMedications(
                 table->getItem(MED_UNITS),
                 {},
                 table->getItem(START_DATE),
+                table->getItem(INSTRUCTIONS),
                 stol(table->getItem("med_primary_id")),
                 stof(table->getItem(MED_DOSAGE)),
                 stoi(table->getItem(MED_FREQUENCY)),
