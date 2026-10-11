@@ -39,7 +39,7 @@ public class NotificationWorker extends Worker {
     private final Context context;
     private NotificationManager notificationManager;
     public static final int SUMMARY_ID = Integer.MAX_VALUE;
-    public static String MARK_AS_TAKEN_ACTION = "markAsTaken";
+    public static String MARK_AS_TAKEN_ACTION = "markSingleAsTaken";
     public static String SNOOZE_ACTION = "snooze15";
     public static String TAKE_ALL_ACTION = "markAllAsTaken";
     public static String DISMISSED_ACTION = "dismissed";
