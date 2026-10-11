@@ -15,6 +15,7 @@
 #include <vector>
 #include <cstdlib>
 #include <cstdio>
+#include <memory>
 #include <nlohmann/json.hpp>
 
 using namespace std;
@@ -106,7 +107,7 @@ public:
      * @param sql query to execute
      * @return
      */
-    Table* execSqlWithReturn(string sql);
+    std::unique_ptr<Table> execSqlWithReturn(string sql);
 
     /**
      * Insert a record into the database

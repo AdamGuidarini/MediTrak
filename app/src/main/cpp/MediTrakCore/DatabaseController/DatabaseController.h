@@ -98,7 +98,7 @@ private:
      * @param table
      * @return Dose contained in table or nullptr
      */
-    Dose* setDose(Table* table);
+    std::unique_ptr<Dose> setDose(std::unique_ptr<Table> table);
 
     /**
      * Sets a medication from a table
@@ -176,7 +176,7 @@ public:
     /**
      * Retrieves settings
      */
-    Table* getSettings();
+    std::unique_ptr<Table> getSettings();
 
     /**
      * Updates Settings
