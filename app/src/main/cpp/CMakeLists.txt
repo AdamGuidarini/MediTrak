@@ -1,12 +1,9 @@
-# For more information about using CMake with Android Studio, read the
-# documentation: https://d.android.com/studio/projects/add-native-code.html
-
-# Sets the minimum version of CMake required to build the native library.
-
 cmake_minimum_required(VERSION 3.22.1)
 
-project("medicationtracker")
+project("medicationtracker" CXX C)
+
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(SQLITE3_ROOT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/sqlite3")
 
@@ -27,7 +24,7 @@ if (NOT EXISTS ${SQLITE3_PATH})
 
     file(SHA3_256 "${SQLITE3_ROOT_PATH}/sqlite3.zip" REAL_CHECKSUM)
 
-    if (NOT ${REAL_CHECKSUM} MATCHES ${TARGET_CHECKSUM})
+    if (NOT "${REAL_CHECKSUM}" STREQUAL "${TARGET_CHECKSUM}")
         message(SEND_ERROR "Received SQLITE Lib does not match expected result")
     endif ()
 
@@ -38,17 +35,6 @@ if (NOT EXISTS ${SQLITE3_PATH})
     )
 endif ()
 
-# Check if sqlite3.h exists after extraction
-while (NOT EXISTS "${SQLITE3_PATH}/sqlite3.h")
-    file(GLOB SQLITE3_H "${SQLITE3_ROOT_PATH}/*/*.h")
-    if (SQLITE3_H)
-        break()
-    endif ()
-    execute_process(
-            COMMAND ${CMAKE_COMMAND} -E sleep 1
-    )
-endwhile ()
-
 set(JSON_ROOT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/json")
 set(JSON_HPP_URL "https://raw.githubusercontent.com/nlohmann/json/v3.11.3/single_include/nlohmann/json.hpp")
 set(JSON_HPP_PATH "${JSON_ROOT_PATH}/nlohmann/json.hpp")
@@ -58,33 +44,33 @@ if (NOT EXISTS ${JSON_HPP_PATH})
     file(DOWNLOAD ${JSON_HPP_URL} ${JSON_HPP_PATH} TIMEOUT 120)
 endif()
 
-include_directories(${SQLITE3_PATH} MediTrakCore Sqlite3Database ${JSON_ROOT_PATH})
+# Header-only target for nlohmann/json
+add_library(json INTERFACE)
+target_include_directories(json INTERFACE ${JSON_ROOT_PATH})
 
-include_directories(${SQLITE3_PATH} MediTrakCore Sqlite3Database)
+# Build SQLite3 as a static library
+add_library(sqlite3 STATIC ${SQLITE3_PATH}/sqlite3.c)
+target_include_directories(sqlite3 PUBLIC ${SQLITE3_PATH})
+target_compile_definitions(sqlite3 PRIVATE SQLITE_ENABLE_JSON1)
 
+# Add subdirectories
 add_subdirectory(Sqlite3Database)
 add_subdirectory(MediTrakCore)
 
+# Main JNI shared library
 add_library(medicationtracker SHARED medicationtracker.cpp)
 
-add_library(sqlite3 SHARED ${SQLITE3_PATH}/sqlite3.c)
-
-add_definitions(-DSQLITE_ENABLE_JSON1)
+target_include_directories(medicationtracker PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/MediTrakCore
+        ${CMAKE_CURRENT_SOURCE_DIR}/Sqlite3Database
+)
 
 find_library(log-lib log)
 
-# Specifies libraries CMake should link to your target library. You
-# can link multiple libraries, such as libraries you define in this
-# build script, prebuilt third-party libraries, or system libraries.
-
 target_link_libraries(
         medicationtracker
+        PRIVATE
         android
-        sqlite3
         DatabaseController
-        Medication
-        Dose
-        Notification
-        DbManager
         ${log-lib}
 )

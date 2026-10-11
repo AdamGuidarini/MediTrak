@@ -1,8 +1,4 @@
-include_directories(DatabaseController Dose Medication)
-
-add_subdirectory(DatabaseController)
 add_subdirectory(Dose)
 add_subdirectory(Medication)
 add_subdirectory(Notification)
-
-target_link_libraries(DatabaseController Dose Medication)
+add_subdirectory(DatabaseController)
