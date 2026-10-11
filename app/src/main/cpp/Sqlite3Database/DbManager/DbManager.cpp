@@ -616,10 +616,8 @@ bool DbManager::isNumber(string str) {
     return !str.empty() && it == str.end();
 }
 
-Table *DbManager::execSqlWithReturn(string sql) {
+std::unique_ptr<Table> DbManager::execSqlWithReturn(string sql) {
     sqlite3_stmt *stmt = nullptr;
-    Table *table;
-    map<string, vector<string>> data;
 
     int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
 
@@ -634,7 +632,5 @@ Table *DbManager::execSqlWithReturn(string sql) {
         throw error;
     }
 
-    table = new Table(stmt);
-
-    return table;
+    return std::make_unique<Table>(stmt);
 }

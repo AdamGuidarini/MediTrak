@@ -22,7 +22,7 @@ DatabaseController::DatabaseController(string path) : manager(std::move(path), t
             if (i == 4) {
                 cerr << err << "Cancelling run.";
 
-                throw e;
+                throw;
             }
 
             cerr << err << " Retrying run " << (i + 1) << "/5.";
@@ -345,7 +345,7 @@ void DatabaseController::deleteRecord(string table, map<string, string> where) {
     manager.deleteRecord(std::move(table), std::move(where));
 }
 
-Table* DatabaseController::getSettings() {
+std::unique_ptr<Table> DatabaseController::getSettings() {
     string query = "SELECT * FROM " + SETTINGS_TABLE;
 
     return manager.execSqlWithReturn(query);
@@ -428,11 +428,9 @@ vector<Medication> DatabaseController::fetchMedications(
     vector<Medication> medications;
     unordered_map<long, long> parentIds;
     unordered_map<long, long> childIds;
-    Table *table = manager.execSqlWithReturn(query);
+    auto table = manager.execSqlWithReturn(query);
 
     if (table->getCount() == 0) {
-        delete table;
-
         return {};
     }
 
@@ -533,8 +531,6 @@ vector<Medication> DatabaseController::fetchMedications(
         }
     }
 
-    delete table;
-
     return medications;
 }
 
@@ -567,7 +563,7 @@ vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
                    + " AND " + TAKEN + " = '1'";
     vector<Dose> doses = {};
 
-    Table *table = manager.execSqlWithReturn(query);
+    std::unique_ptr<Table> table(manager.execSqlWithReturn(query));
 
     while (table->getCount() > 0 && !table->isAfterLast()) {
         float overrideDose = -1;
@@ -594,13 +590,11 @@ vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
         table->moveToNext();
     }
 
-    delete table;
-
     return doses;
 }
 
-Dose *DatabaseController::setDose(Table *table) {
-    Dose *dose = nullptr;
+std::unique_ptr<Dose> DatabaseController::setDose(std::unique_ptr<Table> table) {
+    std::unique_ptr<Dose> dose = nullptr;
 
     if (table->getCount() > 0) {
         table->moveToFirst();
@@ -616,7 +610,7 @@ Dose *DatabaseController::setDose(Table *table) {
             overrideUnit = table->getItem(OVERRIDE_DOSE_UNIT);
         }
 
-        dose = new Dose(
+        dose = std::make_unique<Dose>(
                 stol(table->getItem(DOSE_ID)),
                 stol(table->getItem(MED_ID)),
                 table->getItem(TAKEN) == "1",
@@ -630,32 +624,24 @@ Dose *DatabaseController::setDose(Table *table) {
     return dose;
 }
 
-Dose *DatabaseController::findDose(long medicationId, const string &scheduledTime) {
-    Table *result = manager.execSqlWithReturn(
+Dose* DatabaseController::findDose(long medicationId, const string &scheduledTime) {
+    std::unique_ptr<Table> result = manager.execSqlWithReturn(
             "SELECT * FROM " + MEDICATION_TRACKER_TABLE
             + " WHERE " + MED_ID + "=" + to_string(medicationId)
             + " AND " + DOSE_TIME + "='" + scheduledTime + "'"
             + " AND " + TAKEN + " = TRUE"
     );
 
-    Dose *dose = setDose(result);
-
-    delete result;
-
-    return dose;
+    return setDose(std::move(result)).release();
 }
 
-Dose *DatabaseController::getDoseById(long doseId) {
-    Table *result = manager.execSqlWithReturn(
+Dose* DatabaseController::getDoseById(long doseId) {
+    std::unique_ptr<Table> result = manager.execSqlWithReturn(
             "SELECT * FROM " + MEDICATION_TRACKER_TABLE
             + " WHERE " + DOSE_ID + "=" + to_string(doseId)
     );
 
-    Dose *dose = setDose(result);
-
-    delete result;
-
-    return dose;
+    return setDose(std::move(result)).release();
 }
 
 long DatabaseController::addDose(long medId, const string& scheduledTime, const string& timeTaken, bool isTaken) {
@@ -768,14 +754,12 @@ bool DatabaseController::stashNotification(const Notification &notification) {
 vector<Notification> DatabaseController::getStashedNotifications() {
     vector<Notification> notifications = {};
 
-    Table *table = manager.execSqlWithReturn("SELECT * FROM " + NOTIFICATIONS);
+    auto table = manager.execSqlWithReturn("SELECT * FROM " + NOTIFICATIONS);
 
     while (table->getCount() > 0 && !table->isAfterLast()) {
 
         // The query went wrong. MED_ID cannot be 0
         if (stol(table->getItem(MED_ID)) == 0) {
-            delete table;
-
             return {};
         }
 
@@ -790,8 +774,6 @@ vector<Notification> DatabaseController::getStashedNotifications() {
 
         table->moveToNext();
     }
-
-    delete table;
 
     return notifications;
 }
@@ -890,8 +872,4 @@ void DatabaseController::repairImportErrors() {
 
         notes->moveToNext();
     }
-
-    delete doses;
-    delete meds;
-    delete notes;
 }

@@ -59,7 +59,9 @@ public class EventReceiver extends BroadcastReceiver {
         String action = Objects.requireNonNull(intent.getAction());
         java.util.Set<Integer> cancelledNotificationIds = java.util.Collections.emptySet();
 
-        if (action.contains(NotificationWorker.MARK_AS_TAKEN_ACTION)) {
+        if (intent.getAction().contains(TAKE_ALL_ACTION)) {
+            cancelledNotificationIds = takeAll(manager, nativeDb, context);
+        } else if (action.contains(NotificationWorker.MARK_AS_TAKEN_ACTION)) {
             String embeddedId = "_" + intent.getAction().split("_")[1];
 
             markDoseTaken(
@@ -85,8 +87,6 @@ public class EventReceiver extends BroadcastReceiver {
             String embeddedId = "_" + intent.getAction().split("_")[1];
 
             nativeDb.deleteNotification(intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0));
-        } else if (intent.getAction().contains(TAKE_ALL_ACTION)) {
-            cancelledNotificationIds = takeAll(manager, nativeDb, context);
         } else {
             final ArrayList<Notification> notifications = nativeDb.getNotifications();
 

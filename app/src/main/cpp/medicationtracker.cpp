@@ -855,7 +855,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getSettings(
     std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
 
     DatabaseController controller(dbPath);
-    Table* settings = controller.getSettings();
+    std::unique_ptr<Table> settings = controller.getSettings();
     jobject jSettings;
     jclass jBundle = env->FindClass("android/os/Bundle");
 
@@ -920,8 +920,6 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getSettings(
                 settings->getItem(bKey) == "1"
         );
     }
-
-    delete settings;
 
     return jSettings;
 }
