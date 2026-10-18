@@ -2,6 +2,10 @@ plugins {
     id 'com.android.application'
 }
 
+base {
+    archivesName.set("meditrak")
+}
+
 android {
     dependenciesInfo {
         // Disables dependency metadata when building APKs.
@@ -16,8 +20,8 @@ android {
         targetSdkVersion 35
         compileSdkVersion 36
 
-        versionCode 62
-        versionName "0.17.14"
+        versionCode 63
+        versionName "0.17.15"
         resourceConfigurations += ['en', 'de', 'es', 'it', 'tr', 'nl', 'ar']
 
         ndk {
