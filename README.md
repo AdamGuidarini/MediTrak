@@ -38,6 +38,45 @@ Thanks to [IzzySoft](https://github.com/IzzySoft), this app is available in the 
 
 Alternatively, the app Droid-ify includes the base repository for F-Droid as well as the IzzyOnDroid repository by default and can be downloaded here: https://github.com/Droid-ify/client/releases
 
+## Building Locally
+
+### Prerequisites
+
+- JDK 21 (or JDK 17+)
+- Android SDK (API Level 36, NDK 28+, CMake 3.22+)
+
+### Option 1: Standard Gradle Build
+
+Build directly using Gradle or by opening the project in Android Studio:
+
+```bash
+# Debug APK
+./gradlew assembleDebug
+
+# Unsigned Release APK
+./gradlew assembleRelease
+```
+
+### Option 2: Containerized Build (Podman)
+
+Build in an isolated container without installing the Android SDK locally ([Podman](https://podman.io/) required):
+
+```bash
+# Debug Build
+.build/build.sh
+
+# Unsigned Release Build
+.build/build.sh --release
+
+# Signed Release Build
+export KEYSTORE_PATH="/path/to/your/keystore.jks"
+export KEY_ALIAS="your_key_alias"
+.build/build.sh --release --sign
+```
+*(You will be prompted for your keystore password interactively)*
+
+Compiled APK will be output to `app/build/outputs/apk/[release/debug]` with both options.
+
 ## Languages
  - **English** (Default)
  - Dutch by [ruditimmermans](https://github.com/ruditimmermans)<sup>1,2</sup>
