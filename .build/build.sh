@@ -42,12 +42,28 @@ if [ "$SIGN" = true ] && [ "$BUILD_TYPE" = "debug" ]; then
 fi
 
 if [ "$SIGN" = true ]; then
-  if [ ! -f "${KEYSTORE_PATH:-}" ] || [ ! -f "${KEYSTORE_PASSWORD:-}" ]; then
-    echo "KEYSTORE_PATH and KEYSTORE_PASSWORD must be set" >&2
+  if [ -z "${KEYSTORE_PASSWORD:-}" ]; then
+    read -rs -p "Keystore password: " KEYSTORE_PASSWORD
+    echo
+    export KEYSTORE_PASSWORD
+  fi
+
+  if [ ! -f "${KEYSTORE_PATH:-}" ]; then
+    echo "KEYSTORE_PATH must point to an existing keystore file" >&2
     exit 1
   fi
 
-  ARGS+=(-v "$KEYSTORE_PATH":/keystore.jks:ro -e KEYSTORE_PASSWORD)
+  if [ -z "${KEY_ALIAS:-}" ]; then
+    echo "KEY_ALIAS must be set" >&2
+    exit 1
+  fi
+
+  if [ -z "${KEYSTORE_PASSWORD:-}" ]; then
+    echo "Keystore password is empty" >&2
+    exit 1
+  fi
+
+  ARGS+=(-v "$KEYSTORE_PATH:/keystore.jks:ro,Z" -e KEYSTORE_PASSWORD -e KEY_ALIAS)
 fi
 
 case "$BUILD_TYPE" in
@@ -65,6 +81,9 @@ esac
 
 IMAGE="localhost/myapp-builder"
 
+rm -rf app/.cxx app/build .gradle
+
 podman build --quiet -t "$IMAGE" .build/
 
-podman "${ARGS[@]}" myapp-builder ./gradlew clean "$TASK"
+podman "${ARGS[@]}" "$IMAGE" ./gradlew clean "$TASK"
+#podman "${ARGS[@]}" "$IMAGE" sh -c 'echo "pw set: ${KEYSTORE_PASSWORD:+yes}"; ls -l /keystore.jks'
