@@ -86,4 +86,3 @@ rm -rf app/.cxx app/build .gradle
 podman build --quiet -t "$IMAGE" .build/
 
 podman "${ARGS[@]}" "$IMAGE" ./gradlew clean "$TASK"
-#podman "${ARGS[@]}" "$IMAGE" sh -c 'echo "pw set: ${KEYSTORE_PASSWORD:+yes}"; ls -l /keystore.jks'
