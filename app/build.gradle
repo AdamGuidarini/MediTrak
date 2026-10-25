@@ -2,6 +2,10 @@ plugins {
     id 'com.android.application'
 }
 
+base {
+    archivesName.set("meditrak")
+}
+
 android {
     dependenciesInfo {
         // Disables dependency metadata when building APKs.
@@ -16,8 +20,8 @@ android {
         targetSdkVersion 35
         compileSdkVersion 36
 
-        versionCode 62
-        versionName "0.17.14"
+        versionCode 63
+        versionName "0.17.15"
         resourceConfigurations += ['en', 'de', 'es', 'it', 'tr', 'nl', 'ar']
 
         ndk {
@@ -44,9 +48,24 @@ android {
         }
     }
 
+    signingConfigs {
+        release {
+            def storePass = System.getenv("KEYSTORE_PASSWORD")
+            if (storePass) {
+                storeFile file("/keystore.jks")
+                storePassword System.getenv("KEYSTORE_PASSWORD")
+                keyAlias System.getenv("KEY_ALIAS")
+                keyPassword System.getenv("KEY_PASSWORD") ?: System.getenv("KEYSTORE_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            minifyEnabled false
+            if (System.getenv("KEYSTORE_PASSWORD")) {
+                signingConfig signingConfigs.release
+            }
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

@@ -35,6 +35,17 @@ if (NOT EXISTS ${SQLITE3_PATH})
     )
 endif ()
 
+# Check if sqlite3.h exists after extraction
+while (NOT EXISTS "${SQLITE3_PATH}/sqlite3.h")
+    file(GLOB SQLITE3_H "${SQLITE3_ROOT_PATH}/*/*.h")
+    if (SQLITE3_H)
+        break()
+    endif ()
+    execute_process(
+            COMMAND ${CMAKE_COMMAND} -E sleep 1
+    )
+endwhile ()
+
 set(JSON_ROOT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/json")
 set(JSON_HPP_URL "https://raw.githubusercontent.com/nlohmann/json/v3.11.3/single_include/nlohmann/json.hpp")
 set(JSON_HPP_PATH "${JSON_ROOT_PATH}/nlohmann/json.hpp")
