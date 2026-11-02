@@ -247,10 +247,13 @@ Notification javaNotificationToNativeNotificationMapper(jobject notification, JN
     jmethodID getDoseTime = env->GetMethodID(jNotificationClass, "getDoseTimeString",
                                              "()Ljava/lang/String;");
 
-    std::string timeString = env->GetStringUTFChars(
-            (jstring) env->CallObjectMethod(notification, getDoseTime),
+    jstring doseTime = (jstring) env->CallObjectMethod(notification, getDoseTime);
+    const char* _timeString = env->GetStringUTFChars(
+            doseTime,
             new jboolean(true)
     );
+    std::string timeString(_timeString);
+    env->ReleaseStringUTFChars(doseTime, _timeString);
 
     return Notification(
             env->CallLongMethod(notification, getId),
@@ -284,8 +287,14 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbExporter(
         jstring export_directory,
         jobjectArray ignoredTables
 ) {
-    std::string db = env->GetStringUTFChars(database_name, new jboolean(true));
-    std::string exportDir = env->GetStringUTFChars(export_directory, new jboolean(true));
+    const char* _db = env->GetStringUTFChars(database_name, new jboolean(true));
+    std::string db(_db);
+    env->ReleaseStringUTFChars(database_name, _db);
+
+    const char* _exportDir = env->GetStringUTFChars(export_directory, new jboolean(true));
+    std::string exportDir(_exportDir);
+    env->ReleaseStringUTFChars(export_directory, _exportDir);
+
     std::vector<std::string> ignoredTbls;
     int len = env->GetArrayLength(ignoredTables);
 
@@ -318,8 +327,14 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(
         jstring file_contents,
         jobjectArray ignored_tables
 ) {
-    std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
-    std::string fileContents = env->GetStringUTFChars(file_contents, new jboolean(true));
+    const char* _dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string dbPath(_dbPath);
+    env->ReleaseStringUTFChars(db_path, _dbPath);
+
+    const char* _fileContents = env->GetStringUTFChars(file_contents, new jboolean(true));
+    std::string fileContents(_fileContents);
+    env->ReleaseStringUTFChars(file_contents, _fileContents);
+
     std::vector<std::string> ignoredTbls;
     int len = env->GetArrayLength(ignored_tables);
     auto success = JNI_TRUE;
@@ -331,7 +346,7 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(
         ignoredTbls.push_back(rawString);
     }
 
-    DatabaseController controller(db);
+    DatabaseController controller(dbPath);
 
     try {
         controller.importJSONString(fileContents, ignoredTbls);
@@ -352,10 +367,12 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbCreate(
         jobject thiz,
         jstring db_path
 ) {
-    std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
+    const char* _dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string dbPath(_dbPath);
+    env->ReleaseStringUTFChars(db_path, _dbPath);
 
     try {
-        DatabaseController dbController(db);
+        DatabaseController dbController(dbPath);
     } catch (exception &e) {
         __android_log_write(ANDROID_LOG_ERROR, nullptr, e.what());
     }
@@ -369,7 +386,9 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbUpgrade(
         jstring db_path,
         jint version
 ) {
-    std::string db = env->GetStringUTFChars(db_path, new jboolean(true));
+    const char* _path = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string db(_path);
+    env->ReleaseStringUTFChars(db_path, _path);
     (void) version;
 
     try {
@@ -389,8 +408,13 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_update(
         jobjectArray values,
         jobjectArray where
 ) {
-    std::string path = env->GetStringUTFChars(db_path, new jboolean(true));
-    std::string tbl = env->GetStringUTFChars(table, new jboolean(true));
+    const char* _path = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string path(_path);
+    env->ReleaseStringUTFChars(db_path, _path);
+
+    const char* _tbl = env->GetStringUTFChars(table, new jboolean(true));
+    std::string tbl(_tbl);
+    env->ReleaseStringUTFChars(table, _tbl);
 
     std::map<std::string, std::string> vals = getValues(values, env);
     std::map<std::string, std::string> whereVals = getValues(where, env);
@@ -421,8 +445,13 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_insert(
         jstring table,
         jobjectArray values
 ) {
-    std::string path = env->GetStringUTFChars(db_path, new jboolean(true));
-    std::string tbl = env->GetStringUTFChars(table, new jboolean(true));
+    const char* _path = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string path(_path);
+    env->ReleaseStringUTFChars(db_path, _path);
+
+    const char* _tbl = env->GetStringUTFChars(table, new jboolean(true));
+    std::string tbl(_tbl);
+    env->ReleaseStringUTFChars(table, _tbl);
 
     DatabaseController dbController(path);
 
@@ -444,8 +473,13 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_delete(
         jstring table,
         jobjectArray values) {
 
-    std::string path = env->GetStringUTFChars(db_path, new jboolean(true));
-    std::string tbl = env->GetStringUTFChars(table, new jboolean(true));
+    const char* _path = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string path(_path);
+    env->ReleaseStringUTFChars(db_path, _path);
+
+    const char* _tbl = env->GetStringUTFChars(table, new jboolean(true));
+    std::string tbl(_tbl);
+    env->ReleaseStringUTFChars(table, _tbl);
 
     DatabaseController dbController(path);
 
@@ -468,7 +502,9 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getMedHistory(
         jclass medClass,
         jclass doseClass
 ) {
-    std::string path = env->GetStringUTFChars(db_path, new jboolean(true));
+    const char* _path = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string path(_path);
+    env->ReleaseStringUTFChars(db_path, _path);
 
     DatabaseController dbController(path);
 
@@ -523,7 +559,10 @@ JNIEXPORT jobjectArray JNICALL
             jclass medClass,
             jclass doseClass
 ) {
-    std::string path = env->GetStringUTFChars(db_path, new jboolean(true));
+    const char* _dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string path(_dbPath);
+    env->ReleaseStringUTFChars(db_path, _dbPath);
+
     DatabaseController dbController(path);
     std::vector<Medication> meds;
 
@@ -568,8 +607,13 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_exportMedHistory(
         jobjectArray data
 ) {
     const jclass pair = env->FindClass("android/util/Pair");
-    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
-    std::string path = env->GetStringUTFChars(export_path, new jboolean(true));
+    const char* _dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string dbPath(_dbPath);
+    env->ReleaseStringUTFChars(db_path, _dbPath);
+
+    const char* _path = env->GetStringUTFChars(export_path, new jboolean(true));
+    std::string path(_path);
+    env->ReleaseStringUTFChars(export_path, _path);
 
     DatabaseController controller(dbPath);
 
@@ -615,9 +659,14 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_findDose(
         jobject medication,
         jclass jDoseClass
 ) {
-    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    const char* _dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string dbPath(_dbPath);
+    env->ReleaseStringUTFChars(db_path, _dbPath);
+
     DatabaseController controller(dbPath);
-    std::string doseTime = env->GetStringUTFChars(dose_time, new jboolean(true));
+    const char* _doseTime = env->GetStringUTFChars(dose_time, new jboolean(true));
+    std::string doseTime(_doseTime);
+    env->ReleaseStringUTFChars(dose_time, _doseTime);
 
     Dose *dose = controller.findDose(medication_id, doseTime);
 
@@ -642,7 +691,10 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getDoseById(
         jobject medication,
         jclass jDoseClass
 ) {
-    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    const char* _dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string dbPath(_dbPath);
+    env->ReleaseStringUTFChars(db_path, _dbPath);
+
     DatabaseController controller(dbPath);
 
     Dose *d;
@@ -670,7 +722,10 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_updateDose(
         jstring db_path,
         jobject dose
 ) {
-    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    const char* _dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string dbPath(_dbPath);
+    env->ReleaseStringUTFChars(db_path, _dbPath);
+
     DatabaseController controller(dbPath);
 
     Dose nDose = javaDoseToNativeDoseConverter(dose, env);
@@ -686,7 +741,10 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_stashNotification(
         jstring db_path,
         jobject notification
 ) {
-    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    const char* _dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string dbPath(_dbPath);
+    env->ReleaseStringUTFChars(db_path, _dbPath);
+
     DatabaseController controller(dbPath);
 
     Notification notificationToStash = javaNotificationToNativeNotificationMapper(notification,
@@ -709,7 +767,10 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_deleteNotification(
         jstring db_path,
         jlong notificationId
 ) {
-    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    const char* _dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string dbPath(_dbPath);
+    env->ReleaseStringUTFChars(db_path, _dbPath);
+
     DatabaseController controller(dbPath);
 
     try {
@@ -729,7 +790,10 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getNotifications(
         jstring db_path,
         jclass jNotificationClass
 ) {
-    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    const char* _dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string dbPath(_dbPath);
+    env->ReleaseStringUTFChars(db_path, _dbPath);
+
     DatabaseController controller(dbPath);
 
     std::vector<Notification> notifications;
@@ -780,7 +844,10 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_addDose(
         jstring taken_time,
         jboolean taken
 ) {
-    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    const char* _dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string dbPath(_dbPath);
+    env->ReleaseStringUTFChars(db_path, _dbPath);
+
     std::string scheduledTime = env->GetStringUTFChars(scheduled_time, new jboolean(true));
     std::string takenTime = env->GetStringUTFChars(taken_time, new jboolean(true));
     long rowId = -1;
@@ -810,7 +877,10 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_updateSettings(
         jstring db_path,
         jobjectArray settings
 ) {
-    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    const char* _dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string dbPath(_dbPath);
+    env->ReleaseStringUTFChars(db_path, _dbPath);
+
     std::map<std::string, std::string> opts = getValues(settings, env);
 
     DatabaseController controller(dbPath);
@@ -832,7 +902,9 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_deleteNotificationsByMedI
     jstring db_path,
     jlong medicationid
 ) {
-    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    const char* _dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string dbPath(_dbPath);
+    env->ReleaseStringUTFChars(db_path, _dbPath);
 
     DatabaseController controller(dbPath);
 
@@ -852,7 +924,9 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_getSettings(
         jobject thiz,
         jstring db_path
 ) {
-    std::string dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    const char* _dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string dbPath(_dbPath);
+    env->ReleaseStringUTFChars(db_path, _dbPath);
 
     DatabaseController controller(dbPath);
     std::unique_ptr<Table> settings = controller.getSettings();
