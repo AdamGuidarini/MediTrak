@@ -62,31 +62,25 @@ public class EventReceiver extends BroadcastReceiver {
         if (intent.getAction().contains(TAKE_ALL_ACTION)) {
             cancelledNotificationIds = takeAll(manager, nativeDb, context);
         } else if (action.contains(NotificationWorker.MARK_AS_TAKEN_ACTION)) {
-            String embeddedId = "_" + intent.getAction().split("_")[1];
-
             markDoseTaken(
                     context,
-                    intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0),
-                    intent.getLongExtra(MEDICATION_ID + embeddedId, 0),
-                    intent.getStringExtra(DOSE_TIME + embeddedId),
+                    intent.getLongExtra(NOTIFICATION_ID, 0),
+                    intent.getLongExtra(MEDICATION_ID, 0),
+                    intent.getStringExtra(DOSE_TIME),
                     nativeDb
             );
 
-            nativeDb.deleteNotification(intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0));
+            nativeDb.deleteNotification(intent.getLongExtra(NOTIFICATION_ID, 0));
         } else if (intent.getAction().contains(SNOOZE_ACTION)) {
-            String embeddedId = "_" + intent.getAction().split("_")[1];
-
             snoozeFor15(
                     context,
-                    intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0),
-                    intent.getLongExtra(MEDICATION_ID + embeddedId, 0),
-                    intent.getStringExtra(DOSE_TIME + embeddedId),
+                    intent.getLongExtra(NOTIFICATION_ID, 0),
+                    intent.getLongExtra(MEDICATION_ID, 0),
+                    intent.getStringExtra(DOSE_TIME),
                     db
             );
         } else if (intent.getAction().contains(DISMISSED_ACTION)) {
-            String embeddedId = "_" + intent.getAction().split("_")[1];
-
-            nativeDb.deleteNotification(intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0));
+            nativeDb.deleteNotification(intent.getLongExtra(NOTIFICATION_ID, 0));
         } else {
             final ArrayList<Notification> notifications = nativeDb.getNotifications();
 
