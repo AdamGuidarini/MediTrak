@@ -92,12 +92,8 @@ public class EventReceiver extends BroadcastReceiver {
                         m -> m.getId() == n.getMedId()
                 ).findFirst().orElse(null);
 
-                if (med == null) {
-                    Log.e(
-                            "EventReceiver",
-                            "Failed to create notification for Medication: " + n.getMedId()
-                    );
-
+                if (!NotificationUtils.canScheduleNotifications(med, context)) {
+                    nativeDb.deleteNotification(n.getNotificationId());
                     continue;
                 }
 
@@ -120,7 +116,9 @@ public class EventReceiver extends BroadcastReceiver {
      */
     private void prepareNotification(Context context, Medication medication) {
         clearPendingNotifications(medication, context);
-        createNotifications(medication, context);
+        if (NotificationUtils.canScheduleNotifications(medication, context)) {
+            createNotifications(medication, context);
+        }
     }
 
     private void prepareExport(Context context, Bundle preferences) {
@@ -175,19 +173,22 @@ public class EventReceiver extends BroadcastReceiver {
     private void snoozeFor15(
             Context context, long notificationId, long medId, String doseTimeString, DBHelper db
     ) {
-        Medication med;
-        LocalDateTime doseTime = LocalDateTime.parse(doseTimeString);
+        Medication med = db.getMedication(medId);
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        med = db.getMedication(medId);
-
-        scheduleIn15Minutes(
-                context,
-                med,
-                doseTime,
-                notificationId
-        );
+        if (NotificationUtils.canScheduleNotifications(med, context)) {
+            LocalDateTime doseTime = LocalDateTime.parse(doseTimeString);
+            scheduleIn15Minutes(
+                    context,
+                    med,
+                    doseTime,
+                    notificationId
+            );
+        } else {
+            NativeDbHelper nativeDb = new NativeDbHelper(context);
+            nativeDb.deleteNotification(notificationId);
+        }
 
         notificationManager.cancel((int) notificationId);
 

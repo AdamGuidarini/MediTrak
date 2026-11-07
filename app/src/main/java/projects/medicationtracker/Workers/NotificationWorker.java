@@ -66,7 +66,7 @@ public class NotificationWorker extends Worker {
         final NativeDbHelper db = new NativeDbHelper(context);
         final Medication med = db.getMedicationById(medId);
 
-        if (!med.isActive() || isMedicationDone(med)) {
+        if (!projects.medicationtracker.Utils.NotificationUtils.canScheduleNotifications(med, context)) {
             db.deleteNotification(notificationId);
 
             return Result.success();

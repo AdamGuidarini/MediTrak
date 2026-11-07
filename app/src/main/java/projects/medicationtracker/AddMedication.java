@@ -1457,6 +1457,8 @@ public class AddMedication extends BaseActivity implements IDialogCloseListener 
                     nativeDb.deleteNotification(ids[0]);
                     manager.cancel((int) ids[0]);
                 }
+
+                NotificationUtils.clearPendingNotifications(parentMed, this);
             } else if (!changesNotes.isEmpty()) {
                 db.updateMedication(medication);
                 db.addNote(changesNotes, medId);

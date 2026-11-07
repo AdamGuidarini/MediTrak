@@ -918,6 +918,38 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_deleteNotificationsByMedI
 }
 
 extern "C"
+JNIEXPORT jboolean JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_isMedicationActive(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jlong medication_id
+) {
+    const char* _dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string dbPath(_dbPath);
+    env->ReleaseStringUTFChars(db_path, _dbPath);
+
+    DatabaseController controller(dbPath);
+    return controller.isMedicationActive(medication_id) ? JNI_TRUE : JNI_FALSE;
+}
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_projects_medicationtracker_Helpers_NativeDbHelper_isParentMedication(
+        JNIEnv *env,
+        jobject thiz,
+        jstring db_path,
+        jlong medication_id
+) {
+    const char* _dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    std::string dbPath(_dbPath);
+    env->ReleaseStringUTFChars(db_path, _dbPath);
+
+    DatabaseController controller(dbPath);
+    return controller.isParentMedication(medication_id) ? JNI_TRUE : JNI_FALSE;
+}
+
+extern "C"
 JNIEXPORT jobject JNICALL
 Java_projects_medicationtracker_Helpers_NativeDbHelper_getSettings(
         JNIEnv *env,

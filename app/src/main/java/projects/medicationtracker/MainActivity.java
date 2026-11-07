@@ -26,7 +26,6 @@ import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -593,7 +592,9 @@ public class MainActivity extends projects.medicationtracker.BaseActivity implem
 
         allMeds.forEach(m -> {
             NotificationUtils.clearPendingNotifications(m, this);
-            NotificationUtils.createNotifications(m, this);
+            if (NotificationUtils.canScheduleNotifications(m, this)) {
+                NotificationUtils.createNotifications(m, this);
+            }
         });
 
         for (final Notification n : notifications) {
@@ -602,12 +603,8 @@ public class MainActivity extends projects.medicationtracker.BaseActivity implem
                     .findFirst()
                     .orElse(null);
 
-            if (med == null) {
-                Log.e(
-                        "EventReceiver",
-                        "Failed to create notification for Medication: " + n.getMedId()
-                );
-
+            if (!NotificationUtils.canScheduleNotifications(med, this)) {
+                nativeDb.deleteNotification(n.getNotificationId());
                 continue;
             }
 

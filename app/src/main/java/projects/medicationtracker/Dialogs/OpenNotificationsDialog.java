@@ -256,12 +256,14 @@ public class OpenNotificationsDialog extends DialogFragment {
                 }
             } else if (dismissUnselected.isChecked()) {
                 manager.cancel((int) notification.getNotificationId());
-                NotificationUtils.scheduleNotificationInFuture(
-                        getContext(),
-                        med,
-                        notification.getDoseTime(),
-                        notification.getNotificationId()
-                );
+                if (NotificationUtils.canScheduleNotifications(med, getContext())) {
+                    NotificationUtils.scheduleNotificationInFuture(
+                            getContext(),
+                            med,
+                            notification.getDoseTime(),
+                            notification.getNotificationId()
+                    );
+                }
                 nativeDbHelper.deleteNotification(notification.getId());
             }
 
