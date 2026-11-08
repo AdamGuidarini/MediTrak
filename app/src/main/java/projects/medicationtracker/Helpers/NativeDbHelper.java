@@ -221,6 +221,16 @@ public class NativeDbHelper {
         return getSettings(dbPath);
     }
 
+    public boolean isMedicationActive(long medId) {
+        if (dbPath == null || dbPath.isEmpty() || medId <= 0) return false;
+        return isMedicationActive(dbPath, medId);
+    }
+
+    public boolean isParentMedication(long medId) {
+        if (dbPath == null || dbPath.isEmpty() || medId <= 0) return false;
+        return isParentMedication(dbPath, medId);
+    }
+
     /**
      * Native methods
      */
@@ -243,6 +253,8 @@ public class NativeDbHelper {
     private native void deleteNotificationsByMedId(String dbPath, long medicationid);
     private native Notification[] getNotifications(String dbPath, Class<Notification> notificationClass);
     private native long addDose(String dbPath, long medId, String scheduledTime, String timeTaken, boolean taken);
+    private native boolean isMedicationActive(String dbPath, long medicationId);
+    private native boolean isParentMedication(String dbPath, long medicationId);
     private native void updateSettings(String dbPath, Pair<String, String>[] settings);
     private native Bundle getSettings(String dbPath);
     public static native boolean canWriteFile(String testPath);

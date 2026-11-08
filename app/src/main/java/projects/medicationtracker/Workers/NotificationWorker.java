@@ -66,7 +66,7 @@ public class NotificationWorker extends Worker {
         final NativeDbHelper db = new NativeDbHelper(context);
         final Medication med = db.getMedicationById(medId);
 
-        if (!med.isActive() || isMedicationDone(med)) {
+        if (!projects.medicationtracker.Utils.NotificationUtils.canScheduleNotifications(med, context)) {
             db.deleteNotification(notificationId);
 
             return Result.success();
@@ -182,24 +182,23 @@ public class NotificationWorker extends Worker {
         Intent markTakenIntent = new Intent(context, EventReceiver.class);
         Intent snoozeIntent = new Intent(context, EventReceiver.class);
         Intent deletedIntent = new Intent(context, EventReceiver.class);
-        String embeddedNoteId = "_" + notificationId;
 
         markTakenIntent.removeExtra(DOSE_TIME);
 
-        markTakenIntent.setAction(MARK_AS_TAKEN_ACTION + embeddedNoteId);
-        markTakenIntent.putExtra(MEDICATION_ID + embeddedNoteId, medId);
-        markTakenIntent.putExtra(NOTIFICATION_ID + embeddedNoteId, notificationId);
-        markTakenIntent.putExtra(DOSE_TIME + embeddedNoteId, doseTime);
+        markTakenIntent.setAction(MARK_AS_TAKEN_ACTION);
+        markTakenIntent.putExtra(MEDICATION_ID, medId);
+        markTakenIntent.putExtra(NOTIFICATION_ID, notificationId);
+        markTakenIntent.putExtra(DOSE_TIME, doseTime);
 
-        snoozeIntent.setAction(SNOOZE_ACTION + embeddedNoteId);
-        snoozeIntent.putExtra(MEDICATION_ID + embeddedNoteId, medId);
-        snoozeIntent.putExtra(NOTIFICATION_ID + embeddedNoteId, notificationId);
-        snoozeIntent.putExtra(DOSE_TIME + embeddedNoteId, doseTime);
+        snoozeIntent.setAction(SNOOZE_ACTION);
+        snoozeIntent.putExtra(MEDICATION_ID, medId);
+        snoozeIntent.putExtra(NOTIFICATION_ID, notificationId);
+        snoozeIntent.putExtra(DOSE_TIME, doseTime);
 
-        deletedIntent.setAction(DISMISSED_ACTION + embeddedNoteId);
-        deletedIntent.putExtra(MEDICATION_ID + embeddedNoteId, medId);
-        deletedIntent.putExtra(NOTIFICATION_ID + embeddedNoteId, notificationId);
-        deletedIntent.putExtra(DOSE_TIME + embeddedNoteId, doseTime);
+        deletedIntent.setAction(DISMISSED_ACTION);
+        deletedIntent.putExtra(MEDICATION_ID, medId);
+        deletedIntent.putExtra(NOTIFICATION_ID, notificationId);
+        deletedIntent.putExtra(DOSE_TIME, doseTime);
 
         PendingIntent markAsTakenPendingIntent =
                 PendingIntent.getBroadcast(
@@ -293,13 +292,12 @@ public class NotificationWorker extends Worker {
     }
 
     private static PendingIntent createTakeAllIntent(Context context, long medId, long notificationId, String doseTime) {
-        String embeddedMedId = "_" + medId;
         Intent takeAllIntent = new Intent(context, EventReceiver.class);
 
-        takeAllIntent.setAction(TAKE_ALL_ACTION + embeddedMedId);
-        takeAllIntent.putExtra(MEDICATION_ID + embeddedMedId, medId);
-        takeAllIntent.putExtra(NOTIFICATION_ID + embeddedMedId, notificationId);
-        takeAllIntent.putExtra(DOSE_TIME + embeddedMedId, doseTime);
+        takeAllIntent.setAction(TAKE_ALL_ACTION);
+        takeAllIntent.putExtra(MEDICATION_ID, medId);
+        takeAllIntent.putExtra(NOTIFICATION_ID, notificationId);
+        takeAllIntent.putExtra(DOSE_TIME, doseTime);
 
         return PendingIntent.getBroadcast(
                 context,

@@ -522,11 +522,19 @@ vector<Medication> DatabaseController::fetchMedications(
 
         auto childIdIt = childIds.find(med.id);
         if (childIdIt != childIds.end() && childIdIt->second > 0) {
+            shared_ptr<Medication> childPtr = nullptr;
             auto childRef = medicationRefs.find(childIdIt->second);
 
             if (childRef != medicationRefs.end()) {
-                med.child = childRef->second;
-                childRef->second->parent = thisMedRef->second;
+                childPtr = childRef->second;
+            } else {
+                childPtr = make_shared<Medication>(getMedication(childIdIt->second));
+                medicationLineageRefs.push_back(childPtr);
+            }
+
+            med.child = childPtr;
+            if (childPtr != nullptr) {
+                childPtr->parent = thisMedRef->second;
             }
         }
     }
@@ -784,6 +792,32 @@ void DatabaseController::deleteNotification(long id) {
 
 void DatabaseController::deleteNotificationsByMedicationId(long medicationId) {
     manager.deleteRecord(NOTIFICATIONS, {pair(MED_ID, to_string(medicationId))});
+ }
+
+bool DatabaseController::isMedicationActive(long medicationId) {
+    if (medicationId <= 0) return false;
+    string query = "SELECT " + ACTIVE + " FROM " + MEDICATION_TABLE
+                 + " WHERE " + MED_ID + "=" + to_string(medicationId);
+    auto table = manager.execSqlWithReturn(query);
+    if (table->getCount() == 0) return false;
+    table->moveToFirst();
+    return table->getItem(ACTIVE) == "1";
+}
+
+bool DatabaseController::isParentMedication(long medicationId) {
+    if (medicationId <= 0) return false;
+    string query = "SELECT " + CHILD_ID + " FROM " + MEDICATION_TABLE
+                 + " WHERE " + MED_ID + "=" + to_string(medicationId);
+    auto table = manager.execSqlWithReturn(query);
+    if (table->getCount() == 0) return false;
+    table->moveToFirst();
+    string childIdStr = table->getItem(CHILD_ID);
+    if (childIdStr.empty()) return false;
+    try {
+        return stol(childIdStr) > 0;
+    } catch (...) {
+        return false;
+    }
 }
 
 void DatabaseController::repairImportErrors() {

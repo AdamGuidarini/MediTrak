@@ -15,7 +15,6 @@ import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -52,6 +51,11 @@ public class NotificationUtils {
             LocalDateTime time,
             long notificationId
     ) {
+        if (!canScheduleNotifications(medication, notificationContext)) {
+            deletePendingNotification(notificationId, notificationContext);
+            return;
+        }
+
         // Loops to increase time, prevents notification bombardment when editing time.
         while (time.isBefore(LocalDateTime.now())) {
             time = time.plusMinutes(medication.getFrequency());
@@ -77,6 +81,11 @@ public class NotificationUtils {
             LocalDateTime scheduledTime,
             long notificationId
     ) {
+        if (!canScheduleNotifications(medication, context)) {
+            deletePendingNotification(notificationId, context);
+            return;
+        }
+
         ZonedDateTime zdt = scheduledTime.atZone(ZoneId.systemDefault());
         long alarmTimeMillis = zdt.toInstant().toEpochMilli();
 
@@ -97,6 +106,11 @@ public class NotificationUtils {
             LocalDateTime time,
             long notificationId
     ) {
+        if (!canScheduleNotifications(medication, notificationContext)) {
+            deletePendingNotification(notificationId, notificationContext);
+            return;
+        }
+
         ZonedDateTime zdt = LocalDateTime.now()
                 .plusMinutes(SNOOZE_TIME_MINUTES)
                 .atZone(ZoneId.systemDefault());
@@ -122,6 +136,11 @@ public class NotificationUtils {
             LocalDateTime time,
             long notificationId
     ) {
+        if (!canScheduleNotifications(medication, notificationContext)) {
+            deletePendingNotification(notificationId, notificationContext);
+            return;
+        }
+
         PendingIntent alarmIntent;
         AlarmManager alarmManager;
         Intent notificationIntent = new Intent(notificationContext, NotificationReceiver.class);
@@ -249,19 +268,52 @@ public class NotificationUtils {
     }
 
     /**
+     * Determines if notifications can be made for a medication.
+     * Notifications cannot be made for inactive medications or parent medications (medications with a child).
+     *
+     * @param medication Medication to check.
+     * @param context    Application context for DB checks.
+     * @return true if notifications can be made, false otherwise.
+     */
+    public static boolean canScheduleNotifications(Medication medication, Context context) {
+        if (medication == null) {
+            return false;
+        }
+
+        if (!medication.isActive() || medication.getChild() != null || medication.hasChild()) {
+            return false;
+        }
+
+        if (context != null) {
+            projects.medicationtracker.Helpers.NativeDbHelper nativeDb = new projects.medicationtracker.Helpers.NativeDbHelper(context);
+            if (medication.getId() != -1) {
+                boolean inactiveInDb = !nativeDb.isMedicationActive(medication.getId());
+                boolean parentInDb = nativeDb.isParentMedication(medication.getId());
+
+                if (inactiveInDb || parentInDb) {
+                    return false;
+                }
+            }
+        }
+
+        return !isMedicationDone(medication);
+    }
+
+    /**
      * Creates any and all notifications for a medication.
      *
      * @param medication Medication in need of notifications.
      * @param context    Application context.
      */
     public static void createNotifications(Medication medication, Context context) {
+        if (!canScheduleNotifications(medication, context)) {
+            clearPendingNotifications(medication, context);
+            return;
+        }
+
         DBHelper db = new DBHelper(context);
         long[] medicationTimeIds = db.getMedicationTimeIds(medication);
         LocalTime[] medTimes = db.getMedicationTimes(medication.getId());
-
-        if (!db.isMedicationActive(medication) && medication.getId() != -1) {
-            return;
-        }
 
         for (int i = 0; i < medicationTimeIds.length; i++) {
             scheduleNotificationInFuture(
@@ -279,6 +331,10 @@ public class NotificationUtils {
     }
 
     public static void notifyLowQuantity(Medication medication, Context context) {
+        if (!canScheduleNotifications(medication, context)) {
+            return;
+        }
+
         String message = context.getString(
                 R.string.low_doses_warning, medication.getName(),medication.getRemainingDosesCount()
         );

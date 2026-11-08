@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.work.Data;
+import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
@@ -26,6 +27,8 @@ import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Workers.NotificationWorker;
 
 public class NotificationReceiver extends BroadcastReceiver {
+    private static final String NOTIFICATION_WORK_QUEUE = "notification-work-queue";
+
     /**
      * Receiver for notification PendingIntent
      *
@@ -44,8 +47,9 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         long notificationId = extras.getLong(NOTIFICATION_ID, System.currentTimeMillis());
 
-        if (!medication.isActive() || NotificationUtils.isMedicationDone(medication)) {
+        if (!NotificationUtils.canScheduleNotifications(medication, context)) {
             db.close();
+            NotificationUtils.clearPendingNotifications(medication, context);
             nativeDbHelper.deleteNotification(notificationId);
 
             return;
@@ -83,7 +87,13 @@ public class NotificationReceiver extends BroadcastReceiver {
                     .setInputData(workerData)
                     .build();
 
-            WorkManager.getInstance(context).enqueue(workRequest);
+            WorkManager.getInstance(context)
+                    .beginUniqueWork(
+                            NOTIFICATION_WORK_QUEUE,
+                            ExistingWorkPolicy.APPEND,
+                            workRequest
+                    )
+                    .enqueue();
         }
 
         db.close();

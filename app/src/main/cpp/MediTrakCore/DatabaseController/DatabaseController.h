@@ -300,6 +300,20 @@ public:
      void deleteNotificationsByMedicationId(long medicationId);
 
     /**
+     * Checks if a medication is active in the database
+     * @param medicationId ID of medication to check
+     * @return true if Active == 1
+     */
+    bool isMedicationActive(long medicationId);
+
+    /**
+     * Checks if a medication has a child medication (is a parent medication)
+     * @param medicationId ID of medication to check
+     * @return true if ChildId is set and > 0
+     */
+    bool isParentMedication(long medicationId);
+
+    /**
     * Resolves issues in caused by imports where the last character of the last record was removed
     */
     void repairImportErrors();
