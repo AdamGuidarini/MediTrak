@@ -96,6 +96,8 @@ void DbManager::openDb() {
     if (rc != SQLITE_OK) {
         throw runtime_error("Failed to open database file at: " + database_name);
     }
+
+    sqlite3_busy_timeout(db, 5000);
 }
 
 void DbManager::closeDb() {

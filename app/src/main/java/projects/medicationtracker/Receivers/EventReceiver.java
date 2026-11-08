@@ -62,31 +62,25 @@ public class EventReceiver extends BroadcastReceiver {
         if (intent.getAction().contains(TAKE_ALL_ACTION)) {
             cancelledNotificationIds = takeAll(manager, nativeDb, context);
         } else if (action.contains(NotificationWorker.MARK_AS_TAKEN_ACTION)) {
-            String embeddedId = "_" + intent.getAction().split("_")[1];
-
             markDoseTaken(
                     context,
-                    intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0),
-                    intent.getLongExtra(MEDICATION_ID + embeddedId, 0),
-                    intent.getStringExtra(DOSE_TIME + embeddedId),
+                    intent.getLongExtra(NOTIFICATION_ID, 0),
+                    intent.getLongExtra(MEDICATION_ID, 0),
+                    intent.getStringExtra(DOSE_TIME),
                     nativeDb
             );
 
-            nativeDb.deleteNotification(intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0));
+            nativeDb.deleteNotification(intent.getLongExtra(NOTIFICATION_ID, 0));
         } else if (intent.getAction().contains(SNOOZE_ACTION)) {
-            String embeddedId = "_" + intent.getAction().split("_")[1];
-
             snoozeFor15(
                     context,
-                    intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0),
-                    intent.getLongExtra(MEDICATION_ID + embeddedId, 0),
-                    intent.getStringExtra(DOSE_TIME + embeddedId),
+                    intent.getLongExtra(NOTIFICATION_ID, 0),
+                    intent.getLongExtra(MEDICATION_ID, 0),
+                    intent.getStringExtra(DOSE_TIME),
                     db
             );
         } else if (intent.getAction().contains(DISMISSED_ACTION)) {
-            String embeddedId = "_" + intent.getAction().split("_")[1];
-
-            nativeDb.deleteNotification(intent.getLongExtra(NOTIFICATION_ID + embeddedId, 0));
+            nativeDb.deleteNotification(intent.getLongExtra(NOTIFICATION_ID, 0));
         } else {
             final ArrayList<Notification> notifications = nativeDb.getNotifications();
 
@@ -98,12 +92,8 @@ public class EventReceiver extends BroadcastReceiver {
                         m -> m.getId() == n.getMedId()
                 ).findFirst().orElse(null);
 
-                if (med == null) {
-                    Log.e(
-                            "EventReceiver",
-                            "Failed to create notification for Medication: " + n.getMedId()
-                    );
-
+                if (!NotificationUtils.canScheduleNotifications(med, context)) {
+                    nativeDb.deleteNotification(n.getNotificationId());
                     continue;
                 }
 
@@ -126,7 +116,9 @@ public class EventReceiver extends BroadcastReceiver {
      */
     private void prepareNotification(Context context, Medication medication) {
         clearPendingNotifications(medication, context);
-        createNotifications(medication, context);
+        if (NotificationUtils.canScheduleNotifications(medication, context)) {
+            createNotifications(medication, context);
+        }
     }
 
     private void prepareExport(Context context, Bundle preferences) {
@@ -181,19 +173,22 @@ public class EventReceiver extends BroadcastReceiver {
     private void snoozeFor15(
             Context context, long notificationId, long medId, String doseTimeString, DBHelper db
     ) {
-        Medication med;
-        LocalDateTime doseTime = LocalDateTime.parse(doseTimeString);
+        Medication med = db.getMedication(medId);
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        med = db.getMedication(medId);
-
-        scheduleIn15Minutes(
-                context,
-                med,
-                doseTime,
-                notificationId
-        );
+        if (NotificationUtils.canScheduleNotifications(med, context)) {
+            LocalDateTime doseTime = LocalDateTime.parse(doseTimeString);
+            scheduleIn15Minutes(
+                    context,
+                    med,
+                    doseTime,
+                    notificationId
+            );
+        } else {
+            NativeDbHelper nativeDb = new NativeDbHelper(context);
+            nativeDb.deleteNotification(notificationId);
+        }
 
         notificationManager.cancel((int) notificationId);
 

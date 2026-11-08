@@ -275,6 +275,15 @@ public class Medication implements Cloneable, Parcelable {
         return child;
     }
 
+    /**
+     * Returns whether this medication has a child medication
+     *
+     * @return true if medication has a child
+     */
+    public boolean hasChild() {
+        return child != null;
+    }
+
     // Setters
 
     /**
