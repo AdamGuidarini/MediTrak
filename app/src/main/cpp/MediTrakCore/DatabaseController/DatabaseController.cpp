@@ -411,12 +411,39 @@ void DatabaseController::exportCsv(const string &exportPath, map<string, vector<
 }
 
 Medication DatabaseController::getMedication(long medicationId) {
-    return fetchMedications(medicationId).at(0);
+    unordered_set<long> resolvingMedicationIds;
+    return getMedication(medicationId, resolvingMedicationIds);
 }
 
 vector<Medication> DatabaseController::fetchMedications(
         long medId
 ) {
+    unordered_set<long> resolvingMedicationIds;
+    return fetchMedications(medId, resolvingMedicationIds);
+}
+
+Medication DatabaseController::getMedication(
+        long medicationId,
+        unordered_set<long>& resolvingMedicationIds
+) {
+    vector<Medication> meds = fetchMedications(medicationId, resolvingMedicationIds);
+
+    if (meds.empty()) {
+        return {};
+    }
+
+    return meds.at(0);
+}
+
+vector<Medication> DatabaseController::fetchMedications(
+        long medId,
+        unordered_set<long>& resolvingMedicationIds
+) {
+    const bool hasSpecificMedication = medId > -1;
+    if (hasSpecificMedication && !resolvingMedicationIds.insert(medId).second) {
+        return {};
+    }
+
     string query = "SELECT m.*, mt.*, m." + MED_ID + " AS med_primary_id FROM " + MEDICATION_TABLE + " m "
                    + " LEFT JOIN " + MEDICATION_TIMES + " mt "
                    + " ON m." + MED_ID + " = mt." + MED_ID;
@@ -431,6 +458,10 @@ vector<Medication> DatabaseController::fetchMedications(
     auto table = manager.execSqlWithReturn(query);
 
     if (table->getCount() == 0) {
+        if (hasSpecificMedication) {
+            resolvingMedicationIds.erase(medId);
+        }
+
         return {};
     }
 
@@ -508,9 +539,15 @@ vector<Medication> DatabaseController::fetchMedications(
             auto parentRef = medicationRefs.find(parentIdIt->second);
             if (parentRef != medicationRefs.end()) {
                 parentPtr = parentRef->second;
+            } else if (resolvingMedicationIds.find(parentIdIt->second) == resolvingMedicationIds.end()) {
+                Medication parentMedication = getMedication(parentIdIt->second, resolvingMedicationIds);
+
+                if (parentMedication.id > 0) {
+                    parentPtr = make_shared<Medication>(parentMedication);
+                    medicationLineageRefs.push_back(parentPtr);
+                }
             } else {
-                parentPtr = make_shared<Medication>(getMedication(parentIdIt->second));
-                medicationLineageRefs.push_back(parentPtr);
+                parentPtr = nullptr;
             }
 
             med.parent = parentPtr;
@@ -527,9 +564,15 @@ vector<Medication> DatabaseController::fetchMedications(
 
             if (childRef != medicationRefs.end()) {
                 childPtr = childRef->second;
+            } else if (resolvingMedicationIds.find(childIdIt->second) == resolvingMedicationIds.end()) {
+                Medication childMedication = getMedication(childIdIt->second, resolvingMedicationIds);
+
+                if (childMedication.id > 0) {
+                    childPtr = make_shared<Medication>(childMedication);
+                    medicationLineageRefs.push_back(childPtr);
+                }
             } else {
-                childPtr = make_shared<Medication>(getMedication(childIdIt->second));
-                medicationLineageRefs.push_back(childPtr);
+                childPtr = nullptr;
             }
 
             med.child = childPtr;
@@ -537,6 +580,10 @@ vector<Medication> DatabaseController::fetchMedications(
                 childPtr->parent = thisMedRef->second;
             }
         }
+    }
+
+    if (hasSpecificMedication) {
+        resolvingMedicationIds.erase(medId);
     }
 
     return medications;

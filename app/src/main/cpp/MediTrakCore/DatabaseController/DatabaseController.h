@@ -9,6 +9,7 @@
 #include <vector>
 #include <memory>
 #include <regex>
+#include <unordered_set>
 #include "DbManager.h"
 #include "../Medication/Medication.h"
 #include "../Dose/Dose.h"
@@ -111,6 +112,16 @@ private:
      * Normalizes legacy MedicationTimes values to HH:mm:ss.
      */
     void normalizeLegacyMedicationTimes();
+
+    /**
+     * Retrieves a Medication while tracking lineage traversal to prevent cyclic recursion.
+     */
+    Medication getMedication(long medicationId, unordered_set<long>& resolvingMedicationIds);
+
+    /**
+     * Retrieves medications while tracking lineage traversal to prevent cyclic recursion.
+     */
+    vector<Medication> fetchMedications(long medId, unordered_set<long>& resolvingMedicationIds);
 
 public:
     // Settings
