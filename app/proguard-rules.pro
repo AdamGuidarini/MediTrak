@@ -23,3 +23,8 @@
 -keep public class projects.medicationtracker.Models.Medication{
     *;
 }
+
+# Native dose converters look up constructors and methods by name.
+-keep public class projects.medicationtracker.Models.Dose {
+    *;
+}
