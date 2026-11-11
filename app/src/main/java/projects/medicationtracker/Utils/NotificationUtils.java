@@ -280,7 +280,7 @@ public class NotificationUtils {
             return false;
         }
 
-        if (!medication.isActive() || medication.getChild() != null || medication.hasChild()) {
+        if (!medication.isActive()) {
             return false;
         }
 
@@ -288,9 +288,8 @@ public class NotificationUtils {
             projects.medicationtracker.Helpers.NativeDbHelper nativeDb = new projects.medicationtracker.Helpers.NativeDbHelper(context);
             if (medication.getId() != -1) {
                 boolean inactiveInDb = !nativeDb.isMedicationActive(medication.getId());
-                boolean parentInDb = nativeDb.isParentMedication(medication.getId());
 
-                if (inactiveInDb || parentInDb) {
+                if (inactiveInDb) {
                     return false;
                 }
             }

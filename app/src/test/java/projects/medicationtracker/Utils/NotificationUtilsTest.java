@@ -26,16 +26,6 @@ public class NotificationUtilsTest {
     }
 
     @Test
-    public void canScheduleNotifications_returnsFalseForParentMedication() {
-        Medication parent = new Medication();
-        parent.setActiveStatus(true);
-        Medication child = new Medication();
-        parent.setChild(child);
-
-        assertFalse(NotificationUtils.canScheduleNotifications(parent, null));
-    }
-
-    @Test
     public void canScheduleNotifications_returnsFalseForNullMedication() {
         assertFalse(NotificationUtils.canScheduleNotifications(null, null));
     }
