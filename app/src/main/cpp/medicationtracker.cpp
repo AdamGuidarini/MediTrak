@@ -327,7 +327,8 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_dbImporter(
         jstring file_contents,
         jobjectArray ignored_tables
 ) {
-    const char* _dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    jboolean isCopy = JNI_FALSE;
+    const char* _dbPath = env->GetStringUTFChars(db_path, &isCopy);
     std::string dbPath(_dbPath);
     env->ReleaseStringUTFChars(db_path, _dbPath);
 
@@ -925,7 +926,8 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_isMedicationActive(
         jstring db_path,
         jlong medication_id
 ) {
-    const char* _dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    jboolean isCopy = JNI_FALSE;
+    const char* _dbPath = env->GetStringUTFChars(db_path, &isCopy);
     std::string dbPath(_dbPath);
     env->ReleaseStringUTFChars(db_path, _dbPath);
 
@@ -941,7 +943,8 @@ Java_projects_medicationtracker_Helpers_NativeDbHelper_isParentMedication(
         jstring db_path,
         jlong medication_id
 ) {
-    const char* _dbPath = env->GetStringUTFChars(db_path, new jboolean(true));
+    jboolean isCopy = JNI_FALSE;
+    const char* _dbPath = env->GetStringUTFChars(db_path, &isCopy);
     std::string dbPath(_dbPath);
     env->ReleaseStringUTFChars(db_path, _dbPath);
 
