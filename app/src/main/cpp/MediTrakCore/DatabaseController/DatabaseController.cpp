@@ -44,37 +44,37 @@ DatabaseController::~DatabaseController() = default;
 
 void DatabaseController::create() {
     manager.execSql("CREATE TABLE IF NOT EXISTS " + MEDICATION_TABLE + "("
-                    + MED_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + MED_NAME + " TEXT,"
-                    + PATIENT_NAME + " Text,"
-                    + MED_DOSAGE + " REAL,"
-                    + MED_UNITS + " TEXT,"
-                    + START_DATE + " DATETIME,"
-                    + MED_FREQUENCY + " INTEGER,"
-                    + ALIAS + " TEXT,"
-                    + ACTIVE + " BOOLEAN DEFAULT 1,"
-                    + PARENT_ID + " INTEGER,"
-                    + CHILD_ID + " INTEGER,"
-                    + INSTRUCTIONS + " TEXT,"
-                    + END_DATE + " DATETIME,"
-                    + QUANTITY + " INTEGER DEFAULT -1,"
-                    + NOTIFY_WHEN_REMAINING + " INTEGER DEFAULT -1,"
-                    + "FOREIGN KEY (" + PARENT_ID + ") REFERENCES "
-                    + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE,"
-                    + "FOREIGN KEY (" + CHILD_ID + ") REFERENCES "
-                    + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE);"
+            + MED_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + MED_NAME + " TEXT,"
+            + PATIENT_NAME + " Text,"
+            + MED_DOSAGE + " REAL,"
+            + MED_UNITS + " TEXT,"
+            + START_DATE + " DATETIME,"
+            + MED_FREQUENCY + " INTEGER,"
+            + ALIAS + " TEXT,"
+            + ACTIVE + " BOOLEAN DEFAULT 1,"
+            + PARENT_ID + " INTEGER,"
+            + CHILD_ID + " INTEGER,"
+            + INSTRUCTIONS + " TEXT,"
+            + END_DATE + " DATETIME,"
+            + QUANTITY + " INTEGER DEFAULT -1,"
+            + NOTIFY_WHEN_REMAINING + " INTEGER DEFAULT -1,"
+            + "FOREIGN KEY (" + PARENT_ID + ") REFERENCES "
+            + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE,"
+            + "FOREIGN KEY (" + CHILD_ID + ") REFERENCES "
+            + MEDICATION_TABLE + "(" + MED_ID + ") ON DELETE CASCADE);"
     );
 
     manager.execSql("CREATE TABLE IF NOT EXISTS " + MEDICATION_TRACKER_TABLE + "("
-                    + DOSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + MED_ID + " INTEGER,"
-                    + DOSE_TIME + " DATETIME,"
-                    + TAKEN + " BOOLEAN,"
-                    + TIME_TAKEN + " DATETIME,"
-                    + OVERRIDE_DOSE_AMOUNT + " REAL,"
-                    + OVERRIDE_DOSE_UNIT + " TEXT,"
-                    + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +
-                    ") ON DELETE CASCADE);"
+            + DOSE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + MED_ID + " INTEGER,"
+            + DOSE_TIME + " DATETIME,"
+            + TAKEN + " BOOLEAN,"
+            + TIME_TAKEN + " DATETIME,"
+            + OVERRIDE_DOSE_AMOUNT + " REAL,"
+            + OVERRIDE_DOSE_UNIT + " TEXT,"
+            + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +
+            ") ON DELETE CASCADE);"
     );
 
     manager.execSql(
@@ -327,6 +327,35 @@ void DatabaseController::upgrade(int currentVersion) {
 
     if (currentVersion < 21) {
         normalizeLegacyMedicationTimes();
+    }
+
+    if (currentVersion < 22) {
+        manager.execSql(
+                "CREATE TABLE IF NOT EXISTS " + NOTIFICATIONS + "("
+                + NOTIFICATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + MED_ID + " INTEGER, "
+                + DOSE_ID + " INTEGER, "
+                + SCHEDULED_TIME + " DATETIME,"
+                + "FOREIGN KEY (" + MED_ID + ") REFERENCES " + MEDICATION_TABLE + "(" + MED_ID +
+                ") ON DELETE CASCADE);"
+        );
+        manager.execSql(
+                "DELETE FROM " + NOTIFICATIONS
+                + " WHERE " + NOTIFICATION_ID + " NOT IN ("
+                + "SELECT MAX(" + NOTIFICATION_ID + ") FROM " + NOTIFICATIONS
+                + " GROUP BY " + MED_ID + ", " + DOSE_ID + ");"
+        );
+        manager.execSql(
+                "CREATE UNIQUE INDEX IF NOT EXISTS idx_notifications_med_dose ON " + NOTIFICATIONS + "(" + MED_ID + ", " + DOSE_ID + ");"
+        );
+    }
+
+    if (currentVersion < 23) {
+        manager.execSql(
+                "UPDATE " + MEDICATION_TABLE
+                + " SET " + ACTIVE + " = 1"
+                + " WHERE " + ACTIVE + " IS NULL;"
+        );
     }
 
     manager.execSql("PRAGMA schema_version = " + to_string(DB_VERSION));
@@ -842,13 +871,25 @@ void DatabaseController::deleteNotificationsByMedicationId(long medicationId) {
  }
 
 bool DatabaseController::isMedicationActive(long medicationId) {
-    if (medicationId <= 0) return false;
+    if (medicationId <= 0) {
+        return true;
+    }
     string query = "SELECT " + ACTIVE + " FROM " + MEDICATION_TABLE
                  + " WHERE " + MED_ID + "=" + to_string(medicationId);
     auto table = manager.execSqlWithReturn(query);
-    if (table->getCount() == 0) return false;
+
+    if (table->getCount() == 0) {
+        return true;
+    }
+
     table->moveToFirst();
-    return table->getItem(ACTIVE) == "1";
+    string activeVal = table->getItem(ACTIVE);
+
+    if (activeVal.empty()) {
+        return true;
+    }
+
+    return activeVal != "0" && activeVal != "false";
 }
 
 bool DatabaseController::isParentMedication(long medicationId) {
