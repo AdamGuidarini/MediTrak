@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 
 import projects.medicationtracker.Models.Medication;
 import projects.medicationtracker.Models.Note;
@@ -109,6 +110,20 @@ public class DBHelper extends SQLiteOpenHelper {
     public DBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
+    }
+
+    private static boolean readBooleanCell(String value, boolean defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        }
+
+        String normalized = value.trim().toLowerCase(Locale.ROOT);
+
+        if (normalized.isEmpty()) {
+            return defaultValue;
+        }
+
+        return !(normalized.equals("0") || normalized.equals("false"));
     }
 
     /**
@@ -283,9 +298,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 medName, patient, units, times, startDate, medId, frequency, dosage, alias
         );
 
-        medication.setActiveStatus(
-                cursor.getString(cursor.getColumnIndexOrThrow(ACTIVE)).equals("1")
-        );
+        medication.setActiveStatus(readBooleanCell(
+                cursor.getString(cursor.getColumnIndexOrThrow(ACTIVE)),
+                true
+        ));
 
         medication.setInstructions(instructions);
         medication.setDoseAmount(limit);
@@ -917,7 +933,10 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.moveToFirst();
 
         if (cursor.getCount() > 0) {
-            active = cursor.getString(cursor.getColumnIndexOrThrow(ACTIVE)).equals("1");
+            active = readBooleanCell(
+                    cursor.getString(cursor.getColumnIndexOrThrow(ACTIVE)),
+                    false
+            );
         }
 
         cursor.close();
