@@ -90,7 +90,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             WorkManager.getInstance(context)
                     .beginUniqueWork(
                             NOTIFICATION_WORK_QUEUE,
-                            ExistingWorkPolicy.APPEND,
+                    ExistingWorkPolicy.APPEND_OR_REPLACE,
                             workRequest
                     )
                     .enqueue();
