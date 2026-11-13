@@ -28,3 +28,13 @@
 -keep public class projects.medicationtracker.Models.Dose {
     *;
 }
+
+# Native notification mappers look up Notification accessors by name.
+-keep public class projects.medicationtracker.Models.Notification {
+    *;
+}
+
+# Native notification mappers look up Note accessors by name.
+-keep public class projects.medicationtracker.Models.Note {
+    *;
+}
