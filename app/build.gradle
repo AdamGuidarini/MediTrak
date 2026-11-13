@@ -24,9 +24,10 @@ android {
     }
 
     defaultConfig {
-        applicationId = "projects.medicationtracker"
-        minSdk = 29
-        targetSdk = 35
+        applicationId "projects.medicationtracker"
+        minSdkVersion 29
+        targetSdkVersion 35
+        compileSdkVersion 36
 
         versionCode = 68
         versionName = "0.17.20"
@@ -35,7 +36,7 @@ android {
             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
         }
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
                 arguments '-DANDROID_TOOLCHAIN=clang',
@@ -44,18 +45,14 @@ android {
                 cppFlags '-frtti -fexceptions'
             }
         }
-    }
 
-    androidResources {
-        localeFilters += ['en', 'de', 'es', 'it', 'tr', 'nl', 'ar']
-    }
-
-    packaging {
-        jniLibs {
-            useLegacyPackaging = false
-        }
-        resources {
-            excludes += ['assets/dexopt/baseline.prof', 'assets/dexopt/baseline.profm']
+        packagingOptions {
+            jniLibs {
+                useLegacyPackaging = false
+            }
+            resources {
+                excludes += ['assets/dexopt/baseline.prof', 'assets/dexopt/baseline.profm']
+            }
         }
     }
 
@@ -63,10 +60,10 @@ android {
         release {
             def storePass = System.getenv("KEYSTORE_PASSWORD")
             if (storePass) {
-                storeFile = file("/keystore.jks")
-                storePassword = System.getenv("KEYSTORE_PASSWORD")
-                keyAlias = System.getenv("KEY_ALIAS")
-                keyPassword = System.getenv("KEY_PASSWORD") ?: System.getenv("KEYSTORE_PASSWORD")
+                storeFile file("/keystore.jks")
+                storePassword System.getenv("KEYSTORE_PASSWORD")
+                keyAlias System.getenv("KEY_ALIAS")
+                keyPassword System.getenv("KEY_PASSWORD") ?: System.getenv("KEYSTORE_PASSWORD")
             }
         }
     }
@@ -83,13 +80,19 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+        java {
+            toolchain {
+                languageVersion.set(JavaLanguageVersion.of(21))
+            }
+        }
     }
+    namespace 'projects.medicationtracker'
     externalNativeBuild {
         cmake {
-            path = file('src/main/cpp/CMakeLists.txt')
-            version = '3.22.1'
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.22.1'
         }
     }
 }
