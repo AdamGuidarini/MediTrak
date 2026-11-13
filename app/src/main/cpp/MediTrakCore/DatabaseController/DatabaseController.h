@@ -34,7 +34,7 @@ namespace DateFormats {
 
 class DatabaseController {
 private:
-    const int DB_VERSION = 21;
+    const int DB_VERSION = 23;
     const string DATABASE_NAME = "Medications.db";
     vector<string> tablesToIgnore;
     vector<shared_ptr<Medication>> medicationLineageRefs;
