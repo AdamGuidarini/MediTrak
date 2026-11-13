@@ -284,17 +284,6 @@ public class NotificationUtils {
             return false;
         }
 
-        if (context != null) {
-            projects.medicationtracker.Helpers.NativeDbHelper nativeDb = new projects.medicationtracker.Helpers.NativeDbHelper(context);
-            if (medication.getId() != -1) {
-                boolean inactiveInDb = !nativeDb.isMedicationActive(medication.getId());
-
-                if (inactiveInDb) {
-                    return false;
-                }
-            }
-        }
-
         return !isMedicationDone(medication);
     }
 

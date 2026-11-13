@@ -44,7 +44,7 @@ public class NotificationWorker extends Worker {
     public static String TAKE_ALL_ACTION = "markAllAsTaken";
     public static String DISMISSED_ACTION = "dismissed";
 
-    NotificationWorker(Context context, WorkerParameters params) {
+    public NotificationWorker(Context context, WorkerParameters params) {
         super(context, params);
 
         this.context = context;

@@ -4,10 +4,33 @@
 
 #include "DatabaseController.h"
 
+#include <algorithm>
+#include <cctype>
 #include <unordered_set>
 #include <unordered_map>
 
 using namespace std;
+
+namespace {
+bool readBoolCell(string value, bool defaultValue) {
+    value.erase(value.begin(), find_if(value.begin(), value.end(), [](unsigned char ch) {
+        return !isspace(ch);
+    }));
+    value.erase(find_if(value.rbegin(), value.rend(), [](unsigned char ch) {
+        return !isspace(ch);
+    }).base(), value.end());
+
+    if (value.empty()) {
+        return defaultValue;
+    }
+
+    transform(value.begin(), value.end(), value.begin(), [](unsigned char c) {
+        return static_cast<char>(tolower(c));
+    });
+
+    return value != "0" && value != "false";
+}
+}
 
 DatabaseController::DatabaseController(string path) : manager(std::move(path), true) {
     int currentVersion = 0;
@@ -510,7 +533,7 @@ vector<Medication> DatabaseController::fetchMedications(
                 stol(table->getItem("med_primary_id")),
                 stof(table->getItem(MED_DOSAGE)),
                 stoi(table->getItem(MED_FREQUENCY)),
-                table->getItem(ACTIVE) == "1",
+                readBoolCell(table->getItem(ACTIVE), true),
                 table->getItem(ALIAS),
                 stoi(table->getItem(QUANTITY)),
                 table->getItem(END_DATE),
@@ -883,13 +906,7 @@ bool DatabaseController::isMedicationActive(long medicationId) {
     }
 
     table->moveToFirst();
-    string activeVal = table->getItem(ACTIVE);
-
-    if (activeVal.empty()) {
-        return true;
-    }
-
-    return activeVal != "0" && activeVal != "false";
+    return readBoolCell(table->getItem(ACTIVE), true);
 }
 
 bool DatabaseController::isParentMedication(long medicationId) {
