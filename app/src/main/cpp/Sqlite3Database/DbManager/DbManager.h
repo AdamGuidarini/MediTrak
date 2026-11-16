@@ -35,18 +35,20 @@ private:
     sqlite3* db{};
 
     /**
-     * Searches for characters that can cause issues with parsing when importing and replace them with HTML safe values
-     * @param str String to search
-     * @return str with unsafe values replaces with HTML safe chars
-     */
-    string escapeUnsafeChars(string str);
-
-    /**
      * Replaces safe HTML chars with their regular equivalents
      * @param str String to check for HTML escape characters
      * @return str with any HTML escape characters replaced with regular characters
      */
     string unescapeSafeChars(string str);
+
+    /**
+     * Binds a value to a prepared statement parameter. Empty strings bind as NULL,
+     * digit-only strings bind as integers, everything else binds as text.
+     * @param stmt Prepared statement
+     * @param index 1-based parameter index
+     * @param value Value to bind
+     */
+    void bindValue(sqlite3_stmt* stmt, int index, const string& value);
 
     /**
      * Replaces all occurrences of from with to in str
@@ -103,11 +105,20 @@ public:
     void execSql(string sql, int (*callback) (void *, int, char**, char **) = nullptr);
 
     /**
+     * Executes a parameterized SQL statement using bound values - returns nothing.
+     * Use "?" placeholders in the query for each entry in bindValues.
+     * @param sql query to execute
+     * @param bindValues values to bind to the query's "?" placeholders, in order
+     */
+    void execParameterized(const string& sql, const vector<string>& bindValues);
+
+    /**
      * Executes SQL query and returns a result
      * @param sql query to execute
+     * @param bindValues Optional values to bind to the query's "?" placeholders, in order
      * @return
      */
-    std::unique_ptr<Table> execSqlWithReturn(string sql);
+    std::unique_ptr<Table> execSqlWithReturn(string sql, const vector<string>& bindValues = {});
 
     /**
      * Insert a record into the database

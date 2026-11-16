@@ -26,34 +26,6 @@ DbManager::~DbManager() {
     }
 }
 
-string DbManager::escapeUnsafeChars(string str) {
-    if (str.find(' ') != string::npos) {
-        replaceAll(str, " ", "&dbsp;");
-    }
-
-    if (str.find('\"') != string::npos) {
-        replaceAll(str, "\"", "&qout;");
-    }
-
-    if (str.find('{') != string::npos) {
-        replaceAll(str, "{", "&#123;");
-    }
-
-    if (str.find('}') != string::npos) {
-        replaceAll(str, "}", "&#125;");
-    }
-
-    if (str.find(':') != string::npos) {
-        replaceAll(str, ":", "&#58;");
-    }
-
-    if (str.find(',') != string::npos) {
-        replaceAll(str, ",", "&#130;");
-    }
-
-    return str;
-}
-
 string DbManager::unescapeSafeChars(string str) {
     if (str.find("&dbsp;") != string::npos) {
         replaceAll(str, "&dbsp;", " ");
@@ -143,16 +115,57 @@ void DbManager::execSql(string sql, int (*callback)(void *, int, char **, char *
     }
 }
 
+void DbManager::bindValue(sqlite3_stmt *stmt, int index, const string &value) {
+    if (value.empty()) {
+        sqlite3_bind_null(stmt, index);
+    } else if (isNumber(value)) {
+        sqlite3_bind_int64(stmt, index, stoll(value));
+    } else {
+        sqlite3_bind_text(stmt, index, value.c_str(), -1, SQLITE_TRANSIENT);
+    }
+}
+
+void DbManager::execParameterized(const string &sql, const vector<string> &bindValues) {
+    sqlite3_stmt *stmt = nullptr;
+    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+
+    if (rc != SQLITE_OK) {
+        string err = sqlite3_errmsg(db);
+        sqlite3_finalize(stmt);
+
+        throw runtime_error("Failed to prepare query: " + sql + "\n" + err);
+    }
+
+    for (size_t i = 0; i < bindValues.size(); i++) {
+        bindValue(stmt, static_cast<int>(i + 1), bindValues[i]);
+    }
+
+    rc = sqlite3_step(stmt);
+
+    if (rc != SQLITE_DONE && rc != SQLITE_ROW) {
+        string err = sqlite3_errmsg(db);
+        sqlite3_finalize(stmt);
+
+        throw runtime_error(
+                "An error occurred while attempting to execute query: " + sql + "\n" + err
+        );
+    }
+
+    sqlite3_finalize(stmt);
+}
+
 long DbManager::insert(const string &table, map<string, string> values) {
     stringstream query;
     map<string, string>::iterator it;
     sqlite3_stmt *stmt;
     long rowId = 0;
+    vector<string> bindValues;
 
     query << "INSERT INTO " << table << " (";
 
     for (it = values.begin(); it != values.end();) {
         query << it->first;
+        bindValues.push_back(it->second);
 
         if (++it != values.end()) {
             query << ',';
@@ -161,23 +174,17 @@ long DbManager::insert(const string &table, map<string, string> values) {
 
     query << ") VALUES(";
 
-    for (it = values.begin(); it != values.end();) {
-        if (isNumber(it->second)) {
-            query << it->second;
-        } else if (it->second.empty()) {
-            query << "NULL";
-        } else {
-            query << "\'" << it->second << "\'";
-        }
+    for (size_t i = 0; i < bindValues.size(); i++) {
+        query << '?';
 
-        if (++it != values.end()) {
+        if (i < bindValues.size() - 1) {
             query << ',';
         }
     }
 
     query << ");";
 
-    execSql(query.str());
+    execParameterized(query.str(), bindValues);
 
     sqlite3_prepare_v2(db, "SELECT last_insert_rowid()", -1, &stmt, nullptr);
     if (sqlite3_step(stmt) == SQLITE_ROW) {
@@ -199,11 +206,13 @@ long DbManager::insert(const string &table, map<string, string> values) {
 void DbManager::update(string table, map<string, string> values, map<string, string> where) {
     stringstream query;
     map<string, string>::iterator it;
+    vector<string> bindValues;
 
     query << "UPDATE " << table << " SET ";
 
     for (it = values.begin(); it != values.end();) {
-        query << it->first << "=\'" << it->second << "\'";
+        query << it->first << "=?";
+        bindValues.push_back(it->second);
 
         if (++it != values.end()) {
             query << ',';
@@ -214,15 +223,8 @@ void DbManager::update(string table, map<string, string> values, map<string, str
         query << " WHERE ";
 
         for (it = where.begin(); it != where.end();) {
-            query << it->first << "=";
-
-            if (isNumber(it->second)) {
-                query << it->second;
-            } else if (it->second.empty()) {
-                query << "NULL";
-            } else {
-                query << "\'" << it->second << "\'";
-            }
+            query << it->first << "=?";
+            bindValues.push_back(it->second);
 
             if (++it != where.end()) {
                 query << " AND ";
@@ -232,39 +234,46 @@ void DbManager::update(string table, map<string, string> values, map<string, str
 
     query << ';';
 
-    execSql(query.str());
+    execParameterized(query.str(), bindValues);
 }
 
 void DbManager::update(
         string table, map<string, string> values, string whereClause, string whereArgs[]
 ) {
-    int argIndex = 0;
     stringstream query;
     map<string, string>::iterator it;
-    vector<size_t> positions;
-    size_t pos;
+    vector<string> bindValues;
+    size_t argCount = 0;
 
     query << "UPDATE " << table << " SET ";
 
     for (it = values.begin(); it != values.end();) {
-        query << it->first << "=\'" << it->second << "\'";
+        query << it->first << "=?";
+        bindValues.push_back(it->second);
 
         if (++it != values.end()) {
             query << ',';
         }
     }
 
-    pos = whereClause.find('?', 0);
-    while (pos != string::npos) {
-        positions.push_back(pos);
-        pos = whereClause.find('?', pos + 1);
+    for (char c: whereClause) {
+        if (c == '?') {
+            argCount++;
+        }
     }
 
-    // TODO map where args to ?s and fire query
+    query << " WHERE " << whereClause << ';';
+
+    for (size_t i = 0; i < argCount; i++) {
+        bindValues.push_back(whereArgs[i]);
+    }
+
+    execParameterized(query.str(), bindValues);
 }
 
 void DbManager::deleteRecord(string table, map<string, string> where) {
     stringstream query;
+    vector<string> bindValues;
 
     query << "DELETE FROM " << table;
 
@@ -274,15 +283,8 @@ void DbManager::deleteRecord(string table, map<string, string> where) {
         query << " WHERE ";
 
         for (it = where.begin(); it != where.end();) {
-            query << it->first << "=";
-
-            if (isNumber(it->second)) {
-                query << it->second;
-            } else if (it->second.empty()) {
-                query << "NULL";
-            } else {
-                query << "\'" << it->second << "\'";
-            }
+            query << it->first << "=?";
+            bindValues.push_back(it->second);
 
             if (++it != where.end()) {
                 query << " AND ";
@@ -290,7 +292,7 @@ void DbManager::deleteRecord(string table, map<string, string> where) {
         }
     }
 
-    execSql(query.str());
+    execParameterized(query.str(), bindValues);
 }
 
 vector<string> DbManager::getTables(const vector<string> &ignoreTables) {
@@ -298,12 +300,20 @@ vector<string> DbManager::getTables(const vector<string> &ignoreTables) {
     sqlite3_stmt *stmt;
     string query = "SELECT name FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlite_%'";
     vector<string> tables;
+    vector<string> bindValues;
 
     for (auto &tbl: ignoreTables) {
-        query += " AND name != '" + tbl + "'";
+        query += " AND name != ?";
+        bindValues.push_back(tbl);
     }
 
     rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
+
+    if (rc == SQLITE_OK) {
+        for (size_t i = 0; i < bindValues.size(); i++) {
+            bindValue(stmt, static_cast<int>(i + 1), bindValues[i]);
+        }
+    }
 
     sqlite3_step(stmt);
 
@@ -526,22 +536,7 @@ void DbManager::importData(string &inData, const vector<string> &ignoreTables) {
                 query << ") VALUES (";
 
                 for (auto i = 0; i < columns.size(); i++) {
-                    const auto& value = row[columns[i]];
-                    if (value.is_string() && !value.get<string>().empty()) {
-                        string val = value.get<string>();
-                        // Escape single quotes for SQL by doubling them
-                        size_t pos = 0;
-                        while ((pos = val.find("'", pos)) != string::npos) {
-                            val.replace(pos, 1, "''");
-                            pos += 2;
-                        }
-                        query << "'" << unescapeSafeChars(val) << "'";
-                    } else if (value.is_null() || (value.is_string() && value.get<string>().empty())) {
-                        query << "NULL";
-                    } else {
-                        query << value.dump();
-                    }
-
+                    query << "?";
                     if (i < columns.size() - 1) {
                         query << ",";
                     }
@@ -549,7 +544,49 @@ void DbManager::importData(string &inData, const vector<string> &ignoreTables) {
 
                 query << ");";
 
-                execSql(query.str());
+                sqlite3_stmt *insertStmt = nullptr;
+                int insertRc = sqlite3_prepare_v2(db, query.str().c_str(), -1, &insertStmt, nullptr);
+
+                if (insertRc != SQLITE_OK) {
+                    string err = sqlite3_errmsg(db);
+                    sqlite3_finalize(insertStmt);
+
+                    throw runtime_error("Failed to prepare import query: " + query.str() + "\n" + err);
+                }
+
+                for (auto i = 0; i < columns.size(); i++) {
+                    const auto &value = row[columns[i]];
+                    int index = static_cast<int>(i + 1);
+
+                    if (value.is_null() || (value.is_string() && value.get<string>().empty())) {
+                        sqlite3_bind_null(insertStmt, index);
+                    } else if (value.is_boolean()) {
+                        sqlite3_bind_int(insertStmt, index, value.get<bool>() ? 1 : 0);
+                    } else if (value.is_number_integer() || value.is_number_unsigned()) {
+                        sqlite3_bind_int64(insertStmt, index, value.get<int64_t>());
+                    } else if (value.is_number_float()) {
+                        sqlite3_bind_double(insertStmt, index, value.get<double>());
+                    } else if (value.is_string()) {
+                        string val = unescapeSafeChars(value.get<string>());
+                        sqlite3_bind_text(insertStmt, index, val.c_str(), -1, SQLITE_TRANSIENT);
+                    } else {
+                        string dumped = value.dump();
+                        sqlite3_bind_text(insertStmt, index, dumped.c_str(), -1, SQLITE_TRANSIENT);
+                    }
+                }
+
+                insertRc = sqlite3_step(insertStmt);
+
+                if (insertRc != SQLITE_DONE) {
+                    string err = sqlite3_errmsg(db);
+                    sqlite3_finalize(insertStmt);
+
+                    throw runtime_error(
+                            "An error occurred while attempting to execute query: " + query.str() + "\n" + err
+                    );
+                }
+
+                sqlite3_finalize(insertStmt);
             }
         }
 
@@ -618,7 +655,7 @@ bool DbManager::isNumber(string str) {
     return !str.empty() && it == str.end();
 }
 
-std::unique_ptr<Table> DbManager::execSqlWithReturn(string sql) {
+std::unique_ptr<Table> DbManager::execSqlWithReturn(string sql, const vector<string> &bindValues) {
     sqlite3_stmt *stmt = nullptr;
 
     int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
@@ -632,6 +669,10 @@ std::unique_ptr<Table> DbManager::execSqlWithReturn(string sql) {
     } catch (runtime_error &error) {
         cerr << "SQLITE READ ERROR | Return Code: " << rc << endl;
         throw error;
+    }
+
+    for (size_t i = 0; i < bindValues.size(); i++) {
+        bindValue(stmt, static_cast<int>(i + 1), bindValues[i]);
     }
 
     return std::make_unique<Table>(stmt);

@@ -500,14 +500,17 @@ vector<Medication> DatabaseController::fetchMedications(
                    + " LEFT JOIN " + MEDICATION_TIMES + " mt "
                    + " ON m." + MED_ID + " = mt." + MED_ID;
 
+    vector<string> bindValues;
+
     if (medId > -1) {
-        query += " WHERE m." + MED_ID + "=" + to_string(medId);
+        query += " WHERE m." + MED_ID + "=?";
+        bindValues.push_back(to_string(medId));
     }
 
     vector<Medication> medications;
     unordered_map<long, long> parentIds;
     unordered_map<long, long> childIds;
-    auto table = manager.execSqlWithReturn(query);
+    auto table = manager.execSqlWithReturn(query, bindValues);
 
     if (table->getCount() == 0) {
         if (hasSpecificMedication) {
@@ -666,11 +669,11 @@ Medication DatabaseController::getMedicationHistory(long medicationId) {
 
 vector<Dose> DatabaseController::getTakenDoses(long medicationId) {
     string query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE
-                   + " WHERE " + MED_ID + "=" + to_string(medicationId)
+                   + " WHERE " + MED_ID + "=?"
                    + " AND " + TAKEN + " = '1'";
     vector<Dose> doses = {};
 
-    std::unique_ptr<Table> table(manager.execSqlWithReturn(query));
+    std::unique_ptr<Table> table(manager.execSqlWithReturn(query, {to_string(medicationId)}));
 
     while (table->getCount() > 0 && !table->isAfterLast()) {
         float overrideDose = -1;
@@ -734,9 +737,10 @@ std::unique_ptr<Dose> DatabaseController::setDose(std::unique_ptr<Table> table) 
 Dose* DatabaseController::findDose(long medicationId, const string &scheduledTime) {
     std::unique_ptr<Table> result = manager.execSqlWithReturn(
             "SELECT * FROM " + MEDICATION_TRACKER_TABLE
-            + " WHERE " + MED_ID + "=" + to_string(medicationId)
-            + " AND " + DOSE_TIME + "='" + scheduledTime + "'"
-            + " AND " + TAKEN + " = TRUE"
+            + " WHERE " + MED_ID + "=?"
+            + " AND " + DOSE_TIME + "=?"
+            + " AND " + TAKEN + " = TRUE",
+            {to_string(medicationId), scheduledTime}
     );
 
     return setDose(std::move(result)).release();
@@ -745,7 +749,8 @@ Dose* DatabaseController::findDose(long medicationId, const string &scheduledTim
 Dose* DatabaseController::getDoseById(long doseId) {
     std::unique_ptr<Table> result = manager.execSqlWithReturn(
             "SELECT * FROM " + MEDICATION_TRACKER_TABLE
-            + " WHERE " + DOSE_ID + "=" + to_string(doseId)
+            + " WHERE " + DOSE_ID + "=?",
+            {to_string(doseId)}
     );
 
     return setDose(std::move(result)).release();
@@ -833,22 +838,25 @@ void DatabaseController::normalizeLegacyMedicationTimes() {
 }
 
 bool DatabaseController::stashNotification(const Notification &notification) {
-    string subquery = "SELECT " + NOTIFICATION_ID + " FROM " + NOTIFICATIONS
-                      + " WHERE " + MED_ID + "=" + to_string(notification.medId)
-                      + " AND " + DOSE_ID + "=" + to_string(notification.notificationId);
-
     string query = "INSERT OR REPLACE INTO " + NOTIFICATIONS
                    + "(" + NOTIFICATION_ID + "," + MED_ID + "," + DOSE_ID + "," + SCHEDULED_TIME +
                    ")"
                    + " VALUES ("
-                   + "(" + subquery + "),"
-                   + to_string(notification.medId) + ","
-                   + to_string(notification.notificationId) + ","
-                   + "'" + notification.doseTime + "'"
-                   + ")";
+                   + "(SELECT " + NOTIFICATION_ID + " FROM " + NOTIFICATIONS
+                   + " WHERE " + MED_ID + "=? AND " + DOSE_ID + "=?),"
+                   + "?, ?, ?)";
 
     try {
-        manager.execSql(query);
+        manager.execParameterized(
+                query,
+                {
+                        to_string(notification.medId),
+                        to_string(notification.notificationId),
+                        to_string(notification.medId),
+                        to_string(notification.notificationId),
+                        notification.doseTime
+                }
+        );
 
         return true;
     } catch (runtime_error &e) {
@@ -898,8 +906,8 @@ bool DatabaseController::isMedicationActive(long medicationId) {
         return true;
     }
     string query = "SELECT " + ACTIVE + " FROM " + MEDICATION_TABLE
-                 + " WHERE " + MED_ID + "=" + to_string(medicationId);
-    auto table = manager.execSqlWithReturn(query);
+                 + " WHERE " + MED_ID + "=?";
+    auto table = manager.execSqlWithReturn(query, {to_string(medicationId)});
 
     if (table->getCount() == 0) {
         return true;
@@ -912,8 +920,8 @@ bool DatabaseController::isMedicationActive(long medicationId) {
 bool DatabaseController::isParentMedication(long medicationId) {
     if (medicationId <= 0) return false;
     string query = "SELECT " + CHILD_ID + " FROM " + MEDICATION_TABLE
-                 + " WHERE " + MED_ID + "=" + to_string(medicationId);
-    auto table = manager.execSqlWithReturn(query);
+                 + " WHERE " + MED_ID + "=?";
+    auto table = manager.execSqlWithReturn(query, {to_string(medicationId)});
     if (table->getCount() == 0) return false;
     table->moveToFirst();
     string childIdStr = table->getItem(CHILD_ID);

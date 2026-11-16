@@ -271,9 +271,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + MEDICATION_TABLE + " WHERE "
-                + MED_ID + " = " + id;
+                + MED_ID + " = ?";
 
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(id)});
         Medication medication;
 
         cursor.moveToFirst();
@@ -314,9 +314,9 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
 
         String getParentQuery = "SELECT " + MED_ID + " FROM " + MEDICATION_TABLE
-                + " WHERE " + CHILD_ID + "=" + medication.getId();
+                + " WHERE " + CHILD_ID + "=?";
 
-        cursor = db.rawQuery(getParentQuery, null);
+        cursor = db.rawQuery(getParentQuery, new String[]{String.valueOf(medication.getId())});
         cursor.moveToFirst();
 
         if (cursor.getCount() > 0) {
@@ -339,9 +339,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public LocalTime[] getMedicationTimes(long id) {
         final SQLiteDatabase db = this.getReadableDatabase();
         final String query = "SELECT " + DRUG_TIME + " FROM " + MEDICATION_TIMES + " WHERE "
-                + MED_ID + " = " + id;
+                + MED_ID + " = ?";
 
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(id)});
         LocalTime[] times = new LocalTime[cursor.getCount()];
 
         cursor.moveToFirst();
@@ -392,7 +392,12 @@ public class DBHelper extends SQLiteOpenHelper {
             cv.put(PARENT_ID, medication.getParent().getId());
         }
 
-        db.update(MEDICATION_TABLE, cv, MED_ID + " = " + medication.getId(), null);
+        db.update(
+                MEDICATION_TABLE,
+                cv,
+                MED_ID + " = ?",
+                new String[]{String.valueOf(medication.getId())}
+        );
 
         cv.clear();
 
@@ -409,10 +414,13 @@ public class DBHelper extends SQLiteOpenHelper {
             for (int i = 0; i < maxIndex; i++) {
                 String timeAsString = medication.getTimes()[i].toLocalTime().toString() + ":00";
 
-                String whereClause = TIME_ID + '=' + timeIds[i];
-
                 cv.put(DRUG_TIME, timeAsString);
-                db.update(MEDICATION_TIMES, cv, whereClause, null);
+                db.update(
+                        MEDICATION_TIMES,
+                        cv,
+                        TIME_ID + " = ?",
+                        new String[]{String.valueOf(timeIds[i])}
+                );
 
                 cv.clear();
             }
@@ -437,10 +445,12 @@ public class DBHelper extends SQLiteOpenHelper {
             else {
                 for (int i = maxIndex; i < oldTimes.length; i++) {
                     String oldTimeAsString = oldTimes[i].toString();
-                    String whereClause = DRUG_TIME + "='" + oldTimeAsString + "' AND " + MED_ID
-                            + "=" + medication.getId();
 
-                    db.delete(MEDICATION_TIMES, whereClause, null);
+                    db.delete(
+                            MEDICATION_TIMES,
+                            DRUG_TIME + " = ? AND " + MED_ID + " = ?",
+                            new String[]{oldTimeAsString, String.valueOf(medication.getId())}
+                    );
                 }
             }
         }
@@ -502,11 +512,16 @@ public class DBHelper extends SQLiteOpenHelper {
             );
         }
 
-        db.update(MEDICATION_TABLE, updateChildMedContent, MED_ID + " = " + row, null);
+        db.update(MEDICATION_TABLE, updateChildMedContent, MED_ID + " = ?", new String[]{String.valueOf(row)});
 
         notesUpdate.put(MED_ID, row);
 
-        db.update(NOTES_TABLE, notesUpdate, MED_ID + "=" + medication.getParent().getId(), null);
+        db.update(
+                NOTES_TABLE,
+                notesUpdate,
+                MED_ID + " = ?",
+                new String[]{String.valueOf(medication.getParent().getId())}
+        );
 
         medication.setId(row);
 
@@ -517,7 +532,12 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         updateParentCv.put(CHILD_ID, row);
-        db.update(MEDICATION_TABLE, updateParentCv, MED_ID + " = " + medication.getParent().getId(), null);
+        db.update(
+                MEDICATION_TABLE,
+                updateParentCv,
+                MED_ID + " = ?",
+                new String[]{String.valueOf(medication.getParent().getId())}
+        );
 
         return row;
     }
@@ -529,9 +549,12 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public void deleteMedication(Medication medication) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = MED_ID + " = " + medication.getId();
 
-        db.delete(MEDICATION_TABLE, query, null);
+        db.delete(
+                MEDICATION_TABLE,
+                MED_ID + " = ?",
+                new String[]{String.valueOf(medication.getId())}
+        );
     }
 
     /**
@@ -545,13 +568,16 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String dateTime = TimeFormatting.localDateTimeToDbString(time);
 
-        String query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE + " WHERE " + MED_ID + " = " +
-                medication.getId() + " AND " + DOSE_TIME + " = '" + dateTime + "'";
+        String query = "SELECT * FROM " + MEDICATION_TRACKER_TABLE + " WHERE " + MED_ID + " = ?" +
+                " AND " + DOSE_TIME + " = ?";
 
         int count = 0;
 
         try {
-            Cursor cursor = db.rawQuery(query, null);
+            Cursor cursor = db.rawQuery(
+                    query,
+                    new String[]{String.valueOf(medication.getId()), dateTime}
+            );
             count = cursor.getCount();
             cursor.close();
         } catch (SQLException e) {
@@ -565,8 +591,8 @@ public class DBHelper extends SQLiteOpenHelper {
         LocalDateTime[] times;
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " + DOSE_TIME + " FROM " + MEDICATION_TRACKER_TABLE
-                + " WHERE " + MED_ID + "=" + medication.getId();
-        Cursor cursor = db.rawQuery(query, null);
+                + " WHERE " + MED_ID + "=?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(medication.getId())});
 
         cursor.moveToFirst();
         times = new LocalDateTime[cursor.getCount()];
@@ -586,9 +612,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void deleteDose(long doseId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String whereClause = DOSE_ID + " = " + doseId;
 
-        db.delete(MEDICATION_TRACKER_TABLE, whereClause, null);
+        db.delete(
+                MEDICATION_TRACKER_TABLE,
+                DOSE_ID + " = ?",
+                new String[]{String.valueOf(doseId)}
+        );
     }
 
     /**
@@ -602,9 +631,9 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         long rowId;
         String query = "SELECT " + DOSE_ID + " FROM " + MEDICATION_TRACKER_TABLE + " WHERE "
-                + MED_ID + "=" + medId + " AND " + DOSE_TIME + "= '" + doseTime + "'";
+                + MED_ID + "=? AND " + DOSE_TIME + "=?";
 
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(medId), doseTime});
 
         cursor.moveToFirst();
 
@@ -625,9 +654,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public boolean getTaken(long doseId) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " + TAKEN + " FROM " + MEDICATION_TRACKER_TABLE
-                + " WHERE " + DOSE_ID + " = " + doseId;
+                + " WHERE " + DOSE_ID + " = ?";
 
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(doseId)});
 
         if (cursor.getCount() == 0) {
             cursor.close();
@@ -724,9 +753,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<Note> getNotes(long medId) {
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<Note> notes = new ArrayList<>();
-        String query = "SELECT * FROM " + NOTES_TABLE + " WHERE " + MED_ID + " = " + medId;
+        String query = "SELECT * FROM " + NOTES_TABLE + " WHERE " + MED_ID + " = ?";
 
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(medId)});
         cursor.moveToFirst();
 
         if (cursor.getCount() == 0)
@@ -774,9 +803,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public long[] getMedicationTimeIds(Medication medication) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " + TIME_ID + " FROM " + MEDICATION_TIMES + " WHERE " + MED_ID
-                + " = " + medication.getId();
+                + " = ?";
 
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(medication.getId())});
 
         long[] timeIds = new long[cursor.getCount()];
 
@@ -926,10 +955,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public boolean isMedicationActive(Medication medication) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " + ACTIVE + " FROM " + MEDICATION_TABLE
-                + " WHERE " + MED_ID + "=" + medication.getId();
+                + " WHERE " + MED_ID + "=?";
         boolean active = false;
 
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(medication.getId())});
         cursor.moveToFirst();
 
         if (cursor.getCount() > 0) {
@@ -956,8 +985,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         cursor = db.rawQuery(
                 "SELECT * FROM " + ACTIVITY_CHANGE_TABLE
-                        + " WHERE " + MED_ID + "=" + medication.getId(),
-                null
+                        + " WHERE " + MED_ID + "=?",
+                new String[]{String.valueOf(medication.getId())}
         );
         cursor.moveToFirst();
 
